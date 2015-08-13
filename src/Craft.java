@@ -28,9 +28,15 @@ public class Craft {
     private int y;
 
     /**
-     * This sprite's image/
+     * The sprite's current currentImage/
      */
-    private Image image;
+    private Image currentImage;
+
+    // Sprite's default image
+    private Image defaultImage;
+
+    // Sprite's image when moving
+    private Image movingImage;
 
     /**
      * Default constructor, initializes sprite.
@@ -40,8 +46,11 @@ public class Craft {
     }
 
     private void initCraft() {
-        ImageIcon icon = new ImageIcon("spaceship.png");
-        image = icon.getImage();
+        defaultImage = new ImageIcon("spaceship.png").getImage();
+        movingImage = new ImageIcon("spaceship_moving.png").getImage();
+
+        currentImage = defaultImage;
+
         x = 40;
         y = 60;
     }
@@ -72,11 +81,11 @@ public class Craft {
     }
 
     /**
-     * Returns this sprite's image.
+     * Returns this sprite's currentImage.
      * @return
      */
-    public Image getImage() {
-        return image;
+    public Image getCurrentImage() {
+        return currentImage;
     }
 
     /**
@@ -84,6 +93,9 @@ public class Craft {
      * @param e
      */
     public void keyPressed(KeyEvent e) {
+
+        // set sprite to moving image
+        currentImage = movingImage;
 
         int key = e.getKeyCode();
 
@@ -110,6 +122,9 @@ public class Craft {
      */
     public void keyReleased(KeyEvent e) {
 
+        // set sprite image back to default
+        currentImage = defaultImage;
+        
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {

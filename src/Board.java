@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 
 /**
  * Created by Stefan on 8/12/2015.
@@ -49,7 +48,7 @@ public class Board extends JPanel implements ActionListener {
     private void doDrawing(Graphics g) {
 
         Graphics2D g2d = (Graphics2D) g;
-        g2d.drawImage(craft.getImage(), craft.getX(), craft.getY(), this);
+        g2d.drawImage(craft.getCurrentImage(), craft.getX(), craft.getY(), this);
     }
 
     // moves craft and repaints JPanel
