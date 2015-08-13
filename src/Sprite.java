@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
@@ -7,29 +8,62 @@ import java.awt.geom.Ellipse2D;
  */
 public class Sprite {
 
-    private Shape sprite;
+    // coordinates of sprite
+    protected int x;
+    protected int y;
 
-    private Color color;
+    // sprite width and height
+    protected int width;
+    protected int height;
 
-    private int width;
+    // whether or not sprite is visible
+    protected boolean vis;
 
-    private int height;
+    // sprite default image
+    protected Image defaultImage;
 
-    private int x;
+    // what sprite actually looks like now (for animations)
+    protected Image currentImage;
 
-    private int y;
+    // whether or not sprite is currently moving
+    private boolean moving;
 
-    private Direction direction;
-
-    public Sprite(int width, int height, Color color) {
-        this.width = width;
-        this.height = height;
-        this.color = color;
+    // sets sprite coordinates
+    public Sprite(int x, int y) {
+        this.x = x;
+        this.y = y;
+        vis = true;
     }
 
-    public Shape getShape(int w, int h) {
-        return new Ellipse2D.Float(w - 10, h - 10, width, height);
+    // loads sprite's default image
+    protected void loadDefaultImage(String imageName) {
+        ImageIcon icon = new ImageIcon(imageName);
+        defaultImage = icon.getImage();
     }
 
-    public Color getColor() { return color; }
+    // returns dimensions of sprite image
+    protected void getImageDimensions() {
+        width = defaultImage.getWidth(null);
+        height = defaultImage.getHeight(null);
+    }
+
+    public Image getCurrentImage() {
+        return currentImage;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public boolean isVisible() {
+        return vis;
+    }
+
+    public void setVisible(Boolean visible) {
+        vis = visible;
+    }
 }

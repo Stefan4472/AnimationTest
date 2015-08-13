@@ -11,7 +11,7 @@ import java.awt.event.KeyEvent;
 public class Board extends JPanel implements ActionListener {
 
     private Timer timer;
-    private Craft craft;
+    private Spaceship spaceship;
 
     // Number of milliseconds to wait before repainting
     private final int DELAY = 10;
@@ -25,7 +25,7 @@ public class Board extends JPanel implements ActionListener {
         setFocusable(true);
         setBackground(Color.WHITE);
 
-        craft = new Craft();
+        spaceship = new Spaceship();
 
         /* This will call the actionPerformed method of this class
         every DELAY milliseconds */
@@ -48,27 +48,27 @@ public class Board extends JPanel implements ActionListener {
     private void doDrawing(Graphics g) {
 
         Graphics2D g2d = (Graphics2D) g;
-        g2d.drawImage(craft.getCurrentImage(), craft.getX(), craft.getY(), this);
+        g2d.drawImage(spaceship.getCurrentImage(), spaceship.getX(), spaceship.getY(), this);
     }
 
-    // moves craft and repaints JPanel every 10 ms
+    // moves spaceship and repaints JPanel every 10 ms
     @Override
     public void actionPerformed(ActionEvent e) {
-        craft.move();
+        spaceship.move();
         repaint();
     }
 
-    // sends keystrokes to craft class
+    // sends keystrokes to spaceship class
     private class TAdapter extends KeyAdapter {
 
         @Override
         public void keyReleased(KeyEvent e) {
-            craft.keyReleased(e);
+            spaceship.keyReleased(e);
         }
 
         @Override
         public void keyPressed(KeyEvent e) {
-            craft.keyPressed(e);
+            spaceship.keyPressed(e);
         }
     }
 }
