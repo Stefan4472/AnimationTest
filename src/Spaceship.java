@@ -2,11 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by Stefan on 8/13/2015.
  */
-public class Spaceship {
+public class Spaceship extends Sprite {
 
     /**
      * Movement vector in x-direction.
@@ -18,38 +19,21 @@ public class Spaceship {
      */
     private int dy;
 
-    /**
-     * Current position horizontally in coordinate plane.
-     */
-    private int x;
-
-    /**
-     * Current postion vertically in coordinate plane
-     */
-    private int y;
-
-    /**
-     * The sprite's current currentImage/
-     */
-    private Image currentImage;
-
-    // Sprite's default image
-    private Image defaultImage;
-
     // Sprite's image when moving
     private SpriteAnimation movingAnimation;
 
     private SpriteAnimation startMovingAnimation;
 
-    // whether sprite is moving or not
-    private boolean moving;
+    private float acceleration;
 
-    private int acceleration;
+    // keeps track of fired rockets
+    private ArrayList<Rocket> rockets;
 
     /**
      * Default constructor, initializes sprite.
      */
-    public Spaceship() {
+    public Spaceship(int x, int y) {
+        super(x, y);
         initCraft();
     }
 
@@ -74,9 +58,15 @@ public class Spaceship {
         moving = false;
         acceleration = 0;
 
+        getImageDimensions();
+
+        rockets = new ArrayList<>();
+
         x = 40;
         y = 60;
     }
+
+    public ArrayList<Rocket> getRockets() { return rockets; }
 
     /**
      * Changes coordinates of sprite by adding x- and y-
@@ -91,7 +81,7 @@ public class Spaceship {
             } else { // sprite was previously moving. Increase acceleration
                 if(startMovingAnimation.isPlaying()) {
                     currentImage = startMovingAnimation.nextFrame();
-                    acceleration++;
+                    acceleration += 0.5;
                 } else { // Play moving animation as soon as startmoving animation is over
                     currentImage = movingAnimation.nextFrame();
                 }
@@ -107,6 +97,11 @@ public class Spaceship {
 
         x += dx + dx * acceleration;
         y += dy;
+    }
+
+    // fires rocket
+    public void fire() {
+        rockets.add(new Rocket(x + width, y + height / 2));
     }
 
     /**
@@ -156,6 +151,9 @@ public class Spaceship {
         if (key == KeyEvent.VK_DOWN) {
             dy = 1;
         }
+
+        if(key == KeyEvent.VK_SPACE)
+            fire();
     }
 
     /**

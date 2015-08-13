@@ -26,7 +26,7 @@ public class Sprite {
     protected Image currentImage;
 
     // whether or not sprite is currently moving
-    private boolean moving;
+    protected boolean moving;
 
     // sets sprite coordinates
     public Sprite(int x, int y) {
@@ -39,6 +39,7 @@ public class Sprite {
     protected void loadDefaultImage(String imageName) {
         ImageIcon icon = new ImageIcon(imageName);
         defaultImage = icon.getImage();
+        currentImage = defaultImage;
     }
 
     // returns dimensions of sprite image
