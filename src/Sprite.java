@@ -15,6 +15,12 @@ public class Sprite {
 
     private int height;
 
+    private int x;
+
+    private int y;
+
+    private Direction direction;
+
     public Sprite(int width, int height, Color color) {
         this.width = width;
         this.height = height;
