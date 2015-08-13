@@ -6,11 +6,6 @@ import java.awt.*;
  */
 public class SpaceShips extends JFrame {
 
-    private JFrame frame;
-
-    private Board board;
-
-
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             @Override
@@ -32,7 +27,7 @@ public class SpaceShips extends JFrame {
         setSize(400, 300);
         setResizable(false);
 
-        setTitle("Rocket Ships");
+        setTitle("RocketShip");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
