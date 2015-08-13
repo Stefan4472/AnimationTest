@@ -32,32 +32,43 @@ public class SpriteAnimation {
         for(int i = 0; i < frames.length; i++) {
             this.frames[i] = new ImageIcon(frames[i].getName()).getImage();
         }
+        this.loop = loop;
     }
 
     // starts animation, returns first frame
     public Image start() {
         isPlaying = true;
+        frameCounter = 0;
         return frames[0];
     }
 
+    // whether animation has finished or not
+    public boolean isPlaying() {
+        return isPlaying;
+    }
+
     // returns next image in animation
-    public Image nextFrame() {
+    public Image nextFrame() throws IndexOutOfBoundsException {
         frameCounter++;
         if(loop) {
             // reached end of loop, start from beginning
-            if(frameCounter == frames.length)
+            if(frameCounter == frames.length) {
                 frameCounter = 0;
+            }
         } else {
             // reached end of loop
-            if(frameCounter == frames.length - 1)
+            if(frameCounter == frames.length - 1) {
                 isPlaying = false;
+            }
         }
+
         return frames[frameCounter];
     }
 
     // stops animation
     public void stop() {
         isPlaying = false;
+        frameCounter = 0;
     }
 
 }

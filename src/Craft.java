@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 /**
  * Created by Stefan on 8/13/2015.
@@ -43,6 +44,8 @@ public class Craft {
     // whether sprite is moving or not
     private boolean moving;
 
+    private int acceleration;
+
     /**
      * Default constructor, initializes sprite.
      */
@@ -52,11 +55,24 @@ public class Craft {
 
     private void initCraft() {
         defaultImage = new ImageIcon("spaceship.png").getImage();
-        //movingImage = new ImageIcon("spaceship_moving.png").getImage();
+
+        startMovingAnimation = new SpriteAnimation(new File[] {
+                new File("spaceship_starting1.png"),
+                new File("spaceship_starting2.png"),
+                new File("spaceship_starting3.png"),
+                new File("spaceship_starting4.png"),
+                new File("spaceship_starting5.png")
+        }, false);
+
+        movingAnimation = new SpriteAnimation(new File[] {
+                new File("spaceship_moving1.png"),
+                new File("spaceship_moving2.png")
+        }, true);
 
         currentImage = defaultImage;
 
         moving = false;
+        acceleration = 0;
 
         x = 40;
         y = 60;
@@ -67,12 +83,18 @@ public class Craft {
      * vectors to current position.
      */
     public void move() {
+        // sprite direction not equal to zero
         if(dx != 0 || dy != 0) {
-            // sprite was previously not moving. Play startmoving animation
+            // sprite was previously not moving. Play startmoving animation and reset acceleration
             if(moving == false) {
-
-            } else { // sprite was previously moving.
-            // Play moving animation as soon as startmoving animation is over
+                currentImage = startMovingAnimation.start();
+            } else { // sprite was previously moving. Increase acceleration
+                if(startMovingAnimation.isPlaying()) {
+                    currentImage = startMovingAnimation.nextFrame();
+                    acceleration++;
+                } else { // Play moving animation as soon as startmoving animation is over
+                    currentImage = movingAnimation.nextFrame();
+                }
 
             }
             //currentImage = movingImage;
@@ -80,9 +102,10 @@ public class Craft {
         } else {
             currentImage = defaultImage;
             moving = false;
+            acceleration = 0;
         }
 
-        x += dx;
+        x += dx + dx * acceleration;
         y += dy;
     }
 
