@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
@@ -24,10 +25,13 @@ public class SpriteAnimation {
         frameCounter = 0;
     }
 
-    // explores directory, creates animation from the frames it finds
-    // in the order it finds them
-    public SpriteAnimation(File frameDirectory) {
+    // converts files to images
+    public SpriteAnimation(File[] frames, boolean loop) {
+        this.frames = new Image[frames.length];
 
+        for(int i = 0; i < frames.length; i++) {
+            this.frames[i] = new ImageIcon(frames[i].getName()).getImage();
+        }
     }
 
     // starts animation, returns first frame
