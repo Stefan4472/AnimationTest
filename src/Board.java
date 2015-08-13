@@ -51,7 +51,7 @@ public class Board extends JPanel implements ActionListener {
         g2d.drawImage(craft.getCurrentImage(), craft.getX(), craft.getY(), this);
     }
 
-    // moves craft and repaints JPanel
+    // moves craft and repaints JPanel every 10 ms
     @Override
     public void actionPerformed(ActionEvent e) {
         craft.move();
