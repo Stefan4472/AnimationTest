@@ -104,10 +104,8 @@ public class Spaceship extends Sprite {
         rockets.add(new Rocket(x + width, y + height / 2));
     }
 
-    /**
-     * Returns x-coordinate of sprite's current position.
-     * @return
-     */
+    // returns x-coordinate of sprite's "control point"
+    // this is the point from which we want to draw
     public int getX() {
         return x;
     }

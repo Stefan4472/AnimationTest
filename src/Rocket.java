@@ -37,4 +37,9 @@ public class Rocket extends Sprite {
             vis = false;
         }
     }
+
+    // returns x-coordinate adjusted for leading empty space
+    public int getX() {
+        return x - 3;
+    }
 }

@@ -70,11 +70,9 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void updateRockets() {
-
         ArrayList<Rocket> rockets = spaceship.getRockets();
 
         for (int i = 0; i < rockets.size(); i++) {
-
             Rocket r = rockets.get(i);
 
             if (r.isVisible()) {
@@ -86,7 +84,6 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void updateSpaceship() {
-
         spaceship.move();
     }
 
