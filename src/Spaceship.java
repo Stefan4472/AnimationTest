@@ -81,21 +81,24 @@ public class Spaceship extends Sprite {
             } else { // sprite was previously moving. Increase acceleration
                 if(startMovingAnimation.isPlaying()) {
                     currentImage = startMovingAnimation.nextFrame();
-                    acceleration += 0.5;
                 } else { // Play moving animation as soon as startmoving animation is over
                     currentImage = movingAnimation.nextFrame();
                 }
-
             }
-            //currentImage = movingImage;
             moving = true;
         } else {
             currentImage = defaultImage;
             moving = false;
-            acceleration = 0;
         }
 
-        x += dx + dx * acceleration;
+        if(moving == true && acceleration < 0.1)
+            acceleration += 0.01;
+        else if(moving == true && acceleration < 2.0)
+            acceleration += 0.05;
+        else if(moving == false && acceleration >= 0.0)
+            acceleration -= 0.05;
+
+        x += dx + dx * acceleration; // todo: once user stops pressing arrow key, dx = 0, so total speed cuts to 0 instead of slowing down
         y += dy;
     }
 

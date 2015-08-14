@@ -5,7 +5,7 @@ import java.io.File;
  */
 public class Rocket extends Sprite {
 
-    private final int BOARD_WIDTH = 390;
+    private final int BOARD_WIDTH = 800;
     private final int MISSILE_SPEED = 2;
     private float acceleration;
 
@@ -30,8 +30,22 @@ public class Rocket extends Sprite {
 
 
     public void move() {
+        if(acceleration < 0.05)
+            acceleration += 0.001;
+        else if(acceleration < 0.1)
+            acceleration += 0.005;
+        else if(acceleration < 0.5)
+            acceleration += 0.05;
+        else if(acceleration < 1.0)
+            acceleration += 0.1;
+        else if(acceleration < 3.0)
+            acceleration += 0.15;
+        else
+            acceleration += 0.05;
+
         x += MISSILE_SPEED + acceleration;
-        acceleration += 0.2;
+        System.out.println("Rocket at (" + x + "," + y + ") with speed of " + (MISSILE_SPEED + acceleration));
+        //acceleration += 0.2;
 
         if (x > BOARD_WIDTH) {
             vis = false;
