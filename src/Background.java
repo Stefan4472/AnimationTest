@@ -44,6 +44,14 @@ public class Background {
         return currentImage;
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
     // shifts window and updates currentImage
     // will shift as far as possible without going past edge of defaultImage
     // if window is at the edge of defaultImage, does nothing
