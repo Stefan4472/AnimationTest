@@ -44,8 +44,6 @@ public class Rocket extends Sprite {
             acceleration += 0.05;
 
         x += MISSILE_SPEED + acceleration;
-        System.out.println("Rocket at (" + x + "," + y + ") with speed of " + (MISSILE_SPEED + acceleration));
-        //acceleration += 0.2;
 
         if (x > BOARD_WIDTH) {
             vis = false;

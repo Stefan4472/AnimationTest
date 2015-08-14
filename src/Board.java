@@ -24,7 +24,6 @@ public class Board extends JPanel implements ActionListener {
     private void initBoard() {
         addKeyListener(new TAdapter());
         setFocusable(true);
-        setBackground(Color.WHITE);
         setDoubleBuffered(true);
 
         spaceship = new Spaceship(40, 60);
@@ -67,6 +66,10 @@ public class Board extends JPanel implements ActionListener {
         updateSpaceship();
 
         repaint();
+    }
+
+    private void updateBackground() {
+
     }
 
     private void updateRockets() {
