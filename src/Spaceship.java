@@ -82,7 +82,7 @@ public class Spaceship extends Sprite {
                 if(startMovingAnimation.isPlaying()) {
                     currentImage = startMovingAnimation.nextFrame();
                 } else { // Play moving animation as soon as startmoving animation is over
-                    currentImage = movingAnimation.nextFrame();
+                    currentImage = movingAnimation.nextFrame(); // todo: is moving animation necessary? doesn't seem to make a noticeable difference
                 }
             }
             moving = true;

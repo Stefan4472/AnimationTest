@@ -69,7 +69,7 @@ public class Background {
             this.y = height - SCREEN_HEIGHT;
         else if(this.y < 0)
             this.y = 0;
-        
+
         currentImage = defaultImage.getSubimage(this.x, this.y, SCREEN_WIDTH, SCREEN_HEIGHT);
         return currentImage;
     }
