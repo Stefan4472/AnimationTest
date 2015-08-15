@@ -24,7 +24,7 @@ public class SpaceShips extends JFrame {
     private void initUI() {
         add(new Board());
 
-        setSize(400, 300);
+        setSize(600, 300);
         setResizable(false);
 
         setTitle("RocketShip");

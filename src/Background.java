@@ -20,7 +20,7 @@ public class Background {
     private BufferedImage currentImage;
 
     // dimensions of screen display
-    private final int SCREEN_WIDTH = 400;
+    private final int SCREEN_WIDTH = 600;
     private final int SCREEN_HEIGHT = 300;
 
     // coordinates of upper-left of "window" being shown
@@ -50,9 +50,11 @@ public class Background {
 
         random = new Random();
 
-        background = new int[6][8];
+        background = new int[6][24];
+
+        // fill background randomly with space tiles
         for(int i = 0; i < 6; i++) {
-            for(int j = 0; j < 8; j++) {
+            for(int j = 0; j < 24; j++) {
                 background[i][j] = random.nextInt(4);
             }
         };
@@ -62,7 +64,7 @@ public class Background {
     public Image getCurrentImage() {
         Graphics2D g = currentImage.createGraphics();
         for(int i = 0; i < 6; i++) { // rows
-            for(int j = 0; j < 8; j++) { // columns
+            for(int j = 0; j < 12; j++) { // columns
                 int loc_x = j * tileWidth;
                 int loc_y = i * tileHeight;
                 g.drawImage(tiles[background[i][j]], loc_x, loc_y, null);
@@ -79,21 +81,23 @@ public class Background {
         return y;
     }
 
-    // shifts window and updates currentImage
+    //public int getTileW() {
+
+    //}
+
+    //public int getTileH() {
+
+    //}
+
+    // moves background x units left, giving the appearance of forward motion
     // will shift as far as possible without going past edge of defaultImage
     // if window is at the edge of defaultImage, does nothing
-    /*public Image scroll(int x) {
+    public Image scroll(int x) {
         this.x += x;
+
 
 
         currentImage = currentImage.getSubimage(this.x, this.y, SCREEN_WIDTH, SCREEN_HEIGHT);
         return currentImage;
     }
-
-    // sends window to (x,y)
-    public Image goTo(int x, int y) {
-        this.x = x;
-        this.y = y;
-        return scroll(0, 0);
-    }*/
 }

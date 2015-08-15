@@ -63,9 +63,6 @@ public class Spaceship extends Sprite {
         getImageDimensions();
 
         rockets = new ArrayList<>();
-
-        x = 40;
-        y = 60;
     }
 
     public ArrayList<Rocket> getRockets() { return rockets; }
