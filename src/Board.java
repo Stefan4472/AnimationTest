@@ -32,7 +32,10 @@ public class Board extends JPanel implements ActionListener {
         setDoubleBuffered(true);
 
         spaceship = new Spaceship(100, 100);
-        background = new Background(new File("background.png"), 0, 0);
+        background = new Background(new String[] {
+                "space1.png",
+                "space2.png"
+        });
 
         /* This will call the actionPerformed method of this class
         every DELAY milliseconds */
@@ -55,7 +58,7 @@ public class Board extends JPanel implements ActionListener {
     private void doDrawing(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
-        background.goTo(spaceship.getX() - 100, spaceship.getY() - 100);
+        //background.goTo(spaceship.getX() - 100, spaceship.getY() - 100);
         g2d.drawImage(background.getCurrentImage(), 0, 0, this);
         g2d.drawImage(spaceship.getCurrentImage(), spaceship.getX(), spaceship.getY(), this);
 
