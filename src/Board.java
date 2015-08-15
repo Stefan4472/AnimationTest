@@ -34,7 +34,9 @@ public class Board extends JPanel implements ActionListener {
         spaceship = new Spaceship(100, 100);
         background = new Background(new String[] {
                 "space1.png",
-                "space2.png"
+                "space2.png",
+                "space3.png",
+                "space4.png"
         });
 
         /* This will call the actionPerformed method of this class

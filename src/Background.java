@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 /**
  * Created by Stefan on 8/14/2015.
@@ -30,6 +31,8 @@ public class Background {
     private int tileWidth;
     private int tileHeight;
 
+    private final Random random;
+
     // construct tiles using names of tile files
     public Background(String[] tiles) {
         this.tiles = new Image[tiles.length];
@@ -45,25 +48,24 @@ public class Background {
 
         currentImage = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
 
-        background = new int[][] { // todo: which is rows and which is columns?
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0}
+        random = new Random();
+
+        background = new int[6][8];
+        for(int i = 0; i < 6; i++) {
+            for(int j = 0; j < 8; j++) {
+                background[i][j] = random.nextInt(4);
+            }
         };
     }
 
     // returns current part of background being displayed
     public Image getCurrentImage() {
         Graphics2D g = currentImage.createGraphics();
-        for(int i = 0; i < 6; i++) {
-            for(int j = 0; j < 8; j++) {
-                int loc_y = i * tileWidth;
-                int loc_x = j * tileHeight;
+        for(int i = 0; i < 6; i++) { // rows
+            for(int j = 0; j < 8; j++) { // columns
+                int loc_x = j * tileWidth;
+                int loc_y = i * tileHeight;
                 g.drawImage(tiles[background[i][j]], loc_x, loc_y, null);
-                System.out.println("Drawing at " + loc_x + "," + loc_y);
             }
         }
         return currentImage;

@@ -45,7 +45,9 @@ public class Spaceship extends Sprite {
                 new File("spaceship_starting2.png"),
                 new File("spaceship_starting3.png"),
                 new File("spaceship_starting4.png"),
-                new File("spaceship_starting5.png")
+                new File("spaceship_starting5.png"),
+                new File("spaceship_starting6.png"),
+                new File("spaceship_starting7.png")
         }, false);
 
         movingAnimation = new SpriteAnimation(new File[] {
