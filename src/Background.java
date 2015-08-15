@@ -45,15 +45,13 @@ public class Background {
 
         currentImage = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
 
-        background = new int[][] { // don't get confused - rows and cols are switched
-                {0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0}
+        background = new int[][] { // todo: which is rows and which is columns?
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0}
         };
     }
 
@@ -62,9 +60,9 @@ public class Background {
         Graphics2D g = currentImage.createGraphics();
         for(int i = 0; i < 6; i++) {
             for(int j = 0; j < 8; j++) {
-                int loc_x = i * tileWidth;
-                int loc_y = j * tileHeight;
-                g.drawImage(tiles[background[j][i]], loc_x, loc_y, null);
+                int loc_y = i * tileWidth;
+                int loc_x = j * tileHeight;
+                g.drawImage(tiles[background[i][j]], loc_x, loc_y, null);
                 System.out.println("Drawing at " + loc_x + "," + loc_y);
             }
         }
