@@ -100,6 +100,7 @@ public class Spaceship extends Sprite {
 
         x += dx + dx * acceleration; // todo: once user stops pressing arrow key, dx = 0, so total speed cuts to 0 instead of slowing down
         y += dy;
+        System.out.println("Speed is " + (dx + dx * acceleration));
     }
 
     // fires rocket

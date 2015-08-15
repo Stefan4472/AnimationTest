@@ -58,9 +58,6 @@ public class Board extends JPanel implements ActionListener {
         background.goTo(spaceship.getX() - 100, spaceship.getY() - 100);
         g2d.drawImage(background.getCurrentImage(), 0, 0, this);
         g2d.drawImage(spaceship.getCurrentImage(), spaceship.getX(), spaceship.getY(), this);
-        //System.out.println("Drawing spaceship at (" + spaceship.getX() + "," + spaceship.getY() + ")");
-        //System.out.println("Drawing background at (" + background.getX() + "," + background.getY() + ")");
-        //System.out.println("Difference is " + (spaceship.getX() - background.getX()) + "," + (spaceship.getY() - background.getY()));
 
         ArrayList<Rocket> rockets = spaceship.getRockets();
 

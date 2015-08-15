@@ -58,7 +58,7 @@ public class Background {
     public Image scroll(int x, int y) {
         this.x += x;
         this.y += y;
-
+        System.out.println("this.x = " + this.x + " and this.y = " + this.y);
         // keep scrolling in bounds
         if(this.x + SCREEN_WIDTH > width)
             this.x = width - SCREEN_WIDTH;
@@ -69,7 +69,7 @@ public class Background {
             this.y = height - SCREEN_HEIGHT;
         else if(this.y < 0)
             this.y = 0;
-
+        
         currentImage = defaultImage.getSubimage(this.x, this.y, SCREEN_WIDTH, SCREEN_HEIGHT);
         return currentImage;
     }
