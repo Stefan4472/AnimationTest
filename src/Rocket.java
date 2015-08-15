@@ -5,7 +5,7 @@ import java.io.File;
  */
 public class Rocket extends Sprite {
 
-    private final int BOARD_WIDTH = 800;
+    private final int BOARD_WIDTH = 600;
     private final int MISSILE_SPEED = 2;
     private float acceleration;
 

@@ -65,7 +65,7 @@ public class Background {
         Graphics2D g = currentImage.createGraphics();
         for(int i = 0; i < 6; i++) { // rows
             for(int j = 0; j < 12; j++) { // columns
-                int loc_x = j * tileWidth;
+                int loc_x = x + j * tileWidth;
                 int loc_y = i * tileHeight;
                 g.drawImage(tiles[background[i][j]], loc_x, loc_y, null);
             }
@@ -90,14 +90,9 @@ public class Background {
     //}
 
     // moves background x units left, giving the appearance of forward motion
-    // will shift as far as possible without going past edge of defaultImage
-    // if window is at the edge of defaultImage, does nothing
+    // redraws and returns background
     public Image scroll(int x) {
-        this.x += x;
-
-
-
-        currentImage = currentImage.getSubimage(this.x, this.y, SCREEN_WIDTH, SCREEN_HEIGHT);
-        return currentImage;
+        this.x -= x;
+        return getCurrentImage();
     }
 }

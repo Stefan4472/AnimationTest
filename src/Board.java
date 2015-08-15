@@ -97,6 +97,12 @@ public class Board extends JPanel implements ActionListener {
 
     private void updateSpaceship() {
         spaceship.move();
+
+        // once spaceship gets past x = 200, start scrolling background
+        if(spaceship.getX() > 200) {
+            background.scroll(spaceship.getX() - 200);
+            spaceship.setX(200);
+        }
     }
 
     // sends keystrokes to spaceship class

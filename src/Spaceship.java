@@ -67,10 +67,7 @@ public class Spaceship extends Sprite {
 
     public ArrayList<Rocket> getRockets() { return rockets; }
 
-    /**
-     * Changes coordinates of sprite by adding x- and y-
-     * vectors to current position.
-     */
+    //
     public void move() {
         // sprite direction not equal to zero
         if(dx != 0 || dy != 0) {
@@ -113,6 +110,10 @@ public class Spaceship extends Sprite {
     // this is the point from which we want to draw
     public int getX() {
         return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
     }
 
     /**
