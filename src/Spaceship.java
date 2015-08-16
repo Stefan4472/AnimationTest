@@ -46,10 +46,9 @@ public class Spaceship extends Sprite {
                     new SpriteAnimation("spaceship_starting_spritesheet.png", 50, 50, 1, false);
         } catch(IOException e) {}
 
-        movingAnimation = new SpriteAnimation(new File[] {
-                new File("spaceship_moving1.png"),
-                new File("spaceship_moving2.png")
-        }, true);
+        try {
+            movingAnimation = new SpriteAnimation("spaceship_moving_spritesheet.png", 50, 50, 1, true);
+        } catch(IOException e) {}
 
         currentImage = defaultImage;
 
@@ -102,23 +101,19 @@ public class Spaceship extends Sprite {
         rockets.add(r2);
     }
 
-    // returns x-coordinate of sprite's "control point"
-    // this is the point from which we want to draw
-    public int getX() {
-        return x;
-    }
+    public int getX() { return x; }
 
-    public void setX(int x) {
-        this.x = x;
-    }
+    public void setX(int x) { this.x = x; }
 
-    /**
-     * Returns y-coordinate of sprite's current position.
-     * @return
-     */
-    public int getY() {
-        return y;
-    }
+    // x-coordinate of center of sprite
+    public int getCenterX() { return x + 31; }
+
+    public int getY() { return y; }
+
+    public void setY(int y) { this.y = y;}
+
+    // y-coordinate of center of sprite
+    public int getCenterY() { return y + 25; }
 
     /**
      * Returns this sprite's currentImage.

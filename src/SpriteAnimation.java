@@ -51,6 +51,7 @@ public class SpriteAnimation {
                 frames[i] = sheet.getSubimage(i * frameWidth, j * frameHeight, frameWidth, frameHeight);
             }
         }
+        this.loop = loop;
     }
 
     // converts files to images
