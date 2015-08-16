@@ -1,6 +1,9 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by Stefan on 8/13/2015.
@@ -19,10 +22,35 @@ public class SpriteAnimation {
     // current position in array of frames
     private int frameCounter;
 
+    // number of frames to display each sprite
+    private int frameSpeed;
+
+    // counts number of frame current sprite has been shown
+    private int frameSpeedCounter;
+
     public SpriteAnimation(Image[] frames, boolean loop) {
         this.frames = frames;
         this.loop = loop;
         frameCounter = 0;
+    }
+
+    // reads in spritesheet consisting of one row of sprites
+    // initializes all frames now so as to cut down on processing time later
+    public SpriteAnimation(String spriteSheetPath, int frameWidth,
+                           int frameHeight, int frameSpeed, boolean loop) throws IOException {
+
+        BufferedImage sheet = ImageIO.read(new File(spriteSheetPath));
+
+        int frames_w = sheet.getWidth(null) / frameWidth;
+        int frames_h = sheet.getHeight(null) / frameHeight;
+
+        frames = new Image[frames_w * frames_h];
+
+        for(int i = 0; i < frames_w; i++) {
+            for(int j = 0; j < frames_h; j++) {
+                frames[i] = sheet.getSubimage(i * frameWidth, j * frameHeight, frameWidth, frameHeight);
+            }
+        }
     }
 
     // converts files to images

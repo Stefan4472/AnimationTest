@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -40,15 +41,10 @@ public class Spaceship extends Sprite {
     private void initCraft() {
         defaultImage = new ImageIcon("spaceship.png").getImage();
 
-        startMovingAnimation = new SpriteAnimation(new File[] {
-                new File("spaceship_starting1.png"),
-                new File("spaceship_starting2.png"),
-                new File("spaceship_starting3.png"),
-                new File("spaceship_starting4.png"),
-                new File("spaceship_starting5.png"),
-                new File("spaceship_starting6.png"),
-                new File("spaceship_starting7.png")
-        }, false);
+        try {
+            startMovingAnimation =
+                    new SpriteAnimation("spaceship_starting_spritesheet.png", 50, 50, 1, false);
+        } catch(IOException e) {}
 
         movingAnimation = new SpriteAnimation(new File[] {
                 new File("spaceship_moving1.png"),
