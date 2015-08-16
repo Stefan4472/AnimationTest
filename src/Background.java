@@ -25,7 +25,6 @@ public class Background {
 
     // coordinates of upper-left of "window" being shown
     private int x;
-    private int y;
 
     // dimensions of tiles
     private int tileWidth;
@@ -41,7 +40,6 @@ public class Background {
         }
 
         this.x = 0;
-        this.y = 0;
 
         tileWidth = this.tiles[0].getWidth(null);
         tileHeight = this.tiles[0].getHeight(null);
@@ -65,7 +63,7 @@ public class Background {
         Graphics2D g = currentImage.createGraphics();
         for(int i = 0; i < 6; i++) { // rows
             for(int j = 0; j < 12; j++) { // columns
-                int loc_x = x + j * tileWidth;
+                int loc_x = -x + j * tileWidth;
                 int loc_y = i * tileHeight;
                 g.drawImage(tiles[background[i][j]], loc_x, loc_y, null);
             }
@@ -75,10 +73,6 @@ public class Background {
 
     public int getX() {
         return x;
-    }
-
-    public int getY() {
-        return y;
     }
 
     //public int getTileW() {
@@ -92,7 +86,7 @@ public class Background {
     // moves background x units left, giving the appearance of forward motion
     // redraws and returns background
     public Image scroll(int x) {
-        this.x -= x;
+        this.x += x;
         return getCurrentImage();
     }
 }
