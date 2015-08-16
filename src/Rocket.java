@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by Stefan on 8/13/2015.
@@ -22,10 +23,9 @@ public class Rocket extends Sprite {
         getImageDimensions();
         acceleration = 0;
 
-        startMoving = new SpriteAnimation(new File[] {
-                new File("rocket.png"),
-                new File("rocket_starting1.png"),
-        }, false);
+        try {
+            startMoving = new SpriteAnimation("rocket_starting1.png", 9, 3, 1, false);
+        } catch(IOException e){}
     }
 
 

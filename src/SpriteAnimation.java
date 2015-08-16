@@ -25,14 +25,8 @@ public class SpriteAnimation {
     // number of frames to display each sprite
     private int frameSpeed;
 
-    // counts number of frame current sprite has been shown
+    // counts number of frames current sprite has been shown
     private int frameSpeedCounter;
-
-    public SpriteAnimation(Image[] frames, boolean loop) {
-        this.frames = frames;
-        this.loop = loop;
-        frameCounter = 0;
-    }
 
     // reads in spritesheet consisting of one row of sprites
     // initializes all frames now so as to cut down on processing time later
@@ -51,23 +45,21 @@ public class SpriteAnimation {
                 frames[i] = sheet.getSubimage(i * frameWidth, j * frameHeight, frameWidth, frameHeight);
             }
         }
-        this.loop = loop;
-    }
 
-    // converts files to images
-    public SpriteAnimation(File[] frames, boolean loop) {
-        this.frames = new Image[frames.length];
+        this.frameSpeed = frameSpeed;
+        this.frameSpeedCounter = 0;
 
-        for(int i = 0; i < frames.length; i++) {
-            this.frames[i] = new ImageIcon(frames[i].getName()).getImage();
-        }
+        frameCounter = 0;
+
         this.loop = loop;
+        isPlaying = false;
     }
 
     // starts animation, returns first frame
     public Image start() {
         isPlaying = true;
         frameCounter = 0;
+        frameSpeedCounter = 1;
         return frames[0];
     }
 
@@ -77,12 +69,24 @@ public class SpriteAnimation {
     }
 
     // returns next image in animation
+    // starts animation if it is not playing already
     public Image nextFrame() throws IndexOutOfBoundsException {
-        frameCounter++;
+        if(!isPlaying)
+            return start();
+
+        if(frameSpeedCounter == frameSpeed) {
+            frameCounter++;
+            frameSpeedCounter = 0;
+        } else {
+            frameSpeedCounter++;
+        }
+
         if(loop) {
+            System.out.println("loop = true");
             // reached end of loop, start from beginning
             if(frameCounter == frames.length) {
                 frameCounter = 0;
+                System.out.println("framecounter reset");
             }
         } else {
             // reached end of loop
@@ -90,7 +94,8 @@ public class SpriteAnimation {
                 isPlaying = false;
             }
         }
-
+        if(loop)
+            System.out.println("Returning frames[" + frameCounter + "]");
         return frames[frameCounter];
     }
 

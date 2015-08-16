@@ -47,7 +47,7 @@ public class Spaceship extends Sprite {
         } catch(IOException e) {}
 
         try {
-            movingAnimation = new SpriteAnimation("spaceship_moving_spritesheet.png", 50, 50, 1, true);
+            movingAnimation = new SpriteAnimation("spaceship_moving_spritesheet.png", 50, 50, 5, true);
         } catch(IOException e) {}
 
         currentImage = defaultImage;
@@ -73,7 +73,7 @@ public class Spaceship extends Sprite {
                 if(startMovingAnimation.isPlaying()) {
                     currentImage = startMovingAnimation.nextFrame();
                 } else { // Play moving animation as soon as startmoving animation is over
-                    currentImage = movingAnimation.nextFrame(); // todo: is moving animation necessary? doesn't seem to make a noticeable difference
+                    currentImage = movingAnimation.nextFrame();
                 }
             }
             moving = true;
