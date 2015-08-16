@@ -15,7 +15,7 @@ public class Background {
     private Image[] tiles;
 
     // grid of tile ID's instructing how to display background
-    private int[][] background;
+    private byte[][] background;
 
     private BufferedImage currentImage;
 
@@ -25,6 +25,7 @@ public class Background {
 
     // coordinates of upper-left of "window" being shown
     private int x;
+    private int y;
 
     // dimensions of tiles
     private int tileWidth;
@@ -40,6 +41,7 @@ public class Background {
         }
 
         this.x = 0;
+        this.y = 0;
 
         tileWidth = this.tiles[0].getWidth(null);
         tileHeight = this.tiles[0].getHeight(null);
@@ -48,12 +50,12 @@ public class Background {
 
         random = new Random();
 
-        background = new int[6][24];
+        background = new byte[6][24];
 
         // fill background randomly with space tiles
         for(int i = 0; i < 6; i++) {
             for(int j = 0; j < 24; j++) {
-                background[i][j] = random.nextInt(4);
+                background[i][j] = (byte) random.nextInt(4);
             }
         };
     }
@@ -71,22 +73,18 @@ public class Background {
         return currentImage;
     }
 
-    public int getX() {
-        return x;
-    }
+    public int getX() { return x; }
 
-    //public int getTileW() {
+    private int getCurrentTileX() { return x % tileWidth; }
 
-    //}
+    private int getCurrentTileY() { return y % tileHeight; }
 
-    //public int getTileH() {
-
-    //}
-
-    // moves background x units left, giving the appearance of forward motion
+    // moves background x units left and y units down, giving the
+    // appearance of forward motion
     // redraws and returns background
-    public Image scroll(int x) {
+    public Image scroll(int x, int y) {
         this.x += x;
+        this.y += y;
         return getCurrentImage();
     }
 }

@@ -82,11 +82,9 @@ public class SpriteAnimation {
         }
 
         if(loop) {
-            System.out.println("loop = true");
             // reached end of loop, start from beginning
             if(frameCounter == frames.length) {
                 frameCounter = 0;
-                System.out.println("framecounter reset");
             }
         } else {
             // reached end of loop
@@ -94,8 +92,6 @@ public class SpriteAnimation {
                 isPlaying = false;
             }
         }
-        if(loop)
-            System.out.println("Returning frames[" + frameCounter + "]");
         return frames[frameCounter];
     }
 
