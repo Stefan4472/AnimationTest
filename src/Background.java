@@ -58,33 +58,47 @@ public class Background {
                 background[i][j] = (byte) random.nextInt(4);
             }
         };
+        renderCurrentImage();
     }
 
-    // returns current part of background being displayed
     public Image getCurrentImage() {
+        return currentImage;
+    }
+
+    // renders current background to display and refreshes currentImage
+    public void renderCurrentImage() {
         Graphics2D g = currentImage.createGraphics();
+
+        int w_offset = getWOffset();
+        int h_offset = getHOffset();
+        System.out.println("\n\n(" + x + "," + y + ")");
+        System.out.println(w_offset + "," + h_offset + "," + getHTile() + "," + getWTile());
         for(int i = 0; i < 6; i++) { // rows
-            for(int j = 0; j < 12; j++) { // columns
-                int loc_x = -x + j * tileWidth;
-                int loc_y = i * tileHeight;
-                g.drawImage(tiles[background[i][j]], loc_x, loc_y, null);
+            for(int j = 0; j < 13; j++) { // columns
+                int loc_x = j * tileWidth - w_offset;
+                int loc_y = i * tileHeight - h_offset;
+                System.out.println("Drawing tile (" + i + "," + j + ") at (" + loc_x + "," + loc_y + ")");
+                g.drawImage(tiles[background[i + getHTile()][j + getWTile()]], loc_x, loc_y, null);
             }
         }
-        return currentImage;
     }
 
     public int getX() { return x; }
 
-    private int getCurrentTileX() { return x % tileWidth; }
+    // current horizontal and vertical tile
+    private int getWTile() { return x / tileWidth; }
+    private int getHTile() { return y / tileHeight; }
 
-    private int getCurrentTileY() { return y % tileHeight; }
+    // distance, in pixels, from top left of current tile
+    private int getWOffset() { return x % tileWidth; }
+    private int getHOffset() { return y % tileHeight; }
 
     // moves background x units left and y units down, giving the
     // appearance of forward motion
     // redraws and returns background
-    public Image scroll(int x, int y) {
+    public void scroll(int x, int y) {
         this.x += x;
         this.y += y;
-        return getCurrentImage();
+        renderCurrentImage();
     }
 }
