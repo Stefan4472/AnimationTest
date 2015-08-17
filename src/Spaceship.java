@@ -10,22 +10,21 @@ import java.util.ArrayList;
  */
 public class Spaceship extends Sprite {
 
-    /**
-     * Movement vector in x-direction.
-     */
+    // direction in x and y
     private int dx;
-
-    /**
-     * Movement vector in y-direction.
-     */
     private int dy;
+
+    // speed in x and y
+    private float speedX;
+    private float speedY;
+
+    private final float MAX_SPEED_X = 9.0f;
+    private final float MAX_SPEED_Y = 2.0f;
 
     // Sprite's image when moving
     private SpriteAnimation movingAnimation;
 
     private SpriteAnimation startMovingAnimation;
-
-    private float acceleration;
 
     // keeps track of fired rockets
     private ArrayList<Rocket> rockets;
@@ -53,7 +52,8 @@ public class Spaceship extends Sprite {
         currentImage = defaultImage;
 
         moving = false;
-        acceleration = 0;
+        speedX = 0.0f;
+        speedY = 0.0f;
 
         getImageDimensions();
 
@@ -64,16 +64,26 @@ public class Spaceship extends Sprite {
 
     //
     public void move() {
+        System.out.println("dx = " + dx);
         // sprite direction not equal to zero
         if(dx != 0 || dy != 0) {
             // sprite was previously not moving. Play startmoving animation and reset acceleration
-            if(moving == false) {
+            if(moving == false && dx == 1) {
                 currentImage = startMovingAnimation.start();
-            } else { // sprite was previously moving. Increase acceleration
+            } else { // sprite was previously moving. Figure out speed
                 if(startMovingAnimation.isPlaying()) {
                     currentImage = startMovingAnimation.nextFrame();
+                    if(dx == 1 && speedX < MAX_SPEED_X)
+                        speedX += 0.03;
+                    if(dy == 1 && speedY < MAX_SPEED_Y)
+                        speedY += 0.075;
+                    else if(dy == -1 && speedY > -MAX_SPEED_Y)
+                        speedY -= 0.075;
                 } else { // Play moving animation as soon as startmoving animation is over
-                    currentImage = movingAnimation.nextFrame();
+                    currentImage = movingAnimation.nextFrame(); // todo: engine animation is off
+
+                    speedX = calcSpeedX(dx, speedX);
+                    //speedY = calcSpeedY();
                 }
             }
             moving = true;
@@ -82,17 +92,17 @@ public class Spaceship extends Sprite {
             moving = false;
         }
 
-        if(moving == true && acceleration < 0.1)
+        /*if(moving == true && acceleration < 0.1)
             acceleration += 0.007;
         else if(moving == true && acceleration < 2.0)
             acceleration += 0.05;
         else if(moving == true && acceleration < 3.0)
             acceleration += 0.08;
         else if(moving == false && acceleration >= 0.0)
-            acceleration -= 0.05;
-
-        x += dx + dx * acceleration; // todo: once user stops pressing arrow key, dx = 0, so total speed cuts to 0 instead of slowing down
-        y += dy;
+            acceleration -= 0.05; */
+        System.out.println("Speed is " + speedX + " px per frame!!!");
+        x += speedX;
+        y += speedY;
     }
 
     // fires rocket
@@ -102,6 +112,46 @@ public class Spaceship extends Sprite {
         rockets.add(r1);
         rockets.add(r2);
     }
+
+    private float calcSpeedX(int dx, float speedX) {
+        if(dx == 1 && speedX <= MAX_SPEED_X) {
+            if(speedX <= 1.0) {
+                speedX += 0.04;
+            } else if(speedX <= 2.0) {
+              speedX += 0.07;
+            } else if(speedX <= 3.0) {
+                speedX += 0.05;
+            } else if(speedX <= 4.0) {
+                speedX += 0.025;
+            } else if(speedX <= 7.5){
+                speedX += 0.0125;
+            } else {
+                speedX += .001;
+            }
+        } else if(dx == -1 && speedX >= 0) {
+            if(speedX >= 3.5) {
+                speedX -= 0.05;
+            } else if(speedX >= 2.0) {
+                speedX -= 0.06;
+            } else if(speedX >= 1.0) {
+                speedX -= .04;
+            } else if(speedX >= 0.0) {
+                speedX -= .02;
+            }
+        } else if(dx == 0 && speedX >= 0) {
+            speedX -= 0.01;
+        }
+
+        if(speedX < 0)
+            speedX = 0.0f;
+        else if(speedX > MAX_SPEED_X)
+            speedX = MAX_SPEED_X;
+        return speedX;
+    }
+
+    //private float calcSpeedY(int dy, float speedY) {
+
+    //}
 
     public int getX() { return x; }
 
