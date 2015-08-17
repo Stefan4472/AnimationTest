@@ -50,8 +50,8 @@ public class Rocket extends Sprite {
         }
     }
 
-    // returns x-coordinate adjusted for leading empty space
+    // returns x-coordinate
     public int getX() {
-        return x - 3;
+        return x;
     }
 }

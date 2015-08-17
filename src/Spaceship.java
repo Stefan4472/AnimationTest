@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -19,7 +18,7 @@ public class Spaceship extends Sprite {
     private float speedY;
 
     private final float MAX_SPEED_X = 9.0f;
-    private final float MAX_SPEED_Y = 1.0f;
+    private final float MAX_SPEED_Y = 2.0f;
 
     private SpriteAnimation movingAnimation;
     private SpriteAnimation startMovingAnimation;
@@ -31,6 +30,7 @@ public class Spaceship extends Sprite {
 
     // keeps track of fired rockets
     private ArrayList<Rocket> rockets;
+    private ArrayList<Bullet> bullets;
 
     // default constructor
     public Spaceship(int x, int y) {
@@ -61,10 +61,13 @@ public class Spaceship extends Sprite {
         getImageDimensions();
 
         rockets = new ArrayList<>();
+        bullets = new ArrayList<>();
         lastFired = 0;
     }
 
     public ArrayList<Rocket> getRockets() { return rockets; }
+
+    public ArrayList<Bullet> getBullets() { return bullets; }
 
     // calculates new x and y coordinates, handles animations,
     // fires rockets
@@ -93,17 +96,25 @@ public class Spaceship extends Sprite {
             y += dy * getSpeedY();
 
         if(firing == true && lastFired + FIRE_DELAY <= System.currentTimeMillis()) {
-            fire();
+            fireBullets();
             lastFired = System.currentTimeMillis();
         }
     }
 
-    // fires two rocket
-    public void fire() {
+    // fires two rockets
+    public void fireRocket() {
         Rocket r1 = new Rocket(x + 43, y + 15);
         Rocket r2 = new Rocket(x + 43, y + 33);
         rockets.add(r1);
         rockets.add(r2);
+    }
+
+    // fires two bullets
+    public void fireBullets() {
+        Bullet b1 = new Bullet(x + 43, y + 15);
+        Bullet b2 = new Bullet(x + 43, y + 33);
+        bullets.add(b1);
+        bullets.add(b2);
     }
 
     // calculates and returns horizontal speed
@@ -120,9 +131,11 @@ public class Spaceship extends Sprite {
 
     // calculates and returns vertical speed
     public float getSpeedY() {
-        if(speedY < MAX_SPEED_Y) {
+        if(speedY < 1.0) {
             speedY += 0.25;
-        } if(speedY > MAX_SPEED_Y) {
+        } else if(speedY < MAX_SPEED_Y) {
+            speedY += 0.10;
+        } else if(speedY > MAX_SPEED_Y) {
             speedY = MAX_SPEED_Y;
         }
         return speedY;

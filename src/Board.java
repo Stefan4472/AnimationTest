@@ -61,10 +61,15 @@ public class Board extends JPanel implements ActionListener {
         g2d.drawImage(spaceship.getCurrentImage(), spaceship.getX(), spaceship.getY(), this);
 
         ArrayList<Rocket> rockets = spaceship.getRockets();
+        ArrayList<Bullet> bullets = spaceship.getBullets();
 
         for (Rocket r : rockets) {
             g2d.drawImage(r.getCurrentImage(), r.getX(),
                     r.getY(), this);
+        }
+
+        for(Bullet b : bullets) {
+            g2d.drawImage(b.getCurrentImage(), b.getX(), b.getY(), this);
         }
     }
 
@@ -72,6 +77,7 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         updateRockets();
+        updateBullets();
         updateSpaceship();
 
         repaint();
@@ -80,13 +86,24 @@ public class Board extends JPanel implements ActionListener {
     private void updateRockets() {
         ArrayList<Rocket> rockets = spaceship.getRockets();
 
-        for (int i = 0; i < rockets.size(); i++) {
-            Rocket r = rockets.get(i);
-
+        for (Rocket r : rockets) {
             if (r.isVisible()) {
                 r.move();
             } else {
-                rockets.remove(i);
+                rockets.remove(r);
+            }
+        }
+    }
+
+    private void updateBullets() {
+        ArrayList<Bullet> bullets = spaceship.getBullets();
+
+        for(int i = 0; i < bullets.size(); i++) {
+            Bullet b = bullets.get(i);
+            if(b.isVisible()) {
+                b.move();
+            } else {
+                bullets.remove(i);
             }
         }
     }
