@@ -22,11 +22,17 @@ public class Spaceship extends Sprite {
 
     private SpriteAnimation movingAnimation;
     private SpriteAnimation startMovingAnimation;
+    private SpriteAnimation fireRocketAnimation;
+
+    // ms to wait between firing bullets
+    private final int BULLET_DELAY = 100;
+    private long lastFiredBullet;
+    private boolean firingBullets;
 
     // ms to wait between firing rockets
-    private final int FIRE_DELAY = 100;
-    private long lastFired;
-    private boolean firing;
+    private final int ROCKET_DELAY = 420;
+    private long lastFiredRocket;
+    private boolean firingRockets;
 
     // keeps track of fired rockets
     private ArrayList<Rocket> rockets;
@@ -54,6 +60,12 @@ public class Spaceship extends Sprite {
             System.out.print(e.getStackTrace());
         }
 
+        try {
+            fireRocketAnimation = new SpriteAnimation("spaceship_firing_spritesheet.png", 50, 50, 8, false);
+        } catch(IOException e) {
+            System.out.print(e.getStackTrace());
+        }
+
         moving = false;
         speedX = 0.0f;
         speedY = 0.0f;
@@ -62,7 +74,8 @@ public class Spaceship extends Sprite {
 
         rockets = new ArrayList<>();
         bullets = new ArrayList<>();
-        lastFired = 0;
+        lastFiredBullet = 0;
+        lastFiredRocket = 0;
     }
 
     public ArrayList<Rocket> getRockets() { return rockets; }
@@ -95,14 +108,21 @@ public class Spaceship extends Sprite {
         if(speedX != 0) // can only move vertically when speed != 0
             y += dy * getSpeedY();
 
-        if(firing == true && lastFired + FIRE_DELAY <= System.currentTimeMillis()) {
+        if(firingBullets == true && lastFiredBullet + BULLET_DELAY <= System.currentTimeMillis()) {
             fireBullets();
-            lastFired = System.currentTimeMillis();
+            lastFiredBullet = System.currentTimeMillis();
         }
+        if(firingRockets == true && lastFiredRocket + ROCKET_DELAY <= System.currentTimeMillis()) {
+            fireRockets();
+            lastFiredRocket = System.currentTimeMillis();
+            currentImage = fireRocketAnimation.nextFrame();
+        }
+        if(fireRocketAnimation.isPlaying())
+            currentImage = fireRocketAnimation.nextFrame();
     }
 
     // fires two rockets
-    public void fireRocket() {
+    public void fireRockets() {
         Rocket r1 = new Rocket(x + 43, y + 15);
         Rocket r2 = new Rocket(x + 43, y + 33);
         rockets.add(r1);
@@ -234,8 +254,13 @@ public class Spaceship extends Sprite {
             dy = 1;
         }
 
-        if(key == KeyEvent.VK_SPACE)
-            firing = true;
+        if(key == KeyEvent.VK_SPACE) {
+            firingBullets = true;
+        }
+
+        if(key == KeyEvent.VK_X) {
+            firingRockets = true;
+        }
     }
 
     /**
@@ -263,7 +288,11 @@ public class Spaceship extends Sprite {
         }
 
         if(key == KeyEvent.VK_SPACE) {
-            firing = false;
+            firingBullets = false;
+        }
+
+        if(key == KeyEvent.VK_X) {
+            firingRockets = false;
         }
     }
 }

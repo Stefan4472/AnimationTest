@@ -86,7 +86,8 @@ public class Board extends JPanel implements ActionListener {
     private void updateRockets() {
         ArrayList<Rocket> rockets = spaceship.getRockets();
 
-        for (Rocket r : rockets) {
+        for(int i = 0; i < rockets.size(); i++) {
+            Rocket r = rockets.get(i);
             if (r.isVisible()) {
                 r.move();
             } else {
