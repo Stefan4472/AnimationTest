@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +38,7 @@ public class Board extends JPanel implements ActionListener {
                 "space2.png",
                 "space3.png",
                 "space4.png"
+
         });
 
         /* This will call the actionPerformed method of this class
@@ -60,7 +62,6 @@ public class Board extends JPanel implements ActionListener {
     private void doDrawing(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
-        //background.goTo(spaceship.getX() - 100, spaceship.getY() - 100);
         g2d.drawImage(background.getCurrentImage(), 0, 0, this);
         g2d.drawImage(spaceship.getCurrentImage(), spaceship.getX(), spaceship.getY(), this);
 

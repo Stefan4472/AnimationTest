@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -58,6 +59,7 @@ public class Background {
                 background[i][j] = (byte) random.nextInt(4);
             }
         };
+
         renderCurrentImage();
     }
 
@@ -71,14 +73,13 @@ public class Background {
 
         int w_offset = getWOffset();
         int h_offset = getHOffset();
-        System.out.println("\n\n(" + x + "," + y + ")");
-        System.out.println(w_offset + "," + h_offset + "," + getHTile() + "," + getWTile());
+
         for(int i = 0; i < 6; i++) { // rows
             for(int j = 0; j < 13; j++) { // columns
                 int loc_x = j * tileWidth - w_offset;
                 int loc_y = i * tileHeight - h_offset;
-                System.out.println("Drawing tile (" + i + "," + j + ") at (" + loc_x + "," + loc_y + ")");
-                g.drawImage(tiles[background[i + getHTile()][j + getWTile()]], loc_x, loc_y, null);
+
+                g.drawImage(tiles[background[getHTile()][(j + getWTile()) % 24]], loc_x, loc_y, null);
             }
         }
     }
@@ -100,5 +101,9 @@ public class Background {
         this.x += x;
         this.y += y;
         renderCurrentImage();
+    }
+
+    public ArrayList<Sprite> getObstacles() {
+        return null;
     }
 }

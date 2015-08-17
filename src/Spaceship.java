@@ -83,9 +83,11 @@ public class Spaceship extends Sprite {
         }
 
         if(moving == true && acceleration < 0.1)
-            acceleration += 0.01;
+            acceleration += 0.007;
         else if(moving == true && acceleration < 2.0)
             acceleration += 0.05;
+        else if(moving == true && acceleration < 3.0)
+            acceleration += 0.08;
         else if(moving == false && acceleration >= 0.0)
             acceleration -= 0.05;
 
