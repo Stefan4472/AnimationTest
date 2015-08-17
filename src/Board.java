@@ -1,14 +1,9 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.geom.Line2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -97,7 +92,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void updateSpaceship() {
-        spaceship.move();
+        spaceship.update();
 
         // once spaceship gets past x = 200, start scrolling background
         if(spaceship.getX() > 200) {

@@ -21,35 +21,38 @@ public class Spaceship extends Sprite {
     private final float MAX_SPEED_X = 9.0f;
     private final float MAX_SPEED_Y = 1.0f;
 
-    // Sprite's image when moving
     private SpriteAnimation movingAnimation;
-
     private SpriteAnimation startMovingAnimation;
+
+    // ms to wait between firing rockets
+    private final int FIRE_DELAY = 100;
+    private long lastFired;
+    private boolean firing;
 
     // keeps track of fired rockets
     private ArrayList<Rocket> rockets;
 
-    /**
-     * Default constructor, initializes sprite.
-     */
+    // default constructor
     public Spaceship(int x, int y) {
         super(x, y);
         initCraft();
     }
 
     private void initCraft() {
-        defaultImage = new ImageIcon("spaceship.png").getImage();
+        currentImage = defaultImage = new ImageIcon("spaceship.png").getImage();
 
         try {
             startMovingAnimation =
                     new SpriteAnimation("spaceship_starting_spritesheet.png", 50, 50, 1, false);
-        } catch(IOException e) {}
+        } catch(IOException e) {
+            System.out.print(e.getStackTrace());
+        }
 
         try {
             movingAnimation = new SpriteAnimation("spaceship_moving_spritesheet.png", 50, 50, 5, true);
-        } catch(IOException e) {}
-
-        currentImage = defaultImage;
+        } catch(IOException e) {
+            System.out.print(e.getStackTrace());
+        }
 
         moving = false;
         speedX = 0.0f;
@@ -58,12 +61,14 @@ public class Spaceship extends Sprite {
         getImageDimensions();
 
         rockets = new ArrayList<>();
+        lastFired = 0;
     }
 
     public ArrayList<Rocket> getRockets() { return rockets; }
 
-    //
-    public void move() {
+    // calculates new x and y coordinates, handles animations,
+    // fires rockets
+    public void update() {
         // either accelerating or breaking
         if(dx != 0) {
             // sprite was previously not accelerating/breaking. Play startMovingAnimation
@@ -83,20 +88,44 @@ public class Spaceship extends Sprite {
             moving = false;
         }
 
-
-
         x += getSpeedX();
-
         if(speedX != 0) // can only move vertically when speed != 0
             y += dy * getSpeedY();
+
+        if(firing == true && lastFired + FIRE_DELAY <= System.currentTimeMillis()) {
+            fire();
+            lastFired = System.currentTimeMillis();
+        }
     }
 
-    // fires rocket
+    // fires two rocket
     public void fire() {
         Rocket r1 = new Rocket(x + 43, y + 15);
         Rocket r2 = new Rocket(x + 43, y + 33);
         rockets.add(r1);
         rockets.add(r2);
+    }
+
+    // calculates and returns horizontal speed
+    public float getSpeedX() {
+        if(dx == 1)
+            accelerate();
+        else if(dx == 0)
+            drift();
+        else if(dx == -1)
+            applyBreak();
+
+        return speedX;
+    }
+
+    // calculates and returns vertical speed
+    public float getSpeedY() {
+        if(speedY < MAX_SPEED_Y) {
+            speedY += 0.25;
+        } if(speedY > MAX_SPEED_Y) {
+            speedY = MAX_SPEED_Y;
+        }
+        return speedY;
     }
 
     // manages speed when dx = 1
@@ -146,28 +175,6 @@ public class Spaceship extends Sprite {
         }
     }
 
-    // calculates and returns horizontal speed
-    public float getSpeedX() {
-        if(dx == 1)
-            accelerate();
-        else if(dx == 0)
-            drift();
-        else if(dx == -1)
-            applyBreak();
-
-        return speedX;
-    }
-
-    // calculates and returns vertical speed
-   public float getSpeedY() {
-        if(speedY < MAX_SPEED_Y) {
-            speedY += 0.25;
-        } if(speedY > MAX_SPEED_Y) {
-            speedY = MAX_SPEED_Y;
-        }
-       return speedY;
-    }
-
     public int getX() { return x; }
 
     public void setX(int x) { this.x = x; }
@@ -215,7 +222,7 @@ public class Spaceship extends Sprite {
         }
 
         if(key == KeyEvent.VK_SPACE)
-            fire();
+            firing = true;
     }
 
     /**
@@ -240,6 +247,10 @@ public class Spaceship extends Sprite {
 
         if (key == KeyEvent.VK_DOWN) {
             dy = 0;
+        }
+
+        if(key == KeyEvent.VK_SPACE) {
+            firing = false;
         }
     }
 }
