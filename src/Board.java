@@ -22,7 +22,7 @@ public class Board extends JPanel implements ActionListener {
         initBoard();
     }
 
-    private void initBoard() {
+    private void initBoard() { // todo: optimize images? https://community.oracle.com/thread/1263684
         addKeyListener(new TAdapter());
         setFocusable(true);
         setDoubleBuffered(true);

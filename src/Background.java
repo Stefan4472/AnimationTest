@@ -13,7 +13,7 @@ import java.util.Random;
 public class Background {
 
     // available tiles. Element index is Tile ID
-    private Image[] tiles;
+    private BufferedImage[] tiles;
 
     // grid of tile ID's instructing how to display background
     private byte[][] background;
@@ -36,9 +36,13 @@ public class Background {
 
     // construct tiles using names of tile files
     public Background(String[] tiles) {
-        this.tiles = new Image[tiles.length];
+        this.tiles = new BufferedImage[tiles.length];
         for(int i = 0; i < tiles.length; i++) {
-            this.tiles[i] = new ImageIcon(tiles[i]).getImage();
+            try {
+                this.tiles[i] = ImageIO.read(new File(tiles[i]));
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
         }
 
         this.x = 0;

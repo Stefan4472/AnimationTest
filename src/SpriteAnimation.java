@@ -17,7 +17,7 @@ public class SpriteAnimation {
     private boolean isPlaying;
 
     // frames of the animation to play in order
-    private Image[] frames;
+    private BufferedImage[] frames;
 
     // current position in array of frames
     private int frameCounter;
@@ -38,7 +38,7 @@ public class SpriteAnimation {
         int frames_w = sheet.getWidth(null) / frameWidth;
         int frames_h = sheet.getHeight(null) / frameHeight;
 
-        frames = new Image[frames_w * frames_h];
+        frames = new BufferedImage[frames_w * frames_h];
 
         for(int i = 0; i < frames_w; i++) {
             for(int j = 0; j < frames_h; j++) {
@@ -56,7 +56,7 @@ public class SpriteAnimation {
     }
 
     // starts animation, returns first frame
-    public Image start() {
+    public BufferedImage start() {
         isPlaying = true;
         frameCounter = 0;
         frameSpeedCounter = 1;
@@ -70,7 +70,7 @@ public class SpriteAnimation {
 
     // returns next image in animation
     // starts animation if it is not playing already
-    public Image nextFrame() throws IndexOutOfBoundsException {
+    public BufferedImage nextFrame() throws IndexOutOfBoundsException {
         if(!isPlaying)
             return start();
 

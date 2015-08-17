@@ -1,7 +1,11 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by Stefan on 8/12/2015.
@@ -20,10 +24,10 @@ public class Sprite {
     protected boolean vis;
 
     // sprite default image
-    protected Image defaultImage;
+    protected BufferedImage defaultImage;
 
     // what sprite actually looks like now (for animations)
-    protected Image currentImage;
+    protected BufferedImage currentImage;
 
     // whether or not sprite is currently moving
     protected boolean moving;
@@ -38,7 +42,11 @@ public class Sprite {
     // loads sprite's default image
     protected void loadDefaultImage(String imageName) {
         ImageIcon icon = new ImageIcon(imageName);
-        defaultImage = icon.getImage();
+        try {
+            defaultImage = ImageIO.read(new File(imageName));
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
         currentImage = defaultImage;
     }
 

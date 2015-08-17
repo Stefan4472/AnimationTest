@@ -1,6 +1,8 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -45,25 +47,29 @@ public class Spaceship extends Sprite {
     }
 
     private void initCraft() {
-        currentImage = defaultImage = new ImageIcon("spaceship.png").getImage();
+        try {
+            currentImage = defaultImage = ImageIO.read(new File("spaceship.png"));
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
 
         try {
             startMovingAnimation =
                     new SpriteAnimation("spaceship_starting_spritesheet.png", 50, 50, 1, false);
         } catch(IOException e) {
-            System.out.print(e.getStackTrace());
+            e.printStackTrace();
         }
 
         try {
             movingAnimation = new SpriteAnimation("spaceship_moving_spritesheet.png", 50, 50, 5, true);
         } catch(IOException e) {
-            System.out.print(e.getStackTrace());
+            e.printStackTrace();
         }
 
         try {
             fireRocketAnimation = new SpriteAnimation("spaceship_firing_spritesheet.png", 50, 50, 8, false);
         } catch(IOException e) {
-            System.out.print(e.getStackTrace());
+            e.printStackTrace();
         }
 
         moving = false;
