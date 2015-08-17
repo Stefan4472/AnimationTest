@@ -19,7 +19,7 @@ public class Spaceship extends Sprite {
     private float speedY;
 
     private final float MAX_SPEED_X = 9.0f;
-    private final float MAX_SPEED_Y = 2.0f;
+    private final float MAX_SPEED_Y = 1.0f;
 
     // Sprite's image when moving
     private SpriteAnimation movingAnimation;
@@ -83,17 +83,12 @@ public class Spaceship extends Sprite {
             moving = false;
         }
 
-        if(dx == 1)
-            accelerate();
-        else if(dx == 0)
-            drift();
-        else if(dx == -1)
-            applyBreak();
 
-        x += speedX;
+
+        x += getSpeedX();
 
         if(speedX != 0) // can only move vertically when speed != 0
-            y += dy;
+            y += dy * getSpeedY();
     }
 
     // fires rocket
@@ -151,10 +146,27 @@ public class Spaceship extends Sprite {
         }
     }
 
+    // calculates and returns horizontal speed
+    public float getSpeedX() {
+        if(dx == 1)
+            accelerate();
+        else if(dx == 0)
+            drift();
+        else if(dx == -1)
+            applyBreak();
 
-    //private float calcSpeedY(int dy, float speedY) {
+        return speedX;
+    }
 
-    //}
+    // calculates and returns vertical speed
+   public float getSpeedY() {
+        if(speedY < MAX_SPEED_Y) {
+            speedY += 0.25;
+        } if(speedY > MAX_SPEED_Y) {
+            speedY = MAX_SPEED_Y;
+        }
+       return speedY;
+    }
 
     public int getX() { return x; }
 
@@ -195,11 +207,11 @@ public class Spaceship extends Sprite {
         }
 
         if (key == KeyEvent.VK_UP) {
-            dy = -2;
+            dy = -1;
         }
 
         if (key == KeyEvent.VK_DOWN) {
-            dy = 2;
+            dy = 1;
         }
 
         if(key == KeyEvent.VK_SPACE)
