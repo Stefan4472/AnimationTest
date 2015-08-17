@@ -82,7 +82,7 @@ public class Spaceship extends Sprite {
                 } else { // Play moving animation as soon as startmoving animation is over
                     currentImage = movingAnimation.nextFrame(); // todo: engine animation is off
 
-                    speedX = calcSpeedX(dx, speedX);
+                    speedX = calcSpeedX(dx, speedX); // todo: accelerate, brake, drift functions and much simpler if/else branch
                     //speedY = calcSpeedY();
                 }
             }
@@ -117,10 +117,8 @@ public class Spaceship extends Sprite {
         if(dx == 1 && speedX <= MAX_SPEED_X) {
             if(speedX <= 1.0) {
                 speedX += 0.04;
-            } else if(speedX <= 2.0) {
-              speedX += 0.07;
             } else if(speedX <= 3.0) {
-                speedX += 0.05;
+              speedX += 0.07;
             } else if(speedX <= 4.0) {
                 speedX += 0.025;
             } else if(speedX <= 7.5){
@@ -132,19 +130,31 @@ public class Spaceship extends Sprite {
             if(speedX >= 3.5) {
                 speedX -= 0.05;
             } else if(speedX >= 2.0) {
-                speedX -= 0.06;
+                speedX -= 0.065;
             } else if(speedX >= 1.0) {
-                speedX -= .04;
-            } else if(speedX >= 0.0) {
-                speedX -= .02;
+                speedX -= .025;
+            } else {
+                speedX = 0;
             }
         } else if(dx == 0 && speedX >= 0) {
-            speedX -= 0.01;
+            System.out.println("Slowing down");
+            if(speedX > 8.9) {
+                speedX -= 0.0002;
+            } else if(speedX > 8.5) {
+                speedX -= 0.0005;
+            } else if(speedX > 7.5) {
+                speedX -= 0.001;
+            } else if(speedX > 5.0) {
+                speedX -= 0.005;
+            } else if(speedX > 2.0) {
+                speedX -= 0.01;
+            } else if(speedX > 1.0){
+                speedX -= 0.03;
+            }
+
         }
 
-        if(speedX < 0)
-            speedX = 0.0f;
-        else if(speedX > MAX_SPEED_X)
+        if(speedX > MAX_SPEED_X)
             speedX = MAX_SPEED_X;
         return speedX;
     }
