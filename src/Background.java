@@ -51,7 +51,7 @@ public class Background {
         tileWidth = this.tiles[0].getWidth(null);
         tileHeight = this.tiles[0].getHeight(null);
 
-        currentImage = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
+        currentImage = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 
         random = new Random();
 

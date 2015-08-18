@@ -14,6 +14,7 @@ public class Board extends JPanel implements ActionListener {
     private Timer timer;
     private Spaceship spaceship;
     private Background background;
+    private long lastTime = 0;
 
     // Number of milliseconds to wait before repainting
     private final int DELAY = 10;
