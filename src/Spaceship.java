@@ -121,10 +121,10 @@ public class Spaceship extends Sprite {
         if(firingRockets == true && lastFiredRocket + ROCKET_DELAY <= System.currentTimeMillis()) {
             fireRockets();
             lastFiredRocket = System.currentTimeMillis();
-            currentImage = fireRocketAnimation.nextFrame();
+            currentImage = ImageUtil.layer(currentImage, fireRocketAnimation.nextFrame());
         }
         if(fireRocketAnimation.isPlaying())
-            currentImage = fireRocketAnimation.nextFrame();
+            currentImage = ImageUtil.layer(currentImage, fireRocketAnimation.nextFrame());
     }
 
     // fires two rockets
