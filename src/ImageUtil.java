@@ -9,17 +9,26 @@ public class ImageUtil  {
 
     // draws as much as overlay as will fit on top of b, starting from top left
     // transparent pixels in the overlay are ignored
-    public static BufferedImage layer(BufferedImage b, BufferedImage overlay) { // todo: speedup with WritableRaster?
+    public static BufferedImage layer(BufferedImage b, BufferedImage overlay) { // todo: optimizations (WritableRaster?)
+        int height, width;
+
+        if(b.getHeight() >= overlay.getHeight())
+            height = overlay.getHeight();
+        else
+            height = b.getHeight();
+
+        if(b.getWidth() >= overlay.getWidth())
+            width = overlay.getWidth();
+        else
+            width = b.getWidth();
+
         int rgb;
-        int i = 0, j = 0;
-        while(i < b.getHeight() && i < overlay.getHeight()) { // todo: optimizations
-            while(j < b.getWidth() && j < overlay.getHeight()) {
+        for(int i = 0; i < height; i++) {
+            for(int j = 0; j < width; j++) {
                 rgb = overlay.getRGB(i, j);
-                if((rgb >> 24 & 0xff) != 0)
-                    b.setRGB(i, j, rgb);
-                j++;
+                if ((rgb >> 24 & 0xff) != 0)
+                    b.setRGB(i, j, rgb); // only overlay non-transparent pixels
             }
-            i++;
         }
         return b;
     }

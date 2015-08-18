@@ -118,6 +118,7 @@ public class Spaceship extends Sprite {
             fireBullets();
             lastFiredBullet = System.currentTimeMillis();
         }
+        
         if(firingRockets == true && lastFiredRocket + ROCKET_DELAY <= System.currentTimeMillis()) {
             fireRockets();
             lastFiredRocket = System.currentTimeMillis();
