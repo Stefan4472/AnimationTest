@@ -13,7 +13,7 @@ public class Board extends JPanel implements ActionListener {
 
     private Timer timer;
     private Spaceship spaceship;
-    private Background background;
+    private Map background;
     private long lastTime = 0;
 
     // Number of milliseconds to wait before repainting
@@ -29,11 +29,12 @@ public class Board extends JPanel implements ActionListener {
         setDoubleBuffered(true);
 
         spaceship = new Spaceship(100, 100);
-        background = new Background(new String[] {
+        background = new Map(new String[] {
                 "space1.png",
                 "space2.png",
                 "space3.png",
-                "space4.png"
+                "space4.png",
+                "obstacle_tile"
 
         });
 

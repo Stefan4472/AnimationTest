@@ -4,20 +4,19 @@ import java.awt.*;
 /**
  * Created by Stefan on 8/12/2015.
  */
-public class SpaceShips extends JFrame {
+public class Spaceships extends JFrame {
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-
-                SpaceShips ex = new SpaceShips();
+                Spaceships ex = new Spaceships();
                 ex.setVisible(true);
             }
         });
     }
 
-    public SpaceShips() {
+    public Spaceships() {
         initUI();
     }
 
