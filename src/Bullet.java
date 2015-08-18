@@ -5,7 +5,7 @@ import java.io.IOException;
  */
 public class Bullet extends Sprite {
     private final int BOARD_WIDTH = 600;
-    private final int MISSILE_SPEED = 6;
+    private final int MISSILE_SPEED = 5;
 
     public Bullet(int x, int y) {
         super(x, y);
