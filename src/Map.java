@@ -61,10 +61,8 @@ public class Map {
         };
     }
 
-    // renders and returns current map to display and adds tiles
-    public Image render() {
-        BufferedImage map = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = map.createGraphics();
+    // renders current map to display onto g and keeps track of sprites
+    public void render(Graphics2D g) {
         sprites = new ArrayList<>();
 
         int w_offset = getWOffset();
@@ -79,7 +77,6 @@ public class Map {
                 }
             }
         }
-        return map;
     }
 
     public int getX() { return x; }
@@ -92,10 +89,8 @@ public class Map {
 
     // moves map x units left and y units down, giving the
     // appearance of forward motion
-    // redraws and returns map
     public void scroll(int x) {
         this.x += x;
-        render();
     }
 
     public ArrayList<Sprite> getSprites(){

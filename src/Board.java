@@ -59,10 +59,11 @@ public class Board extends JPanel implements ActionListener {
 
     // draws background, spaceship, and rockets
     private void doDrawing(Graphics g) {
+        System.out.println(System.currentTimeMillis());
         Graphics2D g2d = (Graphics2D) g;
 
         g2d.drawImage(background.render(), 0, 0, this);
-        g2d.drawImage(map.render(), 0, 0, this);
+        map.render(g2d);
         g2d.drawImage(spaceship.getCurrentImage(), spaceship.getX(), spaceship.getY(), this);
 
         ArrayList<Rocket> rockets = spaceship.getRockets();
