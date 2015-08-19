@@ -13,7 +13,7 @@ public class Board extends JPanel implements ActionListener {
 
     private Timer timer;
     private Spaceship spaceship;
-    private Map background;
+    private Background background;
     private long lastTime = 0;
 
     // Number of milliseconds to wait before repainting
@@ -29,13 +29,11 @@ public class Board extends JPanel implements ActionListener {
         setDoubleBuffered(true);
 
         spaceship = new Spaceship(100, 100);
-        background = new Map(new String[] {
+        background = new Background(new String[] {
                 "space1.png",
                 "space2.png",
                 "space3.png",
-                "space4.png",
-                "obstacle_tile"
-
+                "space4.png"
         });
 
         /* This will call the actionPerformed method of this class
@@ -59,7 +57,7 @@ public class Board extends JPanel implements ActionListener {
     private void doDrawing(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
-        g2d.drawImage(background.getCurrentImage(), 0, 0, this);
+        g2d.drawImage(background.render(), 0, 0, this);
         g2d.drawImage(spaceship.getCurrentImage(), spaceship.getX(), spaceship.getY(), this);
 
         ArrayList<Rocket> rockets = spaceship.getRockets();
@@ -116,7 +114,7 @@ public class Board extends JPanel implements ActionListener {
 
         // once spaceship gets past x = 200, start scrolling background
         if(spaceship.getX() > 200) {
-            background.scroll(spaceship.getX() - 200, 0);
+            background.scroll(spaceship.getX() - 200);
             spaceship.setX(200);
         }
     }
