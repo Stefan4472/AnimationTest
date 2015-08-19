@@ -12,10 +12,13 @@ import java.util.Random;
 public class Map {
 
     // available tiles. Element index is Tile ID
-    private BufferedImage[] tiles;
+    private Sprite[] tiles;
 
     // grid of tile ID's instructing how to display map
     private byte[][] map;
+
+    // generated sprites
+    private ArrayList<Sprite> sprites;
 
     // dimensions of screen display
     private final int SCREEN_WIDTH = 600;
@@ -31,21 +34,18 @@ public class Map {
     private final Random random;
 
     // construct tiles using names of tile files
-    public Map(String[] tiles) {
+    public Map(Sprite[] tiles) {
         // element zero must be left empty
-        this.tiles = new BufferedImage[tiles.length + 1];
+        this.tiles = new Sprite[tiles.length + 1];
         for(int i = this.tiles.length - 1; i > 0; i--) {
-            try {
-                this.tiles[i] = ImageIO.read(new File(tiles[i - 1]));
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
+            this.tiles[i] = tiles[i - 1];
         }
 
         this.x = 0;
+        sprites = new ArrayList<>();
 
-        tileWidth = this.tiles[1].getWidth(null);
-        tileHeight = this.tiles[1].getHeight(null);
+        tileWidth = this.tiles[1].getCurrentImage().getWidth(null);
+        tileHeight = this.tiles[1].getCurrentImage().getHeight(null);
 
         random = new Random();
 
@@ -61,10 +61,11 @@ public class Map {
         };
     }
 
-    // renders current map to display and refreshes currentImage
+    // renders and returns current map to display and adds tiles
     public Image render() {
         BufferedImage map = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = map.createGraphics();
+        sprites = new ArrayList<>();
 
         int w_offset = getWOffset();
 
@@ -73,7 +74,8 @@ public class Map {
                 if(this.map[i][(j + getWTile()) % 24] != 0){
                     int loc_x = j * tileWidth - w_offset;
                     int loc_y = i * tileHeight;
-                    g.drawImage(tiles[this.map[i][(j + getWTile()) % 24]], loc_x, loc_y, null);
+                    g.drawImage(tiles[this.map[i][(j + getWTile()) % 24]].getCurrentImage(), loc_x, loc_y, null);
+                    addSprite(tiles[this.map[i][(j + getWTile()) % 24]], loc_x, loc_y);
                 }
             }
         }
@@ -96,7 +98,14 @@ public class Map {
         render();
     }
 
-    public ArrayList<Sprite> getObstacles() {
-        return null;
+    public ArrayList<Sprite> getSprites(){
+        return sprites;
+    }
+
+    // adds sprite to arraylist and sets specified coordinates
+    private void addSprite(Sprite s, int x, int y) {
+        s.setX(x);
+        s.setY(y);
+        sprites.add(s);
     }
 }

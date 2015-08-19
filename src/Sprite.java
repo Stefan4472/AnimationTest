@@ -39,6 +39,12 @@ public class Sprite {
         vis = true;
     }
 
+    // initializes with image at (0,0)
+    public Sprite(String imageName) {
+        this(0, 0);
+        loadDefaultImage(imageName);
+    }
+
     // loads sprite's default image
     protected void loadDefaultImage(String imageName) {
         ImageIcon icon = new ImageIcon(imageName);
@@ -56,13 +62,9 @@ public class Sprite {
         height = defaultImage.getHeight(null);
     }
 
-    public Image getCurrentImage() {
-        return currentImage;
-    }
+    public Image getCurrentImage() { return currentImage; }
 
-    public int getX() {
-        return x;
-    }
+    public int getX() { return x; }
 
     public int getY() {
         return y;
