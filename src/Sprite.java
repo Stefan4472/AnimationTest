@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 
@@ -80,5 +81,10 @@ public class Sprite {
 
     public void setVisible(Boolean visible) {
         vis = visible;
+    }
+
+    // draws sprite at current coordinates on g
+    public void render(Graphics2D g, ImageObserver o) {
+        g.drawImage(currentImage, x, y, o);
     }
 }

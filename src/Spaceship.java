@@ -217,16 +217,8 @@ public class Spaceship extends Sprite {
         }
     }
 
-    public int getX() { return x; }
-
-    public void setX(int x) { this.x = x; }
-
     // x-coordinate of center of sprite
     public int getCenterX() { return x + 31; }
-
-    public int getY() { return y; }
-
-    public void setY(int y) { this.y = y;}
 
     // y-coordinate of center of sprite
     public int getCenterY() { return y + 25; }

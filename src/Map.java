@@ -1,6 +1,7 @@
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class Map {
     }
 
     // renders current map to display onto g and keeps track of sprites
-    public void render(Graphics2D g) {
+    public void render(Graphics2D g, ImageObserver o) {
         sprites = new ArrayList<>();
 
         int w_offset = getWOffset();
@@ -72,7 +73,7 @@ public class Map {
                 if(this.map[i][(j + getWTile()) % 24] != 0){
                     int loc_x = j * tileWidth - w_offset;
                     int loc_y = i * tileHeight;
-                    g.drawImage(tiles[this.map[i][(j + getWTile()) % 24]].getCurrentImage(), loc_x, loc_y, null);
+                    g.drawImage(tiles[this.map[i][(j + getWTile()) % 24]].getCurrentImage(), loc_x, loc_y, o);
                     addSprite(tiles[this.map[i][(j + getWTile()) % 24]], loc_x, loc_y);
                 }
             }
