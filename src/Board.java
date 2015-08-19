@@ -13,6 +13,10 @@ public class Board extends JPanel implements ActionListener {
 
     private Timer timer;
     private Spaceship spaceship;
+    // num pixels scrolled
+    private int scrollCounter;
+    // whether background should be rendered
+    private boolean renderBackground;
     private Background background;
     private Map map;
     private long lastTime = 0;
@@ -36,6 +40,8 @@ public class Board extends JPanel implements ActionListener {
                 "space3.png",
                 "space4.png"
         });
+        scrollCounter = 0;
+        renderBackground = true;
         map = new Map(new Sprite[] {
                 new Sprite("obstacle_tile.png")
         });
@@ -59,12 +65,17 @@ public class Board extends JPanel implements ActionListener {
 
     // draws background, spaceship, and rockets
     private void doDrawing(Graphics g) {
-        System.out.println(System.currentTimeMillis() - lastTime);
-        lastTime = System.currentTimeMillis();
+        //System.out.println(System.currentTimeMillis() - lastTime);
+        //lastTime = System.currentTimeMillis();
 
         Graphics2D g2d = (Graphics2D) g;
 
-        background.render(g2d, this);
+        if(scrollCounter > 50) { // scroll background slowly
+            background.scroll(1);
+            scrollCounter = 0;
+        }
+
+        g2d.drawImage(background.render(), 0, 0, this);
         map.render(g2d, this);
         spaceship.render(g2d, this);
 
@@ -123,6 +134,7 @@ public class Board extends JPanel implements ActionListener {
         // once spaceship gets past x = 200, start scrolling background
         if(spaceship.getX() > 200) {
             map.scroll(spaceship.getX() - 200);
+            scrollCounter += spaceship.getX() - 200;
             spaceship.setX(200);
         }
     }
