@@ -32,7 +32,7 @@ public abstract class Sprite {
     // whether or not sprite can collide with other sprites
     protected boolean collision;
     // hitbox for collision detection todo: complex shapes
-    protected Rectangle hitBox;
+    protected Rectangle.Double hitBox;
     // offset of hitbox from sprite's point of drawing (top left)
     protected int hitBoxOffsetX;
     protected int hitBoxOffsetY;
@@ -48,7 +48,7 @@ public abstract class Sprite {
     protected BufferedImage currentImage;
 
     // whether or not sprite is currently moving
-    protected boolean moving;
+    protected boolean moving; // todo: remove?
 
     // sets sprite coordinates
     public Sprite(int x, int y) {
@@ -68,7 +68,6 @@ public abstract class Sprite {
 
     // loads sprite's default image
     protected void loadDefaultImage(String imageName) {
-        ImageIcon icon = new ImageIcon(imageName);
         try {
             defaultImage = ImageIO.read(new File(imageName));
         } catch(IOException e) {
@@ -77,7 +76,7 @@ public abstract class Sprite {
         currentImage = defaultImage;
     }
 
-    // returns dimensions of sprite image
+    // updates fields with dimensions of sprite image
     protected void getImageDimensions() {
         width = defaultImage.getWidth(null);
         height = defaultImage.getHeight(null);
@@ -112,6 +111,7 @@ public abstract class Sprite {
 
     // returns whether intended movement of sprites
     // will cause a collision
+    // use updateMovements to keep hitboxes up to date
     // todo: calculate specific point of collision and use setX and setY methods to move sprites there
     public boolean collidesWith(Sprite s) {
         if(collision == false || s.collision == false)

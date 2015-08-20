@@ -70,7 +70,7 @@ public class Board extends JPanel implements ActionListener {
 
         Graphics2D g2d = (Graphics2D) g;
 
-        if(scrollCounter > 25) { // scroll background slowly
+        if(scrollCounter > 30) { // scroll background slowly
             background.scroll(1);
             scrollCounter = 0;
         }
