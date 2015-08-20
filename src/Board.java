@@ -33,7 +33,7 @@ public class Board extends JPanel implements ActionListener {
         setFocusable(true);
         setDoubleBuffered(true);
 
-        spaceship = new Spaceship(100, 100);
+        spaceship = new Spaceship("spaceship.png", 100, 100);
         background = new Background(new String[] {
                 "space1.png",
                 "space2.png",

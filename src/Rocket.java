@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -7,6 +8,7 @@ public class Rocket extends Sprite {
 
     private final int BOARD_WIDTH = 600;
     private final int MISSILE_SPEED = 2;
+    private float acceleration;
 
     private SpriteAnimation startMoving;
 
@@ -19,38 +21,32 @@ public class Rocket extends Sprite {
     private void initMissile() {
         loadDefaultImage("rocket.png");
         getImageDimensions();
+        acceleration = 0;
 
         try {
             startMoving = new SpriteAnimation("rocket_starting1.png", 9, 3, 1, false);
         } catch(IOException e){}
     }
 
+
     public void move() {
-        x += MISSILE_SPEED + getSpeedX();
+        if(acceleration < 0.05)
+            acceleration += 0.001;
+        else if(acceleration < 0.1)
+            acceleration += 0.005;
+        else if(acceleration < 0.5)
+            acceleration += 0.05;
+        else if(acceleration < 1.0)
+            acceleration += 0.1;
+        else if(acceleration < 3.0)
+            acceleration += 0.15;
+        else
+            acceleration += 0.05;
+
+        x += MISSILE_SPEED + acceleration;
         if (x > BOARD_WIDTH) {
             vis = false;
         }
-    }
-
-    // calculates and returns horizontal speed
-    public float getSpeedX() {
-        if(speedX < 0.05)
-            speedX += 0.001;
-        else if(speedX < 0.1)
-            speedX += 0.005;
-        else if(speedX < 0.5)
-            speedX += 0.05;
-        else if(speedX < 1.0)
-            speedX += 0.1;
-        else if(speedX < 3.0)
-            speedX += 0.15;
-        else
-            speedX += 0.05;
-        return speedX;
-    }
-
-    public float getSpeedY() {
-        return 0.0f;
     }
 
     // returns x-coordinate

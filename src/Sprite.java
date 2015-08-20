@@ -38,8 +38,8 @@ public abstract class Sprite {
     protected int hitBoxOffsetY;
     // lines describing movement of hitbox from frame to frame. Only
     // used if collision = true
-    protected Line2D movement1;
-    protected Line2D movement2;
+    private Line2D movement1;
+    private Line2D movement2;
 
     // sprite default image
     protected BufferedImage defaultImage;
@@ -50,30 +50,40 @@ public abstract class Sprite {
     // whether or not sprite is currently moving
     protected boolean moving; // todo: remove?
 
-    // sets sprite coordinates
     public Sprite(int x, int y) {
+        this.x = 0;
+        this.y = 0;
+        initSprite();
+    }
+
+    // initializes with sprite at (0,0)
+    public Sprite(String imageName) {
+        this(imageName, 0, 0);
+    }
+
+    // sets sprite coordinates
+    public Sprite(String imageName, int x, int y) {
+        loadDefaultImage(imageName);
         this.x = x;
         this.y = y;
+        initSprite();
+    }
+
+    private void initSprite() {
         vis = true;
         moving = false;
         speedX = 0.0f;
         speedY = 0.0f;
-    }
 
-    // initializes with image at (0,0)
-    public Sprite(String imageName) {
-        this(0, 0);
-        loadDefaultImage(imageName);
     }
 
     // loads sprite's default image
     protected void loadDefaultImage(String imageName) {
         try {
-            defaultImage = ImageIO.read(new File(imageName));
+            currentImage = defaultImage = ImageIO.read(new File(imageName));
         } catch(IOException e) {
             e.printStackTrace();
         }
-        currentImage = defaultImage;
     }
 
     // updates fields with dimensions of sprite image

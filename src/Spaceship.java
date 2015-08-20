@@ -37,14 +37,13 @@ public class Spaceship extends Sprite {
     private ArrayList<Bullet> bullets;
 
     // default constructor
-    public Spaceship(int x, int y) {
-        super(x, y);
+    public Spaceship(String imageName, int x, int y) {
+        super(imageName, x, y);
         initCraft();
     }
 
     private void initCraft() {
         try { // todo: this will not catch all errors... Resources should be initialized in main or Board.java
-            currentImage = defaultImage = ImageIO.read(new File("spaceship.png"));
             startMovingAnimation =
                     new SpriteAnimation("spaceship_starting_spritesheet.png", 50, 50, 1, false);
             movingAnimation = new SpriteAnimation("spaceship_moving_spritesheet.png", 50, 50, 5, true);
@@ -60,6 +59,7 @@ public class Spaceship extends Sprite {
         lastFiredBullet = 0;
         lastFiredRocket = 0;
 
+        collision = true;
         hitBox = new Rectangle.Double(33, 28, x, y);
         hitBoxOffsetX = 12;
         hitBoxOffsetY = 11;
