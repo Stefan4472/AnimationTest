@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * Created by Stefan on 8/12/2015.
  */
-public class Sprite {
+public abstract class Sprite {
 
     // coordinates of sprite
     protected int x;
@@ -92,7 +92,6 @@ public class Sprite {
     public void setY(int y) { this.y = y; }
 
     public boolean isVisible() { return vis; }
-
     public void setVisible(Boolean visible) { vis = visible; }
 
     // draws sprite at current coordinates on g

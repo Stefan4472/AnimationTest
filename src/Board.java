@@ -43,7 +43,7 @@ public class Board extends JPanel implements ActionListener {
         scrollCounter = 0;
         renderBackground = true;
         map = new Map(new Sprite[] {
-                new Sprite("obstacle_tile.png")
+                new Obstacle("obstacle_tile.png")
         });
 
         /* This will call the actionPerformed method of this class
