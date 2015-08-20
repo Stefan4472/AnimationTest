@@ -22,7 +22,7 @@ public class Bullet extends Sprite {
     public float getSpeedY() { return 0; }
 
     public void move() {
-        x += MISSILE_SPEED;
+        x += getSpeedX();
 
         if (x > BOARD_WIDTH) {
             vis = false;

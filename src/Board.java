@@ -95,7 +95,7 @@ public class Board extends JPanel implements ActionListener {
     // moves spaceship and repaints JPanel every 10 ms
     @Override
     public void actionPerformed(ActionEvent e) {
-        updateRockets();
+        updateRockets(); // todo: one arraylist with all sprites and one method call to updateSprites()
         updateBullets();
         updateSpaceship();
 

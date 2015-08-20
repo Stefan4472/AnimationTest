@@ -111,8 +111,8 @@ public class Spaceship extends Sprite {
             lastFiredRocket = System.currentTimeMillis();
             //currentImage = ImageUtil.layer(currentImage, fireRocketAnimation.nextFrame());
         }
-        if(fireRocketAnimation.isPlaying()) {
-            //currentImage = ImageUtil.layer(currentImage, fireRocketAnimation.nextFrame());
+        if(fireRocketAnimation.isPlaying()) { // todo: look into AlphaComposite to compose images
+            //currentImage = ImageUtil.layer(currentImage, fireRocketAnimation.nextFrame()); // todo: look into storing animations as diffs and using ImageUtil layer method
         }
     }
 
