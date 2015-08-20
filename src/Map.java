@@ -53,13 +53,14 @@ public class Map {
         map = new byte[6][24];
 
         // fill map randomly with tiles
-        for(int i = 0; i < 6; i++) {
+       /* for(int i = 0; i < 6; i++) {
             for(int j = 0; j < 24; j++) {
                 map[i][j] = (byte) random.nextInt(this.tiles.length);
                 System.out.print(map[i][j] + "\t");
             }
             System.out.println();
-        };
+        };*/
+        map[2][5] = 1;
     }
 
     // renders current map to display onto g and keeps track of sprites

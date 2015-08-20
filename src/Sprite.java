@@ -51,8 +51,8 @@ public abstract class Sprite {
     protected boolean moving; // todo: remove?
 
     public Sprite(int x, int y) {
-        this.x = 0;
-        this.y = 0;
+        this.x = x;
+        this.y = y;
         initSprite();
     }
 
@@ -108,8 +108,10 @@ public abstract class Sprite {
         g.drawImage(currentImage, x, y, o);
     }
 
-    //public void update();
-    // public void move
+    //abstract void update();
+    // abstract void move
+    // protected float getSpeedX getSpeedY
+    //abstract void updateHitbox();
 
     // updates movement1 and movement2 Lines
     protected void updateMovements() {

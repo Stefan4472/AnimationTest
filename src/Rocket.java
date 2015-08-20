@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -23,6 +24,10 @@ public class Rocket extends Sprite {
         getImageDimensions();
         acceleration = 0;
 
+        hitBox = new Rectangle.Double(x, y, 9, 3);
+        hitBoxOffsetX = 0;
+        hitBoxOffsetY = 0;
+
         try {
             startMoving = new SpriteAnimation("rocket_starting1.png", 9, 3, 1, false);
         } catch(IOException e){}
@@ -47,10 +52,5 @@ public class Rocket extends Sprite {
         if (x > BOARD_WIDTH) {
             vis = false;
         }
-    }
-
-    // returns x-coordinate
-    public int getX() {
-        return x;
     }
 }

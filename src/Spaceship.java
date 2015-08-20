@@ -66,10 +66,9 @@ public class Spaceship extends Sprite {
     }
 
     public ArrayList<Rocket> getRockets() { return rockets; }
-
     public ArrayList<Bullet> getBullets() { return bullets; }
 
-    // handles animations and actions
+    // updates animations and any actions the sprite should take
     public void update() {
         // either accelerating or breaking
         if(dx != 0) {
