@@ -18,6 +18,8 @@ public class Bullet extends Sprite {
         getImageDimensions();
     }
 
+    public float getSpeedX() { return MISSILE_SPEED; }
+    public float getSpeedY() { return 0; }
 
     public void move() {
         x += MISSILE_SPEED;

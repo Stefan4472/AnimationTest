@@ -17,6 +17,10 @@ public class Sprite {
     protected int x;
     protected int y;
 
+    // intended movement in x and y directions each frame
+    protected float speedX;
+    protected float speedY;
+
     // sprite width and height
     protected int width;
     protected int height;
@@ -38,6 +42,9 @@ public class Sprite {
         this.x = x;
         this.y = y;
         vis = true;
+        moving = false;
+        speedX = 0.0f;
+        speedY = 0.0f;
     }
 
     // initializes with image at (0,0)
@@ -67,24 +74,20 @@ public class Sprite {
 
     public int getX() { return x; }
 
-    public int getY() {
-        return y;
-    }
+    public int getY() { return y; }
     
     public void setX(int x) { this.x = x; }
     
     public void setY(int y) { this.y = y; }
 
-    public boolean isVisible() {
-        return vis;
-    }
+    public boolean isVisible() { return vis; }
 
-    public void setVisible(Boolean visible) {
-        vis = visible;
-    }
+    public void setVisible(Boolean visible) { vis = visible; }
 
     // draws sprite at current coordinates on g
     public void render(Graphics2D g, ImageObserver o) {
         g.drawImage(currentImage, x, y, o);
     }
+
+    //abstract void update();
 }

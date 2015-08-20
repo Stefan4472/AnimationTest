@@ -15,12 +15,8 @@ public class Spaceship extends Sprite {
     private int dx;
     private int dy;
 
-    // speed in x and y
-    private float speedX;
-    private float speedY;
-
     private final float MAX_SPEED_X = 9.0f;
-    private final float MAX_SPEED_Y = 2.0f;
+    private final float MAX_SPEED_Y = 2.5f;
 
     private SpriteAnimation movingAnimation;
     private SpriteAnimation startMovingAnimation;
@@ -72,10 +68,6 @@ public class Spaceship extends Sprite {
             e.printStackTrace();
         }
 
-        moving = false;
-        speedX = 0.0f;
-        speedY = 0.0f;
-
         getImageDimensions();
 
         rockets = new ArrayList<>();
@@ -88,8 +80,7 @@ public class Spaceship extends Sprite {
 
     public ArrayList<Bullet> getBullets() { return bullets; }
 
-    // calculates new x and y coordinates, handles animations,
-    // fires rockets
+    // handles animations and actions
     public void update() {
         // either accelerating or breaking
         if(dx != 0) {
@@ -110,10 +101,6 @@ public class Spaceship extends Sprite {
             moving = false;
         }
 
-        x += getSpeedX();
-        if(speedX != 0) // can only move vertically when speed != 0
-            y += dy * getSpeedY();
-
         if(firingBullets == true && lastFiredBullet + BULLET_DELAY <= System.currentTimeMillis()) {
             fireBullets();
             lastFiredBullet = System.currentTimeMillis();
@@ -127,7 +114,6 @@ public class Spaceship extends Sprite {
         if(fireRocketAnimation.isPlaying()) {
             //currentImage = ImageUtil.layer(currentImage, fireRocketAnimation.nextFrame());
         }
-
     }
 
     // fires two rockets
@@ -144,6 +130,13 @@ public class Spaceship extends Sprite {
         Bullet b2 = new Bullet(x + 43, y + 33);
         bullets.add(b1);
         bullets.add(b2);
+    }
+
+    // moves sprite using speedX and speedY
+    public void move() {
+        x += getSpeedX();
+        if(speedX != 0) // can only move vertically when speed != 0
+            y += dy * getSpeedY();
     }
 
     // calculates and returns horizontal speed
