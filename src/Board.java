@@ -13,12 +13,16 @@ public class Board extends JPanel implements ActionListener {
 
     private Timer timer;
     private Spaceship spaceship;
+    private ArrayList<Sprite> sprites;
     // num pixels scrolled
     private int scrollCounter;
-    // whether background should be rendered
+    // whether background should be re-rendered in this frame
     private boolean renderBackground;
+    // space background (implements parallax scrolling)
     private Background background;
+    // generates terrain and sprites on screen
     private Map map;
+    // time, in ms, last frame was completed
     private long lastTime = 0;
 
     // Number of milliseconds to wait before repainting
@@ -79,7 +83,7 @@ public class Board extends JPanel implements ActionListener {
         map.render(g2d, this);
         spaceship.render(g2d, this);
 
-        ArrayList<Rocket> rockets = spaceship.getRockets();
+        /*ArrayList<Rocket> rockets = spaceship.getRockets();
         ArrayList<Bullet> bullets = spaceship.getBullets();
 
         for (Rocket r : rockets) {
@@ -89,7 +93,7 @@ public class Board extends JPanel implements ActionListener {
 
         for(Bullet b : bullets) {
             g2d.drawImage(b.getCurrentImage(), b.getX(), b.getY(), this);
-        }
+        }*/
     }
 
     // moves spaceship and repaints JPanel every 10 ms
@@ -102,6 +106,34 @@ public class Board extends JPanel implements ActionListener {
         repaint();
     }
 
+    private void updateSprites() {
+        // sprites that need to be checked for collision detection
+        ArrayList<Sprite> hit_detection = new ArrayList<>();
+        for(Sprite s : sprites) {
+            if(s.isVisible() && s.collides())
+                hit_detection.add(s);
+        }
+
+        Sprite current_sprite; // todo: speedup: check spaceship first?
+        Sprite compared_sprite;
+        int[] collision;
+        for(int i = hit_detection.size() - 1; i > 0; i--) {
+            current_sprite = hit_detection.get(i);
+            for(int j = i -1; j >= 0; j--) {
+                compared_sprite = hit_detection.get(j);
+                //collision = getCollision(current_sprite, compared_sprite);
+                if(collision != null) {
+                    current_sprite.setCoordinates(collision[0], collision[1]); // todo: change speedX and speedY instead
+                    compared_sprite.setCoordinates(collision[0], collision[1]);
+                    current_sprite.setCollides(true);
+                    compared_sprite.setCollides(true); // todo: remove from list?
+                }
+            }
+        }
+        for(Sprite s : sprites) { // todo: check if visible. Also, s.move() will undo collision detection unless speedX and speedY are changed
+            s.update();
+        }
+    }
     private void updateRockets() {
         ArrayList<Rocket> rockets = spaceship.getRockets();
 

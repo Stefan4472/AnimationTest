@@ -1,8 +1,5 @@
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
-import java.awt.Shape;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
@@ -30,14 +27,14 @@ public abstract class Sprite {
     protected boolean vis;
 
     // whether or not sprite can collide with other sprites
-    protected boolean collision;
-    // hitbox for collision detection todo: complex shapes
+    protected boolean collides; // todo: flags all in one bitwise operator?
+    // hitbox for collides detection todo: complex shapes
     protected Rectangle.Double hitBox;
     // offset of hitbox from sprite's point of drawing (top left)
     protected int hitBoxOffsetX;
     protected int hitBoxOffsetY;
     // lines describing movement of hitbox from frame to frame. Only
-    // used if collision = true
+    // used if collides = true
     private Line2D movement1;
     private Line2D movement2;
 
@@ -99,9 +96,13 @@ public abstract class Sprite {
 
     public void setX(int x) { this.x = x; }
     public void setY(int y) { this.y = y; }
+    public void setCoordinates(int x, int y) { this.x = x; this.y = y; }
 
     public boolean isVisible() { return vis; }
     public void setVisible(Boolean visible) { vis = visible; }
+
+    public boolean collides() { return collides; }
+    public void setCollides(boolean collides) { this.collides = collides; }
 
     // draws sprite at current coordinates on g
     public void render(Graphics2D g, ImageObserver o) {
@@ -114,7 +115,7 @@ public abstract class Sprite {
     //abstract void updateHitbox();
 
     // updates movement1 and movement2 Lines
-    protected void updateMovements() {
+    protected void updateMovements() { // todo: look into linesIntersect
         int start_x = x + hitBoxOffsetX;
         int start_y = y + hitBoxOffsetY;
         movement1.setLine(start_x, start_y, start_x + speedX, start_y + speedY);
@@ -122,11 +123,12 @@ public abstract class Sprite {
     }
 
     // returns whether intended movement of sprites
-    // will cause a collision
+    // will cause a collides
     // use updateMovements to keep hitboxes up to date
-    // todo: calculate specific point of collision and use setX and setY methods to move sprites there
+    // todo: calculate specific point of collides and use setX and setY methods to move sprites there
+    // todo: only need to check if they are within a feasible distance of eachother
     public boolean collidesWith(Sprite s) {
-        if(collision == false || s.collision == false)
+        if(collides == false || s.collides == false)
             return false;
         if(movement1.intersectsLine(s.movement1))
             return true;

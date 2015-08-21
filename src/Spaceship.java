@@ -1,8 +1,5 @@
-import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -59,7 +56,7 @@ public class Spaceship extends Sprite {
         lastFiredBullet = 0;
         lastFiredRocket = 0;
 
-        collision = true;
+        collides = true;
         hitBox = new Rectangle.Double(33, 28, x, y);
         hitBoxOffsetX = 12;
         hitBoxOffsetY = 11;
