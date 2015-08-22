@@ -74,8 +74,7 @@ public class Spaceship extends Sprite {
         preCollisionSpeed = getSpeedX();
     }
 
-    // updates animations and any actions the sprite should take
-    public void update() {
+    public void updateCurrentImage() {
         // either accelerating or breaking
         if(dx != 0) { // todo: break into simpler methods
             // sprite was previously not accelerating/breaking. Play startMovingAnimation
@@ -94,7 +93,9 @@ public class Spaceship extends Sprite {
             currentImage = defaultImage;
             moving = false;
         }
+    }
 
+    public void updateActions() {
         if(firingBullets == true && lastFiredBullet + BULLET_DELAY <= System.currentTimeMillis()) {
             fireBullets();
             lastFiredBullet = System.currentTimeMillis();
@@ -107,11 +108,6 @@ public class Spaceship extends Sprite {
         }
         if(fireRocketAnimation.isPlaying()) { // todo: look into AlphaComposite to compose images
             //currentImage = ImageUtil.layer(currentImage, fireRocketAnimation.nextFrame()); // todo: look into storing animations as diffs and using ImageUtil layer method
-        }
-
-        if(!collision) { // update speeds if no collision has occurred
-            updateSpeedX();
-            updateSpeedY();
         }
     }
 

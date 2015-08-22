@@ -29,12 +29,15 @@ public class Rocket extends Sprite {
         } catch(IOException e){}
     }
 
-    public void update() {
-        if(collision)
-            System.out.println("Collision");
+    public void updateCurrentImage() {
+
     }
 
-    private void updateSpeedX() {
+    public void updateActions() {
+
+    }
+
+    public void updateSpeedX() {
         if(speedX < 2.05)
             speedX += 0.001;
         else if(speedX < 2.1)
@@ -47,5 +50,9 @@ public class Rocket extends Sprite {
             speedX += 0.15;
         else
             speedX += 0.05;
+    }
+
+    public void updateSpeedY() {
+
     }
 }

@@ -120,16 +120,26 @@ public abstract class Sprite {
     public boolean collision() { return collision; }
     public void setCollision(boolean collision) { this.collision = collision; }
 
-    // draws sprite at current coordinates on g
-    public void render(Graphics2D g, ImageObserver o) {
-        g.drawImage(currentImage, x, y, o);
+    // calls methods to update sprites animations, actions,
+    // and speed
+    public void update() {
+        updateCurrentImage();
+        updateActions();
+        updateSpeedX();
+        updateSpeedY();
     }
 
-    // updates currentImage and handles any actions sprite
-    // must take in this frame
-    abstract void update();
+    // updates sprite animations
+    abstract void updateCurrentImage();
 
-    // moves sprite using speedX and speedY
+    // update/handle any actions sprite takes
+    abstract void updateActions();
+
+    abstract void updateSpeedX();
+    abstract void updateSpeedY();
+
+    // moves sprite using speedX and speedY, updates hitbox,
+    // and checks if sprite is still visible
     protected void move() {
         x += speedX;
         y += speedY;
@@ -137,11 +147,12 @@ public abstract class Sprite {
             vis = false;
         if(y > BOARD_HEIGHT || y < -height)
             vis = false;
+        updateHitbox();
     }
 
     // updates hitbox to current position of sprite
     protected void updateHitbox() {
-        hitBox.setRect(x, y, hitBoxWidth, hitBoxHeight);
+        hitBox.setRect(x + hitBoxOffsetX, y + hitBoxOffsetY, hitBoxWidth, hitBoxHeight);
     }
 
     // updates movement1 and movement2 Lines
@@ -152,11 +163,13 @@ public abstract class Sprite {
         movement2.setLine(start_x, y + height - start_y, start_x + speedX, y + height - start_y + speedY);
     }
 
+    // draws sprite at current coordinates on g
+    public void render(Graphics2D g, ImageObserver o) {
+        g.drawImage(currentImage, x, y, o);
+    }
+
     // returns whether intended movement of sprites
-    // will cause a collides
-    // use updateMovements to keep hitboxes up to date
-    // boolean setSpeeds will set speedX and speedY of sprites
-    // to reflect point of intersection
+    // will cause a collision
     // todo: calculate specific point of collides and use setX and setY methods to move sprites there
     public boolean collidesWith(Sprite s) { // todo: set flag first then setSpeed
         if(collides == false || s.collides == false)

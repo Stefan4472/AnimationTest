@@ -21,11 +21,19 @@ public class Obstacle extends Sprite {
         hitBoxOffsetY = 0;
     }
 
-    public void move() {
+    public void updateCurrentImage() {
 
     }
 
-    public void update() {
+    public void updateActions() {
 
+    }
+
+    public void updateSpeedX() {
+
+    }
+
+    public void updateSpeedY() {
+        
     }
 }

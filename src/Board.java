@@ -147,10 +147,10 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void updateRockets() {
-        ArrayList<Rocket> rockets = spaceship.getRockets();
+        ArrayList<Sprite> rockets = spaceship.getRockets();
 
         for(int i = 0; i < rockets.size(); i++) {
-            Rocket r = rockets.get(i);
+            Sprite r = rockets.get(i);
             if (r.isVisible()) {
                 r.move();
             } else {
@@ -160,10 +160,10 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void updateBullets() {
-        ArrayList<Bullet> bullets = spaceship.getBullets();
+        ArrayList<Sprite> bullets = spaceship.getBullets();
 
         for(int i = 0; i < bullets.size(); i++) {
-            Bullet b = bullets.get(i);
+            Sprite b = bullets.get(i);
             if(b.isVisible()) {
                 b.move();
             } else {
