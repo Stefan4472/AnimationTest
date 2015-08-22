@@ -28,16 +28,19 @@ public class Map {
     private int tileWidth;
     private int tileHeight;
 
-    private final Random random;
+    private Random random;
 
     // construct mapTiles using names of tile files
     public Map(Sprite[] mapTiles) {
         // element zero must be left empty
         this.mapTiles = new Sprite[mapTiles.length + 1];
-        for(int i = this.mapTiles.length - 1; i > 0; i--) {
+        for (int i = this.mapTiles.length - 1; i > 0; i--) {
             this.mapTiles[i] = mapTiles[i - 1];
         }
+        initMap();
+    }
 
+    private void initMap() {
         this.x = 0;
         tiles = new ArrayList<>();
 
@@ -48,14 +51,6 @@ public class Map {
 
         map = new byte[6][24];
 
-        // fill map randomly with tiles
-       /* for(int i = 0; i < 6; i++) {
-            for(int j = 0; j < 24; j++) {
-                map[i][j] = (byte) random.nextInt(this.mapTiles.length);
-                System.out.print(map[i][j] + "\t");
-            }
-            System.out.println();
-        };*/
         map[2][5] = 1;
     }
 
@@ -71,7 +66,7 @@ public class Map {
                     int loc_x = j * tileWidth - w_offset;
                     int loc_y = i * tileHeight;
                     g.drawImage(mapTiles[this.map[i][(j + getWTile()) % 24]].getCurrentImage(), loc_x, loc_y, o);
-                    addTile(mapTiles[this.map[i][(j + getWTile()) % 24]], loc_x, loc_y);
+                    //addTile(mapTiles[this.map[i][(j + getWTile()) % 24]], loc_x, loc_y); // each tile can only be added once
                 }
             }
         }

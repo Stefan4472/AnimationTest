@@ -71,7 +71,7 @@ public class Spaceship extends Sprite {
 
     public void setCollision(boolean collision) {
         this.collision = collision;
-        preCollisionSpeed = updateSpeedX();
+        preCollisionSpeed = getSpeedX();
     }
 
     // updates animations and any actions the sprite should take
