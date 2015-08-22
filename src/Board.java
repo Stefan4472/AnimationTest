@@ -170,7 +170,6 @@ public class Board extends JPanel implements ActionListener {
 
     private void updateSpaceship() {
         spaceship.update();
-
         spaceship.move();
 
         // once spaceship gets past x = 200, start scrolling background
@@ -178,6 +177,11 @@ public class Board extends JPanel implements ActionListener {
             map.scroll(spaceship.getX() - 200);
             scrollCounter += spaceship.getX() - 200;
             spaceship.setX(200);
+        }
+        if(spaceship.getY() < 0) {
+            spaceship.setY(0);
+        } else if(spaceship.getY() > 250) {
+            spaceship.setY(250);
         }
     }
 

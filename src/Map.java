@@ -56,7 +56,7 @@ public class Map {
     }
 
     // renders current map to display onto g and keeps track of sprites
-    public void render(Graphics2D g, ImageObserver o) {
+    public void render(Graphics2D g, ImageObserver o) { // todo: adds sprites that are generated
         int w_offset = getWOffset();
 
         for(int i = 0; i < 6; i++) { // rows
