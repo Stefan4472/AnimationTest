@@ -142,13 +142,15 @@ public class Spaceship extends Sprite {
         // no vertical movement w/out horizontal movement
         if (speedX == 0)
             speedY = 0;
+        speedY = Math.abs(speedY);
         if (speedY < 1.0) {
-            speedY += dy * 0.25;
+            speedY += 0.25;
         } else if (speedY < MAX_SPEED_Y) {
-            speedY += dy * 0.10;
+            speedY += 0.10;
         } else if (speedY > MAX_SPEED_Y) {
-            speedY = dy * MAX_SPEED_Y;
+            speedY = MAX_SPEED_Y;
         }
+        speedY *= dy;
     }
 
     // manages speed when dx = 1

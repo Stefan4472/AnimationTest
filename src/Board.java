@@ -141,7 +141,7 @@ public class Board extends JPanel implements ActionListener {
 
     private void updateSpaceship() {
         spaceship.update();
-        System.out.println(spaceship.getSpeedX() + "," + spaceship.getSpeedY());
+        
         spaceship.move();
 
         // once spaceship gets past x = 200, start scrolling background
