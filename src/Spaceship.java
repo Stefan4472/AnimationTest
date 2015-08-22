@@ -140,14 +140,14 @@ public class Spaceship extends Sprite {
     // calculates and sets new speedY
     public void updateSpeedY() {
         // no vertical movement w/out horizontal movement
-        if(speedX == 0)
+        if (speedX == 0)
             speedY = 0;
-        if(speedY < 1.0) {
-            speedY += 0.25;
-        } else if(speedY < MAX_SPEED_Y) {
-            speedY += 0.10;
-        } else if(speedY > MAX_SPEED_Y) {
-            speedY = MAX_SPEED_Y;
+        if (speedY < 1.0) {
+            speedY += dy * 0.25;
+        } else if (speedY < MAX_SPEED_Y) {
+            speedY += dy * 0.10;
+        } else if (speedY > MAX_SPEED_Y) {
+            speedY = dy * MAX_SPEED_Y;
         }
     }
 
