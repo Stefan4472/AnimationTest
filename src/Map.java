@@ -52,6 +52,7 @@ public class Map {
         map = new byte[6][24];
 
         map[2][5] = 1;
+        addTile(mapTiles[1], 250, 100);
     }
 
     // renders current map to display onto g and keeps track of sprites
@@ -82,6 +83,9 @@ public class Map {
     // appearance of forward motion
     public void scroll(int x) {
         this.x += x;
+        for(Sprite t : tiles) {
+            t.setSpeedX(x);
+        }
     }
 
     public ArrayList<Sprite> getTiles(){
@@ -93,5 +97,6 @@ public class Map {
         s.setX(x);
         s.setY(y);
         tiles.add(s);
+        System.out.println(tiles.size() + " tiles on map");
     }
 }

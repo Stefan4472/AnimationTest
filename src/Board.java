@@ -101,27 +101,50 @@ public class Board extends JPanel implements ActionListener {
     // moves spaceship and repaints JPanel every 10 ms
     @Override
     public void actionPerformed(ActionEvent e) {
-        updateRockets(); // todo: one arraylist with all sprites and one method call to updateSprites()
-        updateBullets();
+        //updateRockets(); // todo: one arraylist with all sprites and one method call to updateSprites()
+        //updateBullets();
         updateSpaceship();
-        //updateSprites();
+        updateSprites(map.getTiles());
+        //updateSprites(spaceship.getBullets());
+        //updateSprites(spaceship.getRockets());
+        updateRockets();
+        moveSprites(map.getTiles());
+        moveSprites(spaceship.getBullets());
+        moveSprites(spaceship.getRockets());
 
         repaint();
     }
 
-    private void updateSprites() {
+    private void updateSprites(ArrayList<Sprite> sprites) {
+        for(Sprite s : sprites) {
+            s.updateCurrentImage();
+            s.updateActions();
+            s.updateSpeedX();
+            s.updateSpeedY();
+        }
+    }
 
+    private void checkCollisions(ArrayList<Sprite> sprites, ArrayList<Sprite> tiles) {
+
+    }
+
+    private void moveSprites(ArrayList<Sprite> sprites) {
+        for(Sprite s : sprites)
+            s.move();
     }
 
     private void updateRockets() {
         ArrayList<Sprite> rockets = spaceship.getRockets();
+        ArrayList<Sprite> tiles = map.getTiles();
+        System.out.println(tiles.size() + " tiles detected");
 
-        for(int i = 0; i < rockets.size(); i++) {
-            Sprite r = rockets.get(i);
-            if (r.isVisible()) {
-                r.move();
-            } else {
-                rockets.remove(r);
+        for(Sprite r : rockets) {
+            for(Sprite t : tiles) {
+                if(r.collidesWith(t)) {
+                    r.setCollision(true);
+                    t.setCollision(true);
+                    System.out.println("Collision detected");
+                }
             }
         }
     }
@@ -141,7 +164,7 @@ public class Board extends JPanel implements ActionListener {
 
     private void updateSpaceship() {
         spaceship.update();
-        
+
         spaceship.move();
 
         // once spaceship gets past x = 200, start scrolling background
