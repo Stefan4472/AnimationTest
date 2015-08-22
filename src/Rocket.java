@@ -33,7 +33,6 @@ public class Rocket extends Sprite {
         } catch(IOException e){}
     }
 
-
     public void move() {
         if(acceleration < 0.05)
             acceleration += 0.001;

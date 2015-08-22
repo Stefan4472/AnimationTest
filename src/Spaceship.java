@@ -57,7 +57,9 @@ public class Spaceship extends Sprite {
         lastFiredRocket = 0;
 
         collides = true;
-        hitBox = new Rectangle.Double(33, 28, x, y);
+        hitBoxWidth = 33;
+        hitBoxHeight = 28;
+        hitBox = new Rectangle.Double(x, y, hitBoxWidth, hitBoxHeight);
         hitBoxOffsetX = 12;
         hitBoxOffsetY = 11;
     }
@@ -99,6 +101,11 @@ public class Spaceship extends Sprite {
         if(fireRocketAnimation.isPlaying()) { // todo: look into AlphaComposite to compose images
             //currentImage = ImageUtil.layer(currentImage, fireRocketAnimation.nextFrame()); // todo: look into storing animations as diffs and using ImageUtil layer method
         }
+
+        if(!collision) { // update speeds if no collision has occured
+            getSpeedX();
+            getSpeedY();
+        }
     }
 
     // fires two rockets
@@ -119,9 +126,9 @@ public class Spaceship extends Sprite {
 
     // moves sprite using speedX and speedY
     public void move() {
-        x += getSpeedX();
+        x += speedX;
         if(speedX != 0) // can only move vertically when speed != 0
-            y += dy * getSpeedY();
+            y += dy * speedY;
     }
 
     // calculates and returns horizontal speed

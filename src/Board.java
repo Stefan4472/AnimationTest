@@ -116,23 +116,23 @@ public class Board extends JPanel implements ActionListener {
 
         Sprite current_sprite; // todo: speedup: check spaceship first?
         Sprite compared_sprite;
-        int[] collision;
         for(int i = hit_detection.size() - 1; i > 0; i--) {
             current_sprite = hit_detection.get(i);
-            for(int j = i -1; j >= 0; j--) {
+            for(int j = i - 1; j >= 0; j--) {
                 compared_sprite = hit_detection.get(j);
-                //collision = getCollision(current_sprite, compared_sprite);
+                collision = getCollision(current_sprite, compared_sprite);
                 if(collision != null) {
                     current_sprite.setCoordinates(collision[0], collision[1]); // todo: change speedX and speedY instead
                     compared_sprite.setCoordinates(collision[0], collision[1]);
-                    current_sprite.setCollides(true);
-                    compared_sprite.setCollides(true); // todo: remove from list?
+                    current_sprite.setCollision(true);
+                    compared_sprite.setCollision(true); // todo: remove from list?
                 }
             }
         }
         for(Sprite s : sprites) { // todo: check if visible. Also, s.move() will undo collision detection unless speedX and speedY are changed
             s.update();
         }
+        sprites.clear();
     }
     private void updateRockets() {
         ArrayList<Rocket> rockets = spaceship.getRockets();

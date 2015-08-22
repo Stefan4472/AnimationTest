@@ -25,11 +25,17 @@ public abstract class Sprite {
 
     // whether or not sprite is visible on screen
     protected boolean vis;
-
     // whether or not sprite can collide with other sprites
     protected boolean collides; // todo: flags all in one bitwise operator?
-    // hitbox for collides detection todo: complex shapes
+    // whether or not sprite has had a collision
+    protected boolean collision;
+    // whether or not sprite is currently moving
+    protected boolean moving; // todo: remove?
+
+    // hitbox for collision detection todo: complex shapes
     protected Rectangle.Double hitBox;
+    protected int hitBoxWidth;
+    protected int hitBoxHeight;
     // offset of hitbox from sprite's point of drawing (top left)
     protected int hitBoxOffsetX;
     protected int hitBoxOffsetY;
@@ -43,9 +49,6 @@ public abstract class Sprite {
 
     // what sprite actually looks like now (for animations)
     protected BufferedImage currentImage;
-
-    // whether or not sprite is currently moving
-    protected boolean moving; // todo: remove?
 
     public Sprite(int x, int y) {
         this.x = x;
@@ -69,9 +72,10 @@ public abstract class Sprite {
     private void initSprite() {
         vis = true;
         moving = false;
+        collision = false;
+        collides = true;
         speedX = 0.0f;
         speedY = 0.0f;
-
     }
 
     // loads sprite's default image
@@ -98,21 +102,37 @@ public abstract class Sprite {
     public void setY(int y) { this.y = y; }
     public void setCoordinates(int x, int y) { this.x = x; this.y = y; }
 
+    public float getSpeedX() { return speedX; }
+    public float getSpeedY() { return speedY; }
+
+    public void setSpeedX(float speedX) { this.speedX = speedX; }
+    public void setSpeedY(float speedY) { this.speedY = speedY; }
+
     public boolean isVisible() { return vis; }
     public void setVisible(Boolean visible) { vis = visible; }
 
     public boolean collides() { return collides; }
     public void setCollides(boolean collides) { this.collides = collides; }
 
+    public boolean collision() { return collision; }
+    public void setCollision(boolean collision) { this.collision = collision; }
+
     // draws sprite at current coordinates on g
     public void render(Graphics2D g, ImageObserver o) {
         g.drawImage(currentImage, x, y, o);
     }
 
-    //abstract void update();
-    // abstract void move
-    // protected float getSpeedX getSpeedY
-    //abstract void updateHitbox();
+    // updates currentImage and handles any actions sprite
+    // must take in this frame
+    abstract void update();
+
+    // moves sprite using speedX and speedY
+    abstract void move();
+
+    // updates hitbox to current position of sprite
+    protected void updateHitbox() {
+        hitBox.setRect(x, y, hitBoxWidth, hitBoxHeight);
+    }
 
     // updates movement1 and movement2 Lines
     protected void updateMovements() { // todo: look into linesIntersect
@@ -125,15 +145,19 @@ public abstract class Sprite {
     // returns whether intended movement of sprites
     // will cause a collides
     // use updateMovements to keep hitboxes up to date
+    // boolean setSpeeds will set speedX and speedY of sprites
+    // to reflect point of intersection
     // todo: calculate specific point of collides and use setX and setY methods to move sprites there
     // todo: only need to check if they are within a feasible distance of eachother
-    public boolean collidesWith(Sprite s) {
+    public boolean collidesWith(Sprite s, boolean setSpeeds) {
         if(collides == false || s.collides == false)
+            return false;
+        if(this instanceof Bullet || this instanceof  Rocket && s instanceof  Bullet || s instanceof  Rocket)
             return false;
         if(movement1.intersectsLine(s.movement1))
             return true;
         else if(movement1.intersectsLine(s.movement2))
-            return  true;
+            return true;
         else if(movement2.intersectsLine(s.movement1))
             return true;
         else if(movement2.intersectsLine(s.movement2))
