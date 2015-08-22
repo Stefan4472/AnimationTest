@@ -7,10 +7,6 @@ import java.io.IOException;
  */
 public class Rocket extends Sprite {
 
-    private final int BOARD_WIDTH = 600;
-    private final int MISSILE_SPEED = 2;
-    private float acceleration;
-
     private SpriteAnimation startMoving;
 
     public Rocket(int x, int y) {
@@ -22,7 +18,7 @@ public class Rocket extends Sprite {
     private void initMissile() {
         loadDefaultImage("rocket.png");
         getImageDimensions();
-        acceleration = 0;
+        speedX = 0.0f;
 
         hitBox = new Rectangle.Double(x, y, 9, 3);
         hitBoxOffsetX = 0;
@@ -33,28 +29,23 @@ public class Rocket extends Sprite {
         } catch(IOException e){}
     }
 
-    public void move() {
-        if(acceleration < 0.05)
-            acceleration += 0.001;
-        else if(acceleration < 0.1)
-            acceleration += 0.005;
-        else if(acceleration < 0.5)
-            acceleration += 0.05;
-        else if(acceleration < 1.0)
-            acceleration += 0.1;
-        else if(acceleration < 3.0)
-            acceleration += 0.15;
-        else
-            acceleration += 0.05;
-
-        x += MISSILE_SPEED + acceleration;
-        if (x > BOARD_WIDTH) {
-            vis = false;
-        }
-    }
-
     public void update() {
         if(collision)
             System.out.println("Collision");
+    }
+
+    private void updateSpeedX() {
+        if(speedX < 2.05)
+            speedX += 0.001;
+        else if(speedX < 2.1)
+            speedX += 0.005;
+        else if(speedX < 2.5)
+            speedX += 0.05;
+        else if(speedX < 3.0)
+            speedX += 0.1;
+        else if(speedX < 3.0)
+            speedX += 0.15;
+        else
+            speedX += 0.05;
     }
 }

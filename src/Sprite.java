@@ -32,6 +32,9 @@ public abstract class Sprite {
     // whether or not sprite is currently moving
     protected boolean moving; // todo: remove?
 
+    protected final int BOARD_WIDTH = 600;
+    protected final int BOARD_HEIGHT = 400;
+
     // hitbox for collision detection todo: complex shapes
     protected Rectangle.Double hitBox;
     protected int hitBoxWidth;
@@ -127,7 +130,14 @@ public abstract class Sprite {
     abstract void update();
 
     // moves sprite using speedX and speedY
-    abstract void move();
+    protected void move() {
+        x += speedX;
+        y += speedY;
+        if(x > BOARD_WIDTH || x < -width)
+            vis = false;
+        if(y > BOARD_HEIGHT || y < -height)
+            vis = false;
+    }
 
     // updates hitbox to current position of sprite
     protected void updateHitbox() {

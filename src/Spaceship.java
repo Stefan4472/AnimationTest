@@ -131,27 +131,21 @@ public class Spaceship extends Sprite {
         bullets.add(b2);
     }
 
-    // moves sprite using speedX and speedY
-    public void move() {
-        x += speedX;
-        if(speedX != 0) // can only move vertically when speed != 0
-            y += dy * speedY;
-    }
-
-    // calculates and returns new speedX
-    public float updateSpeedX() {
+    // calculates and sets new speedX
+    public void updateSpeedX() {
         if(dx == 1)
             accelerate();
         else if(dx == 0)
             drift();
         else if(dx == -1)
             applyBreak();
-
-        return speedX;
     }
 
-    // calculates and returns new speedY
-    public float updateSpeedY() {
+    // calculates and sets new speedY
+    public void updateSpeedY() {
+        // no vertical movement w/out horizontal movement
+        if(speedX == 0)
+            speedY = 0;
         if(speedY < 1.0) {
             speedY += 0.25;
         } else if(speedY < MAX_SPEED_Y) {
@@ -159,7 +153,6 @@ public class Spaceship extends Sprite {
         } else if(speedY > MAX_SPEED_Y) {
             speedY = MAX_SPEED_Y;
         }
-        return speedY;
     }
 
     // manages speed when dx = 1
