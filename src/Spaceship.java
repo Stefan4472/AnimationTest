@@ -33,6 +33,8 @@ public class Spaceship extends Sprite {
     private ArrayList<Rocket> rockets;
     private ArrayList<Bullet> bullets;
 
+    private float preCollisionSpeed;
+    private Board board;
     // default constructor
     public Spaceship(String imageName, int x, int y) {
         super(imageName, x, y);
@@ -66,6 +68,13 @@ public class Spaceship extends Sprite {
 
     public ArrayList<Rocket> getRockets() { return rockets; }
     public ArrayList<Bullet> getBullets() { return bullets; }
+
+    public void setCollision(boolean collision) {
+        this.collision = collision;
+        preCollisionSpeed = getSpeedX();
+    }
+
+    public void setBoard(Board board) { this.board = board; }
 
     // updates animations and any actions the sprite should take
     public void update() {

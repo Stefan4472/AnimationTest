@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by Stefan on 8/12/2015.
@@ -13,7 +14,7 @@ public class Board extends JPanel implements ActionListener {
 
     private Timer timer;
     private Spaceship spaceship;
-    private ArrayList<Sprite> sprites;
+
     // num pixels scrolled
     private int scrollCounter;
     // whether background should be re-rendered in this frame
@@ -38,6 +39,7 @@ public class Board extends JPanel implements ActionListener {
         setDoubleBuffered(true);
 
         spaceship = new Spaceship("spaceship.png", 100, 100);
+        spaceship.setBoard(this);
         background = new Background(new String[] {
                 "space1.png",
                 "space2.png",
@@ -49,6 +51,7 @@ public class Board extends JPanel implements ActionListener {
         map = new Map(new Sprite[] {
                 new Obstacle("obstacle_tile.png")
         });
+        map.setBoard(this);
 
         /* This will call the actionPerformed method of this class
         every DELAY milliseconds */
@@ -83,8 +86,9 @@ public class Board extends JPanel implements ActionListener {
         map.render(g2d, this);
         spaceship.render(g2d, this);
 
-        /*ArrayList<Rocket> rockets = spaceship.getRockets();
-        ArrayList<Bullet> bullets = spaceship.getBullets();
+        ArrayList<Sprite> rockets = spaceship.getRockets();
+        ArrayList<Sprite> bullets = spaceship.getBullets();
+        ArrayList<Sprite> tiles = map.getTiles();
 
         for (Rocket r : rockets) {
             g2d.drawImage(r.getCurrentImage(), r.getX(),
@@ -93,20 +97,22 @@ public class Board extends JPanel implements ActionListener {
 
         for(Bullet b : bullets) {
             g2d.drawImage(b.getCurrentImage(), b.getX(), b.getY(), this);
-        }*/
+        }
     }
 
     // moves spaceship and repaints JPanel every 10 ms
     @Override
     public void actionPerformed(ActionEvent e) {
-        updateRockets(); // todo: one arraylist with all sprites and one method call to updateSprites()
-        updateBullets();
+        //updateRockets(); // todo: one arraylist with all sprites and one method call to updateSprites()
+        //updateBullets();
         updateSpaceship();
+        updateSprites();
 
         repaint();
     }
 
     private void updateSprites() {
+        System.out.println(sprites.size() + " sprites detected");
         // sprites that need to be checked for collision detection
         ArrayList<Sprite> hit_detection = new ArrayList<>();
         for(Sprite s : sprites) {
@@ -114,26 +120,32 @@ public class Board extends JPanel implements ActionListener {
                 hit_detection.add(s);
         }
 
-        Sprite current_sprite; // todo: speedup: check spaceship first?
-        Sprite compared_sprite;
+         // todo: speedup: check spaceship first?
+        Sprite current;
+        Sprite check;
         for(int i = hit_detection.size() - 1; i > 0; i--) {
-            current_sprite = hit_detection.get(i);
+            current = hit_detection.get(i);
+            current.updateHitbox();
             for(int j = i - 1; j >= 0; j--) {
-                compared_sprite = hit_detection.get(j);
-                collision = getCollision(current_sprite, compared_sprite);
-                if(collision != null) {
-                    current_sprite.setCoordinates(collision[0], collision[1]); // todo: change speedX and speedY instead
-                    compared_sprite.setCoordinates(collision[0], collision[1]);
-                    current_sprite.setCollision(true);
-                    compared_sprite.setCollision(true); // todo: remove from list?
+                check = hit_detection.get(j);
+                if(current.collidesWith(check)) {
+                    System.out.println("Collision Detected");
+                    current.setCollision(true);
+                    check.setCollision(true);
                 }
             }
         }
-        for(Sprite s : sprites) { // todo: check if visible. Also, s.move() will undo collision detection unless speedX and speedY are changed
+        Iterator<Sprite> i = sprites.iterator();
+        while (i.hasNext()) {
+            Sprite s = i.next();
             s.update();
+            s.move();
+            if(!s.isVisible())
+                i.remove();
         }
-        sprites.clear();
+         // todo: check if visible. Also, s.move() will undo collision detection unless speedX and speedY are changed
     }
+
     private void updateRockets() {
         ArrayList<Rocket> rockets = spaceship.getRockets();
 
@@ -165,7 +177,7 @@ public class Board extends JPanel implements ActionListener {
         spaceship.move();
 
         // once spaceship gets past x = 200, start scrolling background
-        if(spaceship.getX() > 200) {
+        if(spaceship.getX() > 200) { // todo: check if spaceship has collision = true
             map.scroll(spaceship.getX() - 200);
             scrollCounter += spaceship.getX() - 200;
             spaceship.setX(200);

@@ -20,4 +20,12 @@ public class Obstacle extends Sprite {
         hitBoxOffsetX = 0;
         hitBoxOffsetY = 0;
     }
+
+    public void move() {
+
+    }
+
+    public void update() {
+
+    }
 }

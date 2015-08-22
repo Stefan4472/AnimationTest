@@ -21,6 +21,8 @@ public class Map {
     // generated sprites
     private ArrayList<Sprite> sprites;
 
+    private Board board;
+
     // dimensions of screen display
     private final int SCREEN_WIDTH = 600;
     private final int SCREEN_HEIGHT = 300;
@@ -33,6 +35,8 @@ public class Map {
     private int tileHeight;
 
     private final Random random;
+
+    public void setBoard(Board board) { this.board = board; }
 
     // construct tiles using names of tile files
     public Map(Sprite[] tiles) {
@@ -75,13 +79,11 @@ public class Map {
                     int loc_x = j * tileWidth - w_offset;
                     int loc_y = i * tileHeight;
                     g.drawImage(tiles[this.map[i][(j + getWTile()) % 24]].getCurrentImage(), loc_x, loc_y, o);
-                    addSprite(tiles[this.map[i][(j + getWTile()) % 24]], loc_x, loc_y);
+                    sprites.add(tiles[this.map[i][(j + getWTile()) % 24]], loc_x, loc_y);
                 }
             }
         }
     }
-
-    public int getX() { return x; }
 
     // current horizontal and vertical tile
     private int getWTile() { return x / tileWidth; }
@@ -103,6 +105,6 @@ public class Map {
     private void addSprite(Sprite s, int x, int y) {
         s.setX(x);
         s.setY(y);
-        sprites.add(s);
+        board.addSprite(s);
     }
 }

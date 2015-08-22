@@ -148,21 +148,18 @@ public abstract class Sprite {
     // boolean setSpeeds will set speedX and speedY of sprites
     // to reflect point of intersection
     // todo: calculate specific point of collides and use setX and setY methods to move sprites there
-    // todo: only need to check if they are within a feasible distance of eachother
-    public boolean collidesWith(Sprite s, boolean setSpeeds) {
+    public boolean collidesWith(Sprite s) { // todo: set flag first then setSpeed
         if(collides == false || s.collides == false)
+            return false;
+        if(distanceTo(s) > 120)
             return false;
         if(this instanceof Bullet || this instanceof  Rocket && s instanceof  Bullet || s instanceof  Rocket)
             return false;
-        if(movement1.intersectsLine(s.movement1))
-            return true;
-        else if(movement1.intersectsLine(s.movement2))
-            return true;
-        else if(movement2.intersectsLine(s.movement1))
-            return true;
-        else if(movement2.intersectsLine(s.movement2))
-            return true;
-        else
-            return false;
+
+        return hitBox.intersects(s.hitBox);
+    }
+
+    public double distanceTo(Sprite s) {
+        return Math.sqrt((x - s.x)^2 + (y - s.y)^2);
     }
 }

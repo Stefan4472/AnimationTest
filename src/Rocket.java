@@ -52,4 +52,9 @@ public class Rocket extends Sprite {
             vis = false;
         }
     }
+
+    public void update() {
+        if(collision)
+            System.out.println("Collision");
+    }
 }
