@@ -15,9 +15,10 @@ public class Bullet extends Sprite {
         loadDefaultImage("rocket.png");
         getImageDimensions();
 
-        hitBox = new Rectangle.Double(x, y, 9, 3);
         hitBoxOffsetX = 0;
         hitBoxOffsetY = 0;
+        hitBoxWidth = 9;
+        hitBoxHeight = 3;
 
         speedX = 5.0f;
     }

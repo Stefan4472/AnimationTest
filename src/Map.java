@@ -57,8 +57,6 @@ public class Map {
 
     // renders current map to display onto g and keeps track of sprites
     public void render(Graphics2D g, ImageObserver o) {
-        tiles = new ArrayList<>();
-
         int w_offset = getWOffset();
 
         for(int i = 0; i < 6; i++) { // rows
@@ -97,6 +95,5 @@ public class Map {
         s.setX(x);
         s.setY(y);
         tiles.add(s);
-        System.out.println(tiles.size() + " tiles on map");
     }
 }

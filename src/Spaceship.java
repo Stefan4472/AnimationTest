@@ -61,7 +61,6 @@ public class Spaceship extends Sprite {
         collides = true;
         hitBoxWidth = 33;
         hitBoxHeight = 28;
-        hitBox = new Rectangle.Double(x, y, hitBoxWidth, hitBoxHeight);
         hitBoxOffsetX = 12;
         hitBoxOffsetY = 11;
     }

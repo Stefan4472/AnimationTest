@@ -16,9 +16,11 @@ public class Obstacle extends Sprite {
     }
 
     private void initObstacle() {
-        hitBox = new Rectangle.Double(x, y, 50, 50);
+        //hitBox = new Rectangle.Double(x, y, 50, 50);
         hitBoxOffsetX = 0;
         hitBoxOffsetY = 0;
+        hitBoxWidth = 50;
+        hitBoxHeight = 50;
     }
 
     public void updateCurrentImage() {

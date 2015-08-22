@@ -116,11 +116,17 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void updateSprites(ArrayList<Sprite> sprites) {
-        for(Sprite s : sprites) {
-            s.updateCurrentImage();
-            s.updateActions();
-            s.updateSpeedX();
-            s.updateSpeedY();
+        Iterator<Sprite> i = sprites.iterator();
+        while(i.hasNext()) {
+            Sprite s = i.next();
+            if(s.isVisible()) {
+                s.updateCurrentImage();
+                s.updateActions();
+                s.updateSpeedX();
+                s.updateSpeedY();
+            } else {
+                i.remove();
+            }
         }
     }
 
@@ -136,14 +142,14 @@ public class Board extends JPanel implements ActionListener {
     private void updateRockets() {
         ArrayList<Sprite> rockets = spaceship.getRockets();
         ArrayList<Sprite> tiles = map.getTiles();
-        System.out.println(tiles.size() + " tiles detected");
 
         for(Sprite r : rockets) {
             for(Sprite t : tiles) {
                 if(r.collidesWith(t)) {
+                    if(!r.getCollision())
+                        System.out.println("boom");
                     r.setCollision(true);
                     t.setCollision(true);
-                    System.out.println("Collision detected");
                 }
             }
         }

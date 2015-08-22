@@ -79,6 +79,7 @@ public abstract class Sprite {
         collides = true;
         speedX = 0.0f;
         speedY = 0.0f;
+        hitBox = new Rectangle.Double();
     }
 
     // loads sprite's default image
@@ -101,9 +102,21 @@ public abstract class Sprite {
     public int getX() { return x; }
     public int getY() { return y; }
 
-    public void setX(int x) { this.x = x; }
-    public void setY(int y) { this.y = y; }
-    public void setCoordinates(int x, int y) { this.x = x; this.y = y; }
+    public void setX(int x) {
+        this.x = x;
+        updateHitbox();
+    }
+
+    public void setY(int y) {
+        this.y = y;
+        updateHitbox();
+    }
+
+    public void setCoordinates(int x, int y) {
+        this.x = x;
+        this.y = y;
+        updateHitbox();
+    }
 
     public float getSpeedX() { return speedX; }
     public float getSpeedY() { return speedY; }
@@ -114,10 +127,10 @@ public abstract class Sprite {
     public boolean isVisible() { return vis; }
     public void setVisible(Boolean visible) { vis = visible; }
 
-    public boolean collides() { return collides; }
+    public boolean getCollides() { return collides; }
     public void setCollides(boolean collides) { this.collides = collides; }
 
-    public boolean collision() { return collision; }
+    public boolean getCollision() { return collision; }
     public void setCollision(boolean collision) { this.collision = collision; }
 
     // calls methods to update sprites animations, actions,

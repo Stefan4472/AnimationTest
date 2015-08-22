@@ -20,9 +20,10 @@ public class Rocket extends Sprite {
         getImageDimensions();
         speedX = 2.0f;
 
-        hitBox = new Rectangle.Double(x, y, 9, 3);
         hitBoxOffsetX = 0;
         hitBoxOffsetY = 0;
+        hitBoxWidth = 9;
+        hitBoxHeight = 3;
 
         try {
             startMoving = new SpriteAnimation("rocket_starting1.png", 9, 3, 1, false);
