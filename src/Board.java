@@ -90,12 +90,12 @@ public class Board extends JPanel implements ActionListener {
         ArrayList<Sprite> bullets = spaceship.getBullets();
         ArrayList<Sprite> tiles = map.getTiles();
 
-        for (Rocket r : rockets) {
+        for (Sprite r : rockets) {
             g2d.drawImage(r.getCurrentImage(), r.getX(),
                     r.getY(), this);
         }
 
-        for(Bullet b : bullets) {
+        for(Sprite b : bullets) {
             g2d.drawImage(b.getCurrentImage(), b.getX(), b.getY(), this);
         }
     }

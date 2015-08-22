@@ -30,11 +30,11 @@ public class Spaceship extends Sprite {
     private boolean firingRockets;
 
     // keeps track of fired rockets
-    private ArrayList<Rocket> rockets;
-    private ArrayList<Bullet> bullets;
+    private ArrayList<Sprite> rockets;
+    private ArrayList<Sprite> bullets;
 
     private float preCollisionSpeed;
-    private Board board;
+
     // default constructor
     public Spaceship(String imageName, int x, int y) {
         super(imageName, x, y);
@@ -66,20 +66,18 @@ public class Spaceship extends Sprite {
         hitBoxOffsetY = 11;
     }
 
-    public ArrayList<Rocket> getRockets() { return rockets; }
-    public ArrayList<Bullet> getBullets() { return bullets; }
+    public ArrayList<Sprite> getRockets() { return rockets; }
+    public ArrayList<Sprite> getBullets() { return bullets; }
 
     public void setCollision(boolean collision) {
         this.collision = collision;
-        preCollisionSpeed = getSpeedX();
+        preCollisionSpeed = updateSpeedX();
     }
-
-    public void setBoard(Board board) { this.board = board; }
 
     // updates animations and any actions the sprite should take
     public void update() {
         // either accelerating or breaking
-        if(dx != 0) {
+        if(dx != 0) { // todo: break into simpler methods
             // sprite was previously not accelerating/breaking. Play startMovingAnimation
             if(moving == false && dx == 1) {
                 currentImage = startMovingAnimation.start();
@@ -111,9 +109,9 @@ public class Spaceship extends Sprite {
             //currentImage = ImageUtil.layer(currentImage, fireRocketAnimation.nextFrame()); // todo: look into storing animations as diffs and using ImageUtil layer method
         }
 
-        if(!collision) { // update speeds if no collision has occured
-            getSpeedX();
-            getSpeedY();
+        if(!collision) { // update speeds if no collision has occurred
+            updateSpeedX();
+            updateSpeedY();
         }
     }
 
@@ -140,8 +138,8 @@ public class Spaceship extends Sprite {
             y += dy * speedY;
     }
 
-    // calculates and returns horizontal speed
-    public float getSpeedX() {
+    // calculates and returns new speedX
+    public float updateSpeedX() {
         if(dx == 1)
             accelerate();
         else if(dx == 0)
@@ -152,8 +150,8 @@ public class Spaceship extends Sprite {
         return speedX;
     }
 
-    // calculates and returns vertical speed
-    public float getSpeedY() {
+    // calculates and returns new speedY
+    public float updateSpeedY() {
         if(speedY < 1.0) {
             speedY += 0.25;
         } else if(speedY < MAX_SPEED_Y) {
