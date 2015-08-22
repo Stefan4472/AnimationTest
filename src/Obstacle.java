@@ -34,6 +34,6 @@ public class Obstacle extends Sprite {
     }
 
     public void updateSpeedY() {
-        
+
     }
 }

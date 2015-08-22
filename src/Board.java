@@ -39,7 +39,6 @@ public class Board extends JPanel implements ActionListener {
         setDoubleBuffered(true);
 
         spaceship = new Spaceship("spaceship.png", 100, 100);
-        spaceship.setBoard(this);
         background = new Background(new String[] {
                 "space1.png",
                 "space2.png",
@@ -51,7 +50,6 @@ public class Board extends JPanel implements ActionListener {
         map = new Map(new Sprite[] {
                 new Obstacle("obstacle_tile.png")
         });
-        map.setBoard(this);
 
         /* This will call the actionPerformed method of this class
         every DELAY milliseconds */
@@ -103,47 +101,16 @@ public class Board extends JPanel implements ActionListener {
     // moves spaceship and repaints JPanel every 10 ms
     @Override
     public void actionPerformed(ActionEvent e) {
-        //updateRockets(); // todo: one arraylist with all sprites and one method call to updateSprites()
-        //updateBullets();
+        updateRockets(); // todo: one arraylist with all sprites and one method call to updateSprites()
+        updateBullets();
         updateSpaceship();
-        updateSprites();
+        //updateSprites();
 
         repaint();
     }
 
     private void updateSprites() {
-        System.out.println(sprites.size() + " sprites detected");
-        // sprites that need to be checked for collision detection
-        ArrayList<Sprite> hit_detection = new ArrayList<>();
-        for(Sprite s : sprites) {
-            if(s.isVisible() && s.collides())
-                hit_detection.add(s);
-        }
 
-         // todo: speedup: check spaceship first?
-        Sprite current;
-        Sprite check;
-        for(int i = hit_detection.size() - 1; i > 0; i--) {
-            current = hit_detection.get(i);
-            current.updateHitbox();
-            for(int j = i - 1; j >= 0; j--) {
-                check = hit_detection.get(j);
-                if(current.collidesWith(check)) {
-                    System.out.println("Collision Detected");
-                    current.setCollision(true);
-                    check.setCollision(true);
-                }
-            }
-        }
-        Iterator<Sprite> i = sprites.iterator();
-        while (i.hasNext()) {
-            Sprite s = i.next();
-            s.update();
-            s.move();
-            if(!s.isVisible())
-                i.remove();
-        }
-         // todo: check if visible. Also, s.move() will undo collision detection unless speedX and speedY are changed
     }
 
     private void updateRockets() {
