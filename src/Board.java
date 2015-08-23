@@ -15,6 +15,9 @@ public class Board extends JPanel implements ActionListener {
     private Timer timer;
     private Spaceship spaceship;
 
+    private int boardWidth;
+    private int boardHeight;
+
     // num pixels scrolled
     private int scrollCounter;
     // whether background should be re-rendered in this frame
@@ -29,7 +32,9 @@ public class Board extends JPanel implements ActionListener {
     // Number of milliseconds to wait before repainting
     private final int DELAY = 10;
 
-    public Board() {
+    public Board(int boardWidth, int boardHeight) {
+        this.boardWidth = boardWidth;
+        this.boardHeight = boardHeight;
         initBoard();
     }
 
@@ -89,12 +94,11 @@ public class Board extends JPanel implements ActionListener {
         ArrayList<Sprite> tiles = map.getTiles();
 
         for (Sprite r : rockets) {
-            g2d.drawImage(r.getCurrentImage(), r.getX(),
-                    r.getY(), this);
+            r.render(g2d, this);
         }
 
         for(Sprite b : bullets) {
-            g2d.drawImage(b.getCurrentImage(), b.getX(), b.getY(), this);
+            b.render(g2d, this);
         }
     }
 
@@ -180,12 +184,12 @@ public class Board extends JPanel implements ActionListener {
         }
         if(spaceship.getY() < 0) {
             spaceship.setY(0);
-        } else if(spaceship.getY() > 250) {
-            spaceship.setY(250);
+        } else if(spaceship.getY() > boardHeight - spaceship.getHeight()) { // todo: spaceship still off screen somehow
+            spaceship.setY(boardHeight - spaceship.getHeight());
         }
     }
 
-    // sends keystrokes to spaceship class
+    // sends keystrokes to spaceship
     private class TAdapter extends KeyAdapter {
 
         @Override

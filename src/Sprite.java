@@ -118,6 +118,9 @@ public abstract class Sprite {
         updateHitbox();
     }
 
+    public int getWidth() { return width; }
+    public int getHeight() { return height; }
+
     public float getSpeedX() { return speedX; }
     public float getSpeedY() { return speedY; }
 
@@ -151,6 +154,8 @@ public abstract class Sprite {
     abstract void updateSpeedX();
     abstract void updateSpeedY();
 
+    // handles collision with s
+    abstract void handleCollision(Sprite s);
     // moves sprite using speedX and speedY, updates hitbox,
     // and checks if sprite is still visible
     protected void move() {

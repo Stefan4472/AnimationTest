@@ -6,6 +6,9 @@ import java.awt.*;
  */
 public class Spaceships extends JFrame {
 
+    private final int SCREEN_WIDTH = 600;
+    private final int SCREEN_HEIGHT = 300;
+
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             @Override
@@ -21,9 +24,9 @@ public class Spaceships extends JFrame {
     }
 
     private void initUI() {
-        add(new Board());
+        add(new Board(SCREEN_WIDTH, SCREEN_HEIGHT));
 
-        setSize(600, 300);
+        setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         setResizable(false);
 
         setTitle("RocketShip");

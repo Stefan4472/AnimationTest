@@ -56,4 +56,8 @@ public class Rocket extends Sprite {
     public void updateSpeedY() {
 
     }
+
+    public void handleCollision(Sprite s) {
+
+    }
 }

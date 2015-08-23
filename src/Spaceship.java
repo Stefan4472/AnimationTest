@@ -199,6 +199,10 @@ public class Spaceship extends Sprite {
         }
     }
 
+    public void handleCollision(Sprite s) {
+
+    }
+
     // Sets direction of sprite based on key pressed.
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();

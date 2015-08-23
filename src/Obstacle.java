@@ -38,4 +38,8 @@ public class Obstacle extends Sprite {
     public void updateSpeedY() {
 
     }
+
+    public void handleCollision(Sprite s) {
+
+    }
 }
