@@ -89,6 +89,8 @@ public class Board extends JPanel implements ActionListener {
         //map.render(g2d, this);
 
         ArrayList<Sprite> tiles = map.getTiles(); // todo: just use Sprite t : map.getTiles() ?
+        if(tiles.size() != 0)
+            System.out.println();
         for(Sprite t : tiles) {
             t.render(g2d, this);
         }
@@ -119,6 +121,9 @@ public class Board extends JPanel implements ActionListener {
 
         checkCollisions(spaceship.getBullets(), map.getTiles());
         checkCollisions(spaceship.getRockets(), map.getTiles());
+        ArrayList<Sprite> sp = new ArrayList<>();
+        sp.add(spaceship);
+        checkCollisions(sp, map.getTiles());
 
         moveSprites(map.getTiles());
         moveSprites(spaceship.getBullets());
@@ -174,7 +179,6 @@ public class Board extends JPanel implements ActionListener {
         if(spaceship.getX() > 200) { // todo: check if spaceship has collision = true
             map.scroll(spaceship.getX() - 200);
             scrollCounter += spaceship.getX() - 200;
-            System.out.println("Speed set to " + -(spaceship.getX() - 200));
             spaceship.setX(200);
         }
         if(spaceship.getY() < 0) {

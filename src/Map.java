@@ -61,22 +61,6 @@ public class Map {
         lastTile = 0;
     }
 
-    // renders current map to display onto g and keeps track of sprites
-    public void render(Graphics2D g, ImageObserver o) { // todo: adds sprites that are generated
-        int w_offset = getWOffset();
-
-        for(int i = 0; i < 6; i++) { // rows
-            for(int j = 0; j < 13; j++) { // columns
-                if(this.map[i][(j + getWTile()) % 24] != 0){
-                    int loc_x = j * tileWidth - w_offset;
-                    int loc_y = i * tileHeight;
-                    //g.drawImage(mapTiles[this.map[i][(j + getWTile()) % 24]].getCurrentImage(), loc_x, loc_y, o);
-                    //addTile(mapTiles[this.map[i][(j + getWTile()) % 24]], loc_x, loc_y); // each tile can only be added once
-                }
-            }
-        }
-    }
-
     // current horizontal and vertical tile
     private int getWTile() { return x / tileWidth; }
 
@@ -100,13 +84,18 @@ public class Map {
     public void updateTiles() {
         for(int i = 0; i < map.length; i++) {
             if(map[i][mapTileCounter] != 0) {
-                System.out.println("Tile added");
-                addTile(mapTiles[map[i][mapTileCounter]], SCREEN_WIDTH + tileWidth, i * tileWidth);
+                tiles.add(new Obstacle("obstacle_tile.png", 620, i * tileWidth));
             }
         }
         mapTileCounter++;
         if(mapTileCounter == map[0].length) {
             map = generateRandomTiles(50);
+            for(int i = 0; i < map.length; i++) {
+                for(int j = 0; j < map[0].length; j++) {
+                    System.out.print("\t" + map[i][j]);
+                }
+                System.out.println();
+            }
             //map = generateEmptyBackground(10);
             mapTileCounter = 0;
         }
@@ -132,16 +121,10 @@ public class Map {
     // generates one obstacle per tile horizontally for length length
     private byte[][] generateRandomTiles(int length) {
         byte[][] new_tiles = new byte[SCREEN_HEIGHT / tileHeight][length];
-        // for each column, choose row randomly and obstacle randomly
+        // for each column, choose row randomly and non-zero obstacle randomly
         for(int i = 0; i < new_tiles[0].length; i++) {
             new_tiles[random.nextInt(new_tiles.length)][i] =
-                    (byte) (random.nextInt(mapTiles.length));
-        }
-        for(int i = 0; i < new_tiles.length; i++) {
-            for(int j = 0; j < new_tiles[0].length; i++) {
-                System.out.print("\t" + new_tiles[i][j]);
-            }
-            System.out.println();
+                    (byte) (random.nextInt(mapTiles.length - 1) + 1);
         }
         return new_tiles;
     }
