@@ -58,6 +58,7 @@ public class Rocket extends Sprite {
     }
 
     public void handleCollision(Sprite s) {
-
+        collision = true;
+        vis = false;
     }
 }

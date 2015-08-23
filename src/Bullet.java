@@ -40,6 +40,7 @@ public class Bullet extends Sprite {
     }
 
     public void handleCollision(Sprite s) {
-
+        collision = true;
+        vis = false;
     }
 }

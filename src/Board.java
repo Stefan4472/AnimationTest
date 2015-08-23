@@ -105,13 +105,14 @@ public class Board extends JPanel implements ActionListener {
     // moves spaceship and repaints JPanel every 10 ms
     @Override
     public void actionPerformed(ActionEvent e) {
-        //updateRockets(); // todo: one arraylist with all sprites and one method call to updateSprites()
-        //updateBullets();
         updateSpaceship();
         updateSprites(map.getTiles());
-        //updateSprites(spaceship.getBullets());
-        //updateSprites(spaceship.getRockets());
-        updateRockets();
+        updateSprites(spaceship.getBullets());
+        updateSprites(spaceship.getRockets());
+
+        checkCollisions(spaceship.getBullets(), map.getTiles());
+        checkCollisions(spaceship.getRockets(), map.getTiles());
+
         moveSprites(map.getTiles());
         moveSprites(spaceship.getBullets());
         moveSprites(spaceship.getRockets());
@@ -135,41 +136,19 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void checkCollisions(ArrayList<Sprite> sprites, ArrayList<Sprite> tiles) {
-
-    }
-
-    private void moveSprites(ArrayList<Sprite> sprites) {
-        for(Sprite s : sprites)
-            s.move();
-    }
-
-    private void updateRockets() {
-        ArrayList<Sprite> rockets = spaceship.getRockets();
-        ArrayList<Sprite> tiles = map.getTiles();
-
-        for(Sprite r : rockets) {
+        for(Sprite s : sprites) {
             for(Sprite t : tiles) {
-                if(r.collidesWith(t)) {
-                    if(!r.getCollision())
-                        System.out.println("boom");
-                    r.setCollision(true);
-                    t.setCollision(true);
+                if(s.collidesWith(t)) {
+                    s.handleCollision(t);
+                    t.handleCollision(s);
                 }
             }
         }
     }
 
-    private void updateBullets() {
-        ArrayList<Sprite> bullets = spaceship.getBullets();
-
-        for(int i = 0; i < bullets.size(); i++) {
-            Sprite b = bullets.get(i);
-            if(b.isVisible()) {
-                b.move();
-            } else {
-                bullets.remove(i);
-            }
-        }
+    private void moveSprites(ArrayList<Sprite> sprites) {
+        for(Sprite s : sprites)
+            s.move();
     }
 
     private void updateSpaceship() {
