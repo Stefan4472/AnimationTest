@@ -17,6 +17,9 @@ public class Map {
     // number of tiles elapsed since last map was generated
     private int mapTileCounter;
 
+    // keeps track of tile spaceship was on last time scroll() was called
+    private int lastTile;
+
     // generated sprites
     private ArrayList<Sprite> tiles;
 
@@ -52,11 +55,10 @@ public class Map {
 
         random = new Random();
 
-        map = new byte[6][24];
+        // generate 14 tiles of empty background to start
+        map = generateEmptyBackground(14);
         mapTileCounter = 0;
-
-        map[2][5] = 1;
-        addTile(mapTiles[1], 250, 100);
+        lastTile = 0;
     }
 
     // renders current map to display onto g and keeps track of sprites
@@ -85,9 +87,28 @@ public class Map {
     // appearance of forward motion
     public void scroll(int x) {
         this.x += x;
-        updateTiles();
+        if(getWTile() != lastTile) {
+            updateTiles();
+            lastTile = getWTile();
+        }
         for(Sprite t : tiles) {
             t.setSpeedX(-x);
+        }
+    }
+
+    // adds any new tiles and generates a new set of tiles if needed
+    public void updateTiles() {
+        for(int i = 0; i < map.length; i++) {
+            if(map[i][mapTileCounter] != 0) {
+                System.out.println("Tile added");
+                addTile(mapTiles[map[i][mapTileCounter]], SCREEN_WIDTH + tileWidth, i * tileWidth);
+            }
+        }
+        mapTileCounter++;
+        if(mapTileCounter == map[0].length) {
+            map = generateRandomTiles(50);
+            //map = generateEmptyBackground(10);
+            mapTileCounter = 0;
         }
     }
 
@@ -103,18 +124,24 @@ public class Map {
     }
 
     // generates tiles of empty background for length tiles ahead
-    private Byte[][] generateEmptyBackground(int length) {
+    private byte[][] generateEmptyBackground(int length) {
         // init Byte array to zero by default
-        return new Byte[SCREEN_HEIGHT / tileHeight][length];
+        return new byte[SCREEN_HEIGHT / tileHeight][length];
     }
 
     // generates one obstacle per tile horizontally for length length
-    private Byte[][] generateRandomTiles(int length) {
-        Byte[][] new_tiles = new Byte[SCREEN_HEIGHT / tileHeight][length];
+    private byte[][] generateRandomTiles(int length) {
+        byte[][] new_tiles = new byte[SCREEN_HEIGHT / tileHeight][length];
         // for each column, choose row randomly and obstacle randomly
         for(int i = 0; i < new_tiles[0].length; i++) {
             new_tiles[random.nextInt(new_tiles.length)][i] =
-                    (byte) (random.nextInt(mapTiles.length) + 1);
+                    (byte) (random.nextInt(mapTiles.length));
+        }
+        for(int i = 0; i < new_tiles.length; i++) {
+            for(int j = 0; j < new_tiles[0].length; i++) {
+                System.out.print("\t" + new_tiles[i][j]);
+            }
+            System.out.println();
         }
         return new_tiles;
     }

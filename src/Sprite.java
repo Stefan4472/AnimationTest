@@ -162,7 +162,8 @@ public abstract class Sprite {
     protected void move() {
         x += speedX;
         y += speedY;
-        if(x > BOARD_WIDTH || x < -width)
+        // keep in mind sprites are generated past the screen
+        if(x > BOARD_WIDTH + width || x < -width)
             vis = false;
         if(y > BOARD_HEIGHT || y < -height)
             vis = false;
