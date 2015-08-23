@@ -86,13 +86,11 @@ public class Board extends JPanel implements ActionListener {
         }
 
         g2d.drawImage(background.render(), 0, 0, this);
-        map.render(g2d, this);
+        //map.render(g2d, this);
 
-        ArrayList<Sprite> tiles = map.getTiles();
-
+        ArrayList<Sprite> tiles = map.getTiles(); // todo: just use Sprite t : map.getTiles() ?
         for(Sprite t : tiles) {
             t.render(g2d, this);
-            System.out.println("Tile at " + t.getX() + "," + t.getY());
         }
 
         spaceship.render(g2d, this);
@@ -114,6 +112,7 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         updateSpaceship();
+
         updateSprites(map.getTiles());
         updateSprites(spaceship.getBullets());
         updateSprites(spaceship.getRockets());
@@ -121,7 +120,7 @@ public class Board extends JPanel implements ActionListener {
         checkCollisions(spaceship.getBullets(), map.getTiles());
         checkCollisions(spaceship.getRockets(), map.getTiles());
 
-        moveSprites(map.getTiles(), -spaceship.getSpeedX(), -spaceship.getSpeedY());
+        moveSprites(map.getTiles());
         moveSprites(spaceship.getBullets());
         moveSprites(spaceship.getRockets());
 

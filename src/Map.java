@@ -14,6 +14,9 @@ public class Map {
     // grid of tile ID's instructing how to display map
     private byte[][] map;
 
+    // number of tiles elapsed since last map was generated
+    private int mapTileCounter;
+
     // generated sprites
     private ArrayList<Sprite> tiles;
 
@@ -50,6 +53,7 @@ public class Map {
         random = new Random();
 
         map = new byte[6][24];
+        mapTileCounter = 0;
 
         map[2][5] = 1;
         addTile(mapTiles[1], 250, 100);
@@ -77,12 +81,13 @@ public class Map {
     // distance, in pixels, from top left of current tile
     private int getWOffset() { return x % tileWidth; }
 
-    // moves map x units left and y units down, giving the
+    // moves map x units left, giving the
     // appearance of forward motion
     public void scroll(int x) {
         this.x += x;
+        updateTiles();
         for(Sprite t : tiles) {
-            t.setSpeedX(x);
+            t.setSpeedX(-x);
         }
     }
 
@@ -95,5 +100,22 @@ public class Map {
         s.setX(x);
         s.setY(y);
         tiles.add(s);
+    }
+
+    // generates tiles of empty background for length tiles ahead
+    private Byte[][] generateEmptyBackground(int length) {
+        // init Byte array to zero by default
+        return new Byte[SCREEN_HEIGHT / tileHeight][length];
+    }
+
+    // generates one obstacle per tile horizontally for length length
+    private Byte[][] generateRandomTiles(int length) {
+        Byte[][] new_tiles = new Byte[SCREEN_HEIGHT / tileHeight][length];
+        // for each column, choose row randomly and obstacle randomly
+        for(int i = 0; i < new_tiles[0].length; i++) {
+            new_tiles[random.nextInt(new_tiles.length)][i] =
+                    (byte) (random.nextInt(mapTiles.length) + 1);
+        }
+        return new_tiles;
     }
 }
