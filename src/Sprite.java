@@ -86,6 +86,7 @@ public abstract class Sprite {
     protected void loadDefaultImage(String imageName) {
         try {
             currentImage = defaultImage = ImageIO.read(new File(imageName));
+            getImageDimensions();
         } catch(IOException e) {
             e.printStackTrace();
         }

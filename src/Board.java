@@ -87,11 +87,19 @@ public class Board extends JPanel implements ActionListener {
 
         g2d.drawImage(background.render(), 0, 0, this);
         map.render(g2d, this);
+
+        ArrayList<Sprite> tiles = map.getTiles();
+
+        for(Sprite t : tiles) {
+            t.render(g2d, this);
+            System.out.println("Tile at " + t.getX() + "," + t.getY());
+        }
+
         spaceship.render(g2d, this);
 
         ArrayList<Sprite> rockets = spaceship.getRockets();
         ArrayList<Sprite> bullets = spaceship.getBullets();
-        ArrayList<Sprite> tiles = map.getTiles();
+
 
         for (Sprite r : rockets) {
             r.render(g2d, this);
@@ -113,7 +121,7 @@ public class Board extends JPanel implements ActionListener {
         checkCollisions(spaceship.getBullets(), map.getTiles());
         checkCollisions(spaceship.getRockets(), map.getTiles());
 
-        moveSprites(map.getTiles());
+        moveSprites(map.getTiles(), -spaceship.getSpeedX(), -spaceship.getSpeedY());
         moveSprites(spaceship.getBullets());
         moveSprites(spaceship.getRockets());
 
@@ -149,6 +157,14 @@ public class Board extends JPanel implements ActionListener {
     private void moveSprites(ArrayList<Sprite> sprites) {
         for(Sprite s : sprites)
             s.move();
+    }
+
+    private void moveSprites(ArrayList<Sprite> sprites, float speedX, float speedY) {
+        for(Sprite s : sprites) {
+            s.setSpeedX(speedX);
+            s.setSpeedY(speedY);
+            s.move();
+        }
     }
 
     private void updateSpaceship() {

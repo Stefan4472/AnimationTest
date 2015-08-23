@@ -51,8 +51,6 @@ public class Spaceship extends Sprite {
             e.printStackTrace();
         }
 
-        getImageDimensions();
-
         rockets = new ArrayList<>();
         bullets = new ArrayList<>();
         lastFiredBullet = 0;

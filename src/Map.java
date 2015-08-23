@@ -64,7 +64,7 @@ public class Map {
                 if(this.map[i][(j + getWTile()) % 24] != 0){
                     int loc_x = j * tileWidth - w_offset;
                     int loc_y = i * tileHeight;
-                    g.drawImage(mapTiles[this.map[i][(j + getWTile()) % 24]].getCurrentImage(), loc_x, loc_y, o);
+                    //g.drawImage(mapTiles[this.map[i][(j + getWTile()) % 24]].getCurrentImage(), loc_x, loc_y, o);
                     //addTile(mapTiles[this.map[i][(j + getWTile()) % 24]], loc_x, loc_y); // each tile can only be added once
                 }
             }

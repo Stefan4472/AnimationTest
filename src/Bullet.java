@@ -13,7 +13,6 @@ public class Bullet extends Sprite {
 
     private void initBullet() {
         loadDefaultImage("rocket.png");
-        getImageDimensions();
 
         hitBoxOffsetX = 0;
         hitBoxOffsetY = 0;

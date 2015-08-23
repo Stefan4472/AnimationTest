@@ -17,7 +17,6 @@ public class Rocket extends Sprite {
 
     private void initMissile() {
         loadDefaultImage("rocket.png");
-        getImageDimensions();
         speedX = 2.0f;
 
         hitBoxOffsetX = 0;
