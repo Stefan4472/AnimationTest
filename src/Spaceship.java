@@ -64,11 +64,6 @@ public class Spaceship extends Sprite {
     public ArrayList<Sprite> getRockets() { return rockets; }
     public ArrayList<Sprite> getBullets() { return bullets; }
 
-    public void setCollision(boolean collision) {
-        this.collision = collision;
-        preCollisionSpeed = getSpeedX();
-    }
-
     public void updateCurrentImage() {
         currentImage = defaultImage;
         // either accelerating or breaking
@@ -198,6 +193,7 @@ public class Spaceship extends Sprite {
     public void handleCollision(Sprite s) {
         vis = false;
         collision = true;
+        preCollisionSpeed = speedX;
     }
 
     // Sets direction of sprite based on key pressed.
