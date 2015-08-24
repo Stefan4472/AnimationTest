@@ -14,10 +14,7 @@ public class Bullet extends Sprite {
     private void initBullet() {
         loadDefaultImage("rocket.png");
 
-        hitBoxOffsetX = 0;
-        hitBoxOffsetY = 0;
-        hitBoxWidth = 9;
-        hitBoxHeight = 3;
+        hitBox.setDimensions(9, 3);
 
         speedX = 5.0f;
     }

@@ -19,10 +19,7 @@ public class Rocket extends Sprite {
         loadDefaultImage("rocket.png");
         speedX = 2.0f;
 
-        hitBoxOffsetX = 0;
-        hitBoxOffsetY = 0;
-        hitBoxWidth = 9;
-        hitBoxHeight = 3;
+        hitBox.setDimensions(9, 3);
 
         try {
             startMoving = new SpriteAnimation("rocket_starting1.png", 9, 3, 1, false);

@@ -57,10 +57,8 @@ public class Spaceship extends Sprite {
         lastFiredRocket = 0;
 
         collides = true;
-        hitBoxWidth = 33;
-        hitBoxHeight = 28;
-        hitBoxOffsetX = 12;
-        hitBoxOffsetY = 11;
+        hitBox.setDimensions(33, 28);
+        hitBox.setOffsets(12, 11);
     }
 
     public ArrayList<Sprite> getRockets() { return rockets; }

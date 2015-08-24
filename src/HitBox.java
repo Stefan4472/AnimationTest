@@ -14,10 +14,15 @@ public class Hitbox extends Rectangle.Double {
 
     public void setOffsetX(int offsetX) { this.offsetX = offsetX; }
     public void setOffsetY(int offsetY) { this.offsetY = offsetY; }
-    
+
     public void setOffsets(int offsetX, int offsetY) {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
+    }
+
+    public void setDimensions(int width, int height) {
+        this.width = width;
+        this.height = height;
     }
 
     public Hitbox() {

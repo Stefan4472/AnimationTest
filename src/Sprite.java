@@ -36,12 +36,8 @@ public abstract class Sprite {
     protected final int BOARD_HEIGHT = 400;
 
     // hitbox for collision detection todo: complex shapes
-    protected Rectangle.Double hitBox;
-    protected int hitBoxWidth;
-    protected int hitBoxHeight;
-    // offset of hitbox from sprite's point of drawing (top left)
-    protected int hitBoxOffsetX;
-    protected int hitBoxOffsetY;
+    protected Hitbox hitBox;
+
     // lines describing movement of hitbox from frame to frame. Only
     // used if collides = true
     private Line2D movement1;
@@ -79,7 +75,7 @@ public abstract class Sprite {
         collides = true;
         speedX = 0.0f;
         speedY = 0.0f;
-        hitBox = new Rectangle.Double();
+        hitBox = new Hitbox();
     }
 
     // loads sprite's default image
@@ -105,18 +101,18 @@ public abstract class Sprite {
 
     public void setX(int x) {
         this.x = x;
-        updateHitbox();
+        hitBox.updateCoordinates(x, (int) hitBox.getY());
     }
 
     public void setY(int y) {
         this.y = y;
-        updateHitbox();
+        hitBox.updateCoordinates((int) hitBox.getX(), y);
     }
 
     public void setCoordinates(int x, int y) {
         this.x = x;
         this.y = y;
-        updateHitbox();
+        hitBox.updateCoordinates(x, y);
     }
 
     public int getWidth() { return width; }
@@ -167,18 +163,13 @@ public abstract class Sprite {
             vis = false;
         if(y > BOARD_HEIGHT || y < -height)
             vis = false;
-        updateHitbox();
-    }
-
-    // updates hitbox to current position of sprite
-    protected void updateHitbox() {
-        hitBox.setRect(x + hitBoxOffsetX, y + hitBoxOffsetY, hitBoxWidth, hitBoxHeight);
+        hitBox.updateCoordinates(x, y);
     }
 
     // updates movement1 and movement2 Lines
     protected void updateMovements() { // todo: look into linesIntersect
-        int start_x = x + hitBoxOffsetX;
-        int start_y = y + hitBoxOffsetY;
+        int start_x = x + hitBox.getOffsetX();
+        int start_y = y + hitBox.getOffsetY();
         movement1.setLine(start_x, start_y, start_x + speedX, start_y + speedY);
         movement2.setLine(start_x, y + height - start_y, start_x + speedX, y + height - start_y + speedY);
     }
