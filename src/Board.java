@@ -35,6 +35,7 @@ public class Board extends JPanel implements ActionListener {
     public Board(int boardWidth, int boardHeight) {
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
+        setPreferredSize(new Dimension(boardWidth, boardHeight));
         initBoard();
     }
 
@@ -183,7 +184,7 @@ public class Board extends JPanel implements ActionListener {
         }
         if(spaceship.getY() < 0) {
             spaceship.setY(0);
-        } else if(spaceship.getY() > boardHeight - spaceship.getHeight()) { // todo: spaceship still off screen somehow
+        } else if(spaceship.getY() > boardHeight - spaceship.getHeight()) { 
             spaceship.setY(boardHeight - spaceship.getHeight());
         }
     }

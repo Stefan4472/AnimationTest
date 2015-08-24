@@ -200,7 +200,6 @@ public class Spaceship extends Sprite {
     public void handleCollision(Sprite s) {
         vis = false;
         collision = true;
-        System.out.println("boom");
     }
 
     // Sets direction of sprite based on key pressed.

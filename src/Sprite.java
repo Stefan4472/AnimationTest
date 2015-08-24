@@ -196,8 +196,6 @@ public abstract class Sprite {
             return false;
         //if(distanceTo(s) > 120)
         //    return false;
-        //if(this instanceof Bullet || this instanceof  Rocket && s instanceof  Bullet || s instanceof  Rocket)
-        //    return false;
 
         return hitBox.intersects(s.hitBox);
     }

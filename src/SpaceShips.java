@@ -25,11 +25,10 @@ public class Spaceships extends JFrame {
 
     private void initUI() {
         add(new Board(SCREEN_WIDTH, SCREEN_HEIGHT));
-
-        setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         setResizable(false);
+        setTitle("Spaceship");
+        pack();
 
-        setTitle("RocketShip");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
