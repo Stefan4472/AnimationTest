@@ -44,7 +44,7 @@ public class Board extends JPanel implements ActionListener {
         setFocusable(true);
         setDoubleBuffered(true);
 
-        spaceship = new Spaceship("spaceship.png", 100, 100);
+        spaceship = new Spaceship("spaceship.png", 100, 125);
         background = new Background(new String[] {
                 "space1.png",
                 "space2.png",
@@ -184,7 +184,7 @@ public class Board extends JPanel implements ActionListener {
         }
         if(spaceship.getY() < 0) {
             spaceship.setY(0);
-        } else if(spaceship.getY() > boardHeight - spaceship.getHeight()) { 
+        } else if(spaceship.getY() > boardHeight - spaceship.getHeight()) {
             spaceship.setY(boardHeight - spaceship.getHeight());
         }
     }
