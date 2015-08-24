@@ -20,8 +20,8 @@ public class Board extends JPanel implements ActionListener {
 
     // num pixels scrolled
     private int scrollCounter;
-    // whether background should be re-rendered in this frame
-    private boolean renderBackground;
+    // whether game is paused currently
+    private boolean paused;
     // space background (implements parallax scrolling)
     private Background background;
     // generates terrain and sprites on screen
@@ -51,7 +51,7 @@ public class Board extends JPanel implements ActionListener {
                 "space4.png"
         });
         scrollCounter = 0;
-        renderBackground = true;
+        paused = false;
         map = new Map(new Sprite[] {
                 new Obstacle("obstacle_tile.png")
         });
@@ -89,8 +89,6 @@ public class Board extends JPanel implements ActionListener {
         //map.render(g2d, this);
 
         ArrayList<Sprite> tiles = map.getTiles(); // todo: just use Sprite t : map.getTiles() ?
-        if(tiles.size() != 0)
-            System.out.println();
         for(Sprite t : tiles) {
             t.render(g2d, this);
         }
@@ -99,7 +97,6 @@ public class Board extends JPanel implements ActionListener {
 
         ArrayList<Sprite> rockets = spaceship.getRockets();
         ArrayList<Sprite> bullets = spaceship.getBullets();
-
 
         for (Sprite r : rockets) {
             r.render(g2d, this);
@@ -113,22 +110,25 @@ public class Board extends JPanel implements ActionListener {
     // moves spaceship and repaints JPanel every 10 ms
     @Override
     public void actionPerformed(ActionEvent e) {
-        updateSpaceship();
+        if(paused) {
 
-        updateSprites(map.getTiles());
-        updateSprites(spaceship.getBullets());
-        updateSprites(spaceship.getRockets());
+        } else {
+            updateSpaceship();
 
-        checkCollisions(spaceship.getBullets(), map.getTiles());
-        checkCollisions(spaceship.getRockets(), map.getTiles());
-        ArrayList<Sprite> sp = new ArrayList<>();
-        sp.add(spaceship);
-        checkCollisions(sp, map.getTiles());
+            updateSprites(map.getTiles());
+            updateSprites(spaceship.getBullets());
+            updateSprites(spaceship.getRockets());
 
-        moveSprites(map.getTiles());
-        moveSprites(spaceship.getBullets());
-        moveSprites(spaceship.getRockets());
+            checkCollisions(spaceship.getBullets(), map.getTiles());
+            checkCollisions(spaceship.getRockets(), map.getTiles());
+            ArrayList<Sprite> sp = new ArrayList<>();
+            sp.add(spaceship);
+            checkCollisions(sp, map.getTiles());
 
+            moveSprites(map.getTiles());
+            moveSprites(spaceship.getBullets());
+            moveSprites(spaceship.getRockets());
+        }
         repaint();
     }
 
@@ -198,7 +198,11 @@ public class Board extends JPanel implements ActionListener {
 
         @Override
         public void keyPressed(KeyEvent e) {
-            spaceship.keyPressed(e);
+            if(e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_P) {
+                paused = !paused; // toggle pause
+            } else {
+                spaceship.keyPressed(e);
+            }
         }
     }
 }
