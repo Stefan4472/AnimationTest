@@ -27,6 +27,9 @@ public class Map {
     private final int SCREEN_WIDTH = 600;
     private final int SCREEN_HEIGHT = 300;
 
+    // difficulty level
+    private float difficulty;
+
     // coordinates of upper-left of "window" being shown
     private int x;
 
@@ -54,6 +57,7 @@ public class Map {
         tileHeight = this.mapTiles[1].getCurrentImage().getHeight(null);
 
         random = new Random();
+        difficulty = 0.0f;
 
         // generate 14 tiles of empty background to start
         map = generateEmptyBackground(14);
@@ -89,7 +93,7 @@ public class Map {
         }
         mapTileCounter++;
         if(mapTileCounter == map[0].length) {
-            map = generateRandomTiles(50);
+            map = generateRandomTiles(10);
             for(int i = 0; i < map.length; i++) {
                 for(int j = 0; j < map[0].length; j++) {
                     System.out.print("\t" + map[i][j]);

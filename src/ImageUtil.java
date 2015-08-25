@@ -10,7 +10,7 @@ public class ImageUtil  {
     // draws as much as overlay as will fit on top of b, starting from top left
     // transparent pixels in the overlay are ignored
     public static BufferedImage layer(BufferedImage b, BufferedImage overlay) { // todo: optimizations (WritableRaster?)
-        int height, width;
+        int height, width; // todo: layer overlay onto Graphics2D and return Graphics2D?
 
         if(b.getHeight() >= overlay.getHeight())
             height = overlay.getHeight();
