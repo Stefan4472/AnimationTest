@@ -18,7 +18,9 @@ public class MapGenerator {
         byte[][] tiles = new byte[rows][col];
 
         for(int i = 0; i < tiles[0].length; i++) {
-            byte tile = (byte) random.nextInt((int) difficulty);
+            byte tile = (byte) random.nextInt((int) difficulty + 1);
+            tiles[(byte) random.nextInt(rows)][i] = tile;
+            i += random.nextInt((int) (7 / difficulty));
         }
         return tiles;
     }

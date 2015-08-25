@@ -93,7 +93,8 @@ public class Map {
         }
         mapTileCounter++;
         if(mapTileCounter == map[0].length) {
-            map = generateRandomTiles(10);
+            //map = generateRandomTiles(10);
+            map = MapGenerator.generateTiles(6, 10, 1.0f);
             for(int i = 0; i < map.length; i++) {
                 for(int j = 0; j < map[0].length; j++) {
                     System.out.print("\t" + map[i][j]);
