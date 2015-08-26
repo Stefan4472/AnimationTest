@@ -81,29 +81,23 @@ public class Board extends JPanel implements ActionListener {
 
         Graphics2D g2d = (Graphics2D) g;
 
+        scrollCounter -= map.getScrollSpeed();
         if(scrollCounter > 30) { // scroll background slowly
             background.scroll(1);
             scrollCounter = 0;
         }
 
         g2d.drawImage(background.render(), 0, 0, this);
-        //map.render(g2d, this);
 
-        ArrayList<Sprite> tiles = map.getTiles(); // todo: just use Sprite t : map.getTiles() ?
-        for(Sprite t : tiles) {
+        for(Sprite t : map.getTiles()) {
             t.render(g2d, this);
         }
-
         spaceship.render(g2d, this);
 
-        ArrayList<Sprite> rockets = spaceship.getRockets();
-        ArrayList<Sprite> bullets = spaceship.getBullets();
-
-        for (Sprite r : rockets) {
+        for (Sprite r : spaceship.getRockets()) {
             r.render(g2d, this);
         }
-
-        for(Sprite b : bullets) {
+        for(Sprite b : spaceship.getBullets()) {
             b.render(g2d, this);
         }
     }
@@ -116,6 +110,7 @@ public class Board extends JPanel implements ActionListener {
         } else {
             updateSpaceship();
 
+            map.update();
             updateSprites(map.getTiles());
             updateSprites(spaceship.getBullets());
             updateSprites(spaceship.getRockets());
@@ -166,9 +161,6 @@ public class Board extends JPanel implements ActionListener {
     private void updateSpaceship() {
         spaceship.update();
         spaceship.move();
-        
-        map.update();
-        scrollCounter -= map.getScrollSpeed();
 
         if(spaceship.getY() < 0) {
             spaceship.setY(0);
