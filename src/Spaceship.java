@@ -29,9 +29,8 @@ public class Spaceship extends Sprite {
     private long lastFiredRocket;
     private boolean firingRockets;
 
-    // keeps track of fired rockets
-    private ArrayList<Sprite> rockets;
-    private ArrayList<Sprite> bullets;
+    // keeps track of fired bullets and rockets
+    private ArrayList<Sprite> projectiles;
 
     private float preCollisionSpeed;
 
@@ -51,8 +50,7 @@ public class Spaceship extends Sprite {
             e.printStackTrace();
         }
 
-        rockets = new ArrayList<>();
-        bullets = new ArrayList<>();
+        projectiles = new ArrayList<>();
         lastFiredBullet = 0;
         lastFiredRocket = 0;
 
@@ -61,8 +59,7 @@ public class Spaceship extends Sprite {
         hitBox.setOffsets(12, 11);
     }
 
-    public ArrayList<Sprite> getRockets() { return rockets; }
-    public ArrayList<Sprite> getBullets() { return bullets; }
+    public ArrayList<Sprite> getProjectiles() { return projectiles; }
 
     public void updateCurrentImage() {
         currentImage = defaultImage;
@@ -103,18 +100,14 @@ public class Spaceship extends Sprite {
 
     // fires two rockets
     public void fireRockets() {
-        Rocket r1 = new Rocket(x + 43, y + 15);
-        Rocket r2 = new Rocket(x + 43, y + 33);
-        rockets.add(r1);
-        rockets.add(r2);
+        projectiles.add(new Rocket(x + 43, y + 15));
+        projectiles.add(new Rocket(x + 43, y + 33));
     }
 
     // fires two bullets
     public void fireBullets() {
-        Bullet b1 = new Bullet(x + 43, y + 15);
-        Bullet b2 = new Bullet(x + 43, y + 33);
-        bullets.add(b1);
-        bullets.add(b2);
+        projectiles.add(new Bullet(x + 43, y + 15));
+        projectiles.add(new Bullet(x + 43, y + 33));
     }
 
     // calculates and sets new speedX
@@ -194,7 +187,6 @@ public class Spaceship extends Sprite {
     // Sets direction of sprite based on key pressed.
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
-
         if(key == KeyEvent.VK_LEFT) {
             dx = -1;
         } else if(key == KeyEvent.VK_RIGHT) {
@@ -213,7 +205,6 @@ public class Spaceship extends Sprite {
     // sets movement direction to zero once key is released
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
-
         if(key == KeyEvent.VK_LEFT) {
             dx = 0;
         } else if(key == KeyEvent.VK_RIGHT) {
