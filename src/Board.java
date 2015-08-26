@@ -160,29 +160,16 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void moveSprites(ArrayList<Sprite> sprites) {
-        for(Sprite s : sprites)
-            s.move();
-    }
-
-    private void moveSprites(ArrayList<Sprite> sprites, float speedX, float speedY) {
-        for(Sprite s : sprites) {
-            s.setSpeedX(speedX);
-            s.setSpeedY(speedY);
-            s.move();
-        }
+        sprites.forEach(Sprite::move);
     }
 
     private void updateSpaceship() {
         spaceship.update();
         spaceship.move();
+        
+        map.update();
+        scrollCounter -= map.getScrollSpeed();
 
-        // once spaceship gets past x = 200, start scrolling background
-        if(spaceship.getX() > 200) { // todo: check if spaceship has collision = true
-            //map.scroll(spaceship.getX() - 200);
-            map.update();
-            scrollCounter += spaceship.getX() - 200;
-            spaceship.setX(200);
-        }
         if(spaceship.getY() < 0) {
             spaceship.setY(0);
         } else if(spaceship.getY() > boardHeight - spaceship.getHeight()) {

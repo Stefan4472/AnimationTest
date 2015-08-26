@@ -119,24 +119,19 @@ public class Spaceship extends Sprite {
 
     // calculates and sets new speedX
     public void updateSpeedX() {
-        if(dx == 1)
+        /*if(dx == 1)
             accelerate();
         else if(dx == 0)
             drift();
         else if(dx == -1)
-            applyBreak();
+            applyBreak();*/
     }
 
     // calculates and sets new speedY
     public void updateSpeedY() {
-        // no vertical movement w/out horizontal movement
-        if (speedX == 0)
-            speedY = 0;
         speedY = Math.abs(speedY);
-        if (speedY < 1.0) {
+        if (speedY < MAX_SPEED_Y) {
             speedY += 0.25;
-        } else if (speedY < MAX_SPEED_Y) {
-            speedY += 0.10;
         } else if (speedY > MAX_SPEED_Y) {
             speedY = MAX_SPEED_Y;
         }

@@ -43,20 +43,27 @@ public class Map {
 
     private Random random;
 
+    public ArrayList<Sprite> getTiles(){
+        return tiles;
+    }
+
+    public float getScrollSpeed() { return scrollSpeed; }
+
     // construct mapTiles using names of tile files
     public Map(Sprite[] mapTiles) {
         // element zero must be left empty
         this.mapTiles = new Sprite[mapTiles.length + 1];
-        for (int i = this.mapTiles.length - 1; i > 0; i--) {
-            this.mapTiles[i] = mapTiles[i - 1];
-        }
+        //for (int i = this.mapTiles.length - 1; i > 0; i--) {
+         //   this.mapTiles[i] = mapTiles[i - 1];
+        //}
+        System.arraycopy(mapTiles, 0, this.mapTiles, 1, this.mapTiles.length - 1);
         initMap();
     }
 
     private void initMap() {
         this.x = 0;
         tiles = new ArrayList<>();
-        scrollSpeed = -6.0f;
+        scrollSpeed = -4.0f;
         difficulty = 0.0f;
 
         tileWidth = this.mapTiles[1].getCurrentImage().getWidth(null);
@@ -84,7 +91,7 @@ public class Map {
             for (int i = 0; i < map.length; i++) {
                 // add any non-empty tiles in the current row at the edge of the screen
                 if (map[i][mapTileCounter] != 0) {
-                    tiles.add(new Obstacle("obstacle_tile.png", SCREEN_WIDTH, i * tileWidth));
+                    addTile(getMapTile(map[i][mapTileCounter]), SCREEN_WIDTH, i * tileWidth);
                 }
             }
             mapTileCounter++;
@@ -101,13 +108,15 @@ public class Map {
         }
     }
 
-    public ArrayList<Sprite> getTiles(){
-        return tiles;
-    }
-
     //
-    public Sprite getObstacle(int index) {
+    private Sprite getMapTile(int index) {
         // todo: set speed
+        Sprite tile = mapTiles[index];
+        if(tile instanceof Obstacle) {
+            tile = new Obstacle("obstacle_tile.png");
+            tile.setSpeedX(scrollSpeed);
+            return tile;
+        }
         return null;
     }
 
