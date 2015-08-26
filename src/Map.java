@@ -75,7 +75,7 @@ public class Map {
 
         random = new Random();
 
-        map = generateEmptyBackground(6);
+        map = generateTiles(6, 12);
         mapTileCounter = 0;
         lastTile = 0;
     }
@@ -127,12 +127,6 @@ public class Map {
         tiles.add(s);
     }
 
-    // generates tiles of empty background for length tiles ahead
-    private byte[][] generateEmptyBackground(int length) {
-        // init Byte array to zero by default
-        return new byte[SCREEN_HEIGHT / tileHeight][length];
-    }
-
     // difficulty determines:
     // type of obstacles (int(difficulty) determines range of tiles to use
     // frequency of obstacles
@@ -155,8 +149,9 @@ public class Map {
     // returns space to leave empty after index in map
     private int generateObstacle(int index, byte[][] map) {
         int tile_increment;
-        for(int i = 0; i < map[0].length; i++) {
+        for(int i = index; i < map[0].length; i++) {
 
         }
+        return 0;
     }
 }
