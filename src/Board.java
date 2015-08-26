@@ -155,11 +155,17 @@ public class Board extends JPanel implements ActionListener {
 
     private void updateSpaceship() {
         spaceship.update();
-        spaceship.move();
 
         if(spaceship.getX() < 200) {
+            spaceship.setControllable(false);
+            spaceship.setSpeedX(4.0f);
+            spaceship.move();
+        } else if(spaceship.getX() > 200) {
             spaceship.setX(200);
+            spaceship.setSpeedX(0.0f);
+            spaceship.setControllable(true);
         }
+
         if(spaceship.getY() < 0) {
             spaceship.setY(0);
         } else if(spaceship.getY() > boardHeight - spaceship.getHeight()) {

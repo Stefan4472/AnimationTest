@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public class Spaceship extends Sprite {
 
-    // direction in x and y
+    // arrowkey direction in x and y
     private int dx;
     private int dy;
 
@@ -18,6 +18,10 @@ public class Spaceship extends Sprite {
     private SpriteAnimation movingAnimation;
     private SpriteAnimation startMovingAnimation;
     private SpriteAnimation fireRocketAnimation;
+    private SpriteAnimation explodeAnimation;
+
+    // whether user has control over spaceship
+    boolean controllable;
 
     // ms to wait between firing bullets
     private final int BULLET_DELAY = 100;
@@ -31,8 +35,6 @@ public class Spaceship extends Sprite {
 
     // keeps track of fired bullets and rockets
     private ArrayList<Sprite> projectiles;
-
-    private float preCollisionSpeed;
 
     // default constructor
     public Spaceship(String imageName, int x, int y) {
@@ -54,12 +56,15 @@ public class Spaceship extends Sprite {
         lastFiredBullet = 0;
         lastFiredRocket = 0;
 
+        controllable = true;
         collides = true;
         hitBox.setDimensions(33, 28);
         hitBox.setOffsets(12, 11);
     }
 
     public ArrayList<Sprite> getProjectiles() { return projectiles; }
+
+    public void setControllable(boolean controllable) { this.controllable = controllable; }
 
     public void updateCurrentImage() {
         currentImage = defaultImage;
@@ -181,42 +186,47 @@ public class Spaceship extends Sprite {
     public void handleCollision(Sprite s) {
         vis = false;
         collision = true;
-        preCollisionSpeed = speedX;
+        controllable = false;
+        // todo: setSpeedX to Map scrollSpeed
     }
 
     // Sets direction of sprite based on key pressed.
     public void keyPressed(KeyEvent e) {
-        int key = e.getKeyCode();
-        if(key == KeyEvent.VK_LEFT) {
-            dx = -1;
-        } else if(key == KeyEvent.VK_RIGHT) {
-            dx = 1;
-        } else if(key == KeyEvent.VK_UP) {
-            dy = -1;
-        } else if(key == KeyEvent.VK_DOWN) {
-            dy = 1;
-        } else if(key == KeyEvent.VK_SPACE) {
-            firingBullets = true;
-        } else if(key == KeyEvent.VK_X) {
-            firingRockets = true;
+        if(controllable) {
+            int key = e.getKeyCode();
+            if (key == KeyEvent.VK_LEFT) {
+                dx = -1;
+            } else if (key == KeyEvent.VK_RIGHT) {
+                dx = 1;
+            } else if (key == KeyEvent.VK_UP) {
+                dy = -1;
+            } else if (key == KeyEvent.VK_DOWN) {
+                dy = 1;
+            } else if (key == KeyEvent.VK_SPACE) {
+                firingBullets = true;
+            } else if (key == KeyEvent.VK_X) {
+                firingRockets = true;
+            }
         }
     }
 
     // sets movement direction to zero once key is released
     public void keyReleased(KeyEvent e) {
-        int key = e.getKeyCode();
-        if(key == KeyEvent.VK_LEFT) {
-            dx = 0;
-        } else if(key == KeyEvent.VK_RIGHT) {
-            dx = 0;
-        } else if(key == KeyEvent.VK_UP) {
-            dy = 0;
-        } else if(key == KeyEvent.VK_DOWN) {
-            dy = 0;
-        } else if(key == KeyEvent.VK_SPACE) {
-            firingBullets = false;
-        } else if(key == KeyEvent.VK_X) {
-            firingRockets = false;
+        if(controllable) {
+            int key = e.getKeyCode();
+            if (key == KeyEvent.VK_LEFT) {
+                dx = 0;
+            } else if (key == KeyEvent.VK_RIGHT) {
+                dx = 0;
+            } else if (key == KeyEvent.VK_UP) {
+                dy = 0;
+            } else if (key == KeyEvent.VK_DOWN) {
+                dy = 0;
+            } else if (key == KeyEvent.VK_SPACE) {
+                firingBullets = false;
+            } else if (key == KeyEvent.VK_X) {
+                firingRockets = false;
+            }
         }
     }
 }

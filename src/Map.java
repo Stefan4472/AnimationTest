@@ -75,7 +75,14 @@ public class Map {
 
         random = new Random();
 
-        map = generateTiles(6, 12);
+        map = new byte[][] {
+                {0, 0, 0, 0, 0, 1, 0},
+                {0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0}
+        };
         mapTileCounter = 0;
         lastTile = 0;
     }
