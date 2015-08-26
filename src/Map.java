@@ -37,6 +37,9 @@ public class Map {
     // amount to increment difficulty by each frame
     private final float difficultyIncrement = 0.001f;
 
+    // amount to incrmeent speed each frame
+    private final float scrollSpeedIncrement = 0.0005f;
+
     // coordinates of upper-left of "window" being shown
     private int x;
 
@@ -65,14 +68,13 @@ public class Map {
         this.x = 0;
         tiles = new ArrayList<>();
         scrollSpeed = startingScrollSpeed;
-        difficulty = 0.0f;
+        difficulty = 0.5f;
 
         tileWidth = this.mapTiles[1].getCurrentImage().getWidth(null);
         tileHeight = this.mapTiles[1].getCurrentImage().getHeight(null);
 
         random = new Random();
 
-        // generate 14 tiles of empty background to start
         map = generateEmptyBackground(6);
         mapTileCounter = 0;
         lastTile = 0;
@@ -83,9 +85,9 @@ public class Map {
 
     // adds any new tiles and generates a new set of tiles if needed
     public void update() {
+        scrollSpeed += scrollSpeedIncrement;
         this.x += scrollSpeed;
         difficulty += difficultyIncrement;
-        // todo: update scrollSpeed
 
         // perform rendering if spaceship has changed tiles
         if(getWTile() != lastTile) {
@@ -99,7 +101,7 @@ public class Map {
 
             // generate more tiles
             if (mapTileCounter == map[0].length) {
-                map = MapGenerator.generateTiles(6, 10, difficulty);
+                map = generateTiles(6, 10);
                 mapTileCounter = 0;
             }
             lastTile = getWTile();
@@ -129,5 +131,32 @@ public class Map {
     private byte[][] generateEmptyBackground(int length) {
         // init Byte array to zero by default
         return new byte[SCREEN_HEIGHT / tileHeight][length];
+    }
+
+    // difficulty determines:
+    // type of obstacles (int(difficulty) determines range of tiles to use
+    // frequency of obstacles
+    // speed of oncoming obstacles
+    // powerups and coins
+    public byte[][] generateTiles(int rows, int col) {
+        Random random = new Random();
+        byte[][] tiles = new byte[rows][col];
+
+        for(int i = 0; i < tiles[0].length; i++) {
+            System.out.println("i = " + i);
+            byte tile = (byte) random.nextInt((int) difficulty + 1);
+            tiles[(byte) random.nextInt(rows)][i] = tile;
+            i += random.nextInt((int) (7 / difficulty));
+        }
+        return tiles;
+    }
+
+    // generates single or cluster of simple obstacle at index in map
+    // returns space to leave empty after index in map
+    private int generateObstacle(int index, byte[][] map) {
+        int tile_increment;
+        for(int i = 0; i < map[0].length; i++) {
+
+        }
     }
 }
