@@ -56,7 +56,7 @@ public class Map {
     private void initMap() {
         this.x = 0;
         tiles = new ArrayList<>();
-        scrollSpeed = 6.0f;
+        scrollSpeed = -6.0f;
         difficulty = 0.0f;
 
         tileWidth = this.mapTiles[1].getCurrentImage().getWidth(null);
@@ -70,50 +70,32 @@ public class Map {
         lastTile = 0;
     }
 
-    // current horizontal and vertical tile
+    // current horizontal tile
     private int getWTile() { return x / tileWidth; }
-
-    // distance, in pixels, from top left of current tile
-    private int getWOffset() { return x % tileWidth; }
-
-    // moves map x units left, giving the
-    // appearance of forward motion
-    public void scroll(int x) {
-        this.x += x;
-        if(getWTile() != lastTile) {
-            update();
-            lastTile = getWTile();
-        }
-        for(Sprite t : tiles) {
-            t.setSpeedX(-x);
-        }
-    }
 
     // adds any new tiles and generates a new set of tiles if needed
     public void update() {
         this.x += scrollSpeed;
+        difficulty += difficultyIncrement;
+        // todo: update scrollSpeed
 
-        if(getWTile() != lastTile) { // only perform rendering when spaceship has changed tiles
+        // perform rendering if spaceship has changed tiles
+        if(getWTile() != lastTile) {
             for (int i = 0; i < map.length; i++) {
+                // add any non-empty tiles in the current row at the edge of the screen
                 if (map[i][mapTileCounter] != 0) {
-                    tiles.add(new Obstacle("obstacle_tile.png", 620, i * tileWidth));
+                    tiles.add(new Obstacle("obstacle_tile.png", SCREEN_WIDTH, i * tileWidth));
                 }
             }
             mapTileCounter++;
+
+            // generate more tiles
             if (mapTileCounter == map[0].length) {
-                //map = generateRandomTiles(10);
                 map = MapGenerator.generateTiles(6, 10, 1.0f);
-                for (int i = 0; i < map.length; i++) {
-                    for (int j = 0; j < map[0].length; j++) {
-                        System.out.print("\t" + map[i][j]);
-                    }
-                    System.out.println();
-                }
-                //map = generateEmptyBackground(10);
                 mapTileCounter = 0;
             }
+            lastTile = getWTile();
         }
-        lastTile = getWTile();
         for(Sprite t : tiles) {
             t.setSpeedX(scrollSpeed);
         }
@@ -121,6 +103,12 @@ public class Map {
 
     public ArrayList<Sprite> getTiles(){
         return tiles;
+    }
+
+    //
+    public Sprite getObstacle(int index) {
+        // todo: set speed
+        return null;
     }
 
     // adds sprite to arraylist and sets specified coordinates
@@ -134,16 +122,5 @@ public class Map {
     private byte[][] generateEmptyBackground(int length) {
         // init Byte array to zero by default
         return new byte[SCREEN_HEIGHT / tileHeight][length];
-    }
-
-    // generates one obstacle per tile horizontally for length length
-    private byte[][] generateRandomTiles(int length) {
-        byte[][] new_tiles = new byte[SCREEN_HEIGHT / tileHeight][length];
-        // for each column, choose row randomly and non-zero obstacle randomly
-        for(int i = 0; i < new_tiles[0].length; i++) {
-            new_tiles[random.nextInt(new_tiles.length)][i] =
-                    (byte) (random.nextInt(mapTiles.length - 1) + 1);
-        }
-        return new_tiles;
     }
 }
