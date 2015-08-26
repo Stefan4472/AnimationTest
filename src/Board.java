@@ -178,7 +178,8 @@ public class Board extends JPanel implements ActionListener {
 
         // once spaceship gets past x = 200, start scrolling background
         if(spaceship.getX() > 200) { // todo: check if spaceship has collision = true
-            map.scroll(spaceship.getX() - 200);
+            //map.scroll(spaceship.getX() - 200);
+            map.update();
             scrollCounter += spaceship.getX() - 200;
             spaceship.setX(200);
         }

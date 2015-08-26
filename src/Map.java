@@ -1,5 +1,3 @@
-import java.awt.*;
-import java.awt.image.ImageObserver;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -20,6 +18,9 @@ public class Map {
     // keeps track of tile spaceship was on last time scroll() was called
     private int lastTile;
 
+    // speed for "stationary" tiles to scroll across the map
+    private float scrollSpeed;
+
     // generated sprites
     private ArrayList<Sprite> tiles;
 
@@ -29,6 +30,9 @@ public class Map {
 
     // difficulty level
     private float difficulty;
+
+    // amount to increment difficulty by each frame
+    private final float difficultyIncrement = 0.001f;
 
     // coordinates of upper-left of "window" being shown
     private int x;
@@ -52,12 +56,13 @@ public class Map {
     private void initMap() {
         this.x = 0;
         tiles = new ArrayList<>();
+        scrollSpeed = 6.0f;
+        difficulty = 0.0f;
 
         tileWidth = this.mapTiles[1].getCurrentImage().getWidth(null);
         tileHeight = this.mapTiles[1].getCurrentImage().getHeight(null);
 
         random = new Random();
-        difficulty = 0.0f;
 
         // generate 14 tiles of empty background to start
         map = generateEmptyBackground(14);
@@ -76,7 +81,7 @@ public class Map {
     public void scroll(int x) {
         this.x += x;
         if(getWTile() != lastTile) {
-            updateTiles();
+            update();
             lastTile = getWTile();
         }
         for(Sprite t : tiles) {
@@ -85,24 +90,32 @@ public class Map {
     }
 
     // adds any new tiles and generates a new set of tiles if needed
-    public void updateTiles() {
-        for(int i = 0; i < map.length; i++) {
-            if(map[i][mapTileCounter] != 0) {
-                tiles.add(new Obstacle("obstacle_tile.png", 620, i * tileWidth));
+    public void update() {
+        this.x += scrollSpeed;
+
+        if(getWTile() != lastTile) { // only perform rendering when spaceship has changed tiles
+            for (int i = 0; i < map.length; i++) {
+                if (map[i][mapTileCounter] != 0) {
+                    tiles.add(new Obstacle("obstacle_tile.png", 620, i * tileWidth));
+                }
+            }
+            mapTileCounter++;
+            if (mapTileCounter == map[0].length) {
+                //map = generateRandomTiles(10);
+                map = MapGenerator.generateTiles(6, 10, 1.0f);
+                for (int i = 0; i < map.length; i++) {
+                    for (int j = 0; j < map[0].length; j++) {
+                        System.out.print("\t" + map[i][j]);
+                    }
+                    System.out.println();
+                }
+                //map = generateEmptyBackground(10);
+                mapTileCounter = 0;
             }
         }
-        mapTileCounter++;
-        if(mapTileCounter == map[0].length) {
-            //map = generateRandomTiles(10);
-            map = MapGenerator.generateTiles(6, 10, 1.0f);
-            for(int i = 0; i < map.length; i++) {
-                for(int j = 0; j < map[0].length; j++) {
-                    System.out.print("\t" + map[i][j]);
-                }
-                System.out.println();
-            }
-            //map = generateEmptyBackground(10);
-            mapTileCounter = 0;
+        lastTile = getWTile();
+        for(Sprite t : tiles) {
+            t.setSpeedX(scrollSpeed);
         }
     }
 
