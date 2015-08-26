@@ -21,6 +21,9 @@ public class Map {
     // speed for "stationary" tiles to scroll across the map
     private float scrollSpeed;
 
+    // starting scroll speed
+    private final float startingScrollSpeed = -4.0f;
+
     // generated sprites
     private ArrayList<Sprite> tiles;
 
@@ -53,17 +56,15 @@ public class Map {
     public Map(Sprite[] mapTiles) {
         // element zero must be left empty
         this.mapTiles = new Sprite[mapTiles.length + 1];
-        //for (int i = this.mapTiles.length - 1; i > 0; i--) {
-         //   this.mapTiles[i] = mapTiles[i - 1];
-        //}
         System.arraycopy(mapTiles, 0, this.mapTiles, 1, this.mapTiles.length - 1);
+
         initMap();
     }
 
     private void initMap() {
         this.x = 0;
         tiles = new ArrayList<>();
-        scrollSpeed = -4.0f;
+        scrollSpeed = startingScrollSpeed;
         difficulty = 0.0f;
 
         tileWidth = this.mapTiles[1].getCurrentImage().getWidth(null);
@@ -72,7 +73,7 @@ public class Map {
         random = new Random();
 
         // generate 14 tiles of empty background to start
-        map = generateEmptyBackground(14);
+        map = generateEmptyBackground(6);
         mapTileCounter = 0;
         lastTile = 0;
     }
@@ -98,19 +99,16 @@ public class Map {
 
             // generate more tiles
             if (mapTileCounter == map[0].length) {
-                map = MapGenerator.generateTiles(6, 10, 1.0f);
+                map = MapGenerator.generateTiles(6, 10, difficulty);
                 mapTileCounter = 0;
             }
             lastTile = getWTile();
-        }
-        for(Sprite t : tiles) {
-            t.setSpeedX(scrollSpeed);
         }
     }
 
     //
     private Sprite getMapTile(int index) {
-        // todo: set speed
+        // todo: better way of setting speed. Shouldn't be a combined function
         Sprite tile = mapTiles[index];
         if(tile instanceof Obstacle) {
             tile = new Obstacle("obstacle_tile.png");

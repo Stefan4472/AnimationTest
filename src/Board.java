@@ -81,7 +81,6 @@ public class Board extends JPanel implements ActionListener {
 
         Graphics2D g2d = (Graphics2D) g;
 
-        scrollCounter -= map.getScrollSpeed();
         if(scrollCounter > 30) { // scroll background slowly
             background.scroll(1);
             scrollCounter = 0;
@@ -108,6 +107,8 @@ public class Board extends JPanel implements ActionListener {
             updateSpaceship();
 
             map.update();
+            scrollCounter -= map.getScrollSpeed();
+
             updateSprites(map.getTiles());
             updateSprites(spaceship.getProjectiles());
 
