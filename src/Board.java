@@ -184,7 +184,7 @@ public class Board extends JPanel implements ActionListener {
         @Override
         public void keyPressed(KeyEvent e) {
             if(e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_P) {
-                paused = !paused; // toggle pause
+                paused = !paused; // toggle pause // todo: worry about pause and mainscreen in fxml
             } else {
                 spaceship.keyPressed(e);
             }

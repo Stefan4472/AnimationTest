@@ -68,7 +68,7 @@ public class Map {
         this.x = 0;
         tiles = new ArrayList<>();
         scrollSpeed = startingScrollSpeed;
-        difficulty = 0.5f;
+        difficulty = 1.0f;
 
         tileWidth = this.mapTiles[1].getCurrentImage().getWidth(null);
         tileHeight = this.mapTiles[1].getCurrentImage().getHeight(null);
@@ -144,9 +144,7 @@ public class Map {
         byte[][] tiles = new byte[rows][col];
 
         for(int i = 0; i < tiles[0].length; i++) {
-            System.out.println("i = " + i);
-            byte tile = (byte) random.nextInt((int) difficulty + 1);
-            tiles[(byte) random.nextInt(rows)][i] = tile;
+            generateObstacle(i, tiles);
             i += random.nextInt((int) (7 / difficulty));
         }
         return tiles;
@@ -154,11 +152,21 @@ public class Map {
 
     // generates single or cluster of simple obstacle at index in map
     // returns space to leave empty after index in map
-    private int generateObstacle(int index, byte[][] map) {
-        int tile_increment;
-        for(int i = index; i < map[0].length; i++) {
-
+    private void generateObstacle(int index, byte[][] map) {
+        int row = random.nextInt(6);
+        map[row][index] = 1;
+        if(getP(0.6f) && map[0].length > index + 1) {
+            map[row][index + 1] = 1;
+            if(getP(0.4f) && map.length > row + 1) {
+                map[row + 1][index] = 1;
+            }
         }
-        return 0;
+    }
+
+    // give probability of an event occurring
+    // uses random numbers and will return if event should
+    // occur or not
+    private boolean getP(float probability) {
+        return probability * 100 <= random.nextInt(100) + 1;
     }
 }

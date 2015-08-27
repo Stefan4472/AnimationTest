@@ -186,8 +186,7 @@ public class Spaceship extends Sprite {
     public void handleCollision(Sprite s) {
         vis = false;
         collision = true;
-        controllable = false;
-        // todo: setSpeedX to Map scrollSpeed
+        //controllable = false;
     }
 
     // Sets direction of sprite based on key pressed.

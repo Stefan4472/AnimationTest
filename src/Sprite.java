@@ -44,6 +44,24 @@ public abstract class Sprite {
     // what sprite actually looks like now (for animations)
     protected BufferedImage currentImage;
 
+    public int getWidth() { return width; }
+    public int getHeight() { return height; }
+
+    public float getSpeedX() { return speedX; }
+    public float getSpeedY() { return speedY; }
+
+    public void setSpeedX(float speedX) { this.speedX = speedX; }
+    public void setSpeedY(float speedY) { this.speedY = speedY; }
+
+    public boolean isVisible() { return vis; }
+    public void setVisible(Boolean visible) { vis = visible; }
+
+    public boolean getCollides() { return collides; }
+    public void setCollides(boolean collides) { this.collides = collides; }
+
+    public boolean getCollision() { return collision; }
+    public void setCollision(boolean collision) { this.collision = collision; }
+
     public Sprite(int x, int y) {
         this.x = x;
         this.y = y;
@@ -110,24 +128,6 @@ public abstract class Sprite {
         hitBox.updateCoordinates(x, y);
     }
 
-    public int getWidth() { return width; }
-    public int getHeight() { return height; }
-
-    public float getSpeedX() { return speedX; }
-    public float getSpeedY() { return speedY; }
-
-    public void setSpeedX(float speedX) { this.speedX = speedX; }
-    public void setSpeedY(float speedY) { this.speedY = speedY; }
-
-    public boolean isVisible() { return vis; }
-    public void setVisible(Boolean visible) { vis = visible; }
-
-    public boolean getCollides() { return collides; }
-    public void setCollides(boolean collides) { this.collides = collides; }
-
-    public boolean getCollision() { return collision; }
-    public void setCollision(boolean collision) { this.collision = collision; }
-
     // calls methods to update sprites animations, actions,
     // and speed
     public void update() {
@@ -148,6 +148,7 @@ public abstract class Sprite {
 
     // handles collision with s
     abstract void handleCollision(Sprite s);
+
     // moves sprite using speedX and speedY, updates hitbox,
     // and checks if sprite is still visible
     protected void move() {
@@ -172,13 +173,6 @@ public abstract class Sprite {
     public boolean collidesWith(Sprite s) { // todo: set flag first then setSpeed
         if(collides == false || s.collides == false)
             return false;
-        //if(distanceTo(s) > 120)
-        //    return false;
-
         return hitBox.intersects(s.hitBox);
-    }
-
-    public double distanceTo(Sprite s) {
-        return Math.sqrt((x - s.x)^2 + (y - s.y)^2);
     }
 }
