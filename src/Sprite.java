@@ -38,11 +38,6 @@ public abstract class Sprite {
     // hitbox for collision detection todo: complex shapes
     protected Hitbox hitBox;
 
-    // lines describing movement of hitbox from frame to frame. Only
-    // used if collides = true
-    private Line2D movement1;
-    private Line2D movement2;
-
     // sprite default image
     protected BufferedImage defaultImage;
 
@@ -164,14 +159,6 @@ public abstract class Sprite {
         if(y > BOARD_HEIGHT || y < -height)
             vis = false;
         hitBox.updateCoordinates(x, y);
-    }
-
-    // updates movement1 and movement2 Lines
-    protected void updateMovements() { // todo: look into linesIntersect
-        int start_x = x + hitBox.getOffsetX();
-        int start_y = y + hitBox.getOffsetY();
-        movement1.setLine(start_x, start_y, start_x + speedX, start_y + speedY);
-        movement2.setLine(start_x, y + height - start_y, start_x + speedX, y + height - start_y + speedY);
     }
 
     // draws sprite at current coordinates on g
