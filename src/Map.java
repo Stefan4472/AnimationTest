@@ -16,7 +16,7 @@ public class Map {
     private int mapTileCounter;
 
     // keeps track of tile spaceship was on last time scroll() was called
-    private int lastTile;
+    private long lastTile;
 
     // speed for "stationary" tiles to scroll across the map
     private float scrollSpeed;
@@ -41,7 +41,7 @@ public class Map {
     private final float scrollSpeedIncrement = 0.0005f;
 
     // coordinates of upper-left of "window" being shown
-    private int x;
+    private long x;
 
     // dimensions of mapTiles
     private int tileWidth;
@@ -49,10 +49,7 @@ public class Map {
 
     private Random random;
 
-    public ArrayList<Sprite> getTiles(){
-        return tiles;
-    }
-
+    public ArrayList<Sprite> getTiles(){ return tiles; }
     public float getScrollSpeed() { return scrollSpeed; }
 
     // construct mapTiles using names of tile files
@@ -88,10 +85,10 @@ public class Map {
     }
 
     // current horizontal tile
-    private int getWTile() { return x / tileWidth; }
+    private long getWTile() { return x / tileWidth; }
 
     // number of pixels from start of current tile
-    private int getWOffset() { return x % tileWidth; }
+    private int getWOffset() { return (int) x % tileWidth; }
 
     // adds any new tiles and generates a new set of tiles if needed
     public void update() {
@@ -102,7 +99,7 @@ public class Map {
         // perform rendering if spaceship has changed tiles
         if(getWTile() != lastTile) {
             for (int i = 0; i < map.length; i++) {
-                // add any non-empty tiles in the current row at the edge of the screen
+                // add any non-empty tiles in the current column at the edge of the screen
                 if (map[i][mapTileCounter] != 0) {
                     addTile(getMapTile(map[i][mapTileCounter]), SCREEN_WIDTH + getWOffset(), i * tileWidth);
                 }

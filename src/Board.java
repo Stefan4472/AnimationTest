@@ -117,6 +117,7 @@ public class Board extends JPanel implements ActionListener {
             sp.add(spaceship);
             checkCollisions(sp, map.getTiles());
 
+            spaceship.move();
             moveSprites(map.getTiles());
             moveSprites(spaceship.getProjectiles());
         }
