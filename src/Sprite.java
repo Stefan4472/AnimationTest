@@ -83,7 +83,7 @@ public abstract class Sprite {
 
     private void initSprite() {
         vis = true;
-        moving = false;
+        moving = true;
         collision = false;
         collides = true;
         speedX = 0.0f;

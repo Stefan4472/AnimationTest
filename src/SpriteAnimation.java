@@ -55,12 +55,11 @@ public class SpriteAnimation {
         isPlaying = false;
     }
 
-    // starts animation, returns first frame
-    public BufferedImage start() {
+    // resets fields so that nextFrame() can play animation
+    public void start() {
         isPlaying = true;
         frameCounter = 0;
-        frameSpeedCounter = 1;
-        return frames[0];
+        frameSpeedCounter = 0;
     }
 
     // whether animation has finished or not
@@ -70,9 +69,9 @@ public class SpriteAnimation {
 
     // returns next image in animation
     // starts animation if it is not playing already
-    public BufferedImage nextFrame() throws IndexOutOfBoundsException {
-        if(!isPlaying)
-            return start();
+    public BufferedImage nextFrame() {
+        if(!isPlaying) // todo: good practice is to start animation before calling nextFrame()
+            start();
 
         if(frameSpeedCounter == frameSpeed) {
             frameCounter++;
@@ -81,13 +80,11 @@ public class SpriteAnimation {
             frameSpeedCounter++;
         }
 
-        if(loop) {
-            // reached end of loop, start from beginning
+        if(loop) { // reached end of loop, start from beginning
             if(frameCounter == frames.length) {
                 frameCounter = 0;
             }
-        } else {
-            // reached end of loop
+        } else { // reached end of loop
             if(frameCounter == frames.length - 1) {
                 isPlaying = false;
             }

@@ -68,23 +68,16 @@ public class Spaceship extends Sprite {
 
     public void updateCurrentImage() {
         currentImage = defaultImage;
-        // either accelerating or breaking
-        if(dx != 0) { // todo: break into simpler methods
-            // sprite was previously not accelerating/breaking. Play startMovingAnimation
-            if(moving == false && dx == 1) {
-                currentImage = startMovingAnimation.start(); // todo: animation layering
-            } else { // sprite was previously moving play startMovingAnimation if it's playing or
-                // spaceship is breaking but has not stopped completely
-                if(startMovingAnimation.isPlaying() || dx == -1 && speedX != 0.0) {
-                    currentImage = startMovingAnimation.nextFrame();
-                } else if(dx == 1){ // Play moving animation as soon as startmoving animation is over
-                    currentImage = movingAnimation.nextFrame();
-                }
-            }
-            moving = true;
-        } else {
-            moving = false;
+
+        if(moving) {
+            currentImage = movingAnimation.nextFrame();
         }
+        if(fireRocketAnimation.isPlaying()) {
+            currentImage = ImageUtil.layer(currentImage, fireRocketAnimation.nextFrame());
+        }
+        //if(explodeAnimation.isPlaying()) {
+
+        //}
     }
 
     public void updateActions() {
@@ -96,10 +89,7 @@ public class Spaceship extends Sprite {
         if(firingRockets == true && lastFiredRocket + ROCKET_DELAY <= System.currentTimeMillis()) {
             fireRockets();
             lastFiredRocket = System.currentTimeMillis();
-            //currentImage = ImageUtil.layer(currentImage, fireRocketAnimation.nextFrame());
-        }
-        if(fireRocketAnimation.isPlaying()) { // todo: look into AlphaComposite to compose images
-            //currentImage = ImageUtil.layer(currentImage, fireRocketAnimation.nextFrame()); // todo: look into storing animations as diffs and using ImageUtil layer method
+            fireRocketAnimation.start();
         }
     }
 
@@ -128,6 +118,8 @@ public class Spaceship extends Sprite {
     public void handleCollision(Sprite s) {
         vis = false;
         collision = true;
+        //explodeAnimation.start();
+        moving = false;
         //controllable = false;
     }
 

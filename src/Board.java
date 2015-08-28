@@ -105,7 +105,6 @@ public class Board extends JPanel implements ActionListener {
 
         } else {
             updateSpaceship();
-
             map.update();
             scrollCounter -= map.getScrollSpeed();
 
@@ -117,9 +116,14 @@ public class Board extends JPanel implements ActionListener {
             sp.add(spaceship);
             checkCollisions(sp, map.getTiles());
 
+
             spaceship.move();
             moveSprites(map.getTiles());
             moveSprites(spaceship.getProjectiles());
+
+            updateCurrentImage(map.getTiles());
+            updateCurrentImage(spaceship.getProjectiles());
+            spaceship.updateCurrentImage();
         }
         repaint();
     }
@@ -151,6 +155,8 @@ public class Board extends JPanel implements ActionListener {
     private void moveSprites(ArrayList<Sprite> sprites) {
         sprites.forEach(Sprite::move);
     }
+
+    private void updateCurrentImage(ArrayList<Sprite> sprites) { sprites.forEach(Sprite::updateCurrentImage);}
 
     private void updateSpaceship() {
         spaceship.updateSpeeds();
