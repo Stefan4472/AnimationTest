@@ -101,7 +101,7 @@ public class Map {
             for (int i = 0; i < map.length; i++) {
                 // add any non-empty tiles in the current column at the edge of the screen
                 if (map[i][mapTileCounter] != 0) {
-                    addTile(getMapTile(map[i][mapTileCounter]), SCREEN_WIDTH + getWOffset(), i * tileWidth);
+                    addTile(getMapTile(map[i][mapTileCounter]), SCREEN_WIDTH - getWOffset(), i * tileWidth);
                 }
             }
             mapTileCounter++;
@@ -113,6 +113,9 @@ public class Map {
             }
             lastTile = getWTile();
         }
+        for(int i = 0; i < tiles.size(); i++) // todo: speed changes at zero
+            System.out.println("Tile at " + tiles.get(i).getX() + "," + tiles.get(i).getY() + " with speed " + tiles.get(i).getSpeedX());
+        System.out.println();
     }
 
     //
@@ -121,7 +124,7 @@ public class Map {
         Sprite tile = mapTiles[index];
         if(tile instanceof Obstacle) {
             tile = new Obstacle("obstacle_tile.png");
-            tile.setSpeedX(scrollSpeed);
+            tile.setSpeedX((float) Math.floor(scrollSpeed));
             return tile;
         }
         return null;
@@ -129,6 +132,7 @@ public class Map {
 
     // adds sprite to arraylist and sets specified coordinates
     private void addTile(Sprite s, int x, int y) {
+        System.out.println("Adding tile at " + x + "," + y);
         s.setX(x);
         s.setY(y);
         tiles.add(s);
@@ -145,7 +149,7 @@ public class Map {
 
         for(int i = 0; i < tiles[0].length; i++) {
             generateObstacle(i, tiles);
-            i += random.nextInt((int) (7 / difficulty));
+            i += 2 + random.nextInt(3);
         }
         return tiles;
     }
