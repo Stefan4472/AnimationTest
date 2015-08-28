@@ -74,7 +74,7 @@ public class Board extends JPanel implements ActionListener {
         Toolkit.getDefaultToolkit().sync();
     }
 
-    // draws background, spaceship, and rockets
+    // draws screen
     private void doDrawing(Graphics g) {
         //System.out.println(System.currentTimeMillis() - lastTime);
         //lastTime = System.currentTimeMillis();

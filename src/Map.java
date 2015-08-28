@@ -52,7 +52,6 @@ public class Map {
     public ArrayList<Sprite> getTiles(){ return tiles; }
     public float getScrollSpeed() { return scrollSpeed; }
 
-    // construct mapTiles using names of tile files
     public Map(Sprite[] mapTiles) {
         // element zero must be left empty
         this.mapTiles = new Sprite[mapTiles.length + 1];
@@ -78,7 +77,7 @@ public class Map {
                 {0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0}
+                {0, 0, 0, 0, 0, 0, 1}
         };
         mapTileCounter = 0;
         lastTile = 0;
@@ -93,7 +92,7 @@ public class Map {
     // adds any new tiles and generates a new set of tiles if needed
     public void update() {
         scrollSpeed += scrollSpeedIncrement;
-        this.x += scrollSpeed;
+        this.x += (float) Math.floor(scrollSpeed);
         difficulty += difficultyIncrement;
 
         // perform rendering if spaceship has changed tiles
@@ -101,7 +100,7 @@ public class Map {
             for (int i = 0; i < map.length; i++) {
                 // add any non-empty tiles in the current column at the edge of the screen
                 if (map[i][mapTileCounter] != 0) {
-                    addTile(getMapTile(map[i][mapTileCounter]), SCREEN_WIDTH - getWOffset(), i * tileWidth);
+                    addTile(getMapTile(map[i][mapTileCounter]), SCREEN_WIDTH + getWOffset(), i * tileWidth); // todo: always off by a fixed number of pixels
                 }
             }
             mapTileCounter++;
@@ -113,9 +112,6 @@ public class Map {
             }
             lastTile = getWTile();
         }
-        for(int i = 0; i < tiles.size(); i++) // todo: speed changes at zero
-            System.out.println("Tile at " + tiles.get(i).getX() + "," + tiles.get(i).getY() + " with speed " + tiles.get(i).getSpeedX());
-        System.out.println();
     }
 
     //
@@ -124,15 +120,19 @@ public class Map {
         Sprite tile = mapTiles[index];
         if(tile instanceof Obstacle) {
             tile = new Obstacle("obstacle_tile.png");
-            tile.setSpeedX((float) Math.floor(scrollSpeed));
-            return tile;
         }
-        return null;
+        tile.setSpeedX((float) Math.floor(scrollSpeed));
+        return tile;
     }
 
     // adds sprite to arraylist and sets specified coordinates
     private void addTile(Sprite s, int x, int y) {
         System.out.println("Adding tile at " + x + "," + y);
+        System.out.println("Current Tiles");
+        for(int i = 0; i < tiles.size(); i++) {
+            System.out.println("Tile at " + tiles.get(i).getX() + "," + tiles.get(i).getY());
+        }
+        System.out.print("\n");
         s.setX(x);
         s.setY(y);
         tiles.add(s);
