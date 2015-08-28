@@ -90,6 +90,9 @@ public class Map {
     // current horizontal tile
     private int getWTile() { return x / tileWidth; }
 
+    // number of pixels from start of current tile
+    private int getWOffset() { return x % tileWidth; }
+
     // adds any new tiles and generates a new set of tiles if needed
     public void update() {
         scrollSpeed += scrollSpeedIncrement;
@@ -101,7 +104,7 @@ public class Map {
             for (int i = 0; i < map.length; i++) {
                 // add any non-empty tiles in the current row at the edge of the screen
                 if (map[i][mapTileCounter] != 0) {
-                    addTile(getMapTile(map[i][mapTileCounter]), SCREEN_WIDTH, i * tileWidth);
+                    addTile(getMapTile(map[i][mapTileCounter]), SCREEN_WIDTH + getWOffset(), i * tileWidth);
                 }
             }
             mapTileCounter++;
