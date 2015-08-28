@@ -92,7 +92,7 @@ public class Map {
     // adds any new tiles and generates a new set of tiles if needed
     public void update() {
         scrollSpeed += scrollSpeedIncrement;
-        this.x += (float) Math.floor(scrollSpeed);
+        this.x += (int) Math.floor(scrollSpeed);
         difficulty += difficultyIncrement;
 
         // perform rendering if spaceship has changed tiles
@@ -100,7 +100,8 @@ public class Map {
             for (int i = 0; i < map.length; i++) {
                 // add any non-empty tiles in the current column at the edge of the screen
                 if (map[i][mapTileCounter] != 0) {
-                    addTile(getMapTile(map[i][mapTileCounter]), SCREEN_WIDTH + getWOffset(), i * tileWidth); // todo: always off by a fixed number of pixels
+                    addTile(getMapTile(map[i][mapTileCounter]), SCREEN_WIDTH + getWOffset(),
+                            i * tileWidth, (int) Math.floor(getScrollSpeed()), 0);
                 }
             }
             mapTileCounter++;
@@ -121,20 +122,15 @@ public class Map {
         if(tile instanceof Obstacle) {
             tile = new Obstacle("obstacle_tile.png");
         }
-        tile.setSpeedX((float) Math.floor(scrollSpeed));
         return tile;
     }
 
-    // adds sprite to arraylist and sets specified coordinates
-    private void addTile(Sprite s, int x, int y) {
-        System.out.println("Adding tile at " + x + "," + y);
-        System.out.println("Current Tiles");
-        for(int i = 0; i < tiles.size(); i++) {
-            System.out.println("Tile at " + tiles.get(i).getX() + "," + tiles.get(i).getY());
-        }
-        System.out.print("\n");
+    // sets specified fields and adds sprite to arraylist
+    private void addTile(Sprite s, int x, int y, int speedX, int speedY) {
         s.setX(x);
         s.setY(y);
+        s.setSpeedX(speedX);
+        s.setSpeedY(speedY);
         tiles.add(s);
     }
 
@@ -147,8 +143,12 @@ public class Map {
         Random random = new Random();
         byte[][] tiles = new byte[rows][col];
 
-        for(int i = 0; i < tiles[0].length; i++) {
-            generateObstacle(i, tiles);
+        for(int i = 0; i < tiles[0].length; i++) { // todo: implement difficulty-based probabilities later
+            if(getP(0.9f)) {
+                generateObstacle(i, tiles);
+            } else {
+                generateTunnel(i, tiles);
+            }
             i += 2 + random.nextInt(3);
         }
         return tiles;
@@ -164,6 +164,49 @@ public class Map {
             if(getP(0.4f) && map.length > row + 1) {
                 map[row + 1][index] = 1;
             }
+        }
+    }
+
+    // generates tunnel
+    private void generateTunnel(int index, byte[][] map) {
+        int current_tile = index;
+        int row = 1 + random.nextInt(5);
+        float continue_tunnel = 1.4f;
+        float change_path = -0.2f;
+        for(int i = 0; i < map.length; i++) {
+            if(i != row)
+                map[i][current_tile] = 1;
+        }
+        current_tile++;
+        while(getP(continue_tunnel) && current_tile < map[0].length) {
+            if(getP(change_path)) {
+                int direction;
+                if(getP(0.5f)) {
+                    direction = 1;
+                } else {
+                    direction = -1;
+                }
+                if(direction == 1 && row == map.length - 1) {
+                    direction = -1;
+                } else if(direction == -1 && row == 0) {
+                    direction = 1;
+                }
+                for(int i = 0; i < map.length; i++) {
+                    if(i != row && i != row + direction) {
+                        map[i][index] = 1;
+                    }
+                }
+                row += direction;
+            } else {
+                for(int i = 0; i < map.length; i++) {
+                    if(i != row) {
+                        map[i][index] = 1;
+                    }
+                }
+            }
+            current_tile++;
+            continue_tunnel -= 0.05f;
+            change_path += 0.05f;
         }
     }
 
