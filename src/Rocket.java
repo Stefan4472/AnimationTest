@@ -34,7 +34,7 @@ public class Rocket extends Sprite {
 
     }
 
-    public void updateSpeedX() {
+    public void updateSpeeds() {
         if(speedX < 2.05)
             speedX += 0.001;
         else if(speedX < 2.1)
@@ -47,10 +47,6 @@ public class Rocket extends Sprite {
             speedX += 0.15;
         else
             speedX += 0.05;
-    }
-
-    public void updateSpeedY() {
-
     }
 
     public void handleCollision(Sprite s) {

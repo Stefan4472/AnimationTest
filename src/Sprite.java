@@ -128,23 +128,13 @@ public abstract class Sprite {
         hitBox.updateCoordinates(x, y);
     }
 
-    // calls methods to update sprites animations, actions,
-    // and speed
-    public void update() {
-        updateCurrentImage();
-        updateActions();
-        updateSpeedX();
-        updateSpeedY();
-    }
-
     // updates sprite animations
     abstract void updateCurrentImage();
 
     // update/handle any actions sprite takes
     abstract void updateActions();
 
-    abstract void updateSpeedX();
-    abstract void updateSpeedY();
+    abstract void updateSpeeds();
 
     // handles collision with s
     abstract void handleCollision(Sprite s);
@@ -157,7 +147,7 @@ public abstract class Sprite {
         // keep in mind sprites are generated past the screen
         if(x > BOARD_WIDTH + width || x < -width)
             vis = false;
-        if(y > BOARD_HEIGHT || y < -height)
+        if(y > BOARD_HEIGHT || y < -height) // todo: bounce of edge of screen
             vis = false;
         hitBox.updateCoordinates(x, y);
     }

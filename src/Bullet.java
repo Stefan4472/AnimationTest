@@ -27,11 +27,7 @@ public class Bullet extends Sprite {
 
     }
 
-    public void updateSpeedX() {
-
-    }
-
-    public void updateSpeedY() {
+    public void updateSpeeds() {
 
     }
 

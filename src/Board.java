@@ -129,10 +129,8 @@ public class Board extends JPanel implements ActionListener {
         while(i.hasNext()) {
             Sprite s = i.next();
             if(s.isVisible()) {
-                s.updateCurrentImage();
                 s.updateActions();
-                s.updateSpeedX();
-                s.updateSpeedY();
+                s.updateSpeeds();
             } else {
                 i.remove();
             }
@@ -155,12 +153,11 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void updateSpaceship() {
-        spaceship.update();
+        spaceship.updateSpeeds();
 
         if(spaceship.getX() < 200) {
             spaceship.setControllable(false);
             spaceship.setSpeedX(4.0f);
-            spaceship.move();
         } else if(spaceship.getX() > 200) {
             spaceship.setX(200);
             spaceship.setSpeedX(0.0f);
@@ -172,6 +169,7 @@ public class Board extends JPanel implements ActionListener {
         } else if(spaceship.getY() > boardHeight - spaceship.getHeight()) {
             spaceship.setY(boardHeight - spaceship.getHeight());
         }
+        spaceship.updateActions();
     }
 
     // sends keystrokes to spaceship

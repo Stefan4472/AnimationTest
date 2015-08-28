@@ -115,18 +115,7 @@ public class Spaceship extends Sprite {
         projectiles.add(new Bullet(x + 43, y + 33));
     }
 
-    // calculates and sets new speedX
-    public void updateSpeedX() {
-        /*if(dx == 1)
-            accelerate();
-        else if(dx == 0)
-            drift();
-        else if(dx == -1)
-            applyBreak();*/
-    }
-
-    // calculates and sets new speedY
-    public void updateSpeedY() {
+    public void updateSpeeds() {
         speedY = Math.abs(speedY);
         if (speedY < MAX_SPEED_Y) {
             speedY += 0.25;
@@ -134,53 +123,6 @@ public class Spaceship extends Sprite {
             speedY = MAX_SPEED_Y;
         }
         speedY *= dy;
-    }
-
-    // manages speed when dx = 1
-    private void accelerate() {
-        if(speedX <= 1.0) {
-            speedX += 0.05;
-        } else if(speedX <= 3.0) {
-            speedX += 0.1;
-        } else if(speedX <= 4.0) {
-            speedX += 0.05;
-        } else if(speedX <= 7.5){
-            speedX += 0.0125;
-        } else if(speedX <= MAX_SPEED_X){
-            speedX += .001;
-        } else if(speedX > MAX_SPEED_X) {
-            speedX = MAX_SPEED_X;
-        }
-    }
-
-    // manages speed when dx = -1
-    private void applyBreak() {
-        if(speedX >= 3.5) {
-            speedX -= 0.05;
-        } else if(speedX >= 2.0) {
-            speedX -= 0.065;
-        } else if(speedX >= 1.0) {
-            speedX -= .025;
-        } else {
-            speedX = 0;
-        }
-    }
-
-    // manages speed when dx = 0
-    private void drift() {
-        if (speedX > 8.5) {
-            speedX -= 0.005;
-        } else if (speedX > 7.5) {
-            speedX -= 0.008;
-        } else if (speedX > 5.0) {
-            speedX -= 0.005;
-        } else if (speedX > 2.0) {
-            speedX -= 0.01;
-        } else if (speedX >= 1.0) {
-            speedX -= 0.025;
-        } else {
-            speedX = 0;
-        }
     }
 
     public void handleCollision(Sprite s) {
