@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 /**
  * Created by Stefan on 8/12/2015.
@@ -44,6 +45,12 @@ public abstract class Sprite {
     // what sprite actually looks like now (for animations)
     protected BufferedImage currentImage;
 
+    // board on which this sprite exists
+    protected Board board;
+
+    // random number generator
+    private Random random;
+
     public int getWidth() { return width; }
     public int getHeight() { return height; }
 
@@ -61,6 +68,8 @@ public abstract class Sprite {
 
     public boolean getCollision() { return collision; }
     public void setCollision(boolean collision) { this.collision = collision; }
+
+    public void setBoard(Board board) { this.board = board; }
 
     public Sprite(int x, int y) {
         this.x = x;
@@ -89,6 +98,7 @@ public abstract class Sprite {
         speedX = 0.0f;
         speedY = 0.0f;
         hitBox = new Hitbox();
+        random = new Random();
     }
 
     // loads sprite's default image
@@ -164,5 +174,14 @@ public abstract class Sprite {
         if(!collides || !s.collides)
             return false;
         return hitBox.intersects(s.hitBox);
+    }
+
+    // returns distance between origin points of sprites
+    public float distanceTo(Sprite s) {
+        return (float) Math.sqrt((x - s.x)^2 + (y - s.y)^2);
+    }
+
+    public boolean getP(float probability) {
+        return random.nextInt(100) + 1 <= probability * 100;
     }
 }

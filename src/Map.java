@@ -21,11 +21,11 @@ public class Map {
     // speed for "stationary" tiles to scroll across the map
     private float scrollSpeed;
 
-    // starting scroll speed
-    private final float startingScrollSpeed = -4.0f; // todo: make local?
-
     // generated sprites
     private ArrayList<Sprite> tiles;
+
+    // board upon which Map lies
+    private Board board;
 
     // dimensions of screen display
     private final int SCREEN_WIDTH = 600;
@@ -33,12 +33,6 @@ public class Map {
 
     // difficulty level
     private float difficulty;
-
-    // amount to increment difficulty by each frame
-    private final float difficultyIncrement = 0.001f;
-
-    // amount to incrmeent speed each frame
-    private final float scrollSpeedIncrement = 0.0005f;
 
     // coordinates of upper-left of "window" being shown
     private long x;
@@ -51,6 +45,7 @@ public class Map {
 
     public ArrayList<Sprite> getTiles(){ return tiles; }
     public float getScrollSpeed() { return scrollSpeed; }
+    public void setBoard(Board board) { this.board = board; }
 
     public Map(Sprite[] mapTiles) {
         // element zero must be left empty
@@ -63,7 +58,7 @@ public class Map {
     private void initMap() {
         this.x = 0;
         tiles = new ArrayList<>();
-        scrollSpeed = startingScrollSpeed;
+        scrollSpeed = -4.0f;
         difficulty = 1.0f;
 
         tileWidth = this.mapTiles[1].getCurrentImage().getWidth(null);
@@ -91,9 +86,9 @@ public class Map {
 
     // adds any new tiles and generates a new set of tiles if needed
     public void update() {
-        scrollSpeed -= scrollSpeedIncrement;
+        scrollSpeed -= 0.0005f;
         this.x += (int) Math.ceil(scrollSpeed);
-        difficulty += difficultyIncrement;
+        difficulty += 0.001f;
 
         // perform rendering if spaceship has changed tiles
         if(getWTile() != lastTile) {
@@ -101,7 +96,7 @@ public class Map {
                 // add any non-empty tiles in the current column at the edge of the screen
                 if (map[i][mapTileCounter] != 0) {
                     addTile(getMapTile(map[i][mapTileCounter]), SCREEN_WIDTH + getWOffset(),
-                            i * tileWidth, (int) Math.ceil(getScrollSpeed()), 0);
+                            i * tileWidth, (int) Math.ceil(getScrollSpeed()), 0, board);
                 }
             }
             mapTileCounter++;
@@ -132,11 +127,12 @@ public class Map {
     }
 
     // sets specified fields and adds sprite to arraylist
-    private void addTile(Sprite s, int x, int y, int speedX, int speedY) {
+    private void addTile(Sprite s, int x, int y, int speedX, int speedY, Board board) {
         s.setX(x);
         s.setY(y);
         s.setSpeedX(speedX);
         s.setSpeedY(speedY);
+        s.setBoard(board);
         tiles.add(s);
     }
 

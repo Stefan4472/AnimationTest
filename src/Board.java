@@ -32,6 +32,8 @@ public class Board extends JPanel implements ActionListener {
     // Number of milliseconds to wait before repainting
     private final int DELAY = 10;
 
+    public Spaceship getSpaceship() { return spaceship; }
+
     public Board(int boardWidth, int boardHeight) {
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
