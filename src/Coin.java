@@ -32,5 +32,6 @@ public class Coin extends Sprite {
 
     public void handleCollision(Sprite s) {
         vis = false;
+        System.out.println("Coin collision");
     }
 }

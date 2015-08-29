@@ -92,8 +92,7 @@ public class Map {
     // adds any new tiles and generates a new set of tiles if needed
     public void update() {
         scrollSpeed -= scrollSpeedIncrement;
-        this.x += (int) Math.floor(scrollSpeed);
-        System.out.println("Speed is " + (int) Math.floor(scrollSpeed));
+        this.x += (int) Math.ceil(scrollSpeed);
         difficulty += difficultyIncrement;
 
         // perform rendering if spaceship has changed tiles
@@ -102,7 +101,7 @@ public class Map {
                 // add any non-empty tiles in the current column at the edge of the screen
                 if (map[i][mapTileCounter] != 0) {
                     addTile(getMapTile(map[i][mapTileCounter]), SCREEN_WIDTH + getWOffset(),
-                            i * tileWidth, (int) Math.floor(getScrollSpeed()), 0);
+                            i * tileWidth, (int) Math.ceil(getScrollSpeed()), 0);
                 }
             }
             mapTileCounter++;
@@ -124,6 +123,8 @@ public class Map {
             tile = new Obstacle("obstacle_tile.png");
             if(index == 2)
                 tile.setCollides(false);
+        } else if(tile instanceof  Coin) {
+            tile = new Coin("coin_tile.png");
         }
         return tile;
     }
@@ -207,6 +208,8 @@ public class Map {
                         map[i][current_tile] = 2;
                     } else if(i != row) {
                         map[i][current_tile] = 1;
+                    } else {
+                        map[i][current_tile] = 3;
                     }
                 }
             }
