@@ -57,6 +57,6 @@ public class Alien extends Sprite {
     // that are slightly randomized
     private void fireBullet(Sprite s) {
         AlienBullet b = new AlienBullet(x, y);
-        
+
     }
 }

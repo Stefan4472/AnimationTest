@@ -26,6 +26,8 @@ public class Board extends JPanel implements ActionListener {
     private Background background;
     // generates terrain and sprites on screen
     private Map map;
+    // difficulty level, incremented every frame
+    private float difficulty;
     // time, in ms, last frame was completed
     private long lastTime = 0;
 
@@ -33,6 +35,7 @@ public class Board extends JPanel implements ActionListener {
     private final int DELAY = 10;
 
     public Spaceship getSpaceship() { return spaceship; }
+    public float getDifficulty() { return difficulty; }
 
     public Board(int boardWidth, int boardHeight) {
         this.boardWidth = boardWidth;
@@ -61,7 +64,7 @@ public class Board extends JPanel implements ActionListener {
                 new Coin("coin_tile.png"),
                 new Alien("alien.png")
         });
-
+        difficulty = 0.0f;
         /* This will call the actionPerformed method of this class
         every DELAY milliseconds */
         timer = new Timer(DELAY, this);
@@ -131,6 +134,7 @@ public class Board extends JPanel implements ActionListener {
             spaceship.updateCurrentImage();
         }
         repaint();
+        difficulty += 0.001f;
     }
 
     private void updateSprites(ArrayList<Sprite> sprites) {

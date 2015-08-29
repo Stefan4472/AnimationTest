@@ -31,9 +31,6 @@ public class Map {
     private final int SCREEN_WIDTH = 600;
     private final int SCREEN_HEIGHT = 300;
 
-    // difficulty level
-    private float difficulty;
-
     // coordinates of upper-left of "window" being shown
     private long x;
 
@@ -59,7 +56,6 @@ public class Map {
         this.x = 0;
         tiles = new ArrayList<>();
         scrollSpeed = -4.0f;
-        difficulty = 1.0f;
 
         tileWidth = this.mapTiles[1].getCurrentImage().getWidth(null);
         tileHeight = this.mapTiles[1].getCurrentImage().getHeight(null);
@@ -88,7 +84,6 @@ public class Map {
     public void update() {
         scrollSpeed -= 0.0005f;
         this.x += (int) Math.ceil(scrollSpeed);
-        difficulty += 0.001f;
 
         // perform rendering if spaceship has changed tiles
         if(getWTile() != lastTile) {
