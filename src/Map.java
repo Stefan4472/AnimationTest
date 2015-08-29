@@ -129,6 +129,7 @@ public class Map {
         s.setSpeedY(speedY);
         s.setBoard(board);
         tiles.add(s);
+        System.out.println("Adding Tile");
     }
 
     // difficulty determines:
@@ -139,15 +140,16 @@ public class Map {
     public byte[][] generateTiles(int rows, int col) {
         Random random = new Random();
         byte[][] tiles = new byte[rows][col];
-        generateTunnel(3, tiles);
-        for(int i = 0; i < tiles[0].length; i++) { // todo: implement difficulty-based probabilities later
+        tiles[rows / 2][col - 1] = 4;
+        //generateTunnel(3, tiles);
+        //for(int i = 0; i < tiles[0].length; i++) { // todo: implement difficulty-based probabilities later
             //if(getP(0.9f)) {
             //    generateObstacle(i, tiles);
             //} else {
                 //generateTunnel(i, tiles);
             //}
-            i += 2 + random.nextInt(3);
-        }
+        //    i += 2 + random.nextInt(3);
+        //}
         return tiles;
     }
 

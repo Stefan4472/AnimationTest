@@ -9,7 +9,7 @@ public class Alien extends Sprite {
     private final int BULLET_DELAY = 2000;
     private long lastFiredBullet;
 
-    private ArrayList<AlienBullet> projectiles;
+    private float bulletSpeed;
 
     public Alien(String imageName) {
         super(imageName);
@@ -24,8 +24,10 @@ public class Alien extends Sprite {
     private void initObstacle() {
         hitBox.setOffsets(5, 5);
         hitBox.setDimensions(40, 40);
-        projectiles = new ArrayList<>();
         lastFiredBullet = 0;
+        bulletSpeed = 1.0f;
+        speedX = -2.0f;
+        speedY = 0.0f;
     }
 
     @Override
@@ -56,7 +58,10 @@ public class Alien extends Sprite {
     // fires bullet at sprite based on current trajectories
     // that are slightly randomized
     private void fireBullet(Sprite s) {
-        AlienBullet b = new AlienBullet(x, y);
-
+        System.out.println("Firing bullet");
+        AlienBullet b = new AlienBullet(x, y + 20);
+        b.setSpeedX(bulletSpeed);
+        b.setSpeedY((y - s.getY()) / ((x - s.getX() / bulletSpeed)));
+        board.getMap().getTiles().add(b);
     }
 }

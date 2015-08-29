@@ -11,10 +11,9 @@ public class AlienBullet extends Sprite {
     private void initAlienBullet() {
         loadDefaultImage("alien_bullet.png");
 
-        hitBox.setDimensions(20, 20);
-        hitBox.setOffsets(3, 3);
+        hitBox.setDimensions(10, 10);
 
-        speedX = 5.0f;
+        speedX = 1.0f;
     }
 
     @Override
