@@ -54,6 +54,7 @@ public class Board extends JPanel implements ActionListener {
         scrollCounter = 0;
         paused = false;
         map = new Map(new Sprite[] {
+                new Obstacle("obstacle_tile.png"),
                 new Obstacle("obstacle_tile.png")
         });
 

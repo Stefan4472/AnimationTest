@@ -72,12 +72,12 @@ public class Map {
         random = new Random();
 
         map = new byte[][] {
-                {0, 0, 0, 0, 0, 1, 0},
                 {0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 1}
+                {0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0}
         };
         mapTileCounter = 0;
         lastTile = 0;
@@ -91,8 +91,9 @@ public class Map {
 
     // adds any new tiles and generates a new set of tiles if needed
     public void update() {
-        scrollSpeed += scrollSpeedIncrement;
+        scrollSpeed -= scrollSpeedIncrement;
         this.x += (int) Math.floor(scrollSpeed);
+        System.out.println("Speed is " + (int) Math.floor(scrollSpeed));
         difficulty += difficultyIncrement;
 
         // perform rendering if spaceship has changed tiles
@@ -121,6 +122,8 @@ public class Map {
         Sprite tile = mapTiles[index];
         if(tile instanceof Obstacle) {
             tile = new Obstacle("obstacle_tile.png");
+            if(index == 2)
+                tile.setCollides(false);
         }
         return tile;
     }
@@ -169,10 +172,8 @@ public class Map {
 
     // generates tunnel
     private void generateTunnel(int index, byte[][] map) {
-        System.out.println("Generating Tunnel at " + index);
         int current_tile = index;
-        int row = 1 + random.nextInt(5);
-        System.out.println("Row = " + row);
+        int row = 1 + random.nextInt(4);
         float continue_tunnel = 1.4f;
         float change_path = 0.0f;
         for(int i = 0; i < map.length; i++) {
@@ -180,12 +181,10 @@ public class Map {
                 map[i][current_tile] = 1;
         }
         current_tile++;
-        System.out.println(getP(continue_tunnel));
         while(getP(continue_tunnel) && current_tile < map[0].length) {
-            System.out.println("Continuing tunnel. Current_tile = " + current_tile);
             if(getP(change_path)) {
+                change_path = -0.1f;
                 int direction;
-                System.out.println("Changing Direction");
                 if(getP(0.5f)) {
                     direction = 1;
                 } else {
@@ -196,23 +195,23 @@ public class Map {
                 } else if(direction == -1 && row == 0) {
                     direction = 1;
                 }
-                System.out.println("Direction = " + direction);
                 for(int i = 0; i < map.length; i++) {
                     if(i != row && i != row + direction) {
                         map[i][current_tile] = 1;
                     }
                 }
                 row += direction;
-                System.out.println("row now equals " + row);
             } else {
                 for(int i = 0; i < map.length; i++) {
-                    if(i != row) {
+                    if(i < row - 1 || i > row + 1) {
+                        map[i][current_tile] = 2;
+                    } else if(i != row) {
                         map[i][current_tile] = 1;
                     }
                 }
             }
             current_tile++;
-            continue_tunnel -= 0.05f;
+            continue_tunnel -= 0.10f;
             change_path += 0.05f;
         }
     }
