@@ -1,6 +1,3 @@
-import java.awt.*;
-import java.io.IOException;
-
 /**
  * Created by Stefan on 8/17/2015.
  */
@@ -33,6 +30,7 @@ public class Bullet extends Sprite {
 
     public void handleCollision(Sprite s) {
         collision = true;
-        vis = false;
+        if(s instanceof Obstacle || s instanceof Alien)
+            vis = false;
     }
 }

@@ -105,7 +105,7 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(paused) {
-
+            // todo: pause screen
         } else {
             updateSpaceship();
             map.update();
@@ -146,12 +146,10 @@ public class Board extends JPanel implements ActionListener {
 
     private void checkCollisions(ArrayList<Sprite> sprites, ArrayList<Sprite> tiles) {
         for(Sprite s : sprites) {
-            for(Sprite t : tiles) {
-                if(s.collidesWith(t)) {
-                    s.handleCollision(t);
-                    t.handleCollision(s);
-                }
-            }
+            tiles.stream().filter(t -> s.collidesWith(t)).forEach(t -> {
+                s.handleCollision(t);
+                t.handleCollision(s);
+            });
         }
     }
 

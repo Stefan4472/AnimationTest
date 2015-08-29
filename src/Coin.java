@@ -31,6 +31,7 @@ public class Coin extends Sprite {
     }
 
     public void handleCollision(Sprite s) {
-        vis = false;
+        if(s instanceof Spaceship)
+            vis = false;
     }
 }

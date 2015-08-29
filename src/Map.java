@@ -22,7 +22,7 @@ public class Map {
     private float scrollSpeed;
 
     // starting scroll speed
-    private final float startingScrollSpeed = -4.0f;
+    private final float startingScrollSpeed = -4.0f; // todo: make local?
 
     // generated sprites
     private ArrayList<Sprite> tiles;

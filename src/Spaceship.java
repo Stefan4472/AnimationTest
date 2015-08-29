@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -81,12 +80,12 @@ public class Spaceship extends Sprite {
     }
 
     public void updateActions() {
-        if(firingBullets == true && lastFiredBullet + BULLET_DELAY <= System.currentTimeMillis()) {
+        if(firingBullets && lastFiredBullet + BULLET_DELAY <= System.currentTimeMillis()) {
             fireBullets();
             lastFiredBullet = System.currentTimeMillis();
         }
 
-        if(firingRockets == true && lastFiredRocket + ROCKET_DELAY <= System.currentTimeMillis()) {
+        if(firingRockets && lastFiredRocket + ROCKET_DELAY <= System.currentTimeMillis()) {
             fireRockets();
             lastFiredRocket = System.currentTimeMillis();
             fireRocketAnimation.start();

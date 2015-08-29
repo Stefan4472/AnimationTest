@@ -161,7 +161,7 @@ public abstract class Sprite {
     // will cause a collision
     // todo: calculate specific point of collides and use setX and setY methods to move sprites there
     public boolean collidesWith(Sprite s) { // todo: set flag first then setSpeed
-        if(collides == false || s.collides == false)
+        if(!collides || !s.collides)
             return false;
         return hitBox.intersects(s.hitBox);
     }
