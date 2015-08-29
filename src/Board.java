@@ -56,7 +56,8 @@ public class Board extends JPanel implements ActionListener {
         map = new Map(new Sprite[] {
                 new Obstacle("obstacle_tile.png"),
                 new Obstacle("obstacle_tile.png"),
-                new Coin("coin_tile.png")
+                new Coin("coin_tile.png"),
+                new Alien("alien.png")
         });
 
         /* This will call the actionPerformed method of this class

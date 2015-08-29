@@ -125,6 +125,8 @@ public class Map {
                 tile.setCollides(false);
         } else if(tile instanceof  Coin) {
             tile = new Coin("coin_tile.png");
+        } else if(tile instanceof Alien) {
+            tile = new Alien("alien.png");
         }
         return tile;
     }

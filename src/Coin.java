@@ -14,8 +14,8 @@ public class Coin extends Sprite {
     }
 
     private void initObstacle() {
-        hitBox.setOffsets(5, 5);
-        hitBox.setDimensions(40, 40);
+        hitBox.setOffsets(15, 5);
+        hitBox.setDimensions(20, 40);
     }
 
     public void updateCurrentImage() {
@@ -32,6 +32,5 @@ public class Coin extends Sprite {
 
     public void handleCollision(Sprite s) {
         vis = false;
-        System.out.println("Coin collision");
     }
 }
