@@ -10,6 +10,7 @@ public class Alien extends Sprite {
     private long lastFiredBullet;
 
     private float bulletSpeed;
+    private ArrayList<Sprite> projectiles;
 
     public Alien(String imageName) {
         super(imageName);
@@ -28,6 +29,7 @@ public class Alien extends Sprite {
         bulletSpeed = 1.0f;
         speedX = -2.0f;
         speedY = 0.0f;
+        projectiles = new ArrayList<>();
     }
 
     @Override
@@ -62,6 +64,6 @@ public class Alien extends Sprite {
         AlienBullet b = new AlienBullet(x, y + 20);
         b.setSpeedX(bulletSpeed);
         b.setSpeedY((y - s.getY()) / ((x - s.getX() / bulletSpeed)));
-        board.getMap().getTiles().add(b);
+        projectiles.add(b);
     }
 }
