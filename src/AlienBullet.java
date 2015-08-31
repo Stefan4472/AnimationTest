@@ -3,7 +3,7 @@
  */
 public class AlienBullet extends Sprite {
 
-    public AlienBullet(int x, int y) {
+    public AlienBullet(float x, float y) {
         super(x, y);
         initAlienBullet();
     }

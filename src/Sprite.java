@@ -13,8 +13,8 @@ import java.util.Random;
 public abstract class Sprite {
 
     // coordinates of sprite
-    protected int x;
-    protected int y;
+    protected float x;
+    protected float y;
 
     // intended movement in x and y directions each frame
     protected float speedX;
@@ -71,7 +71,7 @@ public abstract class Sprite {
 
     public void setBoard(Board board) { this.board = board; }
 
-    public Sprite(int x, int y) {
+    public Sprite(float x, float y) {
         this.x = x;
         this.y = y;
         initSprite();
@@ -83,7 +83,7 @@ public abstract class Sprite {
     }
 
     // sets sprite coordinates
-    public Sprite(String imageName, int x, int y) {
+    public Sprite(String imageName, float x, float y) {
         loadDefaultImage(imageName);
         this.x = x;
         this.y = y;
@@ -119,20 +119,20 @@ public abstract class Sprite {
 
     public Image getCurrentImage() { return currentImage; }
 
-    public int getX() { return x; }
-    public int getY() { return y; }
+    public float getX() { return x; }
+    public float getY() { return y; }
 
-    public void setX(int x) {
+    public void setX(float x) {
         this.x = x;
-        hitBox.updateCoordinates(x, (int) hitBox.getY());
+        hitBox.updateCoordinates(x, (float) hitBox.getY());
     }
 
-    public void setY(int y) {
+    public void setY(float y) {
         this.y = y;
-        hitBox.updateCoordinates((int) hitBox.getX(), y);
+        hitBox.updateCoordinates((float) hitBox.getX(), y);
     }
 
-    public void setCoordinates(int x, int y) {
+    public void setCoordinates(float x, float y) {
         this.x = x;
         this.y = y;
         hitBox.updateCoordinates(x, y);
@@ -164,7 +164,7 @@ public abstract class Sprite {
 
     // draws sprite at current coordinates on g
     public void render(Graphics2D g, ImageObserver o) {
-        g.drawImage(currentImage, x, y, o);
+        g.drawImage(currentImage, (int) x, (int) y, o);
     }
 
     // returns whether intended movement of sprites

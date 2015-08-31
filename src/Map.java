@@ -47,11 +47,17 @@ public class Map {
     public void setBoard(Board board) { this.board = board; }
 
     public ArrayList<Sprite> getProjectiles() {
-        return (ArrayList) tiles.stream()
+        return (ArrayList<Sprite>) tiles.stream()
                 .filter(s -> s.getClass().equals(Alien.class))
                 .map(s -> ((Alien) s).getProjectiles())
                 .flatMap(b -> b.stream())
                 .collect(Collectors.toList());
+        /*ArrayList<Sprite> p = new ArrayList<>();
+        for(Sprite s : tiles) {
+            if(s instanceof Alien)
+                p.addAll(((Alien) s).getProjectiles());
+        }
+        return p;*/
     }
 
     public Map(Sprite[] mapTiles) {

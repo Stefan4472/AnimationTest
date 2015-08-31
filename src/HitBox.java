@@ -31,7 +31,7 @@ public class Hitbox extends Rectangle.Double {
         this.offsetY = 0;
     }
 
-    public Hitbox(int x, int y, int width, int height, int offsetX, int offsetY) {
+    public Hitbox(float x, float y, int width, int height, int offsetX, int offsetY) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -41,7 +41,7 @@ public class Hitbox extends Rectangle.Double {
     }
 
     // resets hitbox to new coordinates
-    public void updateCoordinates(int newX, int newY) {
+    public void updateCoordinates(float newX, float newY) {
         this.x = newX + offsetX;
         this.y = newY + offsetY;
     }

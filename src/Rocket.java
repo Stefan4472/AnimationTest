@@ -9,7 +9,7 @@ public class Rocket extends Sprite {
 
     private SpriteAnimation startMoving;
 
-    public Rocket(int x, int y) {
+    public Rocket(float x, float y) {
         super(x, y);
 
         initMissile();
