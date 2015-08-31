@@ -124,10 +124,10 @@ public class Board extends JPanel implements ActionListener {
             scrollCounter -= map.getScrollSpeed();
 
             updateSprites(map.getTiles());
-            System.out.println(map.getTiles().stream()
+            /*System.out.println(map.getTiles().stream()
                     .filter(s -> s instanceof Alien)
                     .map(s -> s.getX() + "," + s.getY())
-                    .collect(Collectors.joining("\n")));
+                    .collect(Collectors.joining("\n")));*/
             updateSprites(map.getProjectiles());
             updateSprites(spaceship.getProjectiles());
 

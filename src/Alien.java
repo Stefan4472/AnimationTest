@@ -82,7 +82,7 @@ public class Alien extends Sprite {
         AlienBullet b = new AlienBullet(x, y + 20);
         b.setSpeedX(bulletSpeed);
         double frames_to_impact = (x - s.x) / bulletSpeed;
-        b.setSpeedY((y - target.y));
+        b.setSpeedY((y - target.y) / frames_to_impact);
         System.out.println("Firing bullet from " + x + "," + y + " at " + s.getX() + "," + s.getY() +
             " with speed " + b.speedX + "," + b.speedY);
         projectiles.add(b);
