@@ -52,12 +52,6 @@ public class Map {
                 .map(s -> ((Alien) s).getProjectiles())
                 .flatMap(b -> b.stream())
                 .collect(Collectors.toList());
-        /*ArrayList<Sprite> p = new ArrayList<>();
-        for(Sprite s : tiles) {
-            if(s instanceof Alien)
-                p.addAll(((Alien) s).getProjectiles());
-        }
-        return p;*/
     }
 
     public Map(Sprite[] mapTiles) {

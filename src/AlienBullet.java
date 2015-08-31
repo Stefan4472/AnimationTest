@@ -1,7 +1,7 @@
 /**
  * Created by Stefan on 8/29/2015.
  */
-public class AlienBullet extends Sprite {
+public class AlienBullet extends Projectile {
 
     public AlienBullet(float x, float y) {
         super(x, y);
@@ -13,7 +13,9 @@ public class AlienBullet extends Sprite {
 
         hitBox.setDimensions(10, 10);
 
-        speedX = 1.0f;
+        speedX = 2.0f;
+
+        damage = 20;
     }
 
     @Override

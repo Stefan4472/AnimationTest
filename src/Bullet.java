@@ -1,7 +1,7 @@
 /**
  * Created by Stefan on 8/17/2015.
  */
-public class Bullet extends Sprite {
+public class Bullet extends Projectile {
 
     public Bullet(float x, float y) {
         super(x, y);
@@ -14,6 +14,8 @@ public class Bullet extends Sprite {
         hitBox.setDimensions(9, 3);
 
         speedX = 5.0f;
+
+        damage = 10;
     }
 
     public void updateCurrentImage() {

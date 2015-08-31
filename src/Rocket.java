@@ -5,7 +5,7 @@ import java.io.IOException;
 /**
  * Created by Stefan on 8/13/2015.
  */
-public class Rocket extends Sprite {
+public class Rocket extends Projectile {
 
     private SpriteAnimation startMoving;
 
@@ -18,7 +18,7 @@ public class Rocket extends Sprite {
     private void initMissile() {
         loadDefaultImage("rocket.png");
         speedX = 2.0f;
-
+        damage = 25;
         hitBox.setDimensions(9, 3);
 
         try {

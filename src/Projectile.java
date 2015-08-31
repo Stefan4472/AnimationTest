@@ -18,6 +18,16 @@ public abstract class Projectile extends Sprite {
         initProjectile();
     }
 
+    public Projectile(String imageName) {
+        super(imageName);
+        initProjectile();
+    }
+
+    public Projectile(String imageName, float x, float y) {
+        super(imageName, x, y);
+        initProjectile();
+    }
+
     private void initProjectile() {
         damage = 0;
     }
