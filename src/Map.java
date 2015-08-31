@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Auto-generation of sprites
@@ -43,6 +45,14 @@ public class Map {
     public ArrayList<Sprite> getTiles(){ return tiles; }
     public float getScrollSpeed() { return scrollSpeed; }
     public void setBoard(Board board) { this.board = board; }
+
+    public ArrayList<Sprite> getProjectiles() {
+        return (ArrayList) tiles.stream()
+                .filter(s -> s.getClass().equals(Alien.class))
+                .map(s -> ((Alien) s).getProjectiles())
+                .flatMap(b -> b.stream())
+                .collect(Collectors.toList());
+    }
 
     public Map(Sprite[] mapTiles) {
         // element zero must be left empty

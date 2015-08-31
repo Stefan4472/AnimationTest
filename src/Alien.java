@@ -12,6 +12,14 @@ public class Alien extends Sprite {
     private float bulletSpeed;
     private ArrayList<Sprite> projectiles;
 
+    public Sprite getProjectile() {
+        return projectiles.get(0);
+    }
+
+    public ArrayList<Sprite> getProjectiles() {
+        return projectiles;
+    }
+
     public Alien(String imageName) {
         super(imageName);
         initObstacle();

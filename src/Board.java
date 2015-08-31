@@ -119,19 +119,24 @@ public class Board extends JPanel implements ActionListener {
             scrollCounter -= map.getScrollSpeed();
 
             updateSprites(map.getTiles());
+            updateSprites(map.getProjectiles());
             updateSprites(spaceship.getProjectiles());
 
             checkCollisions(spaceship.getProjectiles(), map.getTiles());
+            checkCollisions(map.getProjectiles(), map.getTiles());
             ArrayList<Sprite> sp = new ArrayList<>();
             sp.add(spaceship);
             checkCollisions(sp, map.getTiles());
+            checkCollisions(sp, map.getProjectiles());
 
 
             spaceship.move();
             moveSprites(map.getTiles());
+            moveSprites(map.getProjectiles());
             moveSprites(spaceship.getProjectiles());
 
             updateCurrentImage(map.getTiles());
+            updateCurrentImage(map.getProjectiles());
             updateCurrentImage(spaceship.getProjectiles());
             spaceship.updateCurrentImage();
         }
