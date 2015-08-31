@@ -34,7 +34,7 @@ public class Alien extends Sprite {
         hitBox.setOffsets(5, 5);
         hitBox.setDimensions(40, 40);
         lastFiredBullet = 0;
-        bulletSpeed = 1.0f;
+        bulletSpeed = -1.0f;
         speedX = -2.0f;
         speedY = 0.0f;
         projectiles = new ArrayList<>();
@@ -50,7 +50,9 @@ public class Alien extends Sprite {
         if(distanceTo(board.getSpaceship()) < 400 &&
                 lastFiredBullet + BULLET_DELAY <= System.currentTimeMillis()) {
             if(getP(0.2f)) {
+                System.out.println("Distance to spaceship is " + distanceTo(board.getSpaceship()));
                 fireBullet(board.getSpaceship());
+                lastFiredBullet = System.currentTimeMillis();
             }
         }
     }
@@ -62,16 +64,18 @@ public class Alien extends Sprite {
 
     @Override
     public void handleCollision(Sprite s) {
-        vis = false;
+        if(!(s instanceof AlienBullet))
+            vis = false;
     }
 
     // fires bullet at sprite based on current trajectories
     // that are slightly randomized
     private void fireBullet(Sprite s) {
-        System.out.println("Firing bullet");
         AlienBullet b = new AlienBullet(x, y + 20);
         b.setSpeedX(bulletSpeed);
         b.setSpeedY((y - s.getY()) / ((x - s.getX() / bulletSpeed)));
+        System.out.println("Bullet fired at " + b.getX() + "," + b.getY() +
+            " with speed " + b.getSpeedX() + "," + b.getSpeedY());
         projectiles.add(b);
     }
 }

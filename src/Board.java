@@ -6,6 +6,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 /**
  * Created by Stefan on 8/12/2015.
@@ -120,6 +121,13 @@ public class Board extends JPanel implements ActionListener {
 
             updateSprites(map.getTiles());
             updateSprites(map.getProjectiles());
+            if(map.getProjectiles().size() > 0) {
+                System.out.println("\n" + map.getProjectiles().size() + " oncoming projectile(s):");
+                System.out.println(
+                        map.getProjectiles().stream()
+                        .map(s -> getX() + "," + s.getY())
+                        .collect(Collectors.joining("\n")));
+            }
             updateSprites(spaceship.getProjectiles());
 
             checkCollisions(spaceship.getProjectiles(), map.getTiles());

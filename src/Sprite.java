@@ -178,7 +178,7 @@ public abstract class Sprite {
 
     // returns distance between origin points of sprites
     public float distanceTo(Sprite s) {
-        return (float) Math.sqrt((x - s.x)^2 + (y - s.y)^2);
+        return (float) Math.sqrt(Math.pow((s.x - x), 2) + Math.pow((s.y - y), 2));
     }
 
     public boolean getP(float probability) {
