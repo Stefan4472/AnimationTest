@@ -3,7 +3,7 @@
  */
 public class AlienBullet extends Projectile {
 
-    public AlienBullet(float x, float y) {
+    public AlienBullet(double x, double y) {
         super(x, y);
         initAlienBullet();
     }

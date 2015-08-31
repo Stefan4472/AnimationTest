@@ -13,7 +13,7 @@ public abstract class Projectile extends Sprite {
         this.damage = damage;
     }
 
-    public Projectile(float x, float y) {
+    public Projectile(double x, double y) {
         super(x, y);
         initProjectile();
     }
@@ -23,7 +23,7 @@ public abstract class Projectile extends Sprite {
         initProjectile();
     }
 
-    public Projectile(String imageName, float x, float y) {
+    public Projectile(String imageName, double x, double y) {
         super(imageName, x, y);
         initProjectile();
     }

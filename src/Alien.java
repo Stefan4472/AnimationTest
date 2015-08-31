@@ -1,3 +1,4 @@
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 /**
@@ -9,7 +10,7 @@ public class Alien extends Sprite {
     private final int BULLET_DELAY = 2000;
     private long lastFiredBullet;
 
-    private float bulletSpeed;
+    private double bulletSpeed;
     private ArrayList<Sprite> projectiles;
 
     private int amplitude;
@@ -28,7 +29,7 @@ public class Alien extends Sprite {
         initObstacle();
     }
 
-    public Alien(String imageName, float x, float y) {
+    public Alien(String imageName, double x, double y) {
         super(imageName, x, y);
         initObstacle();
     }
@@ -63,8 +64,9 @@ public class Alien extends Sprite {
 
     @Override
     public void updateSpeeds() {
-        float projected_y = (float) (amplitude * Math.sin(2 * Math.PI / period * x));
-        speedY = projected_y - y;
+        //float projected_y = (float) (amplitude * Math.sin(2 * Math.PI / period * x));
+       // System.out.println("Projected y: " + projected_y);
+       // speedY = projected_y - y;
     }
 
     @Override
@@ -76,9 +78,13 @@ public class Alien extends Sprite {
     // fires bullet at sprite based on current trajectories
     // that are slightly randomized
     private void fireBullet(Sprite s) {
+        Point2D.Double target = s.getHitboxCenter();
         AlienBullet b = new AlienBullet(x, y + 20);
         b.setSpeedX(bulletSpeed);
-        b.setSpeedY((y - s.getY()) / ((x - s.getX() / bulletSpeed)));
+        double frames_to_impact = (x - s.x) / bulletSpeed;
+        b.setSpeedY((y - target.y));
+        System.out.println("Firing bullet from " + x + "," + y + " at " + s.getX() + "," + s.getY() +
+            " with speed " + b.speedX + "," + b.speedY);
         projectiles.add(b);
     }
 }

@@ -8,7 +8,7 @@ public class Obstacle extends Sprite {
         initObstacle();
     }
 
-    public Obstacle(String imageName, float x, float y) {
+    public Obstacle(String imageName, double x, double y) {
         super(imageName, x, y);
         initObstacle();
     }

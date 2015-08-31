@@ -116,7 +116,7 @@ public class Map {
     }
 
     //
-    private Sprite getMapTile(int index, float x, float y) {
+    private Sprite getMapTile(int index, double x, double y) {
         // todo: better way of setting speed. Shouldn't be a combined function
         Sprite tile = mapTiles[index];
         if(tile instanceof Obstacle) {

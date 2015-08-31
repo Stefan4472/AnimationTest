@@ -29,7 +29,7 @@ public class Board extends JPanel implements ActionListener {
     // generates terrain and sprites on screen
     private Map map;
     // difficulty level, incremented every frame
-    private float difficulty;
+    private double difficulty;
     // time, in ms, last frame was completed
     private long lastTime = 0;
 
@@ -38,7 +38,7 @@ public class Board extends JPanel implements ActionListener {
 
     public Spaceship getSpaceship() { return spaceship; }
     public Map getMap() { return map; }
-    public float getDifficulty() { return difficulty; }
+    public double getDifficulty() { return difficulty; }
 
     public Board(int boardWidth, int boardHeight) {
         this.boardWidth = boardWidth;

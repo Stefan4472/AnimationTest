@@ -1,6 +1,7 @@
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
@@ -13,12 +14,12 @@ import java.util.Random;
 public abstract class Sprite {
 
     // coordinates of sprite
-    protected float x;
-    protected float y;
+    protected double x;
+    protected double y;
 
     // intended movement in x and y directions each frame
-    protected float speedX;
-    protected float speedY;
+    protected double speedX;
+    protected double speedY;
 
     // sprite width and height
     protected int width;
@@ -54,11 +55,11 @@ public abstract class Sprite {
     public int getWidth() { return width; }
     public int getHeight() { return height; }
 
-    public float getSpeedX() { return speedX; }
-    public float getSpeedY() { return speedY; }
+    public double getSpeedX() { return speedX; }
+    public double getSpeedY() { return speedY; }
 
-    public void setSpeedX(float speedX) { this.speedX = speedX; }
-    public void setSpeedY(float speedY) { this.speedY = speedY; }
+    public void setSpeedX(double speedX) { this.speedX = speedX; }
+    public void setSpeedY(double speedY) { this.speedY = speedY; }
 
     public boolean isVisible() { return vis; }
     public void setVisible(Boolean visible) { vis = visible; }
@@ -71,7 +72,7 @@ public abstract class Sprite {
 
     public void setBoard(Board board) { this.board = board; }
 
-    public Sprite(float x, float y) {
+    public Sprite(double x, double y) {
         this.x = x;
         this.y = y;
         initSprite();
@@ -83,7 +84,7 @@ public abstract class Sprite {
     }
 
     // sets sprite coordinates
-    public Sprite(String imageName, float x, float y) {
+    public Sprite(String imageName, double x, double y) {
         loadDefaultImage(imageName);
         this.x = x;
         this.y = y;
@@ -119,20 +120,20 @@ public abstract class Sprite {
 
     public Image getCurrentImage() { return currentImage; }
 
-    public float getX() { return x; }
-    public float getY() { return y; }
+    public double getX() { return x; }
+    public double getY() { return y; }
 
-    public void setX(float x) {
+    public void setX(double x) {
         this.x = x;
-        hitBox.updateCoordinates(x, (float) hitBox.getY());
+        hitBox.updateCoordinates(x, hitBox.getY());
     }
 
-    public void setY(float y) {
+    public void setY(double y) {
         this.y = y;
-        hitBox.updateCoordinates((float) hitBox.getX(), y);
+        hitBox.updateCoordinates(hitBox.getX(), y);
     }
 
-    public void setCoordinates(float x, float y) {
+    public void setCoordinates(double x, double y) {
         this.x = x;
         this.y = y;
         hitBox.updateCoordinates(x, y);
@@ -177,11 +178,18 @@ public abstract class Sprite {
     }
 
     // returns distance between origin points of sprites
-    public float distanceTo(Sprite s) {
-        return (float) Math.sqrt(Math.pow((s.x - x), 2) + Math.pow((s.y - y), 2));
+    public double distanceTo(Sprite s) {
+        return Math.sqrt(Math.pow((s.x - x), 2) + Math.pow((s.y - y), 2));
     }
 
-    public boolean getP(float probability) {
+    // returns coordinates of center of sprite's hitbox
+    // as a Point2D object
+    public Point2D.Double getHitboxCenter() {
+        return new Point2D.Double(hitBox.getX() + hitBox.getWidth() / 2,
+                hitBox.getY() + hitBox.getHeight() / 2);
+    }
+
+    public boolean getP(double probability) {
         return random.nextInt(100) + 1 <= probability * 100;
     }
 }
