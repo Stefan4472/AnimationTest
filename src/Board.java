@@ -107,6 +107,9 @@ public class Board extends JPanel implements ActionListener {
         for (Sprite p : spaceship.getProjectiles()) {
             p.render(g2d, this);
         }
+        for(Sprite p : map.getProjectiles()) {
+            p.render(g2d, this);
+        }
     }
 
     // moves spaceship and repaints JPanel every 10 ms
@@ -121,13 +124,6 @@ public class Board extends JPanel implements ActionListener {
 
             updateSprites(map.getTiles());
             updateSprites(map.getProjectiles());
-            if(map.getProjectiles().size() > 0) {
-                System.out.println("\n" + map.getProjectiles().size() + " oncoming projectile(s):");
-                System.out.println(
-                        map.getProjectiles().stream()
-                        .map(s -> getX() + "," + s.getY())
-                        .collect(Collectors.joining("\n")));
-            }
             updateSprites(spaceship.getProjectiles());
 
             checkCollisions(spaceship.getProjectiles(), map.getTiles());

@@ -50,7 +50,6 @@ public class Alien extends Sprite {
         if(distanceTo(board.getSpaceship()) < 400 &&
                 lastFiredBullet + BULLET_DELAY <= System.currentTimeMillis()) {
             if(getP(0.2f)) {
-                System.out.println("Distance to spaceship is " + distanceTo(board.getSpaceship()));
                 fireBullet(board.getSpaceship());
                 lastFiredBullet = System.currentTimeMillis();
             }
@@ -74,8 +73,6 @@ public class Alien extends Sprite {
         AlienBullet b = new AlienBullet(x, y + 20);
         b.setSpeedX(bulletSpeed);
         b.setSpeedY((y - s.getY()) / ((x - s.getX() / bulletSpeed)));
-        System.out.println("Bullet fired at " + b.getX() + "," + b.getY() +
-            " with speed " + b.getSpeedX() + "," + b.getSpeedY());
         projectiles.add(b);
     }
 }
