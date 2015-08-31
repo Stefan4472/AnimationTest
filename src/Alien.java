@@ -12,6 +12,9 @@ public class Alien extends Sprite {
     private float bulletSpeed;
     private ArrayList<Sprite> projectiles;
 
+    private int amplitude;
+    private int period;
+
     public Sprite getProjectile() {
         return projectiles.get(0);
     }
@@ -25,7 +28,7 @@ public class Alien extends Sprite {
         initObstacle();
     }
 
-    public Alien(String imageName, int x, int y) {
+    public Alien(String imageName, float x, float y) {
         super(imageName, x, y);
         initObstacle();
     }
@@ -34,10 +37,12 @@ public class Alien extends Sprite {
         hitBox.setOffsets(5, 5);
         hitBox.setDimensions(40, 40);
         lastFiredBullet = 0;
-        bulletSpeed = -1.0f;
+        bulletSpeed = -2.0f;
         speedX = -2.0f;
-        speedY = 0.0f;
         projectiles = new ArrayList<>();
+
+        amplitude = 100;
+        period = 600;
     }
 
     @Override
@@ -58,7 +63,8 @@ public class Alien extends Sprite {
 
     @Override
     public void updateSpeeds() {
-
+        float projected_y = (float) (amplitude * Math.sin(2 * Math.PI / period * x));
+        speedY = projected_y - y;
     }
 
     @Override

@@ -13,8 +13,6 @@ public class AlienBullet extends Projectile {
 
         hitBox.setDimensions(10, 10);
 
-        speedX = 2.0f;
-
         damage = 20;
     }
 

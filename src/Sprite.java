@@ -49,7 +49,7 @@ public abstract class Sprite {
     protected Board board;
 
     // random number generator
-    private Random random;
+    protected Random random;
 
     public int getWidth() { return width; }
     public int getHeight() { return height; }

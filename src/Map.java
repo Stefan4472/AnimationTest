@@ -100,8 +100,8 @@ public class Map {
             for (int i = 0; i < map.length; i++) {
                 // add any non-empty tiles in the current column at the edge of the screen
                 if (map[i][mapTileCounter] != 0) {
-                    addTile(getMapTile(map[i][mapTileCounter]), SCREEN_WIDTH + getWOffset(),
-                            i * tileWidth, (int) Math.ceil(getScrollSpeed()), 0, board);
+                    addTile(getMapTile(map[i][mapTileCounter], SCREEN_WIDTH + getWOffset(),  i * tileWidth),
+                          (int) Math.ceil(getScrollSpeed()), 0, board);
                 }
             }
             mapTileCounter++;
@@ -116,30 +116,27 @@ public class Map {
     }
 
     //
-    private Sprite getMapTile(int index) {
+    private Sprite getMapTile(int index, float x, float y) {
         // todo: better way of setting speed. Shouldn't be a combined function
         Sprite tile = mapTiles[index];
         if(tile instanceof Obstacle) {
-            tile = new Obstacle("obstacle_tile.png");
+            tile = new Obstacle("obstacle_tile.png", x, y);
             if(index == 2)
                 tile.setCollides(false);
         } else if(tile instanceof  Coin) {
-            tile = new Coin("coin_tile.png");
+            tile = new Coin("coin_tile.png", x, y);
         } else if(tile instanceof Alien) {
-            tile = new Alien("alien.png");
+            tile = new Alien("alien.png", x, y);
         }
         return tile;
     }
 
     // sets specified fields and adds sprite to arraylist
-    private void addTile(Sprite s, int x, int y, int speedX, int speedY, Board board) {
-        s.setX(x);
-        s.setY(y);
+    private void addTile(Sprite s, int speedX, int speedY, Board board) {
         s.setSpeedX(speedX);
         s.setSpeedY(speedY);
         s.setBoard(board);
         tiles.add(s);
-        System.out.println("Adding Tile");
     }
 
     // difficulty determines:
@@ -150,7 +147,7 @@ public class Map {
     public byte[][] generateTiles(int rows, int col) {
         Random random = new Random();
         byte[][] tiles = new byte[rows][col];
-        tiles[rows / 2][col - 1] = 4;
+        generateAlien(3, tiles);
         //generateTunnel(3, tiles);
         //for(int i = 0; i < tiles[0].length; i++) { // todo: implement difficulty-based probabilities later
             //if(getP(0.9f)) {
@@ -222,6 +219,10 @@ public class Map {
             continue_tunnel -= 0.10f;
             change_path += 0.05f;
         }
+    }
+
+    private void generateAlien(int index, byte[][] map) {
+        map[random.nextInt(6)][index] = 4;
     }
 
     // give probability of an event occurring

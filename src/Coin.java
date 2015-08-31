@@ -8,7 +8,7 @@ public class Coin extends Sprite {
         initObstacle();
     }
 
-    public Coin(String imageName, int x, int y) {
+    public Coin(String imageName, float x, float y) {
         super(imageName, x, y);
         initObstacle();
     }

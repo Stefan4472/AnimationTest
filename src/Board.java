@@ -6,6 +6,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 /**
@@ -123,6 +124,10 @@ public class Board extends JPanel implements ActionListener {
             scrollCounter -= map.getScrollSpeed();
 
             updateSprites(map.getTiles());
+            System.out.println(map.getTiles().stream()
+                    .filter(s -> s instanceof Alien)
+                    .map(s -> s.getX() + "," + s.getY())
+                    .collect(Collectors.joining("\n")));
             updateSprites(map.getProjectiles());
             updateSprites(spaceship.getProjectiles());
 
