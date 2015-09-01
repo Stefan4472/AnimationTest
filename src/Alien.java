@@ -46,6 +46,7 @@ public class Alien extends Sprite {
     }
 
     private void initObstacle() {
+        hp = 50;
         hitBox.setOffsets(5, 5);
         hitBox.setDimensions(40, 40);
         lastFiredBullet = 0;
@@ -59,7 +60,6 @@ public class Alien extends Sprite {
         period = 250 + random.nextInt(100);
         vShift = random.nextInt(20);
         hShift = -random.nextInt(3);
-        System.out.println("Starting coordinates " + x + "," + y);
     }
 
     @Override
@@ -93,8 +93,11 @@ public class Alien extends Sprite {
 
     @Override
     public void handleCollision(Sprite s) {
-        if(!(s instanceof AlienBullet))
-            vis = false;
+        if(!(s instanceof AlienBullet)) {
+            hp -= s.damage;
+            if(hp < 0) // todo: death animation
+                vis = false;
+        }
     }
 
     // fires bullet at sprite based on current trajectories

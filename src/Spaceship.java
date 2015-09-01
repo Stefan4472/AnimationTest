@@ -115,11 +115,10 @@ public class Spaceship extends Sprite {
     }
 
     public void handleCollision(Sprite s) {
-        vis = false;
-        collision = true;
-        //explodeAnimation.start();
-        moving = false;
-        //controllable = false;
+        hp -= s.getDamage();
+        if(hp < 0) {
+           System.out.println("You are dead");
+        }
     }
 
     // Sets direction of sprite based on key pressed.

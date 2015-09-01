@@ -15,6 +15,7 @@ public class Obstacle extends Sprite {
 
     private void initObstacle() {
         hitBox.setDimensions(50, 50);
+        damage = Integer.MAX_VALUE;
     }
 
     public void updateCurrentImage() {

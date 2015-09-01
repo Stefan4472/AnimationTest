@@ -74,6 +74,12 @@ public abstract class Sprite {
     public boolean getCollision() { return collision; }
     public void setCollision(boolean collision) { this.collision = collision; }
 
+    public int getDamage() { return damage; }
+    public void setDamage(int damage) { this.damage = damage; }
+
+    public int getHP() { return hp; }
+    public void setHP(int hp) { this.hp = hp; }
+
     public void setBoard(Board board) { this.board = board; }
 
     public Sprite(double x, double y) {
