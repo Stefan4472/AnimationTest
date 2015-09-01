@@ -190,6 +190,6 @@ public abstract class Sprite {
     }
 
     public boolean getP(double probability) {
-        return random.nextInt(100) + 1 <= probability * 100;
+        return random.nextInt(1000000) + 1 <= probability * 1000000;
     }
 }

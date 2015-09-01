@@ -24,6 +24,8 @@ public class Alien extends Sprite {
     // defines sine wave that describes alien's trajectory
     private int amplitude;
     private int period;
+    private int vShift;
+    private int hShift;
 
     public Sprite getProjectile() {
         return projectiles.get(0);
@@ -47,14 +49,16 @@ public class Alien extends Sprite {
         hitBox.setOffsets(5, 5);
         hitBox.setDimensions(40, 40);
         lastFiredBullet = 0;
-        bulletSpeed = -2.0f;
+        bulletSpeed = -2.0f - random.nextInt(10) / 10;
         speedX = -2.0f;
         projectiles = new ArrayList<>();
 
         startingY = y;
         elapsedFrames = 1; // avoid divide by zero
-        amplitude = 100;
-        period = 300;
+        amplitude = 70 + random.nextInt(60);
+        period = 250 + random.nextInt(100);
+        vShift = random.nextInt(20);
+        hShift = -random.nextInt(3);
         System.out.println("Starting coordinates " + x + "," + y);
     }
 
@@ -79,9 +83,9 @@ public class Alien extends Sprite {
         double projected_y;
         // if sprite in top half of screen, start flying down. Else start flying up
         if(startingY <= 150) {
-            projected_y = amplitude * Math.sin(2 * Math.PI / period * elapsedFrames) + startingY;
+            projected_y = amplitude * Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
         } else { // todo: flying up
-            projected_y = amplitude * Math.sin(2 * Math.PI / period * elapsedFrames) + startingY;
+            projected_y = amplitude * Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
         }
         speedY = projected_y - y;
         elapsedFrames++;
