@@ -1,7 +1,7 @@
 /**
  * Created by Stefan on 8/29/2015.
  */
-public class AlienBullet extends Projectile {
+public class AlienBullet extends Sprite {
 
     public AlienBullet(double x, double y) {
         super(x, y);

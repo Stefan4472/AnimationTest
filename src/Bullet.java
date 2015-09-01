@@ -1,7 +1,7 @@
 /**
  * Created by Stefan on 8/17/2015.
  */
-public class Bullet extends Projectile {
+public class Bullet extends Sprite {
 
     public Bullet(double x, double y) {
         super(x, y);
@@ -9,7 +9,7 @@ public class Bullet extends Projectile {
     }
 
     private void initBullet() {
-        loadDefaultImage("rocket.png");
+        loadDefaultImage("bullet.png");
 
         hitBox.setDimensions(9, 3);
 

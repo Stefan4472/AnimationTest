@@ -25,6 +25,10 @@ public abstract class Sprite {
     protected int width;
     protected int height;
 
+    // damage sprite can withstand and damage it inflicts on collision
+    protected int hp;
+    protected int damage;
+
     // whether or not sprite is visible on screen
     protected boolean vis;
     // whether or not sprite can collide with other sprites
@@ -100,6 +104,8 @@ public abstract class Sprite {
         speedY = 0.0f;
         hitBox = new Hitbox();
         random = new Random();
+        damage = 0;
+        hp = 0;
     }
 
     // loads sprite's default image

@@ -5,7 +5,7 @@ import java.io.IOException;
 /**
  * Created by Stefan on 8/13/2015.
  */
-public class Rocket extends Projectile {
+public class Rocket extends Sprite {
 
     private SpriteAnimation startMoving;
 
