@@ -13,6 +13,15 @@ public class Alien extends Sprite {
     private double bulletSpeed;
     private ArrayList<Sprite> projectiles;
 
+    // frames since alien was constructed
+    // used for calculating trajectory
+    private int elapsedFrames;
+
+    // starting y-coordinate
+    // used as a reference for calculating trajectory
+    private double startingY;
+
+    // defines sine wave that describes alien's trajectory
     private int amplitude;
     private int period;
 
@@ -42,8 +51,11 @@ public class Alien extends Sprite {
         speedX = -2.0f;
         projectiles = new ArrayList<>();
 
+        startingY = y;
+        elapsedFrames = 1; // avoid divide by zero
         amplitude = 100;
-        period = 600;
+        period = 300;
+        System.out.println("Starting coordinates " + x + "," + y);
     }
 
     @Override
@@ -64,9 +76,15 @@ public class Alien extends Sprite {
 
     @Override
     public void updateSpeeds() {
-        //float projected_y = (float) (amplitude * Math.sin(2 * Math.PI / period * x));
-       // System.out.println("Projected y: " + projected_y);
-       // speedY = projected_y - y;
+        double projected_y;
+        // if sprite in top half of screen, start flying down. Else start flying up
+        if(startingY <= 150) {
+            projected_y = amplitude * Math.sin(2 * Math.PI / period * elapsedFrames) + startingY;
+        } else { // todo: flying up
+            projected_y = amplitude * Math.sin(2 * Math.PI / period * elapsedFrames) + startingY;
+        }
+        speedY = projected_y - y;
+        elapsedFrames++;
     }
 
     @Override
@@ -83,8 +101,6 @@ public class Alien extends Sprite {
         b.setSpeedX(bulletSpeed);
         double frames_to_impact = (x - s.x) / bulletSpeed;
         b.setSpeedY((y - target.y) / frames_to_impact);
-        System.out.println("Firing bullet from " + x + "," + y + " at " + s.getX() + "," + s.getY() +
-            " with speed " + b.speedX + "," + b.speedY);
         projectiles.add(b);
     }
 }
