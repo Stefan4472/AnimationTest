@@ -50,6 +50,6 @@ public class Rocket extends Sprite {
     }
 
     public void render(Graphics2D g, ImageObserver o) {
-        g.drawImage(currentImage, (int) x, (int) y, o);
+        g.drawImage(defaultImage, (int) x, (int) y, o);
     }
 }

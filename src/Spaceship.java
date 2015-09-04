@@ -67,20 +67,6 @@ public class Spaceship extends Sprite {
 
     public void setControllable(boolean controllable) { this.controllable = controllable; }
 
-    public void updateCurrentImage() {
-        currentImage = defaultImage;
-
-        if(moving) {
-            currentImage = movingAnimation.nextFrame();
-        }
-        if(fireRocketAnimation.isPlaying()) {
-            currentImage = ImageUtil.layer(currentImage, fireRocketAnimation.nextFrame());
-        }
-        //if(explodeAnimation.isPlaying()) {
-
-        //}
-    }
-
     public void updateActions() {
         if(firingBullets && lastFiredBullet + BULLET_DELAY <= System.currentTimeMillis()) {
             fireBullets();
@@ -125,7 +111,10 @@ public class Spaceship extends Sprite {
 
     @Override
     void render(Graphics2D g, ImageObserver o) {
-        g.drawImage(currentImage, (int) x, (int) y, o);
+        g.drawImage(defaultImage, (int) x, (int) y, o);
+        if(moving) {
+            g.drawImage(movingAnimation.nextFrame(), (int) x, (int) y, o);
+        }
     }
 
     // Sets direction of sprite based on key pressed.

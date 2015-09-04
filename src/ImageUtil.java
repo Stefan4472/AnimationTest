@@ -7,29 +7,25 @@ import java.awt.image.WritableRaster;
  */
 public class ImageUtil  {
 
-    // draws as much as overlay as will fit on top of b, starting from top left
-    // transparent pixels in the overlay are ignored
-    public static BufferedImage layer(BufferedImage b, BufferedImage overlay) { // todo: optimizations (WritableRaster?)
-        int height, width; // todo: layer overlay onto Graphics2D and return Graphics2D?
-
-        if(b.getHeight() >= overlay.getHeight())
-            height = overlay.getHeight();
-        else
-            height = b.getHeight();
-
-        if(b.getWidth() >= overlay.getWidth())
-            width = overlay.getWidth();
-        else
-            width = b.getWidth();
+    // draws overlay onto g starting at pixel (w, h)
+    // ignores fully transparent pixels
+    public static void layer(Graphics2D g, BufferedImage overlay, int w, int h) { // todo: optimizations (WritableRaster?)
+        int height = overlay.getHeight();
+        int width = overlay.getWidth();
+        Color pixel_color;
 
         int rgb;
         for(int i = 0; i < height; i++) {
             for(int j = 0; j < width; j++) {
                 rgb = overlay.getRGB(i, j);
-                if ((rgb >> 24 & 0xff) != 0)
-                    b.setRGB(i, j, rgb); // only overlay non-transparent pixels
+                if ((rgb >> 24 & 0xff) != 0) {
+                     // only overlay non-transparent pixels
+                }
             }
         }
-        return b;
+    }
+
+    public static void layer(BufferedImage b, BufferedImage overlay) {
+        //layer(b.createGraphics(), overlay);
     }
 }

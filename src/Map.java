@@ -67,8 +67,8 @@ public class Map {
         tiles = new ArrayList<>();
         scrollSpeed = -4.0f;
 
-        tileWidth = this.mapTiles[1].getCurrentImage().getWidth(null);
-        tileHeight = this.mapTiles[1].getCurrentImage().getHeight(null);
+        tileWidth = this.mapTiles[1].getWidth();
+        tileHeight = this.mapTiles[1].getHeight();
 
         random = new Random();
 

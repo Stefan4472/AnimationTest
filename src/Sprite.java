@@ -47,9 +47,6 @@ public abstract class Sprite {
     // sprite default image
     protected BufferedImage defaultImage;
 
-    // what sprite actually looks like now (for animations)
-    protected BufferedImage currentImage;
-
     // board on which this sprite exists
     protected Board board;
 
@@ -117,7 +114,7 @@ public abstract class Sprite {
     // loads sprite's default image
     protected void loadDefaultImage(String imageName) {
         try {
-            currentImage = defaultImage = ImageIO.read(new File(imageName));
+            defaultImage = ImageIO.read(new File(imageName));
             getImageDimensions();
         } catch(IOException e) {
             e.printStackTrace();
@@ -129,8 +126,6 @@ public abstract class Sprite {
         width = defaultImage.getWidth(null);
         height = defaultImage.getHeight(null);
     }
-
-    public Image getCurrentImage() { return currentImage; }
 
     public double getX() { return x; }
     public double getY() { return y; }
@@ -150,9 +145,6 @@ public abstract class Sprite {
         this.y = y;
         hitBox.updateCoordinates(x, y);
     }
-
-    // updates sprite animations
-    abstract void updateCurrentImage();
 
     // update/handle any actions sprite takes
     abstract void updateActions();

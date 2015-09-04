@@ -20,11 +20,6 @@ public class AlienBullet extends Sprite {
     }
 
     @Override
-    public void updateCurrentImage() {
-
-    }
-
-    @Override
     public void updateActions() {
 
     }
@@ -41,6 +36,6 @@ public class AlienBullet extends Sprite {
 
     @Override
     void render(Graphics2D g, ImageObserver o) {
-        g.drawImage(currentImage, (int) x, (int) y, o);
+        g.drawImage(defaultImage, (int) x, (int) y, o);
     }
 }

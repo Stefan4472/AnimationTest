@@ -143,11 +143,6 @@ public class Board extends JPanel implements ActionListener {
             moveSprites(map.getTiles());
             moveSprites(map.getProjectiles());
             moveSprites(spaceship.getProjectiles());
-
-            updateCurrentImage(map.getTiles());
-            updateCurrentImage(map.getProjectiles());
-            updateCurrentImage(spaceship.getProjectiles());
-            spaceship.updateCurrentImage();
         }
         repaint();
         difficulty += 0.001f;
@@ -178,8 +173,6 @@ public class Board extends JPanel implements ActionListener {
     private void moveSprites(ArrayList<Sprite> sprites) {
         sprites.forEach(Sprite::move);
     }
-
-    private void updateCurrentImage(ArrayList<Sprite> sprites) { sprites.forEach(Sprite::updateCurrentImage);}
 
     private void updateSpaceship() {
         spaceship.updateSpeeds();
