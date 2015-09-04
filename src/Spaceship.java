@@ -47,8 +47,8 @@ public class Spaceship extends Sprite {
         try { // todo: this will not catch all errors... Resources should be initialized in main or Board.java
             startMovingAnimation =
                     new SpriteAnimation("spaceship_starting_spritesheet.png", 50, 50, 1, false);
-            movingAnimation = new SpriteAnimation("spaceship_moving_spritesheet.png", 50, 50, 5, true);
-            fireRocketAnimation = new SpriteAnimation("spaceship_firing_spritesheet.png", 50, 50, 8, false);
+            movingAnimation = new SpriteAnimation("spaceship_moving_spritesheet_diff.png", 50, 50, 5, true);
+            fireRocketAnimation = new SpriteAnimation("spaceship_firing_spritesheet_diff.png", 50, 50, 8, false);
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -114,6 +114,9 @@ public class Spaceship extends Sprite {
         g.drawImage(defaultImage, (int) x, (int) y, o);
         if(moving) {
             g.drawImage(movingAnimation.nextFrame(), (int) x, (int) y, o);
+        }
+        if(fireRocketAnimation.isPlaying()) {
+            g.drawImage(fireRocketAnimation.nextFrame(), (int) x, (int) y, o);
         }
     }
 
