@@ -55,6 +55,7 @@ public class Alien extends Sprite {
         bulletSpeed = -2.0f - random.nextInt(10) / 10;
         speedX = -2.0f;
         projectiles = new ArrayList<>();
+        damage = 100;
 
         startingY = y;
         elapsedFrames = 1; // avoid divide by zero
@@ -92,8 +93,10 @@ public class Alien extends Sprite {
     public void handleCollision(Sprite s) {
         if(!(s instanceof AlienBullet)) {
             hp -= s.damage;
-            if(hp < 0) // todo: death animation
+            if(hp < 0) { // todo: death animation
                 vis = false;
+                hp = 0;
+            }
         }
     }
 

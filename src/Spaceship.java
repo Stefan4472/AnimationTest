@@ -17,7 +17,6 @@ public class Spaceship extends Sprite {
     private final float MAX_SPEED_Y = 2.5f;
 
     private SpriteAnimation movingAnimation;
-    private SpriteAnimation startMovingAnimation;
     private SpriteAnimation fireRocketAnimation;
     private SpriteAnimation explodeAnimation;
 
@@ -45,10 +44,9 @@ public class Spaceship extends Sprite {
 
     private void initCraft() {
         try { // todo: this will not catch all errors... Resources should be initialized in main or Board.java
-            startMovingAnimation =
-                    new SpriteAnimation("spaceship_starting_spritesheet.png", 50, 50, 1, false);
             movingAnimation = new SpriteAnimation("spaceship_moving_spritesheet_diff.png", 50, 50, 5, true);
             fireRocketAnimation = new SpriteAnimation("spaceship_firing_spritesheet_diff.png", 50, 50, 8, false);
+            explodeAnimation = new SpriteAnimation("spaceship_exploding_spritesheet_diff.png", 50, 50, 5, false);
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -57,6 +55,7 @@ public class Spaceship extends Sprite {
         lastFiredBullet = 0;
         lastFiredRocket = 0;
 
+        damage = 100;
         controllable = true;
         collides = true;
         hitBox.setDimensions(33, 28);
@@ -105,7 +104,9 @@ public class Spaceship extends Sprite {
     public void handleCollision(Sprite s) {
         hp -= s.getDamage();
         if(hp < 0) {
-           System.out.println("You are dead");
+           explodeAnimation.start();
+           hp = 0;
+           collision = true;
         }
     }
 
@@ -118,6 +119,10 @@ public class Spaceship extends Sprite {
         if(fireRocketAnimation.isPlaying()) {
             g.drawImage(fireRocketAnimation.nextFrame(), (int) x, (int) y, o);
         }
+        if(explodeAnimation.isPlaying()) {
+            g.drawImage(explodeAnimation.nextFrame(), (int) x, (int) y, o);
+        }
+
     }
 
     // Sets direction of sprite based on key pressed.
