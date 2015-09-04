@@ -16,5 +16,11 @@ public class SpriteImage extends BufferedImage {
 
     public SpriteImage(int width, int height, int imageType) {
         super(width, height, imageType);
+        initSpriteImage();
+    }
+
+    private void initSpriteImage() {
+        offsetX = 0;
+        offsetY = 0;
     }
 }

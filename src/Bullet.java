@@ -1,10 +1,13 @@
 import java.awt.*;
 import java.awt.image.ImageObserver;
+import java.io.IOException;
 
 /**
  * Created by Stefan on 8/17/2015.
  */
 public class Bullet extends Sprite {
+
+    private SpriteAnimation bulletFiring;
 
     public Bullet(double x, double y) {
         super(x, y);
@@ -13,16 +16,15 @@ public class Bullet extends Sprite {
 
     private void initBullet() {
         loadDefaultImage("bullet.png");
-
+        try {
+            bulletFiring = new SpriteAnimation("bullet_firing_spritesheet.png", 9, 3, 1, false);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
         hitBox.setDimensions(9, 3);
-
         speedX = 5.0f;
-
         damage = 10;
-    }
-
-    public void updateCurrentImage() {
-
+        bulletFiring.start();
     }
 
     public void updateActions() {
@@ -41,6 +43,10 @@ public class Bullet extends Sprite {
 
     @Override
     void render(Graphics2D g, ImageObserver o) {
-        g.drawImage(defaultImage, (int) x, (int) y, o);
+        if(bulletFiring.isPlaying()) {
+            g.drawImage(bulletFiring.nextFrame(), (int) x, (int) y, o);
+        } else {
+            g.drawImage(defaultImage, (int) x, (int) y, o);
+       }
     }
 }
