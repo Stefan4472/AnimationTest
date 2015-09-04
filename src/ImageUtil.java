@@ -7,25 +7,32 @@ import java.awt.image.WritableRaster;
  */
 public class ImageUtil  {
 
-    // draws overlay onto g starting at pixel (w, h)
-    // ignores fully transparent pixels
-    public static void layer(Graphics2D g, BufferedImage overlay, int w, int h) { // todo: optimizations (WritableRaster?)
-        int height = overlay.getHeight();
-        int width = overlay.getWidth();
-        Color pixel_color;
-
-        int rgb;
-        for(int i = 0; i < height; i++) {
-            for(int j = 0; j < width; j++) {
-                rgb = overlay.getRGB(i, j);
-                if ((rgb >> 24 & 0xff) != 0) {
-                     // only overlay non-transparent pixels
+    // compares two BufferedImages and returns a BufferedImage where
+    // only different pixels remain
+    // aligns images at top left and returns a BufferedImage with the size
+    // of whichever image was smaller
+    public static BufferedImage getDiff(BufferedImage model, BufferedImage compared) { // todo: has not been tested yet
+        int width, height;
+        if(model.getWidth() > compared.getWidth()) {
+            width = compared.getWidth();
+        } else {
+            width = model.getWidth();
+        }
+        if(model.getHeight() > compared.getHeight()) {
+            height = compared.getHeight();
+        } else {
+            height = model.getHeight();
+        }
+        BufferedImage diff = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        int compared_rgb;
+        for(int i = 0; i < width; i++) {
+            for(int j = 0; j < height; j++) {
+                compared_rgb = compared.getRGB(i, j);
+                if(compared_rgb != model.getRGB(i, j)) {
+                    diff.setRGB(i, j, compared_rgb);
                 }
             }
         }
-    }
-
-    public static void layer(BufferedImage b, BufferedImage overlay) {
-        //layer(b.createGraphics(), overlay);
+        return diff;
     }
 }
