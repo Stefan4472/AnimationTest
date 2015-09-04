@@ -176,9 +176,7 @@ public abstract class Sprite {
     }
 
     // draws sprite at current coordinates on g
-    public void render(Graphics2D g, ImageObserver o) {
-        g.drawImage(currentImage, (int) x, (int) y, o);
-    }
+    abstract void render(Graphics2D g, ImageObserver o);
 
     // returns whether intended movement of sprites
     // will cause a collision

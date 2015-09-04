@@ -1,3 +1,6 @@
+import java.awt.*;
+import java.awt.image.ImageObserver;
+
 /**
  * Created by Stefan on 8/20/2015.
  */
@@ -32,5 +35,10 @@ public class Obstacle extends Sprite {
 
     public void handleCollision(Sprite s) {
 
+    }
+
+    @Override
+    void render(Graphics2D g, ImageObserver o) {
+        g.drawImage(currentImage, (int) x, (int) y, o);
     }
 }

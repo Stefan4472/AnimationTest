@@ -1,3 +1,6 @@
+import java.awt.*;
+import java.awt.image.ImageObserver;
+
 /**
  * Created by Stefan on 8/28/2015.
  */
@@ -33,5 +36,10 @@ public class Coin extends Sprite {
     public void handleCollision(Sprite s) {
         if(s instanceof Spaceship)
             vis = false;
+    }
+
+    @Override
+    void render(Graphics2D g, ImageObserver o) {
+        g.drawImage(currentImage, (int) x, (int) y, o);
     }
 }

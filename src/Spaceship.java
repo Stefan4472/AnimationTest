@@ -1,4 +1,6 @@
+import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.ImageObserver;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -119,6 +121,11 @@ public class Spaceship extends Sprite {
         if(hp < 0) {
            System.out.println("You are dead");
         }
+    }
+
+    @Override
+    void render(Graphics2D g, ImageObserver o) {
+        g.drawImage(currentImage, (int) x, (int) y, o);
     }
 
     // Sets direction of sprite based on key pressed.

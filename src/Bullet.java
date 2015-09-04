@@ -1,3 +1,6 @@
+import java.awt.*;
+import java.awt.image.ImageObserver;
+
 /**
  * Created by Stefan on 8/17/2015.
  */
@@ -34,5 +37,10 @@ public class Bullet extends Sprite {
         collision = true;
         if(s instanceof Obstacle || s instanceof Alien)
             vis = false;
+    }
+
+    @Override
+    void render(Graphics2D g, ImageObserver o) {
+        g.drawImage(currentImage, (int) x, (int) y, o);
     }
 }

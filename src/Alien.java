@@ -1,4 +1,6 @@
+import java.awt.*;
 import java.awt.geom.Point2D;
+import java.awt.image.ImageObserver;
 import java.util.ArrayList;
 
 /**
@@ -98,6 +100,11 @@ public class Alien extends Sprite {
             if(hp < 0) // todo: death animation
                 vis = false;
         }
+    }
+
+    @Override
+    void render(Graphics2D g, ImageObserver o) {
+        g.drawImage(currentImage, (int) x, (int) y, o);
     }
 
     // fires bullet at sprite based on current trajectories

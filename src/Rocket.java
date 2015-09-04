@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 
@@ -6,8 +7,6 @@ import java.io.IOException;
  * Created by Stefan on 8/13/2015.
  */
 public class Rocket extends Sprite {
-
-    private SpriteAnimation startMoving;
 
     public Rocket(double x, double y) {
         super(x, y);
@@ -18,12 +17,8 @@ public class Rocket extends Sprite {
     private void initMissile() {
         loadDefaultImage("rocket.png");
         speedX = 2.0f;
-        damage = 25;
+        damage = 60;
         hitBox.setDimensions(9, 3);
-
-        try {
-            startMoving = new SpriteAnimation("rocket_starting1.png", 9, 3, 1, false);
-        } catch(IOException e){}
     }
 
     public void updateCurrentImage() {
@@ -52,5 +47,9 @@ public class Rocket extends Sprite {
     public void handleCollision(Sprite s) {
         collision = true;
         vis = false;
+    }
+
+    public void render(Graphics2D g, ImageObserver o) {
+        g.drawImage(currentImage, (int) x, (int) y, o);
     }
 }
