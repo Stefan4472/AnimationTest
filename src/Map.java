@@ -151,7 +151,6 @@ public class Map {
     public void generateTiles() {
         System.out.println("Difficulty is " + board.getDifficulty());
         if(getP(getPTile())) {
-            System.out.println("Generating tile");
             if(getP(getPTunnel())) {
                 map = generateTunnel();
             } else {
@@ -201,36 +200,37 @@ public class Map {
         float change_path = 0.0f;
         for(int i = 0; i < rows; i++) {
             if(i != row)
-                map[i][0] = 1;
+                generated[i][0] = 1;
         }
         for(int i = 0; i < size; i++) {
             if(getP(change_path)) {
                 change_path = -0.1f;
                 int direction;
                 if(getP(0.5f)) {
-                    direction = 1;
+                    if(row < map.length - 1)
+                        direction = 1;
+                    else
+                        direction = -1;
                 } else {
-                    direction = -1;
+                    if(row > 0)
+                        direction = 1;
+                    else
+                        direction = -1;
                 }
-                if(direction == 1 && row == map.length - 1) {
-                    direction = -1;
-                } else if(direction == -1 && row == 0) {
-                    direction = 1;
-                }
-                for(int j = 0; j < map.length; j++) {
+                for(int j = 0; j < rows; j++) {
                     if(j != row && j != row + direction) {
-                        map[j][i] = 1;
+                        generated[j][i] = 1;
                     }
                 }
                 row += direction;
             } else {
-                for(int j = 0; j < map.length; j++) {
+                for(int j = 0; j < rows; j++) {
                     if(j < row - 1 ||j > row + 1) {
-                        map[j][i] = 2;
+                        generated[j][i] = 2;
                     } else if(j != row) {
-                        map[j][i] = 1;
+                        generated[j][i] = 1;
                     } else {
-                        map[j][i] = 3;
+                        generated[j][i] = 3;
                     }
                 }
             }
