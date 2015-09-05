@@ -16,6 +16,9 @@ public class SpriteAnimation {
     // whether or not this animation is playing
     private boolean isPlaying;
 
+    // wether or not animation has already played
+    private boolean hasPlayed;
+
     // frames of the animation to play in order
     private BufferedImage[] frames;
 
@@ -50,7 +53,7 @@ public class SpriteAnimation {
         this.frameSpeedCounter = 0;
 
         frameCounter = 0;
-
+        hasPlayed = false;
         this.loop = loop;
         isPlaying = false;
     }
@@ -83,10 +86,12 @@ public class SpriteAnimation {
         if(loop) { // reached end of loop, start from beginning
             if(frameCounter == frames.length) {
                 frameCounter = 0;
+                hasPlayed = true;
             }
         } else { // reached end of loop
             if(frameCounter == frames.length - 1) {
                 isPlaying = false;
+                hasPlayed = true;
             }
         }
         return frames[frameCounter];

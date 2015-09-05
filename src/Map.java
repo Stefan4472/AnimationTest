@@ -146,23 +146,25 @@ public class Map {
     // powerups and coins
     public byte[][] generateTiles(int rows, int col) {
         Random random = new Random();
-        byte[][] tiles = new byte[rows][col];
-        generateAlien(3, tiles);
-        //generateTunnel(3, tiles);
-        //for(int i = 0; i < tiles[0].length; i++) { // todo: implement difficulty-based probabilities later
-            //if(getP(0.9f)) {
-            //    generateObstacle(i, tiles);
-            //} else {
-                //generateTunnel(i, tiles);
-            //}
-        //    i += 2 + random.nextInt(3);
-        //}
+        if(getP(getPTile())) {
+                tiles = generateObstacle();
+        } else {
+            if(getP(0.5)) {
+                if(getP(getPAlienSwarm())) {
+                    tiles = generateAlienSwarm();
+                } else {
+                    tiles = generateAlien();
+                }
+            } else {
+                tiles = generateAsteroid();
+            }
+        }
         return tiles;
     }
 
     // generates single or cluster of simple obstacle at index in map
     // returns space to leave empty after index in map
-    private void generateObstacle(int index, byte[][] map) {
+    private byte[][] generateObstacle() {
         int row = random.nextInt(6);
         map[row][index] = 1;
         if(getP(0.6f) && map[0].length > index + 1) {
@@ -228,7 +230,21 @@ public class Map {
     // give probability of an event occurring
     // uses random numbers and will return if event should
     // occur or not
-    private boolean getP(float probability) {
+    private boolean getP(double probability) {
         return random.nextInt(100) + 1 <= probability * 100;
+    }
+
+    // calculates and returns probability of a tile-based obstacle
+    private double getPTile() {
+        if (110 - board.getDifficulty() >= 50) {
+            return (110 - board.getDifficulty()) / 100;
+        } else {
+            return 0.5;
+        }
+    }
+
+    // calculates and returns probability of aliens appearing in a swarm
+    private double getPAlienSwarm() {
+        return (-30 + board.getDifficulty()) / 100;
     }
 }

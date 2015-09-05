@@ -48,7 +48,7 @@ public class Alien extends Sprite {
     }
 
     private void initObstacle() {
-        hp = 50;
+        hp = 20;
         hitBox.setOffsets(5, 5);
         hitBox.setDimensions(40, 40);
         lastFiredBullet = 0;
