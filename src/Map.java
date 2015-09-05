@@ -112,7 +112,7 @@ public class Map {
 
             // generate more tiles
             if (mapTileCounter == map[0].length) {
-                map = generateTiles(6, 10);
+                generateTiles();
                 mapTileCounter = 0;
             }
             lastTile = getWTile();
@@ -148,26 +148,26 @@ public class Map {
     // frequency of obstacles
     // speed of oncoming obstacles
     // powerups and coins
-    public byte[][] generateTiles(int rows, int col) {
-        Random random = new Random();
+    public void generateTiles() {
+        System.out.println("Difficulty is " + board.getDifficulty());
         if(getP(getPTile())) {
+            System.out.println("Generating tile");
             if(getP(getPTunnel())) {
                 map = generateTunnel();
             } else {
                 map = generateObstacle();
             }
         } else {
-            if(getP(0.5)) {
+            //if(getP(0.5)) {
                 if(getP(getPAlienSwarm())) {
                     map = generateAlienSwarm();
                 } else {
                     map = generateAlien();
                 }
-            } else {
-                map = generateAsteroid();
-            }
+            //} else {
+            //    map = generateAsteroid();
+            //}
         }
-        return tiles;
     }
 
     // generates single or cluster of simple obstacle at index in map
@@ -239,8 +239,21 @@ public class Map {
         return generated;
     }
 
-    private void generateAlien(int index, byte[][] map) {
-        map[random.nextInt(6)][index] = 4;
+    private byte[][] generateAlien() {
+        int size = 4 + random.nextInt(10);
+        byte[][] generated = new byte[rows][size];
+        generated[random.nextInt(6)][size - 1] = 4;
+        return generated;
+    }
+
+    private byte[][] generateAlienSwarm() {
+        int num_aliens = 2 + random.nextInt(3);
+        int size = num_aliens * 8 + 1;
+        byte[][] generated = new byte[rows][size];
+        for(int i = 0; i < num_aliens; i++) {
+            generated[random.nextInt(6)][8 * (i + 1)] = 4;
+        }
+        return generated;
     }
 
     // give probability of an event occurring
@@ -252,8 +265,16 @@ public class Map {
 
     // calculates and returns probability of a tile-based obstacle
     private double getPTile() {
-        if (110 - board.getDifficulty() >= 50) {
+        if(110 - board.getDifficulty() >= 50) {
             return (110 - board.getDifficulty()) / 100;
+        } else {
+            return 0.5;
+        }
+    }
+
+    private double getPTunnel() {
+        if(-10 + board.getDifficulty() < 50) {
+            return (-10 + board.getDifficulty()) / 100;
         } else {
             return 0.5;
         }

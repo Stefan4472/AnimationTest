@@ -145,7 +145,7 @@ public class Board extends JPanel implements ActionListener {
             moveSprites(spaceship.getProjectiles());
         }
         repaint();
-        difficulty += 0.001f;
+        difficulty += 0.01f;
     }
 
     private void updateSprites(ArrayList<Sprite> sprites) {
