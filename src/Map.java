@@ -194,17 +194,16 @@ public class Map {
     }
 
     // generates tunnel
-    private void generateTunnel(int index, byte[][] map) {
-        int current_tile = index;
+    private byte[][] generateTunnel() {
+        int size = 15 + random.nextInt(10);
+        byte[][] generated = new byte[rows][size];
         int row = 1 + random.nextInt(4);
-        float continue_tunnel = 1.4f;
         float change_path = 0.0f;
-        for(int i = 0; i < map.length; i++) {
+        for(int i = 0; i < rows; i++) {
             if(i != row)
-                map[i][current_tile] = 1;
+                map[i][0] = 1;
         }
-        current_tile++;
-        while(getP(continue_tunnel) && current_tile < map[0].length) {
+        for(int i = 0; i < size; i++) {
             if(getP(change_path)) {
                 change_path = -0.1f;
                 int direction;
@@ -218,27 +217,26 @@ public class Map {
                 } else if(direction == -1 && row == 0) {
                     direction = 1;
                 }
-                for(int i = 0; i < map.length; i++) {
-                    if(i != row && i != row + direction) {
-                        map[i][current_tile] = 1;
+                for(int j = 0; j < map.length; j++) {
+                    if(j != row && j != row + direction) {
+                        map[j][i] = 1;
                     }
                 }
                 row += direction;
             } else {
-                for(int i = 0; i < map.length; i++) {
-                    if(i < row - 1 || i > row + 1) {
-                        map[i][current_tile] = 2;
-                    } else if(i != row) {
-                        map[i][current_tile] = 1;
+                for(int j = 0; j < map.length; j++) {
+                    if(j < row - 1 ||j > row + 1) {
+                        map[j][i] = 2;
+                    } else if(j != row) {
+                        map[j][i] = 1;
                     } else {
-                        map[i][current_tile] = 3;
+                        map[j][i] = 3;
                     }
                 }
             }
-            current_tile++;
-            continue_tunnel -= 0.10f;
             change_path += 0.05f;
         }
+        return generated;
     }
 
     private void generateAlien(int index, byte[][] map) {
