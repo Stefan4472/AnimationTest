@@ -14,6 +14,9 @@ public class Map {
     // grid of tile ID's instructing how to display map
     private byte[][] map;
 
+    // number of rows of tiles that fit in map
+    private int rows;
+
     // number of tiles elapsed since last map was generated
     private int mapTileCounter;
 
@@ -69,6 +72,7 @@ public class Map {
 
         tileWidth = this.mapTiles[1].getWidth();
         tileHeight = this.mapTiles[1].getHeight();
+        rows = SCREEN_HEIGHT / tileHeight;
 
         random = new Random();
 
@@ -147,32 +151,46 @@ public class Map {
     public byte[][] generateTiles(int rows, int col) {
         Random random = new Random();
         if(getP(getPTile())) {
-                tiles = generateObstacle();
+            if(getP(getPTunnel())) {
+                map = generateTunnel();
+            } else {
+                map = generateObstacle();
+            }
         } else {
             if(getP(0.5)) {
                 if(getP(getPAlienSwarm())) {
-                    tiles = generateAlienSwarm();
+                    map = generateAlienSwarm();
                 } else {
-                    tiles = generateAlien();
+                    map = generateAlien();
                 }
             } else {
-                tiles = generateAsteroid();
+                map = generateAsteroid();
             }
         }
         return tiles;
     }
 
     // generates single or cluster of simple obstacle at index in map
-    // returns space to leave empty after index in map
+    // returns space to leave empty after index in map // todo: row size shoudln't be hardcoded
     private byte[][] generateObstacle() {
-        int row = random.nextInt(6);
-        map[row][index] = 1;
-        if(getP(0.6f) && map[0].length > index + 1) {
-            map[row][index + 1] = 1;
-            if(getP(0.4f) && map.length > row + 1) {
-                map[row + 1][index] = 1;
+        int size = 10 + random.nextInt(5);
+        byte[][] generated = new byte[rows][size];
+        for(int i = 0; i < size; i++) {
+            if(getP(0.3f)) {
+                int row = random.nextInt(rows);
+                generated[row][i] = 1;
+                if(getP(0.5) && i + 1 < size) {
+                    generated[row][i + 1] = 1;
+                }
+                if(getP(0.3) && row + 1 < rows) {
+                    generated[row + 1][i] = 1;
+                }
+                if(getP(0.2) && row > 0) {
+                    generated[row - 1][i] = 1;
+                }
             }
         }
+        return generated;
     }
 
     // generates tunnel
