@@ -10,10 +10,8 @@ import java.util.ArrayList;
 public class Spaceship extends Sprite {
 
     // arrowkey direction in x and y
-    private int dx;
     private int dy;
 
-    private final float MAX_SPEED_X = 9.0f;
     private final float MAX_SPEED_Y = 2.5f;
 
     private SpriteAnimation movingAnimation;
@@ -98,14 +96,14 @@ public class Spaceship extends Sprite {
 
     // fires two rockets
     public void fireRockets() {
-        projectiles.add(new Rocket(x + 43, y + 15));
-        projectiles.add(new Rocket(x + 43, y + 33));
+        projectiles.add(new Rocket(x + 43, y + 15, bulletDamage));
+        projectiles.add(new Rocket(x + 43, y + 33, bulletDamage));
     }
 
     // fires two bullets
     public void fireBullets() {
-        projectiles.add(new Bullet(x + 43, y + 15));
-        projectiles.add(new Bullet(x + 43, y + 33));
+        projectiles.add(new Bullet(x + 43, y + 15, rocketDamage));
+        projectiles.add(new Bullet(x + 43, y + 33, rocketDamage));
     }
 
     public void updateSpeeds() {
@@ -146,17 +144,13 @@ public class Spaceship extends Sprite {
     public void keyPressed(KeyEvent e) {
         if(controllable) {
             int key = e.getKeyCode();
-            if (key == KeyEvent.VK_LEFT) {
-                dx = -1;
-            } else if (key == KeyEvent.VK_RIGHT) {
-                dx = 1;
-            } else if (key == KeyEvent.VK_UP) {
+            if (key == KeyEvent.VK_UP) {
                 dy = -1;
             } else if (key == KeyEvent.VK_DOWN) {
                 dy = 1;
-            } else if (key == KeyEvent.VK_SPACE) {
+            } else if (key == KeyEvent.VK_SPACE && firesBullets) {
                 firingBullets = true;
-            } else if (key == KeyEvent.VK_X) {
+            } else if (key == KeyEvent.VK_X && firesRockets) {
                 firingRockets = true;
             }
         }
@@ -166,11 +160,7 @@ public class Spaceship extends Sprite {
     public void keyReleased(KeyEvent e) {
         if(controllable) {
             int key = e.getKeyCode();
-            if (key == KeyEvent.VK_LEFT) {
-                dx = 0;
-            } else if (key == KeyEvent.VK_RIGHT) {
-                dx = 0;
-            } else if (key == KeyEvent.VK_UP) {
+            if (key == KeyEvent.VK_UP) {
                 dy = 0;
             } else if (key == KeyEvent.VK_DOWN) {
                 dy = 0;

@@ -10,14 +10,19 @@ public class Rocket extends Sprite {
 
     public Rocket(double x, double y) {
         super(x, y);
+        damage = 20;
+        initMissile();
+    }
 
+    public Rocket(double x, double y, int damage) {
+        super(x, y);
+        this.damage = damage;
         initMissile();
     }
 
     private void initMissile() {
         loadDefaultImage("rocket.png");
         speedX = 2.0f;
-        damage = 60;
         hitBox.setDimensions(9, 3);
     }
 

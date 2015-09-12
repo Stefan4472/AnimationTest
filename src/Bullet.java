@@ -11,6 +11,13 @@ public class Bullet extends Sprite {
 
     public Bullet(double x, double y) {
         super(x, y);
+        damage = 10;
+        initBullet();
+    }
+
+    public Bullet(double x, double y, int damage) {
+        super(x, y);
+        this.damage = damage;
         initBullet();
     }
 
@@ -23,7 +30,6 @@ public class Bullet extends Sprite {
         }
         hitBox.setDimensions(9, 3);
         speedX = 5.0f;
-        damage = 10;
         bulletFiring.start();
     }
 
