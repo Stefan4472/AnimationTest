@@ -96,7 +96,7 @@ public class Map {
     // adds any new tiles and generates a new set of tiles if needed
     public void update() {
         scrollSpeed = updateScrollSpeed();
-        this.x += scrollSpeed;
+        this.x += (int) scrollSpeed;
 
         // perform rendering if spaceship has changed tiles
         if(getWTile() != lastTile) {
@@ -104,7 +104,7 @@ public class Map {
                 // add any non-empty tiles in the current column at the edge of the screen
                 if (map[i][mapTileCounter] != 0) {
                     addTile(getMapTile(map[i][mapTileCounter], SCREEN_WIDTH + getWOffset(),  i * tileWidth),
-                          (int) Math.ceil(scrollSpeed), 0, board);
+                        (int) scrollSpeed, 0, board);
                 }
             }
             mapTileCounter++;
@@ -143,7 +143,7 @@ public class Map {
     }
 
     // sets specified fields and adds sprite to arraylist
-    private void addTile(Sprite s, int speedX, int speedY, Board board) {
+    private void addTile(Sprite s, double speedX, double speedY, Board board) {
         s.setSpeedX(speedX);
         s.setSpeedY(speedY);
         s.setBoard(board);

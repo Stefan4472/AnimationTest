@@ -24,12 +24,12 @@ public class Spaceship extends Sprite {
     boolean controllable;
 
     // ms to wait between firing bullets
-    private final int BULLET_DELAY = 100;
+    private int bulletDelay = 100;
     private long lastFiredBullet;
     private boolean firingBullets;
 
     // ms to wait between firing rockets
-    private final int ROCKET_DELAY = 420;
+    private int rocketDelay = 420;
     private long lastFiredRocket;
     private boolean firingRockets;
 
@@ -67,12 +67,12 @@ public class Spaceship extends Sprite {
     public void setControllable(boolean controllable) { this.controllable = controllable; }
 
     public void updateActions() {
-        if(firingBullets && lastFiredBullet + BULLET_DELAY <= System.currentTimeMillis()) {
+        if(firingBullets && lastFiredBullet + bulletDelay <= System.currentTimeMillis()) {
             fireBullets();
             lastFiredBullet = System.currentTimeMillis();
         }
 
-        if(firingRockets && lastFiredRocket + ROCKET_DELAY <= System.currentTimeMillis()) {
+        if(firingRockets && lastFiredRocket + rocketDelay <= System.currentTimeMillis()) {
             fireRockets();
             lastFiredRocket = System.currentTimeMillis();
             fireRocketAnimation.start();
