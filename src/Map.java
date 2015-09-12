@@ -68,7 +68,6 @@ public class Map {
     private void initMap() {
         this.x = 0;
         tiles = new ArrayList<>();
-        scrollSpeed = -4.0f;
 
         tileWidth = this.mapTiles[1].getWidth();
         tileHeight = this.mapTiles[1].getHeight();
@@ -96,8 +95,8 @@ public class Map {
 
     // adds any new tiles and generates a new set of tiles if needed
     public void update() {
-        scrollSpeed -= 0.0005f;
-        this.x += (int) Math.ceil(scrollSpeed);
+        scrollSpeed = updateScrollSpeed();
+        this.x += scrollSpeed;
 
         // perform rendering if spaceship has changed tiles
         if(getWTile() != lastTile) {
@@ -105,7 +104,7 @@ public class Map {
                 // add any non-empty tiles in the current column at the edge of the screen
                 if (map[i][mapTileCounter] != 0) {
                     addTile(getMapTile(map[i][mapTileCounter], SCREEN_WIDTH + getWOffset(),  i * tileWidth),
-                          (int) Math.ceil(getScrollSpeed()), 0, board);
+                          (int) Math.ceil(scrollSpeed), 0, board);
                 }
             }
             mapTileCounter++;
@@ -117,6 +116,14 @@ public class Map {
             }
             lastTile = getWTile();
         }
+    }
+
+    // calculates scrollspeed based on difficulty
+    // difficulty starts at 0 and increases by 0.01/frame,
+    // or 1 per second
+    public float updateScrollSpeed() {
+        scrollSpeed = (float) (-4.0f - board.getDifficulty() / 10);
+        return scrollSpeed;
     }
 
     //
@@ -149,7 +156,6 @@ public class Map {
     // speed of oncoming obstacles
     // powerups and coins
     public void generateTiles() {
-        System.out.println("Difficulty is " + board.getDifficulty());
         if(getP(getPTile())) {
             if(getP(getPTunnel())) {
                 map = generateTunnel();
@@ -170,7 +176,7 @@ public class Map {
     }
 
     // generates single or cluster of simple obstacle at index in map
-    // returns space to leave empty after index in map // todo: row size shoudln't be hardcoded
+    // returns space to leave empty after index in map
     private byte[][] generateObstacle() {
         int size = 10 + random.nextInt(5);
         byte[][] generated = new byte[rows][size];
