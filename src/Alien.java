@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Alien extends Sprite {
 
     // ms to wait between firing bullets
-    private final int BULLET_DELAY = 2000;
+    private int bulletDelay = 2000;
     private long lastFiredBullet;
 
     private double bulletSpeed;
@@ -68,7 +68,7 @@ public class Alien extends Sprite {
     @Override
     public void updateActions() {
         if(distanceTo(board.getSpaceship()) < 400 &&
-                lastFiredBullet + BULLET_DELAY <= System.currentTimeMillis()) {
+                lastFiredBullet + bulletDelay <= System.currentTimeMillis()) {
             if(getP(0.2f)) {
                 fireBullet(board.getSpaceship());
                 lastFiredBullet = System.currentTimeMillis();

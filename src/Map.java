@@ -181,7 +181,7 @@ public class Map {
         int size = 10 + random.nextInt(5);
         byte[][] generated = new byte[rows][size];
         for(int i = 0; i < size; i++) {
-            if(getP(0.3f)) {
+            if(getP(0.2f)) {
                 int row = random.nextInt(rows);
                 generated[row][i] = 1;
                 if(getP(0.5) && i + 1 < size) {

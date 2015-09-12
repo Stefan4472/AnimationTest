@@ -23,18 +23,39 @@ public class Spaceship extends Sprite {
     // whether user has control over spaceship
     boolean controllable;
 
+    private boolean firesBullets;
     // ms to wait between firing bullets
     private int bulletDelay = 100;
+    private int bulletDamage = 10;
     private long lastFiredBullet;
     private boolean firingBullets;
 
+    private boolean firesRockets;
     // ms to wait between firing rockets
     private int rocketDelay = 420;
+    private int rocketDamage = 40;
     private long lastFiredRocket;
     private boolean firingRockets;
 
     // keeps track of fired bullets and rockets
     private ArrayList<Sprite> projectiles;
+    public ArrayList<Sprite> getProjectiles() { return projectiles; }
+    public void setControllable(boolean controllable) { this.controllable = controllable; }
+
+    public void setHP(int hp) {
+        this.hp = hp;
+    }
+    public void setBullets(boolean firesBullets, int bulletDamage, int bulletDelay) {
+        this.firesBullets = firesBullets;
+        this.bulletDamage = bulletDamage;
+        this.bulletDelay = bulletDelay;
+    }
+
+    public void setRockets(boolean firesRockets, int rocketDamage, int rocketDelay) {
+        this.firesRockets = firesRockets;
+        this.rocketDamage = rocketDamage;
+        this.rocketDamage = rocketDelay;
+    }
 
     // default constructor
     public Spaceship(String imageName, int x, int y) {
@@ -61,10 +82,6 @@ public class Spaceship extends Sprite {
         hitBox.setDimensions(33, 28);
         hitBox.setOffsets(12, 11);
     }
-
-    public ArrayList<Sprite> getProjectiles() { return projectiles; }
-
-    public void setControllable(boolean controllable) { this.controllable = controllable; }
 
     public void updateActions() {
         if(firingBullets && lastFiredBullet + bulletDelay <= System.currentTimeMillis()) {
