@@ -34,8 +34,10 @@ public class Coin extends Sprite {
     }
 
     public void handleCollision(Sprite s) {
-        if(s instanceof Spaceship)
+        if(s instanceof Spaceship) {
             vis = false;
+            board.incrementScore(100);
+        }
     }
 
     @Override

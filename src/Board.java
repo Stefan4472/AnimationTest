@@ -30,6 +30,8 @@ public class Board extends JPanel implements ActionListener {
     private Map map;
     // difficulty level, incremented every frame
     private double difficulty;
+    // score in current run
+    private int score;
     // time, in ms, last frame was completed
     private long lastTime = 0;
 
@@ -39,6 +41,9 @@ public class Board extends JPanel implements ActionListener {
     public Spaceship getSpaceship() { return spaceship; }
     public Map getMap() { return map; }
     public double getDifficulty() { return difficulty; }
+    public void incrementScore(int add) {
+        score += add;
+    }
 
     public Board(int boardWidth, int boardHeight) {
         this.boardWidth = boardWidth;
@@ -69,6 +74,7 @@ public class Board extends JPanel implements ActionListener {
         });
         map.setBoard(this);
         difficulty = 0.0f;
+        score = 0;
         /* This will call the actionPerformed method of this class
         every DELAY milliseconds */
         timer = new Timer(DELAY, this);
@@ -92,6 +98,7 @@ public class Board extends JPanel implements ActionListener {
         //lastTime = System.currentTimeMillis();
 
         Graphics2D g2d = (Graphics2D) g;
+        g.setColor(Color.WHITE);
 
         if(scrollCounter > 30) { // scroll background slowly
             background.scroll(1);
@@ -122,6 +129,7 @@ public class Board extends JPanel implements ActionListener {
             updateSpaceship();
             map.update();
             scrollCounter -= map.getScrollSpeed();
+            score += difficulty / 2;
 
             updateSprites(map.getTiles());
             /*System.out.println(map.getTiles().stream()

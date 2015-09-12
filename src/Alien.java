@@ -92,6 +92,9 @@ public class Alien extends Sprite {
     @Override
     public void handleCollision(Sprite s) {
         if(!(s instanceof AlienBullet)) {
+            if(s instanceof Bullet || s instanceof Rocket) {
+                board.incrementScore(s.damage);
+            }
             hp -= s.damage;
             if(hp < 0) { // todo: death animation
                 vis = false;
