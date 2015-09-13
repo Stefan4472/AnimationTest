@@ -9,10 +9,10 @@ import java.util.ArrayList;
  */
 public class Spaceship extends Sprite {
 
-    // arrowkey direction in x and y
+    // arrowkey direction in y
     private int dy;
 
-    private final float MAX_SPEED_Y = 2.5f;
+    private final float MAX_SPEED_Y = 3.5f;
 
     private SpriteAnimation movingAnimation;
     private SpriteAnimation fireRocketAnimation;
@@ -21,10 +21,14 @@ public class Spaceship extends Sprite {
     // whether user has control over spaceship
     boolean controllable;
 
+    public final int BULLET_LASER = 1;
+    public final int BULLET_ION = 2;
+    public final int BULLET_PLASMA = 3;
+
     private boolean firesBullets;
     // ms to wait between firing bullets
     private int bulletDelay = 100;
-    private int bulletDamage = 10;
+    private int bulletType = 10;
     private long lastFiredBullet;
     private boolean firingBullets;
 
@@ -43,9 +47,9 @@ public class Spaceship extends Sprite {
     public void setHP(int hp) {
         this.hp = hp;
     }
-    public void setBullets(boolean firesBullets, int bulletDamage, int bulletDelay) {
+    public void setBullets(boolean firesBullets, int bulletType, int bulletDelay) {
         this.firesBullets = firesBullets;
-        this.bulletDamage = bulletDamage;
+        this.bulletType = bulletType;
         this.bulletDelay = bulletDelay;
     }
 
@@ -96,8 +100,8 @@ public class Spaceship extends Sprite {
 
     // fires two rockets
     public void fireRockets() {
-        projectiles.add(new Rocket(x + 43, y + 15, bulletDamage));
-        projectiles.add(new Rocket(x + 43, y + 33, bulletDamage));
+        projectiles.add(new Rocket(x + 43, y + 15, bulletType));
+        projectiles.add(new Rocket(x + 43, y + 33, bulletType));
     }
 
     // fires two bullets

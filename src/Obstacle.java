@@ -21,10 +21,6 @@ public class Obstacle extends Sprite {
         damage = Integer.MAX_VALUE;
     }
 
-    public void updateCurrentImage() {
-
-    }
-
     public void updateActions() {
 
     }
