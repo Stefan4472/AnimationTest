@@ -9,15 +9,15 @@ import java.util.ArrayList;
 public class Alien extends Sprite {
 
     // ms to wait between firing bullets
-    private int bulletDelay = 2000;
-    private long lastFiredBullet;
+    private double bulletDelay;
+    private long lastFiredBullet = 0;
 
     private double bulletSpeed;
-    private ArrayList<Sprite> projectiles;
+    private ArrayList<Sprite> projectiles = new ArrayList<>();
 
     // frames since alien was constructed
     // used for calculating trajectory
-    private int elapsedFrames;
+    private int elapsedFrames = 1;
 
     // starting y-coordinate
     // used as a reference for calculating trajectory
@@ -29,40 +29,63 @@ public class Alien extends Sprite {
     private int vShift;
     private int hShift;
 
-    public Sprite getProjectile() {
-        return projectiles.get(0);
-    }
-
     public ArrayList<Sprite> getProjectiles() {
         return projectiles;
     }
 
-    public Alien(String imageName) {
-        super(imageName);
-        initObstacle();
+    public Alien(String imageName, int alienLevel, Board board) {
+        super(imageName, board);
+        initAlien(alienLevel);
     }
 
-    public Alien(String imageName, double x, double y) {
-        super(imageName, x, y);
-        initObstacle();
+    public Alien(String imageName, double x, double y, int alienLevel, Board board) {
+        super(imageName, x, y, board);
+        initAlien(alienLevel);
     }
 
-    private void initObstacle() {
-        hp = 20;
-        hitBox.setOffsets(5, 5);
-        hitBox.setDimensions(40, 40);
-        lastFiredBullet = 0;
-        bulletSpeed = -2.0f - random.nextInt(10) / 10;
-        speedX = -2.0f;
-        projectiles = new ArrayList<>();
-        damage = 100;
-
+    private void initAlien(int allienLevel) {
+        if(allienLevel == 1) {
+            initLevel1Alien();
+        } else if(allienLevel == 2) {
+            initLevel2Alien();
+        } else {
+            initLevel3Alien();
+        }
         startingY = y;
-        elapsedFrames = 1; // avoid divide by zero
         amplitude = 70 + random.nextInt(60);
         period = 250 + random.nextInt(100);
         vShift = random.nextInt(20);
         hShift = -random.nextInt(3);
+    }
+
+    private void initLevel1Alien() { // todo: different sprites
+        hp = 20 + (int) board.getDifficulty() / 3;
+        bulletDelay = 2_000 - board.getDifficulty() * 5;
+        bulletSpeed = -2.0f - random.nextInt(10) / 10;
+        hitBox.setOffsets(5, 5);
+        hitBox.setDimensions(40, 40);
+        damage = 50;
+        speedX = -2.0f;
+    }
+
+    private void initLevel2Alien() {
+        hp = 40 + (int) board.getDifficulty() / 4;
+        bulletDelay = 1_000 - board.getDifficulty();
+        bulletSpeed = -3.0f - random.nextInt(5) / 5;
+        hitBox.setOffsets(5, 5);
+        hitBox.setDimensions(40, 40);
+        damage = 100;
+        speedX = -2.0f;
+    }
+
+    private void initLevel3Alien() {
+        hp = 60 + (int) board.getDifficulty() / 5;
+        bulletDelay = 500;
+        bulletSpeed = -3.5f;
+        hitBox.setOffsets(5, 5);
+        hitBox.setDimensions(40, 40);
+        damage = 500;
+        speedX = -2.0f;
     }
 
     @Override
@@ -112,7 +135,7 @@ public class Alien extends Sprite {
     // that are slightly randomized
     private void fireBullet(Sprite s) {
         Point2D.Double target = s.getHitboxCenter();
-        AlienBullet b = new AlienBullet(x, y + 20);
+        AlienBullet b = new AlienBullet(x, y + 20, board);
         b.setSpeedX(bulletSpeed);
         double frames_to_impact = (x - s.x) / bulletSpeed;
         b.setSpeedY((y - target.y) / frames_to_impact);

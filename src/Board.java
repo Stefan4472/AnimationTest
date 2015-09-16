@@ -57,7 +57,7 @@ public class Board extends JPanel implements ActionListener {
         setFocusable(true);
         setDoubleBuffered(true);
 
-        spaceship = new Spaceship("spaceship.png", -50, 125);
+        spaceship = new Spaceship("spaceship.png", -50, 125, this);
         spaceship.setBullets(true, 20, 100);
         spaceship.setRockets(true, 40, 420);
 
@@ -70,10 +70,10 @@ public class Board extends JPanel implements ActionListener {
         scrollCounter = 0;
         paused = false;
         map = new Map(new Sprite[] {
-                new Obstacle("obstacle_tile.png"),
-                new Obstacle("obstacle_tile.png"),
-                new Coin("coin_tile.png"),
-                new Alien("alien.png")
+                new Obstacle("obstacle_tile.png", this),
+                new Obstacle("obstacle_tile.png", this),
+                new Coin("coin_tile.png", this),
+                new Alien("alien.png", 1, this)
         });
         map.setBoard(this);
         difficulty = 0.0f;

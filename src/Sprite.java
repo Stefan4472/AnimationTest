@@ -79,22 +79,24 @@ public abstract class Sprite {
 
     public void setBoard(Board board) { this.board = board; }
 
-    public Sprite(double x, double y) {
+    public Sprite(double x, double y, Board board) {
         this.x = x;
         this.y = y;
+        this.board = board;
         initSprite();
     }
 
     // initializes with sprite at (0,0)
-    public Sprite(String imageName) {
-        this(imageName, 0, 0);
+    public Sprite(String imageName, Board board) {
+        this(imageName, 0, 0, board);
     }
 
     // sets sprite coordinates
-    public Sprite(String imageName, double x, double y) {
+    public Sprite(String imageName, double x, double y, Board board) {
         loadDefaultImage(imageName);
         this.x = x;
         this.y = y;
+        this.board = board;
         initSprite();
     }
 

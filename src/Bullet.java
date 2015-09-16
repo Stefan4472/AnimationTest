@@ -13,8 +13,9 @@ public class Bullet extends Sprite {
     // bulletType 1: laser cannon
     // bulletType 2: ion cannon
     // bulletType 3: plasma cannon
-    public Bullet(double x, double y, int bulletType) {
-        super(x, y);
+    // bulletType 4: plutonium cannon
+    public Bullet(double x, double y, int bulletType, Board board) {
+        super(x, y, board);
         if(bulletType == 1) {
             damage = 10;
             // loadDefaultImage("laser_bullet.png");
@@ -24,6 +25,8 @@ public class Bullet extends Sprite {
         } else if(bulletType == 3) {
             damage = 30;
             // loadDefaultImage("plasma_bullet.png");
+        } else {
+            System.out.println("Invalid bulletType (" + bulletType + ")");
         }
         initBullet();
     }

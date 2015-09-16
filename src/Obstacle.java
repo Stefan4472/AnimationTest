@@ -6,13 +6,13 @@ import java.awt.image.ImageObserver;
  */
 public class Obstacle extends Sprite {
 
-    public Obstacle(String imageName) {
-        super(imageName);
+    public Obstacle(String imageName, Board board) {
+        super(imageName, board);
         initObstacle();
     }
 
-    public Obstacle(String imageName, double x, double y) {
-        super(imageName, x, y);
+    public Obstacle(String imageName, double x, double y, Board board) {
+        super(imageName, x, y, board);
         initObstacle();
     }
 

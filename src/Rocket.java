@@ -8,14 +8,14 @@ import java.io.IOException;
  */
 public class Rocket extends Sprite {
 
-    public Rocket(double x, double y) {
-        super(x, y);
+    public Rocket(double x, double y, Board board) {
+        super(x, y, board);
         damage = 20;
         initMissile();
     }
 
-    public Rocket(double x, double y, int damage) {
-        super(x, y);
+    public Rocket(double x, double y, int damage, Board board) {
+        super(x, y, board);
         this.damage = damage;
         initMissile();
     }

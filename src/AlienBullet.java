@@ -6,8 +6,8 @@ import java.awt.image.ImageObserver;
  */
 public class AlienBullet extends Sprite {
 
-    public AlienBullet(double x, double y) {
-        super(x, y);
+    public AlienBullet(double x, double y, Board board) {
+        super(x, y, board);
         initAlienBullet();
     }
 

@@ -131,13 +131,13 @@ public class Map {
         // todo: better way of setting speed. Shouldn't be a combined function
         Sprite tile = mapTiles[index];
         if(tile instanceof Obstacle) {
-            tile = new Obstacle("obstacle_tile.png", x, y);
+            tile = new Obstacle("obstacle_tile.png", x, y, board);
             if(index == 2)
                 tile.setCollides(false);
         } else if(tile instanceof  Coin) {
-            tile = new Coin("coin_tile.png", x, y);
+            tile = new Coin("coin_tile.png", x, y, board);
         } else if(tile instanceof Alien) {
-            tile = new Alien("alien.png", x, y);
+            tile = new Alien("alien.png", x, y, 1, board); // todo: alientypes
         }
         return tile;
     }
