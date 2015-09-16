@@ -17,7 +17,8 @@ public class Obstacle extends Sprite {
     }
 
     private void initObstacle() {
-        hitBox.setDimensions(50, 50);
+        hitBox.setDimensions(40, 40);
+        hitBox.setOffsets(5, 5);
         damage = Integer.MAX_VALUE;
     }
 

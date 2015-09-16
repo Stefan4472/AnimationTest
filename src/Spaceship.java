@@ -35,7 +35,7 @@ public class Spaceship extends Sprite {
     private boolean firesRockets;
     // ms to wait between firing rockets
     private int rocketDelay = 420;
-    private int rocketDamage = 40;
+    private int rocketType = 40;
     private long lastFiredRocket;
     private boolean firingRockets;
 
@@ -47,16 +47,17 @@ public class Spaceship extends Sprite {
     public void setHP(int hp) {
         this.hp = hp;
     }
+
     public void setBullets(boolean firesBullets, int bulletType, int bulletDelay) {
         this.firesBullets = firesBullets;
         this.bulletType = bulletType;
         this.bulletDelay = bulletDelay;
     }
 
-    public void setRockets(boolean firesRockets, int rocketDamage, int rocketDelay) {
+    public void setRockets(boolean firesRockets, int rocketType, int rocketDelay) {
         this.firesRockets = firesRockets;
-        this.rocketDamage = rocketDamage;
-        this.rocketDamage = rocketDelay;
+        this.rocketType = rocketType;
+        this.rocketType = rocketDelay;
     }
 
     // default constructor
@@ -100,14 +101,14 @@ public class Spaceship extends Sprite {
 
     // fires two rockets
     public void fireRockets() {
-        projectiles.add(new Rocket(x + 43, y + 15, bulletType, board));
-        projectiles.add(new Rocket(x + 43, y + 33, bulletType, board));
+        projectiles.add(new Rocket(x + 43, y + 15, rocketType, board));
+        projectiles.add(new Rocket(x + 43, y + 33, rocketType, board));
     }
 
     // fires two bullets
     public void fireBullets() {
-        projectiles.add(new Bullet(x + 43, y + 15, rocketDamage, board));
-        projectiles.add(new Bullet(x + 43, y + 33, rocketDamage, board));
+        projectiles.add(new Bullet(x + 43, y + 15, bulletType, board));
+        projectiles.add(new Bullet(x + 43, y + 33, bulletType, board));
     }
 
     public void updateSpeeds() {

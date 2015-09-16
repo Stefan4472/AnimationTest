@@ -58,8 +58,8 @@ public class Board extends JPanel implements ActionListener {
         setDoubleBuffered(true);
 
         spaceship = new Spaceship("spaceship.png", -50, 125, this);
-        spaceship.setBullets(true, 20, 100);
-        spaceship.setRockets(true, 40, 420);
+        spaceship.setBullets(true, 1, 100);
+        spaceship.setRockets(true, 1, 420);
 
         background = new Background(new String[] {
                 "space1.png",
