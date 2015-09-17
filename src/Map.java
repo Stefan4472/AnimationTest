@@ -8,9 +8,6 @@ import java.util.stream.Collectors;
  */
 public class Map {
 
-    // available mapTiles. Element index is Tile ID
-    private Sprite[] mapTiles;
-
     // grid of tile ID's instructing how to display map
     private byte[][] map;
 
@@ -39,8 +36,8 @@ public class Map {
     // coordinates of upper-left of "window" being shown
     private long x = 0;
 
-    // dimensions of mapTiles
-    private int tileWidth;
+    // dimensions of basic mapTiles
+    private int tileWidth; // todo: what about bigger/smaller sprites?
     private int tileHeight;
 
     private Random random = new Random();
@@ -63,15 +60,8 @@ public class Map {
     }
 
     private void initMap() {
-        mapTiles = new Sprite[] {
-            null, // element zero is empty space
-            new Obstacle("obstacle_tile.png", board),
-            new Obstacle("obstacle_tile.png", board),
-            new Coin("coin_tile.png", board),
-            new Alien("alien.png", 1, board)
-        };
-        tileWidth = this.mapTiles[1].getWidth();
-        tileHeight = this.mapTiles[1].getHeight();
+        tileWidth = 50;
+        tileHeight = 50;
         rows = SCREEN_HEIGHT / tileHeight;
 
         map = new byte[][] {
@@ -126,19 +116,21 @@ public class Map {
     }
 
     //
-    private Sprite getMapTile(int index, double x, double y) {
-        // todo: better way of setting speed. Shouldn't be a combined function
-        Sprite tile = mapTiles[index];
-        if(tile instanceof Obstacle) {
-            tile = new Obstacle("obstacle_tile.png", x, y, board);
-            if(index == 2)
+    private Sprite getMapTile(int tileID, double x, double y) throws IndexOutOfBoundsException {
+        switch(tileID) {
+            case 1:
+                return new Obstacle("obstacle_tile.png", x, y, board);
+            case 2:
+                Sprite tile = new Obstacle("obstacle_tile.png", x, y, board);
                 tile.setCollides(false);
-        } else if(tile instanceof  Coin) {
-            tile = new Coin("coin_tile.png", x, y, board);
-        } else if(tile instanceof Alien) {
-            tile = new Alien("alien.png", x, y, 1, board); // todo: alientypes
+                return tile;
+            case 3:
+                return new Coin("coin_tile.png", x, y, board);
+            case 4:
+                return new Alien("alien.png", x, y, 1, board);
+            default:
+                throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
         }
-        return tile;
     }
 
     // sets specified fields and adds sprite to arraylist
