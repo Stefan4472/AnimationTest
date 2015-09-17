@@ -115,7 +115,7 @@ public class Map {
         return scrollSpeed;
     }
 
-    //
+    // returns sprite initialized to coordinates (x,y) given tileID
     private Sprite getMapTile(int tileID, double x, double y) throws IndexOutOfBoundsException {
         switch(tileID) {
             case 1:
@@ -191,7 +191,7 @@ public class Map {
 
     // generates tunnel
     private byte[][] generateTunnel() {
-        int size = 15 + random.nextInt(10);
+        int size = 18 + random.nextInt(10);
         byte[][] generated = new byte[rows][size];
         int row = 1 + random.nextInt(4);
         float change_path = 0.0f;
@@ -199,7 +199,7 @@ public class Map {
             if(i != row)
                 generated[i][0] = 1;
         }
-        for(int i = 0; i < size; i++) {
+        for(int i = 1; i < size - 3; i++) {
             if(getP(change_path)) {
                 change_path = -0.1f;
                 int direction;
@@ -210,9 +210,9 @@ public class Map {
                         direction = -1;
                 } else {
                     if(row > 0)
-                        direction = 1;
-                    else
                         direction = -1;
+                    else
+                        direction = 1;
                 }
                 for(int j = 0; j < rows; j++) {
                     if(j != row && j != row + direction) {
@@ -226,8 +226,6 @@ public class Map {
                         generated[j][i] = 2;
                     } else if(j != row) {
                         generated[j][i] = 1;
-                    } else {
-                        generated[j][i] = 3;
                     }
                 }
             }
