@@ -27,7 +27,7 @@ public class Map {
     private float scrollSpeed;
 
     // generated sprites
-    private ArrayList<Sprite> tiles;
+    private ArrayList<Sprite> tiles = new ArrayList<>();
 
     // board upon which Map lies
     private Board board;
@@ -37,13 +37,13 @@ public class Map {
     private final int SCREEN_HEIGHT = 300;
 
     // coordinates of upper-left of "window" being shown
-    private long x;
+    private long x = 0;
 
     // dimensions of mapTiles
     private int tileWidth;
     private int tileHeight;
 
-    private Random random;
+    private Random random = new Random();
 
     public ArrayList<Sprite> getTiles(){ return tiles; }
     public float getScrollSpeed() { return scrollSpeed; }
@@ -57,23 +57,22 @@ public class Map {
                 .collect(Collectors.toList());
     }
 
-    public Map(Sprite[] mapTiles) {
-        // element zero must be left empty
-        this.mapTiles = new Sprite[mapTiles.length + 1];
-        System.arraycopy(mapTiles, 0, this.mapTiles, 1, this.mapTiles.length - 1);
-
+    public Map(Board board) {
+        this.board = board;
         initMap();
     }
 
     private void initMap() {
-        this.x = 0;
-        tiles = new ArrayList<>();
-
+        mapTiles = new Sprite[] {
+            null, // element zero is empty space
+            new Obstacle("obstacle_tile.png", board),
+            new Obstacle("obstacle_tile.png", board),
+            new Coin("coin_tile.png", board),
+            new Alien("alien.png", 1, board)
+        };
         tileWidth = this.mapTiles[1].getWidth();
         tileHeight = this.mapTiles[1].getHeight();
         rows = SCREEN_HEIGHT / tileHeight;
-
-        random = new Random();
 
         map = new byte[][] {
                 {0, 0, 0, 0, 0, 0, 0},
@@ -260,6 +259,11 @@ public class Map {
             generated[random.nextInt(6)][8 * (i + 1)] = 4;
         }
         return generated;
+    }
+
+    // generates a coin trail in map
+    private void generateCoins(byte[][] map) {
+
     }
 
     // give probability of an event occurring

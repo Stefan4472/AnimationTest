@@ -21,7 +21,7 @@ public class Board extends JPanel implements ActionListener {
     private int boardHeight;
 
     // num pixels scrolled
-    private int scrollCounter;
+    private int scrollCounter = 0;
     // whether game is paused currently
     private boolean paused;
     // space background (implements parallax scrolling)
@@ -29,9 +29,9 @@ public class Board extends JPanel implements ActionListener {
     // generates terrain and sprites on screen
     private Map map;
     // difficulty level, incremented every frame
-    private double difficulty;
+    private double difficulty = 0.0f;
     // score in current run
-    private int score;
+    private int score = 0;
     // time, in ms, last frame was completed
     private long lastTime = 0;
 
@@ -67,19 +67,10 @@ public class Board extends JPanel implements ActionListener {
                 "space3.png",
                 "space4.png"
         });
-        scrollCounter = 0;
         paused = false;
-        map = new Map(new Sprite[] {
-                new Obstacle("obstacle_tile.png", this),
-                new Obstacle("obstacle_tile.png", this),
-                new Coin("coin_tile.png", this),
-                new Alien("alien.png", 1, this)
-        });
-        map.setBoard(this);
-        difficulty = 0.0f;
-        score = 0;
-        /* This will call the actionPerformed method of this class
-        every DELAY milliseconds */
+        map = new Map(this);
+
+        /* calls actionPerformed() every DELAY milliseconds */
         timer = new Timer(DELAY, this);
         timer.start();
     }
