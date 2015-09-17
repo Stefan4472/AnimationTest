@@ -191,16 +191,17 @@ public class Map {
 
     // generates tunnel
     private byte[][] generateTunnel() {
-        int size = 18 + random.nextInt(10);
-        byte[][] generated = new byte[rows][size];
-        int row = 1 + random.nextInt(4);
+        int tunnel_length = 15 + random.nextInt(10);
+        byte[][] generated = new byte[rows][tunnel_length + 3];
+        int row = random.nextInt(6);
         float change_path = 0.0f;
+        // generate first column
         for(int i = 0; i < rows; i++) {
             if(i != row)
                 generated[i][0] = 1;
         }
-        for(int i = 1; i < size - 3; i++) {
-            if(getP(change_path)) {
+        for(int i = 1; i < tunnel_length; i++) {
+            if(getP(change_path) && i < tunnel_length - 1) {
                 change_path = -0.1f;
                 int direction;
                 if(getP(0.5f)) {
@@ -217,19 +218,21 @@ public class Map {
                 for(int j = 0; j < rows; j++) {
                     if(j != row && j != row + direction) {
                         generated[j][i] = 1;
+                        generated[j][i + 1] = 1;
                     }
                 }
+                i++;
                 row += direction;
             } else {
                 for(int j = 0; j < rows; j++) {
-                    if(j < row - 1 ||j > row + 1) {
+                    if(j < row - 1 || j > row + 1) {
                         generated[j][i] = 2;
                     } else if(j != row) {
                         generated[j][i] = 1;
                     }
                 }
+                change_path += 0.05f;
             }
-            change_path += 0.05f;
         }
         return generated;
     }
