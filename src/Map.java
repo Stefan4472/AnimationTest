@@ -174,6 +174,8 @@ public class Map {
             //    map = generateAsteroid();
             //}
         }
+        generateCoins(map);
+        printMap(map);
     }
 
     // generates map cluster of simple obstacle
@@ -267,6 +269,7 @@ public class Map {
     private void generateCoins(byte[][] map) {
         int col = random.nextInt(map[0].length / 2);
         int end_col = map[0].length - random.nextInt(map[0].length / 4);
+        System.out.println("Map.java: Generating Coin Trail From " + col + " to " + end_col);
         // establish empty row to place first coin,
         // prioritizing rows closer to the middle
         int  row = 2 + random.nextInt(2);
@@ -280,10 +283,20 @@ public class Map {
                 row_found = true;
             }
         }
-        for(int i = col; i < end_col; i++) {
+        System.out.println("Map.java: Row Found: " + row);
+        for(int i = col; i < end_col && !row_found; i++) {
             if(map[row][col] == EMPTY) {
                 map[row][col] = COIN;
+            } else { // search for nearby empty tiles
+                if(row < rows - 1 && map[row + 1][col] == EMPTY) {
+                    map[row + 1][col] = COIN;
+                    row += 1;
+                } else if(row > 0 && map[row - 1][col] == EMPTY) {
+                    map[row - 1][col] = COIN;
+                    row -= 1;
+                }
             }
+            col++;
         }
 
     }
@@ -315,5 +328,15 @@ public class Map {
     // calculates and returns probability of aliens appearing in a swarm
     private double getPAlienSwarm() {
         return (-30 + board.getDifficulty()) / 100;
+    }
+
+    // prints map in a 2-d array
+    private void printMap(byte[][] map) {
+        for(int i = 0; i < map.length; i++) {
+            for(int j = 0; j < map[0].length; j++) {
+                System.out.print(map[i][j] + "\t");
+            }
+            System.out.println();
+        }
     }
 }
