@@ -111,7 +111,10 @@ public class Map {
     // difficulty starts at 0 and increases by 0.01/frame,
     // or 1 per second
     public float updateScrollSpeed() {
-        scrollSpeed = (float) (-4.0f - board.getDifficulty() / 10);
+        scrollSpeed = (float) (-4.0f - board.getDifficulty() / 20);
+        if(scrollSpeed < -20) {
+            scrollSpeed = -20;
+        }
         return scrollSpeed;
     }
 
@@ -151,7 +154,7 @@ public class Map {
             if(getP(getPTunnel())) {
                 map = generateTunnel();
             } else {
-                map = generateObstacle();
+                map = generateObstacles();
             }
         } else {
             //if(getP(0.5)) {
@@ -166,11 +169,10 @@ public class Map {
         }
     }
 
-    // generates single or cluster of simple obstacle at index in map
-    // returns space to leave empty after index in map
-    private byte[][] generateObstacle() {
+    // generates map cluster of simple obstacle
+    private byte[][] generateObstacles() {
         int size = 10 + random.nextInt(5);
-        byte[][] generated = new byte[rows][size];
+        byte[][] generated = new byte[rows][size + 2];
         for(int i = 0; i < size; i++) {
             if(getP(0.2f)) {
                 int row = random.nextInt(rows);
@@ -193,7 +195,7 @@ public class Map {
     private byte[][] generateTunnel() {
         int tunnel_length = 15 + random.nextInt(10);
         byte[][] generated = new byte[rows][tunnel_length + 3];
-        int row = random.nextInt(6);
+        int row = 1 + random.nextInt(5);
         float change_path = 0.0f;
         // generate first column
         for(int i = 0; i < rows; i++) {
@@ -254,8 +256,28 @@ public class Map {
         return generated;
     }
 
-    // generates a coin trail in map
+    // generates a coin trail on map
     private void generateCoins(byte[][] map) {
+        int col = random.nextInt(map[0].length / 2);
+        int end_col = map[0].length - random.nextInt(map[0].length / 4);
+        // establish empty row to place first coin,
+        // prioritizing rows closer to the middle
+        int  row = 2 + random.nextInt(2);
+        boolean row_found = false;
+        for(int i = 0; i < 4  && !row_found; i++) {
+            if(map[row + i][col] == 0 && row < 6) {
+                row += i;
+                row_found = true;
+            } else if(map[row - i][col] == 0 && row > -1) {
+                row -= i;
+                row_found = true;
+            }
+        }
+        for(int i = col; i < end_col; i++) {
+            if(map[row][col] == 0) {
+                map[row][col] = 3;
+            }
+        }
 
     }
 
