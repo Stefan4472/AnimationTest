@@ -49,9 +49,17 @@ public class Map {
 
     private Random random = new Random();
 
-    public ArrayList<Sprite> getTiles(){ return tiles; }
-    public float getScrollSpeed() { return scrollSpeed; }
-    public void setBoard(Board board) { this.board = board; }
+    public ArrayList<Sprite> getTiles() {
+        return tiles;
+    }
+
+    public float getScrollSpeed() {
+        return scrollSpeed;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
 
     public ArrayList<Sprite> getProjectiles() {
         return (ArrayList<Sprite>) tiles.stream()
@@ -71,7 +79,7 @@ public class Map {
         tileHeight = 50;
         rows = SCREEN_HEIGHT / tileHeight;
 
-        map = new byte[][] {
+        map = new byte[][]{
                 {0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0},
@@ -84,10 +92,14 @@ public class Map {
     }
 
     // current horizontal tile
-    private long getWTile() { return x / tileWidth; }
+    private long getWTile() {
+        return x / tileWidth;
+    }
 
     // number of pixels from start of current tile
-    private int getWOffset() { return (int) x % tileWidth; }
+    private int getWOffset() {
+        return (int) x % tileWidth;
+    }
 
     // adds any new tiles and generates a new set of tiles if needed
     public void update() {
@@ -95,12 +107,12 @@ public class Map {
         this.x += (int) scrollSpeed;
 
         // perform rendering if spaceship has changed tiles
-        if(getWTile() != lastTile) {
+        if (getWTile() != lastTile) {
             for (int i = 0; i < map.length; i++) {
                 // add any non-empty tiles in the current column at the edge of the screen
                 if (map[i][mapTileCounter] != EMPTY) {
-                    addTile(getMapTile(map[i][mapTileCounter], SCREEN_WIDTH + getWOffset(),  i * tileWidth),
-                        (int) scrollSpeed, 0, board);
+                    addTile(getMapTile(map[i][mapTileCounter], SCREEN_WIDTH + getWOffset(), i * tileWidth),
+                            (int) scrollSpeed, 0, board);
                 }
             }
             mapTileCounter++;
@@ -119,7 +131,7 @@ public class Map {
     // or 1 per second
     public float updateScrollSpeed() {
         scrollSpeed = (float) (-4.0f - board.getDifficulty() / 20);
-        if(scrollSpeed < -20) {
+        if (scrollSpeed < -20) {
             scrollSpeed = -20;
         }
         return scrollSpeed;
@@ -127,7 +139,7 @@ public class Map {
 
     // returns sprite initialized to coordinates (x,y) given tileID
     private Sprite getMapTile(int tileID, double x, double y) throws IndexOutOfBoundsException {
-        switch(tileID) {
+        switch (tileID) {
             case OBSTACLE:
                 return new Obstacle("obstacle_tile.png", x, y, board);
             case OBSTACLE_INVIS:
@@ -157,42 +169,41 @@ public class Map {
     // speed of oncoming obstacles
     // powerups and coins
     public void generateTiles() {
-        if(getP(getPTile())) {
-            if(getP(getPTunnel())) {
+        if (getP(getPTile())) {
+            if (getP(getPTunnel())) {
                 map = generateTunnel();
             } else {
                 map = generateObstacles();
             }
         } else {
             //if(getP(0.5)) {
-                if(getP(getPAlienSwarm())) {
-                    map = generateAlienSwarm();
-                } else {
-                    map = generateAlien();
-                }
+            if (getP(getPAlienSwarm())) {
+                map = generateAlienSwarm();
+            } else {
+                map = generateAlien();
+            }
             //} else {
             //    map = generateAsteroid();
             //}
         }
         generateCoins(map);
-        printMap(map);
     }
 
     // generates map cluster of simple obstacle
     private byte[][] generateObstacles() {
         int size = 10 + random.nextInt(5);
         byte[][] generated = new byte[rows][size + 2];
-        for(int i = 0; i < size; i++) {
-            if(getP(0.2f)) {
+        for (int i = 0; i < size; i++) {
+            if (getP(0.2f)) {
                 int row = random.nextInt(rows);
                 generated[row][i] = OBSTACLE;
-                if(getP(0.5) && i + 1 < size) {
+                if (getP(0.5) && i + 1 < size) {
                     generated[row][i + 1] = OBSTACLE;
                 }
-                if(getP(0.3) && row + 1 < rows) {
+                if (getP(0.3) && row + 1 < rows) {
                     generated[row + 1][i] = OBSTACLE;
                 }
-                if(getP(0.2) && row > 0) {
+                if (getP(0.2) && row > 0) {
                     generated[row - 1][i] = OBSTACLE;
                 }
             }
@@ -207,27 +218,27 @@ public class Map {
         int row = 1 + random.nextInt(5);
         float change_path = 0.0f;
         // generate first column
-        for(int i = 0; i < rows; i++) {
-            if(i != row)
+        for (int i = 0; i < rows; i++) {
+            if (i != row)
                 generated[i][0] = OBSTACLE;
         }
-        for(int i = 1; i < tunnel_length; i++) {
-            if(getP(change_path) && i < tunnel_length - 1) {
+        for (int i = 1; i < tunnel_length; i++) {
+            if (getP(change_path) && i < tunnel_length - 1) {
                 change_path = -0.1f;
                 int direction;
-                if(getP(0.5f)) {
-                    if(row < map.length - 1)
+                if (getP(0.5f)) {
+                    if (row < map.length - 1)
                         direction = 1;
                     else
                         direction = -1;
                 } else {
-                    if(row > 0)
+                    if (row > 0)
                         direction = -1;
                     else
                         direction = 1;
                 }
-                for(int j = 0; j < rows; j++) {
-                    if(j != row && j != row + direction) {
+                for (int j = 0; j < rows; j++) {
+                    if (j != row && j != row + direction) {
                         generated[j][i] = OBSTACLE;
                         generated[j][i + 1] = OBSTACLE;
                     }
@@ -235,10 +246,10 @@ public class Map {
                 i++;
                 row += direction;
             } else {
-                for(int j = 0; j < rows; j++) {
-                    if(j < row - 1 || j > row + 1) {
+                for (int j = 0; j < rows; j++) {
+                    if (j < row - 1 || j > row + 1) {
                         generated[j][i] = OBSTACLE_INVIS;
-                    } else if(j != row) {
+                    } else if (j != row) {
                         generated[j][i] = OBSTACLE;
                     }
                 }
@@ -259,7 +270,7 @@ public class Map {
         int num_aliens = 2 + random.nextInt(3);
         int size = num_aliens * 8 + 1;
         byte[][] generated = new byte[rows][size];
-        for(int i = 0; i < num_aliens; i++) {
+        for (int i = 0; i < num_aliens; i++) {
             generated[random.nextInt(6)][8 * (i + 1)] = ALIEN_LVL1;
         }
         return generated;
@@ -272,28 +283,36 @@ public class Map {
         System.out.println("Map.java: Generating Coin Trail From " + col + " to " + end_col);
         // establish empty row to place first coin,
         // prioritizing rows closer to the middle
-        int  row = 2 + random.nextInt(2);
-        boolean row_found = false;
-        for(int i = 0; i < 4  && !row_found; i++) {
-            if(map[row + i][col] == EMPTY && row < 6) {
-                row += i;
-                row_found = true;
-            } else if(map[row - i][col] == EMPTY && row > -1) {
-                row -= i;
-                row_found = true;
+        int row = 0; //= 2 + random.nextInt(2);
+        // trail_distance is the length a trail can go without
+        // having to change direction. Longer trail_distance
+        // is preferable
+        int best_row = random.nextInt(6), max_distance = 1;
+        for (int i = 0; i < rows; i++) {
+            int trail_distance = 1 - 2 * (Math.abs(3 - i)), j = 0; // middle columns are favored
+            while (col + j < map[0].length && map[i][col + j] == EMPTY) {
+                trail_distance++;
+                if (trail_distance > max_distance) {
+                    max_distance = trail_distance;
+                    best_row = i;
+                }
+                j++;
             }
         }
+        row = best_row;
         System.out.println("Map.java: Row Found: " + row);
-        for(int i = col; i < end_col && !row_found; i++) {
+        for(int i = col; i < end_col; i++) {
             if(map[row][col] == EMPTY) {
                 map[row][col] = COIN;
             } else { // search for nearby empty tiles
                 if(row < rows - 1 && map[row + 1][col] == EMPTY) {
-                    map[row + 1][col] = COIN;
                     row += 1;
+                    map[row][col] = COIN;
+                    map[row][col - 1] = COIN;
                 } else if(row > 0 && map[row - 1][col] == EMPTY) {
-                    map[row - 1][col] = COIN;
                     row -= 1;
+                    map[row][col] = COIN;
+                    map[row][col - 1] = COIN;
                 }
             }
             col++;
