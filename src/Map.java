@@ -11,6 +11,13 @@ public class Map {
     // grid of tile ID's instructing how to display map
     private byte[][] map;
 
+    // tile id's
+    private final int EMPTY = 0; // no obstacle
+    private final int OBSTACLE = 1; // basic obstacle
+    private final int OBSTACLE_INVIS = 2; // basic obstacle collision = false
+    private final int COIN = 3; // coin tile
+    private final int ALIEN_LVL1 = 4; // level 1 alien
+
     // number of rows of tiles that fit in map
     private int rows;
 
@@ -91,7 +98,7 @@ public class Map {
         if(getWTile() != lastTile) {
             for (int i = 0; i < map.length; i++) {
                 // add any non-empty tiles in the current column at the edge of the screen
-                if (map[i][mapTileCounter] != 0) {
+                if (map[i][mapTileCounter] != EMPTY) {
                     addTile(getMapTile(map[i][mapTileCounter], SCREEN_WIDTH + getWOffset(),  i * tileWidth),
                         (int) scrollSpeed, 0, board);
                 }
@@ -121,15 +128,15 @@ public class Map {
     // returns sprite initialized to coordinates (x,y) given tileID
     private Sprite getMapTile(int tileID, double x, double y) throws IndexOutOfBoundsException {
         switch(tileID) {
-            case 1:
+            case OBSTACLE:
                 return new Obstacle("obstacle_tile.png", x, y, board);
-            case 2:
+            case OBSTACLE_INVIS:
                 Sprite tile = new Obstacle("obstacle_tile.png", x, y, board);
                 tile.setCollides(false);
                 return tile;
-            case 3:
+            case COIN:
                 return new Coin("coin_tile.png", x, y, board);
-            case 4:
+            case ALIEN_LVL1:
                 return new Alien("alien.png", x, y, 1, board);
             default:
                 throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
@@ -176,15 +183,15 @@ public class Map {
         for(int i = 0; i < size; i++) {
             if(getP(0.2f)) {
                 int row = random.nextInt(rows);
-                generated[row][i] = 1;
+                generated[row][i] = OBSTACLE;
                 if(getP(0.5) && i + 1 < size) {
-                    generated[row][i + 1] = 1;
+                    generated[row][i + 1] = OBSTACLE;
                 }
                 if(getP(0.3) && row + 1 < rows) {
-                    generated[row + 1][i] = 1;
+                    generated[row + 1][i] = OBSTACLE;
                 }
                 if(getP(0.2) && row > 0) {
-                    generated[row - 1][i] = 1;
+                    generated[row - 1][i] = OBSTACLE;
                 }
             }
         }
@@ -200,7 +207,7 @@ public class Map {
         // generate first column
         for(int i = 0; i < rows; i++) {
             if(i != row)
-                generated[i][0] = 1;
+                generated[i][0] = OBSTACLE;
         }
         for(int i = 1; i < tunnel_length; i++) {
             if(getP(change_path) && i < tunnel_length - 1) {
@@ -219,8 +226,8 @@ public class Map {
                 }
                 for(int j = 0; j < rows; j++) {
                     if(j != row && j != row + direction) {
-                        generated[j][i] = 1;
-                        generated[j][i + 1] = 1;
+                        generated[j][i] = OBSTACLE;
+                        generated[j][i + 1] = OBSTACLE;
                     }
                 }
                 i++;
@@ -228,9 +235,9 @@ public class Map {
             } else {
                 for(int j = 0; j < rows; j++) {
                     if(j < row - 1 || j > row + 1) {
-                        generated[j][i] = 2;
+                        generated[j][i] = OBSTACLE_INVIS;
                     } else if(j != row) {
-                        generated[j][i] = 1;
+                        generated[j][i] = OBSTACLE;
                     }
                 }
                 change_path += 0.05f;
@@ -242,7 +249,7 @@ public class Map {
     private byte[][] generateAlien() {
         int size = 4 + random.nextInt(10);
         byte[][] generated = new byte[rows][size];
-        generated[random.nextInt(6)][size - 1] = 4;
+        generated[random.nextInt(6)][size - 1] = ALIEN_LVL1;
         return generated;
     }
 
@@ -251,7 +258,7 @@ public class Map {
         int size = num_aliens * 8 + 1;
         byte[][] generated = new byte[rows][size];
         for(int i = 0; i < num_aliens; i++) {
-            generated[random.nextInt(6)][8 * (i + 1)] = 4;
+            generated[random.nextInt(6)][8 * (i + 1)] = ALIEN_LVL1;
         }
         return generated;
     }
@@ -265,17 +272,17 @@ public class Map {
         int  row = 2 + random.nextInt(2);
         boolean row_found = false;
         for(int i = 0; i < 4  && !row_found; i++) {
-            if(map[row + i][col] == 0 && row < 6) {
+            if(map[row + i][col] == EMPTY && row < 6) {
                 row += i;
                 row_found = true;
-            } else if(map[row - i][col] == 0 && row > -1) {
+            } else if(map[row - i][col] == EMPTY && row > -1) {
                 row -= i;
                 row_found = true;
             }
         }
         for(int i = col; i < end_col; i++) {
-            if(map[row][col] == 0) {
-                map[row][col] = 3;
+            if(map[row][col] == EMPTY) {
+                map[row][col] = COIN;
             }
         }
 
