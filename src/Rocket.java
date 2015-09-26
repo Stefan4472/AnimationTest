@@ -21,7 +21,7 @@ public class Rocket extends Sprite {
     }
 
     private void initMissile() {
-        loadDefaultImage("rocket.png");
+        loadDefaultImage("sprites/spaceship/rocket_sprite.png");
         speedX = 2.0f;
         hitBox.setDimensions(9, 3);
     }

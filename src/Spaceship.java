@@ -68,9 +68,9 @@ public class Spaceship extends Sprite {
 
     private void initCraft() {
         try { // todo: this will not catch all errors... Resources should be initialized in main or Board.java
-            movingAnimation = new SpriteAnimation("spaceship_moving_spritesheet_diff.png", 50, 50, 5, true);
-            fireRocketAnimation = new SpriteAnimation("spaceship_firing_spritesheet_diff.png", 50, 50, 8, false);
-            explodeAnimation = new SpriteAnimation("spaceship_exploding_spritesheet_diff.png", 50, 50, 5, false);
+            movingAnimation = new SpriteAnimation("sprites/spaceship/spaceship_moving_spritesheet_diff.png", 50, 50, 5, true);
+            fireRocketAnimation = new SpriteAnimation("sprites/spaceship/spaceship_firing_spritesheet_diff.png", 50, 50, 8, false);
+            explodeAnimation = new SpriteAnimation("sprites/spaceship/spaceship_exploding_spritesheet_diff.png", 50, 50, 5, false);
         } catch(IOException e) {
             e.printStackTrace();
         }

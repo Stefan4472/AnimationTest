@@ -141,15 +141,15 @@ public class Map {
     private Sprite getMapTile(int tileID, double x, double y) throws IndexOutOfBoundsException {
         switch (tileID) {
             case OBSTACLE:
-                return new Obstacle("obstacle_tile.png", x, y, board);
+                return new Obstacle("tiles/obstacle/obstacle_tile.png", x, y, board);
             case OBSTACLE_INVIS:
-                Sprite tile = new Obstacle("obstacle_tile.png", x, y, board);
+                Sprite tile = new Obstacle("tiles/obstacle/obstacle_tile.png", x, y, board);
                 tile.setCollides(false);
                 return tile;
             case COIN:
-                return new Coin("coin_tile.png", x, y, board);
+                return new Coin("tiles/coin/coin_tile.png", x, y, board);
             case ALIEN_LVL1:
-                return new Alien1("alien.png", x, y, board);
+                return new Alien1("sprites/alien/alien_sprite.png", x, y, board);
             default:
                 throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
         }

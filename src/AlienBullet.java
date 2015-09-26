@@ -12,7 +12,7 @@ public class AlienBullet extends Sprite {
     }
 
     private void initAlienBullet() {
-        loadDefaultImage("alien_bullet.png");
+        loadDefaultImage("sprites/alien/alien_bullet.png");
 
         hitBox.setDimensions(10, 10);
 

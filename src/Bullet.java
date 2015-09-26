@@ -32,7 +32,7 @@ public class Bullet extends Sprite {
     }
 
     private void initBullet() {
-        loadDefaultImage("bullet.png");
+        loadDefaultImage("sprites/spaceship/bullet_sprite.png");
         try {
             bulletFiring = new SpriteAnimation("bullet_firing_spritesheet.png", 9, 3, 1, false);
         } catch(IOException e) {

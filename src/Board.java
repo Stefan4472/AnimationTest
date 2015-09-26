@@ -57,15 +57,15 @@ public class Board extends JPanel implements ActionListener {
         setFocusable(true);
         setDoubleBuffered(true);
 
-        spaceship = new Spaceship("spaceship.png", -50, 125, this);
+        spaceship = new Spaceship("sprites/spaceship/spaceship_sprite.png", -50, 125, this);
         spaceship.setBullets(true, 1, 100);
         spaceship.setRockets(true, 1, 420);
 
         background = new Background(new String[] {
-                "space1.png",
-                "space2.png",
-                "space3.png",
-                "space4.png"
+                "tiles/background/space1_tile.png",
+                "tiles/background/space2_tile.png",
+                "tiles/background/space3_tile.png",
+                "tiles/background/space4_tile.png"
         });
         paused = false;
         map = new Map(this);
