@@ -46,10 +46,19 @@ public class Map {
     // coordinates of upper-left of "window" being shown
     private long x = 0;
 
+    // length of coin trails
+    private static final int coinTrailLength = 15;
+    // number of coins remaining in current trail
+    private int coinsLeft;
+    // index of row to be left clear in first column of next chunk
+    // (used to guide coin trails between chunks and ensure map is
+    // not impossible)
+    private static int nextRow;
+
     // dimensions of basic mapTiles
     private final int tileWidth = 50; // todo: what about bigger/smaller sprites?
     private final int tileHeight = 50;
-    
+
     // used for generating random numbers
     private static Random random = new Random();
 
@@ -79,6 +88,7 @@ public class Map {
     private void initMap() {
         rows = SCREEN_HEIGHT / tileHeight;
         map = new byte[6][7];
+        nextRow = random.nextInt(6);
     }
 
     // current horizontal tile
@@ -182,11 +192,11 @@ public class Map {
 
     // generates map cluster of simple obstacle
     private static byte[][] generateObstacles(int rows) {
-        int size = 10 + random.nextInt(5);
+        int size = 10 + random.nextInt(5), row = 0;
         byte[][] generated = new byte[rows][size + 2];
         for (int i = 0; i < size; i++) {
             if (getP(0.2f)) {
-                int row = random.nextInt(rows);
+                row = random.nextInt(rows);
                 generated[row][i] = OBSTACLE;
                 if (getP(0.5) && i + 1 < size) {
                     generated[row][i + 1] = OBSTACLE;
@@ -199,6 +209,7 @@ public class Map {
                 }
             }
         }
+
         return generated;
     }
 
@@ -271,7 +282,6 @@ public class Map {
     private static void generateCoins(byte[][] generated) {
         int col = random.nextInt(generated[0].length / 2);
         int end_col = generated[0].length - random.nextInt(generated[0].length / 4);
-        System.out.println("Map.java: Generating Coin Trail From " + col + " to " + end_col);
         // establish empty row to place first coin,
         // prioritizing rows closer to the middle
         int row; //= 2 + random.nextInt(2);
@@ -291,7 +301,6 @@ public class Map {
             }
         }
         row = best_row;
-        System.out.println("Map.java: Row Found: " + row);
         for(int i = col; i < end_col; i++) {
             if(generated[row][col] == EMPTY) {
                 generated[row][col] = COIN;
@@ -309,6 +318,28 @@ public class Map {
             col++;
         }
 
+    }
+
+    // gives a possible value for nextRow, a row to keep
+    // free of obstacles in the next generated chunk
+    private static int getNextRow(int rows, int lastRow) {
+        int result = lastRow + (getP(0.5) ? + 2 : - 2);
+        if(result > rows - 1) {
+            return rows - 1;
+        } else if(result < 0) {
+            return 0;
+        }
+        return result;
+    }
+
+    // generates random number using random.nextInt(range)
+    // that is not equal to exclusive
+    private static int genRandExcl(int range, int exclusive) {
+        int rand;
+        do {
+            rand = random.nextInt(range);
+        } while(rand == exclusive);
+        return rand;
     }
 
     // give probability of an event occurring
