@@ -12,11 +12,11 @@ public class Map {
     private byte[][] map;
 
     // tile id's
-    private final int EMPTY = 0; // no obstacle
-    private final int OBSTACLE = 1; // basic obstacle
-    private final int OBSTACLE_INVIS = 2; // basic obstacle collision = false
-    private final int COIN = 3; // coin tile
-    private final int ALIEN_LVL1 = 4; // level 1 alien
+    private static final int EMPTY = 0; // no obstacle
+    private static final int OBSTACLE = 1; // basic obstacle
+    private static final int OBSTACLE_INVIS = 2; // basic obstacle collision = false
+    private static final int COIN = 3; // coin tile
+    private static final int ALIEN_LVL1 = 4; // level 1 alien
 
     // number of rows of tiles that fit in map
     private int rows;
@@ -37,8 +37,8 @@ public class Map {
     private Board board;
 
     // dimensions of screen display
-    private final int SCREEN_WIDTH = 600;
-    private final int SCREEN_HEIGHT = 300;
+    private static final int SCREEN_WIDTH = 600;
+    private static final int SCREEN_HEIGHT = 300;
 
     // coordinates of upper-left of "window" being shown
     private long x = 0;
@@ -47,7 +47,7 @@ public class Map {
     private int tileWidth; // todo: what about bigger/smaller sprites?
     private int tileHeight;
 
-    private Random random = new Random();
+    private static Random random = new Random();
 
     public ArrayList<Sprite> getTiles() {
         return tiles;
@@ -119,7 +119,7 @@ public class Map {
 
             // generate more tiles
             if (mapTileCounter == map[0].length) {
-                generateTiles();
+                map = generateTiles(board.getDifficulty(), rows);
                 mapTileCounter = 0;
             }
             lastTile = getWTile();
@@ -163,34 +163,35 @@ public class Map {
         tiles.add(s);
     }
 
-    // difficulty determines:
-    // type of obstacles (int(difficulty) determines range of tiles to use
-    // frequency of obstacles
-    // speed of oncoming obstacles
-    // powerups and coins
-    public void generateTiles() {
-        if (getP(getPTile())) {
-            if (getP(getPTunnel())) {
-                map = generateTunnel();
+    // generates a map of tiles based on difficulty and number of rows
+    // in screen vertically.
+    // difficulty determines probability of certain obstacles, coin
+    // trails, and todo powerups
+    private static byte[][] generateTiles(double difficulty, int rows) {
+        byte[][] generated;
+        if (getP(getPTile(difficulty))) {
+            if (getP(getPTunnel(difficulty))) {
+                generated = generateTunnel(rows);
             } else {
-                map = generateObstacles();
+                generated = generateObstacles(rows);
             }
         } else {
             //if(getP(0.5)) {
-            if (getP(getPAlienSwarm())) {
-                map = generateAlienSwarm();
+            if (getP(getPAlienSwarm(rows))) {
+                generated = generateAlienSwarm(rows);
             } else {
-                map = generateAlien();
-            }
+                generated = generateAlien(rows);
+        }
             //} else {
             //    map = generateAsteroid();
             //}
         }
-        generateCoins(map);
+        generateCoins(generated);
+        return generated;
     }
 
     // generates map cluster of simple obstacle
-    private byte[][] generateObstacles() {
+    private static byte[][] generateObstacles(int rows) {
         int size = 10 + random.nextInt(5);
         byte[][] generated = new byte[rows][size + 2];
         for (int i = 0; i < size; i++) {
@@ -212,7 +213,7 @@ public class Map {
     }
 
     // generates tunnel
-    private byte[][] generateTunnel() {
+    private static byte[][] generateTunnel(int rows) {
         int tunnel_length = 15 + random.nextInt(10);
         byte[][] generated = new byte[rows][tunnel_length + 3];
         int row = 1 + random.nextInt(5);
@@ -227,7 +228,7 @@ public class Map {
                 change_path = -0.1f;
                 int direction;
                 if (getP(0.5f)) {
-                    if (row < map.length - 1)
+                    if (row < generated.length - 1)
                         direction = 1;
                     else
                         direction = -1;
@@ -259,14 +260,14 @@ public class Map {
         return generated;
     }
 
-    private byte[][] generateAlien() {
+    private static byte[][] generateAlien(int rows) {
         int size = 4 + random.nextInt(10);
         byte[][] generated = new byte[rows][size];
         generated[random.nextInt(6)][size - 1] = ALIEN_LVL1;
         return generated;
     }
 
-    private byte[][] generateAlienSwarm() {
+    private static byte[][] generateAlienSwarm(int rows) {
         int num_aliens = 2 + random.nextInt(3);
         int size = num_aliens * 8 + 1;
         byte[][] generated = new byte[rows][size];
@@ -277,20 +278,20 @@ public class Map {
     }
 
     // generates a coin trail on map
-    private void generateCoins(byte[][] map) {
-        int col = random.nextInt(map[0].length / 2);
-        int end_col = map[0].length - random.nextInt(map[0].length / 4);
+    private static void generateCoins(byte[][] generated) {
+        int col = random.nextInt(generated[0].length / 2);
+        int end_col = generated[0].length - random.nextInt(generated[0].length / 4);
         System.out.println("Map.java: Generating Coin Trail From " + col + " to " + end_col);
         // establish empty row to place first coin,
         // prioritizing rows closer to the middle
-        int row = 0; //= 2 + random.nextInt(2);
+        int row; //= 2 + random.nextInt(2);
         // trail_distance is the length a trail can go without
         // having to change direction. Longer trail_distance
         // is preferable
         int best_row = random.nextInt(6), max_distance = 1;
-        for (int i = 0; i < rows; i++) {
+        for (int i = 0; i < generated.length; i++) {
             int trail_distance = 1 - 2 * (Math.abs(3 - i)), j = 0; // middle columns are favored
-            while (col + j < map[0].length && map[i][col + j] == EMPTY) {
+            while (col + j < generated[0].length && generated[i][col + j] == EMPTY) {
                 trail_distance++;
                 if (trail_distance > max_distance) {
                     max_distance = trail_distance;
@@ -302,17 +303,17 @@ public class Map {
         row = best_row;
         System.out.println("Map.java: Row Found: " + row);
         for(int i = col; i < end_col; i++) {
-            if(map[row][col] == EMPTY) {
-                map[row][col] = COIN;
+            if(generated[row][col] == EMPTY) {
+                generated[row][col] = COIN;
             } else { // search for nearby empty tiles
-                if(row < rows - 1 && map[row + 1][col] == EMPTY) {
+                if(row < generated.length - 1 && generated[row + 1][col] == EMPTY) {
                     row += 1;
-                    map[row][col] = COIN;
-                    map[row][col - 1] = COIN;
-                } else if(row > 0 && map[row - 1][col] == EMPTY) {
+                    generated[row][col] = COIN;
+                    generated[row][col - 1] = COIN;
+                } else if(row > 0 && generated[row - 1][col] == EMPTY) {
                     row -= 1;
-                    map[row][col] = COIN;
-                    map[row][col - 1] = COIN;
+                    generated[row][col] = COIN;
+                    generated[row][col - 1] = COIN;
                 }
             }
             col++;
@@ -323,30 +324,30 @@ public class Map {
     // give probability of an event occurring
     // uses random numbers and will return if event should
     // occur or not
-    private boolean getP(double probability) {
+    private static boolean getP(double probability) {
         return random.nextInt(100) + 1 <= probability * 100;
     }
 
     // calculates and returns probability of a tile-based obstacle
-    private double getPTile() {
-        if(110 - board.getDifficulty() >= 50) {
-            return (110 - board.getDifficulty()) / 100;
+    private static double getPTile(double difficulty) {
+        if(110 - difficulty >= 50) {
+            return (110 - difficulty) / 100;
         } else {
             return 0.5;
         }
     }
 
-    private double getPTunnel() {
-        if(-10 + board.getDifficulty() < 50) {
-            return (-10 + board.getDifficulty()) / 100;
+    private static double getPTunnel(double difficulty) {
+        if(-10 + difficulty < 50) {
+            return (-10 + difficulty) / 100;
         } else {
             return 0.5;
         }
     }
 
     // calculates and returns probability of aliens appearing in a swarm
-    private double getPAlienSwarm() {
-        return (-30 + board.getDifficulty()) / 100;
+    private static double getPAlienSwarm(double difficulty) {
+        return (-30 + difficulty) / 100;
     }
 
     // prints map in a 2-d array
