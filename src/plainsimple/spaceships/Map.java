@@ -196,7 +196,7 @@ public class Map {
         byte[][] generated = new byte[rows][size + 2];
         for (int i = 0; i < size; i++) {
             if (getP(0.2f)) {
-                row = random.nextInt(rows);
+                row = genRandExcl(rows, nextRow);
                 generated[row][i] = OBSTACLE;
                 if (getP(0.5) && i + 1 < size) {
                     generated[row][i + 1] = OBSTACLE;
@@ -205,11 +205,12 @@ public class Map {
                     generated[row + 1][i] = OBSTACLE;
                 }
                 if (getP(0.2) && row > 0) {
-                    generated[row - 1][i] = OBSTACLE;
+                    generated[row - 1][i] = OBSTACLE; // todo: this could block nextRow
                 }
+                nextRow = getNextRow(rows, row);
             }
         }
-
+        //nextRow = getNextRow(rows, row);
         return generated;
     }
 
@@ -217,7 +218,7 @@ public class Map {
     private static byte[][] generateTunnel(int rows) {
         int tunnel_length = 15 + random.nextInt(10);
         byte[][] generated = new byte[rows][tunnel_length + 3];
-        int row = 1 + random.nextInt(5);
+        int row = nextRow;
         float change_path = 0.0f;
         // generate first column
         for (int i = 0; i < rows; i++) {
@@ -258,6 +259,7 @@ public class Map {
                 change_path += 0.05f;
             }
         }
+        nextRow = getNextRow(rows, row);
         return generated;
     }
 
@@ -323,12 +325,16 @@ public class Map {
     // gives a possible value for nextRow, a row to keep
     // free of obstacles in the next generated chunk
     private static int getNextRow(int rows, int lastRow) {
-        int result = lastRow + (getP(0.5) ? + 2 : - 2);
+        int row_change = random.nextInt(3) + 1;
+        int result = lastRow + (getP(0.5) ? + row_change : - row_change);
         if(result > rows - 1) {
+            System.out.println("Map.java: prevRow " + lastRow + ", nextRow " + (rows - 1));
             return rows - 1;
         } else if(result < 0) {
+            System.out.println("Map.java: prevRow " + lastRow + ", nextRow " + 0);
             return 0;
         }
+        System.out.println("Map.java: prevRow " + lastRow + ", nextRow " + result);
         return result;
     }
 
