@@ -18,17 +18,19 @@ public class Map {
     private static final int OBSTACLE_INVIS = 2; // basic obstacle collision = false
     private static final int COIN = 3; // coin tile
     private static final int ALIEN_LVL1 = 4; // level 1 alien
+    private static final int ALIEN_LVL2 = 5; // level 2 alien
+    private static final int ALIEN_LVL3 = 6; // level 3 alien
 
     // number of rows of tiles that fit in map
     private int rows;
 
     // number of tiles elapsed since last map was generated
-    private int mapTileCounter;
+    private int mapTileCounter = 0;
 
-    // keeps track of tile spaceship was on last time scroll() was called
-    private long lastTile;
+    // keeps track of tile spaceship was on last time map was updated
+    private long lastTile = 0;
 
-    // speed for "stationary" tiles to scroll across the map
+    // default speed tiles scrolling across the map
     private float scrollSpeed = -4.0f;
 
     // generated sprites
@@ -45,19 +47,18 @@ public class Map {
     private long x = 0;
 
     // dimensions of basic mapTiles
-    private int tileWidth; // todo: what about bigger/smaller sprites?
-    private int tileHeight;
-
+    private final int tileWidth = 50; // todo: what about bigger/smaller sprites?
+    private final int tileHeight = 50;
+    
+    // used for generating random numbers
     private static Random random = new Random();
 
     public ArrayList<Sprite> getTiles() {
         return tiles;
     }
-
     public float getScrollSpeed() {
         return scrollSpeed;
     }
-
     public void setBoard(Board board) {
         this.board = board;
     }
@@ -76,20 +77,8 @@ public class Map {
     }
 
     private void initMap() {
-        tileWidth = 50;
-        tileHeight = 50;
         rows = SCREEN_HEIGHT / tileHeight;
-
-        map = new byte[][]{
-                {0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0}
-        };
-        mapTileCounter = 0;
-        lastTile = 0;
+        map = new byte[6][7];
     }
 
     // current horizontal tile
