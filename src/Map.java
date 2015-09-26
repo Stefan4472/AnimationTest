@@ -28,7 +28,7 @@ public class Map {
     private long lastTile;
 
     // speed for "stationary" tiles to scroll across the map
-    private float scrollSpeed;
+    private float scrollSpeed = -4.0f;
 
     // generated sprites
     private ArrayList<Sprite> tiles = new ArrayList<>();
@@ -103,7 +103,7 @@ public class Map {
 
     // adds any new tiles and generates a new set of tiles if needed
     public void update() {
-        scrollSpeed = updateScrollSpeed();
+        scrollSpeed = updateScrollSpeed(); // todo: figure out how to update scrollspeed gradually without letting sprites become disjointed
         this.x += (int) scrollSpeed;
 
         // perform rendering if spaceship has changed tiles
@@ -149,7 +149,7 @@ public class Map {
             case COIN:
                 return new Coin("coin_tile.png", x, y, board);
             case ALIEN_LVL1:
-                return new Alien("alien.png", x, y, 1, board);
+                return new Alien1("alien.png", x, y, board);
             default:
                 throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
         }

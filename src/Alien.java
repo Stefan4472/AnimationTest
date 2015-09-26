@@ -6,79 +6,37 @@ import java.util.ArrayList;
 /**
  * Created by Stefan on 8/28/2015.
  */
-public class Alien extends Sprite {
+public abstract class Alien extends Sprite {
 
     // ms to wait between firing bullets
-    private double bulletDelay;
-    private long lastFiredBullet = 0;
+    protected double bulletDelay;
+    protected long lastFiredBullet = 0;
 
-    private double bulletSpeed;
-    private ArrayList<Sprite> projectiles = new ArrayList<>();
+    protected double bulletSpeed;
+    protected ArrayList<Sprite> projectiles = new ArrayList<>();
 
     // frames since alien was constructed
     // used for calculating trajectory
-    private int elapsedFrames = 1;
+    protected int elapsedFrames = 1;
 
     // starting y-coordinate
     // used as a reference for calculating trajectory
-    private double startingY;
-
-    // defines sine wave that describes alien's trajectory
-    private int amplitude;
-    private int period;
-    private int vShift;
-    private int hShift;
+    protected double startingY;
 
     public ArrayList<Sprite> getProjectiles() {
         return projectiles;
     }
 
-    public Alien(String imageName, int alienLevel, Board board) {
+    public Alien(String imageName, Board board) {
         super(imageName, board);
-        initAlien(alienLevel);
     }
 
-    public Alien(String imageName, double x, double y, int alienLevel, Board board) {
+    public Alien(String imageName, double x, double y, Board board) {
         super(imageName, x, y, board);
-        initAlien(alienLevel);
-    }
-
-    private void initAlien(int allienLevel) {
-        if(allienLevel == 1) {
-            initLevel1Alien();
-        } else if(allienLevel == 2) {
-            initLevel2Alien();
-        } else {
-            initLevel3Alien();
-        }
-        startingY = y;
-        amplitude = 70 + random.nextInt(60);
-        period = 250 + random.nextInt(100);
-        vShift = random.nextInt(20);
-        hShift = -random.nextInt(3);
-    }
-
-    private void initLevel1Alien() { // todo: different sprites
-        hp = 20 + (int) board.getDifficulty() / 3;
-        bulletDelay = 2_000 - board.getDifficulty() * 5;
-        bulletSpeed = -2.0f - random.nextInt(10) / 10;
-        hitBox.setOffsets(5, 5);
-        hitBox.setDimensions(40, 40);
-        damage = 50;
-        speedX = -2.0f;
-    }
-
-    private void initLevel2Alien() {
-        hp = 40 + (int) board.getDifficulty() / 4;
-        bulletDelay = 1_000 - board.getDifficulty();
-        bulletSpeed = -3.0f - random.nextInt(5) / 5;
-        hitBox.setOffsets(5, 5);
-        hitBox.setDimensions(40, 40);
-        damage = 100;
-        speedX = -2.0f;
     }
 
     private void initLevel3Alien() {
+        startingY = y;
         hp = 60 + (int) board.getDifficulty() / 5;
         bulletDelay = 500;
         bulletSpeed = -3.5f;
@@ -88,30 +46,15 @@ public class Alien extends Sprite {
         speedX = -2.0f;
     }
 
+    // update/handle any actions sprite takes
     @Override
-    public void updateActions() {
-        if(distanceTo(board.getSpaceship()) < 400 &&
-                lastFiredBullet + bulletDelay <= System.currentTimeMillis()) {
-            if(getP(0.2f)) {
-                fireBullet(board.getSpaceship());
-                lastFiredBullet = System.currentTimeMillis();
-            }
-        }
-    }
+    abstract void updateActions();
 
+    // update's speedX and speedY of spaceship
     @Override
-    public void updateSpeeds() {
-        double projected_y;
-        // if sprite in top half of screen, start flying down. Else start flying up
-        if(startingY <= 150) {
-            projected_y = amplitude * Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
-        } else { // todo: flying up
-            projected_y = amplitude * Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
-        }
-        speedY = projected_y - y;
-        elapsedFrames++;
-    }
+    abstract void updateSpeeds();
 
+    // handles collision with specified sprite
     @Override
     public void handleCollision(Sprite s) {
         if(!(s instanceof AlienBullet)) {
@@ -121,24 +64,18 @@ public class Alien extends Sprite {
             hp -= s.damage;
             if(hp < 0) { // todo: death animation
                 vis = false;
+                // collides = false;
                 hp = 0;
             }
         }
     }
 
+    // renders sprite to Graphics object
     @Override
-    void render(Graphics2D g, ImageObserver o) {
-        g.drawImage(defaultImage, (int) x, (int) y, o);
+    public void render(Graphics2D g, ImageObserver o) {
+        g.drawImage(defaultImage, (int) x, (int) y, o); // todo: layered animations?
     }
 
-    // fires bullet at sprite based on current trajectories
-    // that are slightly randomized
-    private void fireBullet(Sprite s) {
-        Point2D.Double target = s.getHitboxCenter();
-        AlienBullet b = new AlienBullet(x, y + 20, board);
-        b.setSpeedX(bulletSpeed);
-        double frames_to_impact = (x - s.x) / bulletSpeed;
-        b.setSpeedY((y - target.y) / frames_to_impact);
-        projectiles.add(b);
-    }
+    // fires bullet/projectile at specified sprite
+    abstract void fireBullet(Sprite s);
 }

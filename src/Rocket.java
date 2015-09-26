@@ -26,10 +26,6 @@ public class Rocket extends Sprite {
         hitBox.setDimensions(9, 3);
     }
 
-    public void updateCurrentImage() {
-
-    }
-
     public void updateActions() {
 
     }
