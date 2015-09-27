@@ -47,7 +47,7 @@ public class Map {
     private long x = 0;
 
     // length of coin trails
-    private static final int coinTrailLength = 15;
+    private static final int coinTrailLength = 20;
     // number of coins remaining in current trail
     private static int coinsLeft = coinTrailLength;
     // index of row to be left clear in first column of next chunk
@@ -190,7 +190,7 @@ public class Map {
         // chance if a coin trail is in the process of being
         // moved on the next chunk
         System.out.println("coinsLeft = " + coinsLeft);
-        if(getP(0.1) || coinsLeft != coinTrailLength) {
+        if(getP(0.3) || coinsLeft != coinTrailLength) { // todo: getPCoinTrail
             System.out.println("Generating Coins");
             generateCoins(generated);
         }
@@ -289,12 +289,13 @@ public class Map {
 
     // generates a coin trail on map
     private static void generateCoins(byte[][] generated) {
+        System.out.println("Generating Coins");
         int col, row, end_col;
         // start a new trail - choose column at random
         if(coinsLeft == coinTrailLength) {
+            System.out.println("Starting new coin trail");
             col = generated[0].length / 2 + random.nextInt(generated[0].length / 2);
             end_col = col + coinTrailLength;
-            coinsLeft = coinTrailLength - (generated[0].length - col); // todo: may be off by one
             /* establish empty row to place first coin,
             prioritizing rows closer to the middle
             trail_distance is the length a trail can go without
@@ -317,20 +318,30 @@ public class Map {
             col = 0;
             end_col = coinsLeft;
             row = nextRow;
+            System.out.println("Continuing coin trail");
         }
         for(int i = col; i < generated[0].length && i < end_col && coinsLeft > 0; i++, coinsLeft--) {
             if(generated[row][col] == EMPTY) {
                 generated[row][col] = COIN;
             } else { // search for nearby empty tiles
-                if(row < generated.length - 1 && generated[row + 1][col] == EMPTY) {
+                if(row < nextRow) {
+                    row++;
+                } else {
+                    row--;
+                }
+                generated[row][col] = COIN;
+                if(col > 0) {
+                    generated[row][col - 1] = COIN;
+                }
+                /*if(row < generated.length - 1 && generated[row + 1][col] == EMPTY && col > 0) {
                     row += 1;
                     generated[row][col] = COIN;
                     generated[row][col - 1] = COIN;
-                } else if(row > 0 && generated[row - 1][col] == EMPTY) {
+                } else if(row > 0 && generated[row - 1][col] == EMPTY && col > 0) {
                     row -= 1;
                     generated[row][col] = COIN;
                     generated[row][col - 1] = COIN;
-                }
+                }*/
             }
             col++;
         }
@@ -343,7 +354,7 @@ public class Map {
     // gives a possible value for nextRow, a row to keep
     // free of obstacles in the next generated chunk
     private static int getNextRow(int rows, int lastRow) {
-        int row_change = random.nextInt(3) + 1;
+        int row_change = random.nextInt(2) + 1;
         int result = lastRow + (getP(0.5) ? + row_change : - row_change);
         if(result > rows - 1) {
             return rows - 1;
