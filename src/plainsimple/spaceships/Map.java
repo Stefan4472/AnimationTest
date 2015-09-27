@@ -189,10 +189,10 @@ public class Map {
         // 10% chance of generating coin trail or 100%
         // chance if a coin trail is in the process of being
         // moved on the next chunk
+        System.out.println("coinsLeft = " + coinsLeft);
         if(getP(0.1) || coinsLeft != coinTrailLength) {
+            System.out.println("Generating Coins");
             generateCoins(generated);
-        } else {
-            coinsLeft = coinTrailLength;
         }
         return generated;
     }
@@ -292,33 +292,33 @@ public class Map {
         int col, row, end_col;
         // start a new trail - choose column at random
         if(coinsLeft == coinTrailLength) {
-            col = random.nextInt(generated[0].length / 2);
+            col = generated[0].length / 2 + random.nextInt(generated[0].length / 2);
             end_col = col + coinTrailLength;
             coinsLeft = coinTrailLength - (generated[0].length - col); // todo: may be off by one
+            /* establish empty row to place first coin,
+            prioritizing rows closer to the middle
+            trail_distance is the length a trail can go without
+            having to change direction. Longer trail_distance
+            is preferable */
+            int best_row = random.nextInt(6), max_distance = 1;
+            for (int i = 0; i < generated.length; i++) {
+                int trail_distance = 1 - 2 * (Math.abs(3 - i)), j = 0; // middle columns are favored
+                while (col + j < generated[0].length && generated[i][col + j] == EMPTY) {
+                    trail_distance++;
+                    if (trail_distance > max_distance) {
+                        max_distance = trail_distance;
+                        best_row = i;
+                    }
+                    j++;
+                }
+            }
+            row = best_row;
         } else { // continue a trail - start at column zero
             col = 0;
             end_col = coinsLeft;
             row = nextRow;
         }
-        /* establish empty row to place first coin,
-        prioritizing rows closer to the middle
-        trail_distance is the length a trail can go without
-        having to change direction. Longer trail_distance
-        is preferable */
-        int best_row = random.nextInt(6), max_distance = 1;
-        for (int i = 0; i < generated.length; i++) {
-            int trail_distance = 1 - 2 * (Math.abs(3 - i)), j = 0; // middle columns are favored
-            while (col + j < generated[0].length && generated[i][col + j] == EMPTY) {
-                trail_distance++;
-                if (trail_distance > max_distance) {
-                    max_distance = trail_distance;
-                    best_row = i;
-                }
-                j++;
-            }
-        }
-        row = best_row;
-        for(int i = col; i < generated[0].length && i < end_col; i++) {
+        for(int i = col; i < generated[0].length && i < end_col && coinsLeft > 0; i++, coinsLeft--) {
             if(generated[row][col] == EMPTY) {
                 generated[row][col] = COIN;
             } else { // search for nearby empty tiles
@@ -334,7 +334,10 @@ public class Map {
             }
             col++;
         }
-
+        // coin trail over - reset counter
+        if(coinsLeft == 0) {
+            coinsLeft = coinTrailLength;
+        }
     }
 
     // gives a possible value for nextRow, a row to keep
@@ -343,13 +346,10 @@ public class Map {
         int row_change = random.nextInt(3) + 1;
         int result = lastRow + (getP(0.5) ? + row_change : - row_change);
         if(result > rows - 1) {
-            System.out.println("Map.java: prevRow " + lastRow + ", nextRow " + (rows - 1));
             return rows - 1;
         } else if(result < 0) {
-            System.out.println("Map.java: prevRow " + lastRow + ", nextRow " + 0);
             return 0;
         }
-        System.out.println("Map.java: prevRow " + lastRow + ", nextRow " + result);
         return result;
     }
 
