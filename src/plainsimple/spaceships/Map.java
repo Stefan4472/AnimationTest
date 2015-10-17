@@ -49,11 +49,11 @@ public class Map {
     // length of coin trails
     private static final int coinTrailLength = 20;
     // number of coins remaining in current trail
-    private static int coinsLeft = coinTrailLength;
+    private int coinsLeft = coinTrailLength;
     // index of row to be left clear in first column of next chunk
     // (used to guide coin trails between chunks and ensure map is
     // not impossible)
-    private static int nextRow;
+    private int nextRow;
 
     // dimensions of basic mapTiles
     private final int tileWidth = 50; // todo: what about bigger/smaller sprites?
@@ -167,7 +167,7 @@ public class Map {
     // in screen vertically.
     // difficulty determines probability of certain obstacles, coin
     // trails, and todo powerups
-    private static byte[][] generateTiles(double difficulty, int rows) {
+    private byte[][] generateTiles(double difficulty, int rows) {
         byte[][] generated;
         if (getP(getPTile(difficulty))) {
             if (getP(getPTunnel(difficulty))) {
@@ -198,7 +198,7 @@ public class Map {
     }
 
     // generates map cluster of simple obstacle
-    private static byte[][] generateObstacles(int rows) {
+    private byte[][] generateObstacles(int rows) {
         int size = 10 + random.nextInt(5), row = 0;
         byte[][] generated = new byte[rows][size + 2];
         for (int i = 0; i < size; i++) {
@@ -222,7 +222,7 @@ public class Map {
     }
 
     // generates tunnel
-    private static byte[][] generateTunnel(int rows) {
+    private byte[][] generateTunnel(int rows) {
         int tunnel_length = 15 + random.nextInt(10);
         byte[][] generated = new byte[rows][tunnel_length + 3];
         int row = nextRow;
@@ -270,14 +270,14 @@ public class Map {
         return generated;
     }
 
-    private static byte[][] generateAlien(int rows) {
+    private byte[][] generateAlien(int rows) {
         int size = 4 + random.nextInt(10);
         byte[][] generated = new byte[rows][size];
         generated[random.nextInt(6)][size - 1] = ALIEN_LVL1;
         return generated;
     }
 
-    private static byte[][] generateAlienSwarm(int rows) {
+    private byte[][] generateAlienSwarm(int rows) {
         int num_aliens = 2 + random.nextInt(3);
         int size = num_aliens * 8 + 1;
         byte[][] generated = new byte[rows][size];
@@ -288,7 +288,7 @@ public class Map {
     }
 
     // generates a coin trail on map
-    private static void generateCoins(byte[][] generated) {
+    private void generateCoins(byte[][] generated) {
         System.out.println("Generating Coins");
         int col, row, end_col;
         // start a new trail - choose column at random
@@ -353,7 +353,7 @@ public class Map {
 
     // gives a possible value for nextRow, a row to keep
     // free of obstacles in the next generated chunk
-    private static int getNextRow(int rows, int lastRow) {
+    private int getNextRow(int rows, int lastRow) {
         int row_change = random.nextInt(2) + 1;
         int result = lastRow + (getP(0.5) ? + row_change : - row_change);
         if(result > rows - 1) {
@@ -366,7 +366,7 @@ public class Map {
 
     // generates random number using random.nextInt(range)
     // that is not equal to exclusive
-    private static int genRandExcl(int range, int exclusive) {
+    private int genRandExcl(int range, int exclusive) {
         int rand;
         do {
             rand = random.nextInt(range);
