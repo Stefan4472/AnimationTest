@@ -1,6 +1,7 @@
 package plainsimple.spaceships;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -18,9 +19,11 @@ public class TitleView extends View {
     private boolean playButtonPressed = false;
     private int screenW;
     private int screenH;
+    private Context context;
 
     public TitleView(Context context) {
         super(context);
+        this.context = context;
         titleGraphic = BitmapFactory.decodeResource(getResources(), R.drawable.title_graphic);
         playButtonUp = BitmapFactory.decodeResource(getResources(), R.drawable.play_button_up);
         playButtonDown = BitmapFactory.decodeResource(getResources(), R.drawable.play_button_down);
@@ -68,6 +71,10 @@ public class TitleView extends View {
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
+                if(playButtonPressed) {
+                    Intent game_intent = new Intent(context, GameActivity.class);
+                    context.startActivity(game_intent);
+                }
                 playButtonPressed = false;
                 break;
         }
