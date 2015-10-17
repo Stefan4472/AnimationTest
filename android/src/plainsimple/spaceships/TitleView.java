@@ -13,12 +13,17 @@ import android.view.View;
 public class TitleView extends View {
 
     private Bitmap titleGraphic;
+    private Bitmap playButtonUp;
+    private Bitmap playButtonDown;
+    private boolean playButtonPressed = false;
     private int screenW;
     private int screenH;
 
     public TitleView(Context context) {
         super(context);
         titleGraphic = BitmapFactory.decodeResource(getResources(), R.drawable.title_graphic);
+        playButtonUp = BitmapFactory.decodeResource(getResources(), R.drawable.play_button_up);
+        playButtonDown = BitmapFactory.decodeResource(getResources(), R.drawable.play_button_down);
     }
 
     @Override
@@ -33,9 +38,16 @@ public class TitleView extends View {
     protected void onDraw(Canvas canvas) {
         canvas.drawBitmap(titleGraphic,
                 (screenW - titleGraphic.getWidth()) / 2,
-                (screenH - titleGraphic.getHeight()) / 2,
-                null);
-
+                (screenH - titleGraphic.getHeight()) / 2, null);
+        if(playButtonPressed) {
+            canvas.drawBitmap(playButtonDown,
+                    (screenW - playButtonDown.getWidth()) / 2,
+                    (int) (screenH * 0.7), null);
+        } else {
+            canvas.drawBitmap(playButtonUp,
+                    (screenW - playButtonUp.getWidth()) / 2,
+                    (int) (screenH * 0.7), null);
+        }
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -44,10 +56,19 @@ public class TitleView extends View {
         int y = (int) event.getY();
         switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                // check play button
+                if (x > (screenW - playButtonUp.getWidth()) / 2 &&
+                        x < ((screenW - playButtonUp.getWidth()) / 2) + playButtonUp.getWidth() &&
+                        y > (int) (screenH * 0.7) &&
+                        y < (int) (screenH * 0.7) + playButtonUp.getHeight()) {
+                    playButtonPressed = true;
+                }
+
                 break;
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
+                playButtonPressed = false;
                 break;
         }
         invalidate();
