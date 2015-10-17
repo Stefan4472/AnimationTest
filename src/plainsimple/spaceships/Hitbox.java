@@ -11,11 +11,21 @@ public class Hitbox extends Rectangle.Double {
     private int offsetX;
     private int offsetY;
 
-    public int getOffsetX() { return offsetX; }
-    public int getOffsetY() { return offsetY; }
+    public int getOffsetX() {
+        return offsetX;
+    }
 
-    public void setOffsetX(int offsetX) { this.offsetX = offsetX; }
-    public void setOffsetY(int offsetY) { this.offsetY = offsetY; }
+    public int getOffsetY() {
+        return offsetY;
+    }
+
+    public void setOffsetX(int offsetX) {
+        this.offsetX = offsetX;
+    }
+
+    public void setOffsetY(int offsetY) {
+        this.offsetY = offsetY;
+    }
 
     public void setOffsets(int offsetX, int offsetY) {
         this.offsetX = offsetX;

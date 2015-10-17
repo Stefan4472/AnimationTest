@@ -44,10 +44,10 @@ public class Background {
     public Background(String[] tiles) {
         this.tiles = new BufferedImage[tiles.length];
         numTiles = tiles.length;
-        for(int i = 0; i < tiles.length; i++) {
+        for (int i = 0; i < tiles.length; i++) {
             try {
                 this.tiles[i] = ImageIO.read(new File(tiles[i]));
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -64,18 +64,18 @@ public class Background {
         renderedImage = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
 
         // fill background randomly with space tiles
-        for(int i = 0; i < background.length; i++) {
-            for(int j = 0; j < background[i].length; j++) {
+        for (int i = 0; i < background.length; i++) {
+            for (int j = 0; j < background[i].length; j++) {
                 background[i][j] = (byte) random.nextInt(numTiles);
             }
-        };
+        }
     }
 
     // shifts screen x units left, renders and returns current background
     public BufferedImage render() {
         // only redraws background if it has been scrolled.
         // otherwise returns last-rendered background
-        if(render) {
+        if (render) {
             Graphics2D g = renderedImage.createGraphics();
             int w_offset = getWOffset();
 
@@ -92,13 +92,19 @@ public class Background {
         return renderedImage;
     }
 
-    public int getX() { return x; }
+    public int getX() {
+        return x;
+    }
 
     // current horizontal tile
-    private int getWTile() { return x / tileWidth; }
+    private int getWTile() {
+        return x / tileWidth;
+    }
 
     // distance, in pixels, from top left of current tile
-    private int getWOffset() { return x % tileWidth; }
+    private int getWOffset() {
+        return x % tileWidth;
+    }
 
     // moves background x units left giving the
     // appearance of forward motion

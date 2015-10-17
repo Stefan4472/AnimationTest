@@ -54,31 +54,73 @@ public abstract class Sprite {
     // random number generator
     protected Random random;
 
-    public int getWidth() { return width; }
-    public int getHeight() { return height; }
+    public int getWidth() {
+        return width;
+    }
 
-    public double getSpeedX() { return speedX; }
-    public double getSpeedY() { return speedY; }
+    public int getHeight() {
+        return height;
+    }
 
-    public void setSpeedX(double speedX) { this.speedX = speedX; }
-    public void setSpeedY(double speedY) { this.speedY = speedY; }
+    public double getSpeedX() {
+        return speedX;
+    }
 
-    public boolean isVisible() { return vis; }
-    public void setVisible(Boolean visible) { vis = visible; }
+    public double getSpeedY() {
+        return speedY;
+    }
 
-    public boolean getCollides() { return collides; }
-    public void setCollides(boolean collides) { this.collides = collides; }
+    public void setSpeedX(double speedX) {
+        this.speedX = speedX;
+    }
 
-    public boolean getCollision() { return collision; }
-    public void setCollision(boolean collision) { this.collision = collision; }
+    public void setSpeedY(double speedY) {
+        this.speedY = speedY;
+    }
 
-    public int getDamage() { return damage; }
-    public void setDamage(int damage) { this.damage = damage; }
+    public boolean isVisible() {
+        return vis;
+    }
 
-    public int getHP() { return hp; }
-    public void setHP(int hp) { this.hp = hp; }
+    public void setVisible(Boolean visible) {
+        vis = visible;
+    }
 
-    public void setBoard(Board board) { this.board = board; }
+    public boolean getCollides() {
+        return collides;
+    }
+
+    public void setCollides(boolean collides) {
+        this.collides = collides;
+    }
+
+    public boolean getCollision() {
+        return collision;
+    }
+
+    public void setCollision(boolean collision) {
+        this.collision = collision;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
+    public int getHP() {
+        return hp;
+    }
+
+    public void setHP(int hp) {
+        this.hp = hp;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
 
     public Sprite(double x, double y, Board board) {
         this.x = x;
@@ -119,7 +161,7 @@ public abstract class Sprite {
         try {
             defaultImage = ImageIO.read(new File(imageName));
             getImageDimensions();
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -130,8 +172,13 @@ public abstract class Sprite {
         height = defaultImage.getHeight(null);
     }
 
-    public double getX() { return x; }
-    public double getY() { return y; }
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
 
     public void setX(double x) {
         this.x = x;
@@ -163,9 +210,9 @@ public abstract class Sprite {
         x += speedX;
         y += speedY;
         // keep in mind sprites are generated past the screen
-        if(x > BOARD_WIDTH + width || x < -width)
+        if (x > BOARD_WIDTH + width || x < -width)
             vis = false;
-        if(y > BOARD_HEIGHT || y < -height) // todo: bounce of edge of screen
+        if (y > BOARD_HEIGHT || y < -height) // todo: bounce of edge of screen
             vis = false;
         hitBox.updateCoordinates(x, y);
     }
@@ -177,7 +224,7 @@ public abstract class Sprite {
     // will cause a collision
     // todo: calculate specific point of collides and use setX and setY methods to move sprites there
     public boolean collidesWith(Sprite s) { // todo: set flag first then setSpeed
-        if(!collides || !s.collides)
+        if (!collides || !s.collides)
             return false;
         return hitBox.intersects(s.hitBox);
     }

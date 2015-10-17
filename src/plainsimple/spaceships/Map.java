@@ -65,9 +65,11 @@ public class Map {
     public ArrayList<Sprite> getTiles() {
         return tiles;
     }
+
     public float getScrollSpeed() {
         return scrollSpeed;
     }
+
     public void setBoard(Board board) {
         this.board = board;
     }
@@ -181,7 +183,7 @@ public class Map {
                 generated = generateAlienSwarm(rows);
             } else {
                 generated = generateAlien(rows);
-        }
+            }
             //} else {
             //    map = generateAsteroid();
             //}
@@ -190,7 +192,7 @@ public class Map {
         // chance if a coin trail is in the process of being
         // moved on the next chunk
         System.out.println("coinsLeft = " + coinsLeft);
-        if(getP(0.3) || coinsLeft != coinTrailLength) { // todo: getPCoinTrail
+        if (getP(0.3) || coinsLeft != coinTrailLength) { // todo: getPCoinTrail
             System.out.println("Generating Coins");
             generateCoins(generated);
         }
@@ -292,7 +294,7 @@ public class Map {
         System.out.println("Generating Coins");
         int col, row, end_col;
         // start a new trail - choose column at random
-        if(coinsLeft == coinTrailLength) {
+        if (coinsLeft == coinTrailLength) {
             System.out.println("Starting new coin trail");
             col = generated[0].length / 2 + random.nextInt(generated[0].length / 2);
             end_col = col + coinTrailLength;
@@ -320,17 +322,17 @@ public class Map {
             row = nextRow;
             System.out.println("Continuing coin trail");
         }
-        for(int i = col; i < generated[0].length && i < end_col && coinsLeft > 0; i++, coinsLeft--) {
-            if(generated[row][col] == EMPTY) {
+        for (int i = col; i < generated[0].length && i < end_col && coinsLeft > 0; i++, coinsLeft--) {
+            if (generated[row][col] == EMPTY) {
                 generated[row][col] = COIN;
             } else { // search for nearby empty tiles
-                if(row < nextRow) {
+                if (row < nextRow) {
                     row++;
                 } else {
                     row--;
                 }
                 generated[row][col] = COIN;
-                if(col > 0) {
+                if (col > 0) {
                     generated[row][col - 1] = COIN;
                 }
                 /*if(row < generated.length - 1 && generated[row + 1][col] == EMPTY && col > 0) {
@@ -346,7 +348,7 @@ public class Map {
             col++;
         }
         // coin trail over - reset counter
-        if(coinsLeft == 0) {
+        if (coinsLeft == 0) {
             coinsLeft = coinTrailLength;
         }
     }
@@ -355,10 +357,10 @@ public class Map {
     // free of obstacles in the next generated chunk
     private int getNextRow(int rows, int lastRow) {
         int row_change = random.nextInt(2) + 1;
-        int result = lastRow + (getP(0.5) ? + row_change : - row_change);
-        if(result > rows - 1) {
+        int result = lastRow + (getP(0.5) ? +row_change : -row_change);
+        if (result > rows - 1) {
             return rows - 1;
-        } else if(result < 0) {
+        } else if (result < 0) {
             return 0;
         }
         return result;
@@ -370,7 +372,7 @@ public class Map {
         int rand;
         do {
             rand = random.nextInt(range);
-        } while(rand == exclusive);
+        } while (rand == exclusive);
         return rand;
     }
 
@@ -383,7 +385,7 @@ public class Map {
 
     // calculates and returns probability of a tile-based obstacle
     private static double getPTile(double difficulty) {
-        if(110 - difficulty >= 50) {
+        if (110 - difficulty >= 50) {
             return (110 - difficulty) / 100;
         } else {
             return 0.5;
@@ -391,7 +393,7 @@ public class Map {
     }
 
     private static double getPTunnel(double difficulty) {
-        if(-10 + difficulty < 50) {
+        if (-10 + difficulty < 50) {
             return (-10 + difficulty) / 100;
         } else {
             return 0.5;
@@ -405,8 +407,8 @@ public class Map {
 
     // prints map in a 2-d array
     private void printMap(byte[][] map) {
-        for(int i = 0; i < map.length; i++) {
-            for(int j = 0; j < map[0].length; j++) {
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
                 System.out.print(map[i][j] + "\t");
             }
             System.out.println();

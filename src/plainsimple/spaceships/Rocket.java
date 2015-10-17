@@ -31,15 +31,15 @@ public class Rocket extends Sprite {
     }
 
     public void updateSpeeds() {
-        if(speedX < 2.05)
+        if (speedX < 2.05)
             speedX += 0.001;
-        else if(speedX < 2.1)
+        else if (speedX < 2.1)
             speedX += 0.005;
-        else if(speedX < 2.5)
+        else if (speedX < 2.5)
             speedX += 0.05;
-        else if(speedX < 3.0)
+        else if (speedX < 3.0)
             speedX += 0.1;
-        else if(speedX < 3.0)
+        else if (speedX < 3.0)
             speedX += 0.15;
         else
             speedX += 0.05;

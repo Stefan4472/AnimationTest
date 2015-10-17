@@ -40,9 +40,9 @@ public class Alien1 extends Alien {
 
     @Override
     public void updateActions() {
-        if(distanceTo(board.getSpaceship()) < 400 &&
+        if (distanceTo(board.getSpaceship()) < 400 &&
                 lastFiredBullet + bulletDelay <= System.currentTimeMillis()) {
-            if(getP(0.2f)) {
+            if (getP(0.2f)) {
                 fireBullet(board.getSpaceship());
                 lastFiredBullet = System.currentTimeMillis();
             }
@@ -53,7 +53,7 @@ public class Alien1 extends Alien {
     public void updateSpeeds() {
         double projected_y;
         // if sprite in top half of screen, start flying down. Else start flying up
-        if(startingY <= 150) {
+        if (startingY <= 150) {
             projected_y = amplitude * Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
         } else { // todo: flying up
             projected_y = amplitude * Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
@@ -64,12 +64,12 @@ public class Alien1 extends Alien {
 
     @Override
     public void handleCollision(Sprite s) {
-        if(!(s instanceof AlienBullet)) {
-            if(s instanceof Bullet || s instanceof Rocket) {
+        if (!(s instanceof AlienBullet)) {
+            if (s instanceof Bullet || s instanceof Rocket) {
                 board.incrementScore(s.damage);
             }
             hp -= s.damage;
-            if(hp < 0) { // todo: death animation
+            if (hp < 0) { // todo: death animation
                 vis = false;
                 hp = 0;
             }

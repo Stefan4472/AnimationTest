@@ -58,12 +58,12 @@ public abstract class Alien extends Sprite {
     // handles collision with specified sprite
     @Override
     public void handleCollision(Sprite s) {
-        if(!(s instanceof AlienBullet)) {
-            if(s instanceof Bullet || s instanceof Rocket) {
+        if (!(s instanceof AlienBullet)) {
+            if (s instanceof Bullet || s instanceof Rocket) {
                 board.incrementScore(s.damage);
             }
             hp -= s.damage;
-            if(hp < 0) { // todo: death animation
+            if (hp < 0) { // todo: death animation
                 vis = false;
                 // collides = false;
                 hp = 0;

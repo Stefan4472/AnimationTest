@@ -25,6 +25,7 @@ public class Alien2 extends Alien {
         damage = 100;
         speedX = -2.0f;
     }
+
     @Override
     void updateActions() {
 

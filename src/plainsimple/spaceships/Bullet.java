@@ -18,13 +18,13 @@ public class Bullet extends Sprite {
     // bulletType 4: plutonium cannon
     public Bullet(double x, double y, int bulletType, Board board) {
         super(x, y, board);
-        if(bulletType == 1) {
+        if (bulletType == 1) {
             damage = 10;
             // loadDefaultImage("laser_bullet.png");
-        } else if(bulletType == 2) {
+        } else if (bulletType == 2) {
             damage = 20;
             // loadDefaultImage("ion_bullet.png");
-        } else if(bulletType == 3) {
+        } else if (bulletType == 3) {
             damage = 30;
             // loadDefaultImage("plasma_bullet.png");
         } else {
@@ -37,7 +37,7 @@ public class Bullet extends Sprite {
         loadDefaultImage("sprites/spaceship/bullet_sprite.png");
         try {
             bulletFiring = new SpriteAnimation("sprites/spaceship/bullet_firing_spritesheet.png", 9, 3, 1, false);
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         hitBox.setDimensions(9, 3);
@@ -55,16 +55,16 @@ public class Bullet extends Sprite {
 
     public void handleCollision(Sprite s) {
         collision = true;
-        if(s instanceof Obstacle || s instanceof Alien)
+        if (s instanceof Obstacle || s instanceof Alien)
             vis = false;
     }
 
     @Override
     void render(Graphics2D g, ImageObserver o) {
-        if(bulletFiring.isPlaying()) {
+        if (bulletFiring.isPlaying()) {
             g.drawImage(bulletFiring.nextFrame(), (int) x, (int) y, o);
         } else {
             g.drawImage(defaultImage, (int) x, (int) y, o);
-       }
+        }
     }
 }

@@ -38,9 +38,18 @@ public class Board extends JPanel implements ActionListener {
     // Number of milliseconds to wait before repainting
     private final int DELAY = 10;
 
-    public Spaceship getSpaceship() { return spaceship; }
-    public Map getMap() { return map; }
-    public double getDifficulty() { return difficulty; }
+    public Spaceship getSpaceship() {
+        return spaceship;
+    }
+
+    public Map getMap() {
+        return map;
+    }
+
+    public double getDifficulty() {
+        return difficulty;
+    }
+
     public void incrementScore(int add) {
         score += add;
     }
@@ -61,7 +70,7 @@ public class Board extends JPanel implements ActionListener {
         spaceship.setBullets(true, 1, 100);
         spaceship.setRockets(true, 1, 420);
 
-        background = new Background(new String[] {
+        background = new Background(new String[]{
                 "tiles/background/space1_tile.png",
                 "tiles/background/space2_tile.png",
                 "tiles/background/space3_tile.png",
@@ -94,14 +103,14 @@ public class Board extends JPanel implements ActionListener {
         Graphics2D g2d = (Graphics2D) g;
         g.setColor(Color.WHITE);
 
-        if(scrollCounter > 30) { // scroll background slowly
+        if (scrollCounter > 30) { // scroll background slowly
             background.scroll(1);
             scrollCounter = 0;
         }
 
         g2d.drawImage(background.render(), 0, 0, this);
 
-        for(Sprite t : map.getTiles()) {
+        for (Sprite t : map.getTiles()) {
             t.render(g2d, this);
         }
         spaceship.render(g2d, this);
@@ -109,7 +118,7 @@ public class Board extends JPanel implements ActionListener {
         for (Sprite p : spaceship.getProjectiles()) {
             p.render(g2d, this);
         }
-        for(Sprite p : map.getProjectiles()) {
+        for (Sprite p : map.getProjectiles()) {
             p.render(g2d, this);
         }
     }
@@ -117,7 +126,7 @@ public class Board extends JPanel implements ActionListener {
     // moves spaceship and repaints JPanel every 10 ms
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(paused) {
+        if (paused) {
             // todo: pause screen
         } else {
             updateSpaceship();
@@ -152,9 +161,9 @@ public class Board extends JPanel implements ActionListener {
 
     private void updateSprites(ArrayList<Sprite> sprites) {
         Iterator<Sprite> i = sprites.iterator();
-        while(i.hasNext()) {
+        while (i.hasNext()) {
             Sprite s = i.next();
-            if(s.isVisible()) {
+            if (s.isVisible()) {
                 s.updateActions();
                 s.updateSpeeds();
             } else {
@@ -164,7 +173,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void checkCollisions(ArrayList<Sprite> sprites, ArrayList<Sprite> tiles) {
-        for(Sprite s : sprites) {
+        for (Sprite s : sprites) {
             tiles.stream().filter(t -> s.collidesWith(t)).forEach(t -> {
                 s.handleCollision(t);
                 t.handleCollision(s);
@@ -179,18 +188,18 @@ public class Board extends JPanel implements ActionListener {
     private void updateSpaceship() {
         spaceship.updateSpeeds();
 
-        if(spaceship.getX() < 200) {
+        if (spaceship.getX() < 200) {
             spaceship.setControllable(false);
             spaceship.setSpeedX(4.0f);
-        } else if(spaceship.getX() > 200) {
+        } else if (spaceship.getX() > 200) {
             spaceship.setX(200);
             spaceship.setSpeedX(0.0f);
             spaceship.setControllable(true);
         }
 
-        if(spaceship.getY() < 0) {
+        if (spaceship.getY() < 0) {
             spaceship.setY(0);
-        } else if(spaceship.getY() > boardHeight - spaceship.getHeight()) {
+        } else if (spaceship.getY() > boardHeight - spaceship.getHeight()) {
             spaceship.setY(boardHeight - spaceship.getHeight());
         }
         spaceship.updateActions();
@@ -206,7 +215,7 @@ public class Board extends JPanel implements ActionListener {
 
         @Override
         public void keyPressed(KeyEvent e) {
-            if(e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_P) {
+            if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_P) {
                 paused = !paused; // toggle pause // todo: worry about pause and mainscreen in fxml
             } else {
                 spaceship.keyPressed(e);

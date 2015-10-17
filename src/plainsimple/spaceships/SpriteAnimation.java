@@ -45,8 +45,8 @@ public class SpriteAnimation {
 
         frames = new BufferedImage[frames_w * frames_h];
 
-        for(int i = 0; i < frames_w; i++) {
-            for(int j = 0; j < frames_h; j++) {
+        for (int i = 0; i < frames_w; i++) {
+            for (int j = 0; j < frames_h; j++) {
                 frames[i] = sheet.getSubimage(i * frameWidth, j * frameHeight, frameWidth, frameHeight);
             }
         }
@@ -75,23 +75,23 @@ public class SpriteAnimation {
     // returns next image in animation
     // starts animation if it is not playing already
     public BufferedImage nextFrame() {
-        if(!isPlaying) // todo: good practice is to start animation before calling nextFrame()
+        if (!isPlaying) // todo: good practice is to start animation before calling nextFrame()
             start();
 
-        if(frameSpeedCounter == frameSpeed) {
+        if (frameSpeedCounter == frameSpeed) {
             frameCounter++;
             frameSpeedCounter = 0;
         } else {
             frameSpeedCounter++;
         }
 
-        if(loop) { // reached end of loop, start from beginning
-            if(frameCounter == frames.length) {
+        if (loop) { // reached end of loop, start from beginning
+            if (frameCounter == frames.length) {
                 frameCounter = 0;
                 hasPlayed = true;
             }
         } else { // reached end of loop
-            if(frameCounter == frames.length - 1) {
+            if (frameCounter == frames.length - 1) {
                 isPlaying = false;
                 hasPlayed = true;
             }

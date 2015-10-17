@@ -43,8 +43,14 @@ public class Spaceship extends Sprite {
 
     // keeps track of fired bullets and rockets
     private ArrayList<Sprite> projectiles;
-    public ArrayList<Sprite> getProjectiles() { return projectiles; }
-    public void setControllable(boolean controllable) { this.controllable = controllable; }
+
+    public ArrayList<Sprite> getProjectiles() {
+        return projectiles;
+    }
+
+    public void setControllable(boolean controllable) {
+        this.controllable = controllable;
+    }
 
     public void setHP(int hp) {
         this.hp = hp;
@@ -73,7 +79,7 @@ public class Spaceship extends Sprite {
             movingAnimation = new SpriteAnimation("sprites/spaceship/spaceship_moving_spritesheet_diff.png", 50, 50, 5, true);
             fireRocketAnimation = new SpriteAnimation("sprites/spaceship/spaceship_firing_spritesheet_diff.png", 50, 50, 8, false);
             explodeAnimation = new SpriteAnimation("sprites/spaceship/spaceship_exploding_spritesheet_diff.png", 50, 50, 5, false);
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -89,12 +95,12 @@ public class Spaceship extends Sprite {
     }
 
     public void updateActions() {
-        if(firingBullets && lastFiredBullet + bulletDelay <= System.currentTimeMillis()) {
+        if (firingBullets && lastFiredBullet + bulletDelay <= System.currentTimeMillis()) {
             fireBullets();
             lastFiredBullet = System.currentTimeMillis();
         }
 
-        if(firingRockets && lastFiredRocket + rocketDelay <= System.currentTimeMillis()) {
+        if (firingRockets && lastFiredRocket + rocketDelay <= System.currentTimeMillis()) {
             fireRockets();
             lastFiredRocket = System.currentTimeMillis();
             fireRocketAnimation.start();
@@ -125,23 +131,23 @@ public class Spaceship extends Sprite {
 
     public void handleCollision(Sprite s) {
         hp -= s.getDamage();
-        if(hp < 0) {
-           explodeAnimation.start();
-           hp = 0;
-           collision = true;
+        if (hp < 0) {
+            explodeAnimation.start();
+            hp = 0;
+            collision = true;
         }
     }
 
     @Override
     void render(Graphics2D g, ImageObserver o) {
         g.drawImage(defaultImage, (int) x, (int) y, o);
-        if(moving) {
+        if (moving) {
             g.drawImage(movingAnimation.nextFrame(), (int) x, (int) y, o);
         }
-        if(fireRocketAnimation.isPlaying()) {
+        if (fireRocketAnimation.isPlaying()) {
             g.drawImage(fireRocketAnimation.nextFrame(), (int) x, (int) y, o);
         }
-        if(explodeAnimation.isPlaying()) {
+        if (explodeAnimation.isPlaying()) {
             g.drawImage(explodeAnimation.nextFrame(), (int) x, (int) y, o);
         }
 
@@ -149,7 +155,7 @@ public class Spaceship extends Sprite {
 
     // Sets direction of sprite based on key pressed.
     public void keyPressed(KeyEvent e) {
-        if(controllable) {
+        if (controllable) {
             int key = e.getKeyCode();
             if (key == KeyEvent.VK_UP) {
                 dy = -1;
@@ -165,7 +171,7 @@ public class Spaceship extends Sprite {
 
     // sets movement direction to zero once key is released
     public void keyReleased(KeyEvent e) {
-        if(controllable) {
+        if (controllable) {
             int key = e.getKeyCode();
             if (key == KeyEvent.VK_UP) {
                 dy = 0;
