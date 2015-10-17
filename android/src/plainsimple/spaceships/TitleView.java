@@ -13,16 +13,29 @@ import android.view.View;
 public class TitleView extends View {
 
     private Bitmap titleGraphic;
+    private int screenW;
+    private int screenH;
 
     public TitleView(Context context) {
         super(context);
         titleGraphic = BitmapFactory.decodeResource(getResources(), R.drawable.title_graphic);
     }
 
-    // draws title screen
+    @Override
+    public void onSizeChanged(int w, int h, int oldW, int oldH) {
+        super.onSizeChanged(w, h, oldW, oldH);
+        screenW = w;
+        screenH = h;
+    }
+
+    // draws titleGraphic centered on screen
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawBitmap(titleGraphic, 0.5f, 0.2f, null);
+        canvas.drawBitmap(titleGraphic,
+                (screenW - titleGraphic.getWidth()) / 2,
+                (screenH - titleGraphic.getHeight()) / 2,
+                null);
+
     }
 
     public boolean onTouchEvent(MotionEvent event) {
