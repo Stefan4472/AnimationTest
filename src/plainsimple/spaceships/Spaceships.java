@@ -12,7 +12,6 @@ public class Spaceships extends JFrame {
     private final int SCREEN_HEIGHT = 300;
 
     public static void main(String[] args) {
-        //ImageUtil.getSpriteSheetDiff("bullet.png", "bullet_firing_spritesheet.png", "bullet_firing_spritesheet_diff.png");
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {

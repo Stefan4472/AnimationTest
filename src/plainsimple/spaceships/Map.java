@@ -49,7 +49,7 @@ public class Map {
     // length of coin trails
     private static final int coinTrailLength = 18;
     // number of coins remaining in current trail
-    private int coinsLeft = coinTrailLength;
+    private int coinsLeft;
     // whether to continue a coin trail in the next chunk
     private boolean continueCoinTrail = false;
     // index of row to be left clear in first column of next chunk
@@ -219,7 +219,6 @@ public class Map {
                 nextRow = getNextRow(rows, row);
             }
         }
-        //nextRow = getNextRow(rows, row);
         return generated;
     }
 

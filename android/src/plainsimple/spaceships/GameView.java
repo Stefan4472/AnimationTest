@@ -10,8 +10,17 @@ import android.view.View;
  */
 public class GameView extends View {
 
+    private Context context;
+    private int scaledSpaceShipW;
+    private int scaledSpaceShipH;
+
     public GameView(Context context) {
         super(context);
+        this.context = context;
+    }
+
+    private void initResources() {
+
     }
 
     @Override
