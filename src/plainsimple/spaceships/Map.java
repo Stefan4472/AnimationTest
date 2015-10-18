@@ -47,9 +47,11 @@ public class Map {
     private long x = 0;
 
     // length of coin trails
-    private static final int coinTrailLength = 20;
+    private static final int coinTrailLength = 18;
     // number of coins remaining in current trail
     private int coinsLeft = coinTrailLength;
+    // whether to continue a coin trail in the next chunk
+    private boolean continueCoinTrail = false;
     // index of row to be left clear in first column of next chunk
     // (used to guide coin trails between chunks and ensure map is
     // not impossible)
@@ -188,12 +190,10 @@ public class Map {
             //    map = generateAsteroid();
             //}
         }
-        // 10% chance of generating coin trail or 100%
+        // 15% chance of generating coin trail or 100%
         // chance if a coin trail is in the process of being
         // moved on the next chunk
-        System.out.println("coinsLeft = " + coinsLeft);
-        if (getP(0.3) || coinsLeft != coinTrailLength) { // todo: getPCoinTrail
-            System.out.println("Generating Coins");
+        if (continueCoinTrail || getP(0.15)) { // todo: getPCoinTrail
             generateCoins(generated);
         }
         return generated;
@@ -291,21 +291,22 @@ public class Map {
 
     // generates a coin trail on map
     private void generateCoins(byte[][] generated) {
-        System.out.println("Generating Coins");
         int col, row, end_col;
-        // start a new trail - choose column at random
-        if (coinsLeft == coinTrailLength) {
-            System.out.println("Starting new coin trail");
-            col = generated[0].length / 2 + random.nextInt(generated[0].length / 2);
+        if (continueCoinTrail) {
+            col = 0;
+            end_col = coinsLeft;
+            row = nextRow;
+        } else { // start coin trail somewhere 1/4 to 3/4 of way through chunk
+            col = generated[0].length / 4 + random.nextInt(generated[0].length / 2);
             end_col = col + coinTrailLength;
-            /* establish empty row to place first coin,
-            prioritizing rows closer to the middle
-            trail_distance is the length a trail can go without
-            having to change direction. Longer trail_distance
-            is preferable */
+            coinsLeft = coinTrailLength;
+            /* establish empty row to place first coin. trail_distance is the
+            length a trail can go without having to change direction. Longer
+            trail_distance is preferable */
             int best_row = random.nextInt(6), max_distance = 1;
             for (int i = 0; i < generated.length; i++) {
-                int trail_distance = 1 - 2 * (Math.abs(3 - i)), j = 0; // middle columns are favored
+                int trail_distance = 0, j = 0;
+                //int trail_distance = 1 - 2 * (Math.abs(3 - i)), j = 0; // middle columns are favored
                 while (col + j < generated[0].length && generated[i][col + j] == EMPTY) {
                     trail_distance++;
                     if (trail_distance > max_distance) {
@@ -316,40 +317,31 @@ public class Map {
                 }
             }
             row = best_row;
-        } else { // continue a trail - start at column zero
-            col = 0;
-            end_col = coinsLeft;
-            row = nextRow;
-            System.out.println("Continuing coin trail");
         }
         for (int i = col; i < generated[0].length && i < end_col && coinsLeft > 0; i++, coinsLeft--) {
-            if (generated[row][col] == EMPTY) {
-                generated[row][col] = COIN;
+            if (generated[row][i] == EMPTY) {
+                generated[row][i] = COIN;
             } else { // search for nearby empty tiles
-                if (row < nextRow) {
-                    row++;
-                } else {
-                    row--;
-                }
-                generated[row][col] = COIN;
-                if (col > 0) {
-                    generated[row][col - 1] = COIN;
-                }
-                /*if(row < generated.length - 1 && generated[row + 1][col] == EMPTY && col > 0) {
+                if(row < generated.length - 1 && generated[row + 1][i] == EMPTY) {
                     row += 1;
-                    generated[row][col] = COIN;
-                    generated[row][col - 1] = COIN;
-                } else if(row > 0 && generated[row - 1][col] == EMPTY && col > 0) {
+                    generated[row][i] = COIN;
+                    if(i > 0) {
+                        generated[row][i - 1] = COIN;
+                    }
+                } else if(row > 0 && generated[row - 1][i] == EMPTY) {
                     row -= 1;
-                    generated[row][col] = COIN;
-                    generated[row][col - 1] = COIN;
-                }*/
+                    generated[row][i] = COIN;
+                    if(i > 0) {
+                        generated[row][i - 1] = COIN;
+                    }
+                }
             }
-            col++;
         }
         // coin trail over - reset counter
         if (coinsLeft == 0) {
-            coinsLeft = coinTrailLength;
+            continueCoinTrail = false;
+        } else {
+            continueCoinTrail = true;
         }
     }
 
