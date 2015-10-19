@@ -1,7 +1,8 @@
 package plainsimple.spaceships;
 
-import java.awt.*;
-import java.awt.image.ImageObserver;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+
 import java.util.ArrayList;
 
 /**
@@ -28,12 +29,12 @@ public abstract class Alien extends Sprite {
         return projectiles;
     }
 
-    public Alien(String imageName, Board board) {
-        super(imageName, board);
+    public Alien(Bitmap defaultImage, Board board) {
+        super(defaultImage, board);
     }
 
-    public Alien(String imageName, double x, double y, Board board) {
-        super(imageName, x, y, board);
+    public Alien(Bitmap defaultImage, double x, double y, Board board) {
+        super(defaultImage, x, y, board);
     }
 
     private void initLevel3Alien() {
@@ -71,12 +72,9 @@ public abstract class Alien extends Sprite {
         }
     }
 
-    // renders sprite to Graphics object
     @Override
-    public void draw(Graphics2D g, ImageObserver o) {
-        g.drawImage(defaultImage, (int) x, (int) y, o); // todo: layered animations?
-    }
+    abstract void draw(Canvas canvas);
 
     // fires bullet/projectile at specified sprite
-    abstract void fireBullet(Sprite s);
+    abstract void fireBullet(Sprite s); // todo: unnecessary
 }

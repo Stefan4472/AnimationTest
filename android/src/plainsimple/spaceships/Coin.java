@@ -1,20 +1,21 @@
 package plainsimple.spaceships;
 
-import java.awt.*;
-import java.awt.image.ImageObserver;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 
 /**
  * Created by Stefan on 8/28/2015.
  */
 public class Coin extends Sprite {
 
-    public Coin(String imageName, Board board) {
-        super(imageName, board);
+    public Coin(Bitmap defaultImage, Board board) {
+        super(defaultImage, board);
         initObstacle();
     }
 
-    public Coin(String imageName, double x, double y, Board board) {
-        super(imageName, x, y, board);
+    public Coin(Bitmap defaultImage, double x, double y, Board board) {
+        super(defaultImage, x, y, board);
         initObstacle();
     }
 
@@ -43,7 +44,7 @@ public class Coin extends Sprite {
     }
 
     @Override
-    void draw(Graphics2D g, ImageObserver o) {
-        g.drawImage(defaultImage, (int) x, (int) y, o);
+    void draw(Canvas canvas) {
+        canvas.drawBitmap(defaultImage, (float) x, (float) y, null);
     }
 }

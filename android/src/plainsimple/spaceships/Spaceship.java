@@ -70,7 +70,7 @@ public class Spaceship extends Sprite {
 
     // default constructor
     public Spaceship(Bitmap defaultImage, int x, int y, Board board) {
-        super(x, y, defaultImage, board);
+        super(defaultImage, x, y, board);
         initCraft();
     }
 

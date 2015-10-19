@@ -1,17 +1,20 @@
 package plainsimple.spaceships;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+
 /**
  * Created by Stefan on 9/26/2015.
  */
 public class Alien2 extends Alien {
 
-    public Alien2(String imageName, Board board) {
-        super(imageName, board);
+    public Alien2(Bitmap defaultImage, Board board) {
+        super(defaultImage, board);
         initAlien();
     }
 
-    public Alien2(String imageName, double x, double y, Board board) {
-        super(imageName, x, y, board);
+    public Alien2(Bitmap defaultImage, double x, double y, Board board) {
+        super(defaultImage, x, y, board);
         initAlien();
     }
 
@@ -36,6 +39,10 @@ public class Alien2 extends Alien {
 
     }
 
+    @Override
+    public void draw(Canvas canvas) {
+        canvas.drawBitmap(defaultImage, x, y, null);
+    }
     @Override
     void fireBullet(Sprite s) {
 

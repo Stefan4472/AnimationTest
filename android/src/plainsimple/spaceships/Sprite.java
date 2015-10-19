@@ -103,17 +103,17 @@ public abstract class Sprite {
         this.board = board;
     }
 
-    public Sprite(double x, double y, Bitmap defaultImage, Board board) {
+    public Sprite(Bitmap defaultImage, double x, double y, Board board) {
+        this.defaultImage = defaultImage;
         this.x = x;
         this.y = y;
-        this.defaultImage = defaultImage;
         this.board = board;
         initSprite();
     }
 
     // initializes with sprite at (0,0)
     public Sprite(Bitmap defaultImage, Board board) {
-        this(0, 0, defaultImage, board);
+        this(defaultImage, 0, 0, board);
         initSprite();
     }
 

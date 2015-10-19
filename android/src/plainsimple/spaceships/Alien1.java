@@ -1,6 +1,7 @@
 package plainsimple.spaceships;
 
-import java.awt.geom.Point2D;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 
 /**
  * Created by Stefan on 9/26/2015.
@@ -13,13 +14,13 @@ public class Alien1 extends Alien {
     private int vShift;
     private int hShift;
 
-    public Alien1(String imageName, Board board) {
-        super(imageName, board);
+    public Alien1(Bitmap defaultImage, Board board) {
+        super(defaultImage, board);
         initAlien();
     }
 
-    public Alien1(String imageName, double x, double y, Board board) {
-        super(imageName, x, y, board);
+    public Alien1(Bitmap defaultImage, double x, double y, Board board) {
+        super(defaultImage, x, y, board);
         initAlien();
     }
 
@@ -76,14 +77,20 @@ public class Alien1 extends Alien {
         }
     }
 
+    @Override
+    public void draw(Canvas canvas) {
+        canvas.drawBitmap(defaultImage, x, y, null);
+    }
+
     // fires bullet at sprite based on current trajectories
     // that are slightly randomized
+    @Override
     void fireBullet(Sprite s) {
-        Point2D.Double target = s.getHitboxCenter();
+        Point2D target = s.getHitboxCenter();
         AlienBullet b = new AlienBullet(x, y + 20, board);
         b.setSpeedX(bulletSpeed);
         double frames_to_impact = (x - s.x) / bulletSpeed;
-        b.setSpeedY((y - target.y) / frames_to_impact);
+        b.setSpeedY((y - target.getY()) / frames_to_impact);
         projectiles.add(b);
     }
 }
