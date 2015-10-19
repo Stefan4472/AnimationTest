@@ -1,8 +1,8 @@
 package plainsimple.spaceships;
 
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.image.ImageObserver;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -69,8 +69,8 @@ public class Spaceship extends Sprite {
     }
 
     // default constructor
-    public Spaceship(String imageName, int x, int y, Board board) {
-        super(imageName, x, y, board);
+    public Spaceship(Bitmap defaultImage, int x, int y, Board board) {
+        super(x, y, defaultImage, board);
         initCraft();
     }
 
@@ -139,16 +139,16 @@ public class Spaceship extends Sprite {
     }
 
     @Override
-    void draw(Graphics2D g, ImageObserver o) {
-        g.drawImage(defaultImage, (int) x, (int) y, o);
+    void draw(Canvas canvas) {
+        canvas.drawBitmap(defaultImage, (float) x, (float) y, null);
         if (moving) {
-            g.drawImage(movingAnimation.nextFrame(), (int) x, (int) y, o);
+            canvas.drawBitmap(movingAnimation.nextFrame(), (float) x, (float) y, null);
         }
         if (fireRocketAnimation.isPlaying()) {
-            g.drawImage(fireRocketAnimation.nextFrame(), (int) x, (int) y, o);
+            canvas.drawBitmap(fireRocketAnimation.nextFrame(), (float) x, (float) y, null);
         }
         if (explodeAnimation.isPlaying()) {
-            g.drawImage(explodeAnimation.nextFrame(), (int) x, (int) y, o);
+            canvas.drawBitmap(explodeAnimation.nextFrame(), (float) x, (float) y, null);
         }
 
     }

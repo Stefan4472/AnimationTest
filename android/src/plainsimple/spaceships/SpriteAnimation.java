@@ -1,10 +1,6 @@
 package plainsimple.spaceships;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
+import android.graphics.Bitmap;
 import java.io.IOException;
 
 /**
@@ -22,7 +18,7 @@ public class SpriteAnimation {
     private boolean hasPlayed;
 
     // frames of the animation to play in order
-    private BufferedImage[] frames;
+    private Bitmap[] frames;
 
     // current position in array of frames
     private int frameCounter;
@@ -35,19 +31,17 @@ public class SpriteAnimation {
 
     // reads in spritesheet consisting of one row of sprites
     // initializes all frames now so as to cut down on processing time later
-    public SpriteAnimation(String spriteSheetPath, int frameWidth,
+    public SpriteAnimation(Bitmap spriteSheet, int frameWidth,
                            int frameHeight, int frameSpeed, boolean loop) throws IOException {
 
-        BufferedImage sheet = ImageIO.read(new File(spriteSheetPath));
+        int frames_w = spriteSheet.getWidth() / frameWidth;
+        int frames_h = spriteSheet.getHeight() / frameHeight;
 
-        int frames_w = sheet.getWidth(null) / frameWidth;
-        int frames_h = sheet.getHeight(null) / frameHeight;
-
-        frames = new BufferedImage[frames_w * frames_h];
+        frames = new Bitmap[frames_w * frames_h];
 
         for (int i = 0; i < frames_w; i++) {
             for (int j = 0; j < frames_h; j++) {
-                frames[i] = sheet.getSubimage(i * frameWidth, j * frameHeight, frameWidth, frameHeight);
+                frames[i] = Bitmap.createBitmap(spriteSheet, i * frameWidth, j * frameHeight, frameWidth, frameHeight);
             }
         }
 
@@ -74,7 +68,7 @@ public class SpriteAnimation {
 
     // returns next image in animation
     // starts animation if it is not playing already
-    public BufferedImage nextFrame() {
+    public Bitmap nextFrame() {
         if (!isPlaying) // todo: good practice is to start animation before calling nextFrame()
             start();
 
