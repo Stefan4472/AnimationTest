@@ -1,5 +1,8 @@
 package plainsimple.spaceships;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+
 import java.awt.*;
 import java.awt.image.ImageObserver;
 
@@ -8,20 +11,19 @@ import java.awt.image.ImageObserver;
  */
 public class Rocket extends Sprite {
 
-    public Rocket(double x, double y, Board board) {
-        super(x, y, board);
+    public Rocket(Bitmap defaultImage, double x, double y, Board board) {
+        super(defaultImage, x, y, board);
         damage = 20;
         initMissile();
     }
 
-    public Rocket(double x, double y, int damage, Board board) {
-        super(x, y, board);
+    public Rocket(Bitmap defaultImage, double x, double y, int damage, Board board) {
+        super(defaultImage, x, y, board);
         this.damage = damage;
         initMissile();
     }
 
     private void initMissile() {
-        loadDefaultImage("sprites/spaceship/rocket_sprite.png");
         speedX = 2.0f;
         hitBox.setDimensions(9, 3);
     }
@@ -50,7 +52,7 @@ public class Rocket extends Sprite {
         vis = false;
     }
 
-    public void draw(Graphics2D g, ImageObserver o) {
-        g.drawImage(defaultImage, (int) x, (int) y, o);
+    public void draw(Canvas canvas) {
+        canvas.drawBitmap(defaultImage, x, y, null);
     }
 }

@@ -2,7 +2,6 @@ package plainsimple.spaceships;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 /**
  * Auto-generation of sprites

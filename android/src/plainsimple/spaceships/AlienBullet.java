@@ -1,5 +1,8 @@
 package plainsimple.spaceships;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+
 import java.awt.*;
 import java.awt.image.ImageObserver;
 
@@ -8,16 +11,13 @@ import java.awt.image.ImageObserver;
  */
 public class AlienBullet extends Sprite {
 
-    public AlienBullet(double x, double y, Board board) {
-        super(x, y, board);
+    public AlienBullet(Bitmap defaultImage, double x, double y, Board board) {
+        super(defaultImage, x, y, board);
         initAlienBullet();
     }
 
     private void initAlienBullet() {
-        loadDefaultImage("sprites/alien/alien_bullet.png");
-
         hitBox.setDimensions(10, 10);
-
         damage = 20;
     }
 
@@ -37,7 +37,7 @@ public class AlienBullet extends Sprite {
     }
 
     @Override
-    void draw(Graphics2D g, ImageObserver o) {
-        g.drawImage(defaultImage, (int) x, (int) y, o);
+    void draw(Canvas canvas) {
+        canvas.drawBitmap(defaultImage, x, y, null);
     }
 }

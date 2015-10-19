@@ -16,7 +16,7 @@ public class ImageUtil {
     // for each frame on spriteSheet, compares pixels with base image
     // returns a BufferedImage of spritesheet containing only different pixels
     // this allows for layering without lost pixels
-    public static BufferedImage getSpriteSheetDiff(BufferedImage model, BufferedImage spriteSheet) { // todo: has not been tested yet
+    public static BufferedImage getSpriteSheetDiff(BufferedImage model, BufferedImage spriteSheet) {
         BufferedImage diff = new BufferedImage(spriteSheet.getWidth(), spriteSheet.getHeight(), BufferedImage.TYPE_INT_ARGB);
         int frames_width = spriteSheet.getWidth() / model.getWidth();
         int frames_height = spriteSheet.getHeight() / model.getHeight();

@@ -1,5 +1,8 @@
 package plainsimple.spaceships;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+
 import java.awt.*;
 import java.awt.image.ImageObserver;
 import java.io.IOException;
@@ -16,8 +19,8 @@ public class Bullet extends Sprite {
     // bulletType 2: ion cannon
     // bulletType 3: plasma cannon
     // bulletType 4: plutonium cannon
-    public Bullet(double x, double y, int bulletType, Board board) {
-        super(x, y, board);
+    public Bullet(Bitmap defaultImage, double x, double y, int bulletType, Board board) {
+        super(defaultImage, x, y, board);
         if (bulletType == 1) {
             damage = 10;
             // loadDefaultImage("laser_bullet.png");
@@ -34,7 +37,6 @@ public class Bullet extends Sprite {
     }
 
     private void initBullet() {
-        loadDefaultImage("sprites/spaceship/bullet_sprite.png");
         try {
             bulletFiring = new SpriteAnimation("sprites/spaceship/bullet_firing_spritesheet.png", 9, 3, 1, false);
         } catch (IOException e) {
@@ -60,11 +62,11 @@ public class Bullet extends Sprite {
     }
 
     @Override
-    void draw(Graphics2D g, ImageObserver o) {
+    void draw(Canvas canvas) {
         if (bulletFiring.isPlaying()) {
-            g.drawImage(bulletFiring.nextFrame(), (int) x, (int) y, o);
+            canvas.drawBitmap(bulletFiring.nextFrame(), x, y, null);
         } else {
-            g.drawImage(defaultImage, (int) x, (int) y, o);
+            canvas.drawBitmap(defaultImage, x, y, null);
         }
     }
 }

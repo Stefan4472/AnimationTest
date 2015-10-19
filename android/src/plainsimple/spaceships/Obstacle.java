@@ -1,5 +1,8 @@
 package plainsimple.spaceships;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+
 import java.awt.*;
 import java.awt.image.ImageObserver;
 
@@ -8,13 +11,13 @@ import java.awt.image.ImageObserver;
  */
 public class Obstacle extends Sprite {
 
-    public Obstacle(String imageName, Board board) {
-        super(imageName, board);
+    public Obstacle(Bitmap defaultImage, Board board) {
+        super(defaultImage, board);
         initObstacle();
     }
 
-    public Obstacle(String imageName, double x, double y, Board board) {
-        super(imageName, x, y, board);
+    public Obstacle(Bitmap defaultImage, double x, double y, Board board) {
+        super(defaultImage, x, y, board);
         initObstacle();
     }
 
@@ -37,7 +40,7 @@ public class Obstacle extends Sprite {
     }
 
     @Override
-    void draw(Graphics2D g, ImageObserver o) {
-        g.drawImage(defaultImage, (int) x, (int) y, o);
+    void draw(Canvas canvas) {
+        canvas.drawBitmap(defaultImage, x, y, null);
     }
 }
