@@ -37,7 +37,7 @@ public class Obstacle extends Sprite {
     }
 
     @Override
-    void render(Graphics2D g, ImageObserver o) {
+    void draw(Graphics2D g, ImageObserver o) {
         g.drawImage(defaultImage, (int) x, (int) y, o);
     }
 }

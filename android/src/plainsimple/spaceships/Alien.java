@@ -73,7 +73,7 @@ public abstract class Alien extends Sprite {
 
     // renders sprite to Graphics object
     @Override
-    public void render(Graphics2D g, ImageObserver o) {
+    public void draw(Graphics2D g, ImageObserver o) {
         g.drawImage(defaultImage, (int) x, (int) y, o); // todo: layered animations?
     }
 

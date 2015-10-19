@@ -1,7 +1,6 @@
 package plainsimple.spaceships;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -111,15 +110,15 @@ public class Board extends JPanel implements ActionListener {
         g2d.drawImage(background.render(), 0, 0, this);
 
         for (Sprite t : map.getTiles()) {
-            t.render(g2d, this);
+            t.draw(g2d, this);
         }
-        spaceship.render(g2d, this);
+        spaceship.draw(g2d, this);
 
         for (Sprite p : spaceship.getProjectiles()) {
-            p.render(g2d, this);
+            p.draw(g2d, this);
         }
         for (Sprite p : map.getProjectiles()) {
-            p.render(g2d, this);
+            p.draw(g2d, this);
         }
     }
 

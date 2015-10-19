@@ -21,7 +21,7 @@ public class Background {
     // grid of tile ID's instructing how to display background
     private byte[][] background;
 
-    // whether to re-render background
+    // whether to re-draw background
     private boolean render;
 
     // last-rendered image

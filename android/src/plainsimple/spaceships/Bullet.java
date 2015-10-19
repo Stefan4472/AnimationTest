@@ -60,7 +60,7 @@ public class Bullet extends Sprite {
     }
 
     @Override
-    void render(Graphics2D g, ImageObserver o) {
+    void draw(Graphics2D g, ImageObserver o) {
         if (bulletFiring.isPlaying()) {
             g.drawImage(bulletFiring.nextFrame(), (int) x, (int) y, o);
         } else {

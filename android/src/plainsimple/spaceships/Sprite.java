@@ -1,12 +1,8 @@
 package plainsimple.spaceships;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.io.File;
-import java.io.IOException;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+
 import java.util.Random;
 
 /**
@@ -46,7 +42,7 @@ public abstract class Sprite {
     protected Hitbox hitBox;
 
     // sprite default image
-    protected BufferedImage defaultImage;
+    protected Bitmap defaultImage;
 
     // board on which this sprite exists
     protected Board board;
@@ -57,63 +53,48 @@ public abstract class Sprite {
     public int getWidth() {
         return width;
     }
-
     public int getHeight() {
         return height;
     }
-
     public double getSpeedX() {
         return speedX;
     }
-
     public double getSpeedY() {
         return speedY;
     }
-
     public void setSpeedX(double speedX) {
         this.speedX = speedX;
     }
-
     public void setSpeedY(double speedY) {
         this.speedY = speedY;
     }
-
     public boolean isVisible() {
         return vis;
     }
-
     public void setVisible(Boolean visible) {
         vis = visible;
     }
-
     public boolean getCollides() {
         return collides;
     }
-
     public void setCollides(boolean collides) {
         this.collides = collides;
     }
-
     public boolean getCollision() {
         return collision;
     }
-
     public void setCollision(boolean collision) {
         this.collision = collision;
     }
-
     public int getDamage() {
         return damage;
     }
-
     public void setDamage(int damage) {
         this.damage = damage;
     }
-
     public int getHP() {
         return hp;
     }
-
     public void setHP(int hp) {
         this.hp = hp;
     }
@@ -122,24 +103,17 @@ public abstract class Sprite {
         this.board = board;
     }
 
-    public Sprite(double x, double y, Board board) {
+    public Sprite(double x, double y, Bitmap defaultImage, Board board) {
         this.x = x;
         this.y = y;
+        this.defaultImage = defaultImage;
         this.board = board;
         initSprite();
     }
 
     // initializes with sprite at (0,0)
-    public Sprite(String imageName, Board board) {
-        this(imageName, 0, 0, board);
-    }
-
-    // sets sprite coordinates
-    public Sprite(String imageName, double x, double y, Board board) {
-        loadDefaultImage(imageName);
-        this.x = x;
-        this.y = y;
-        this.board = board;
+    public Sprite(Bitmap defaultImage, Board board) {
+        this(0, 0, defaultImage, board);
         initSprite();
     }
 
@@ -156,20 +130,10 @@ public abstract class Sprite {
         hp = 0;
     }
 
-    // loads sprite's default image
-    protected void loadDefaultImage(String imageName) {
-        try {
-            defaultImage = ImageIO.read(new File(imageName));
-            getImageDimensions();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     // updates fields with dimensions of sprite image
     protected void getImageDimensions() {
-        width = defaultImage.getWidth(null);
-        height = defaultImage.getHeight(null);
+        width = defaultImage.getWidth();
+        height = defaultImage.getHeight();
     }
 
     public double getX() {
@@ -182,18 +146,18 @@ public abstract class Sprite {
 
     public void setX(double x) {
         this.x = x;
-        hitBox.updateCoordinates(x, hitBox.getY());
+        hitBox.updateCoordinates((int) x, hitBox.getY());
     }
 
     public void setY(double y) {
         this.y = y;
-        hitBox.updateCoordinates(hitBox.getX(), y);
+        hitBox.updateCoordinates(hitBox.getX(), (int) y);
     }
 
     public void setCoordinates(double x, double y) {
         this.x = x;
         this.y = y;
-        hitBox.updateCoordinates(x, y);
+        hitBox.updateCoordinates((int) x, (int) y);
     }
 
     // update/handle any actions sprite takes
@@ -214,11 +178,11 @@ public abstract class Sprite {
             vis = false;
         if (y > BOARD_HEIGHT || y < -height) // todo: bounce of edge of screen
             vis = false;
-        hitBox.updateCoordinates(x, y);
+        hitBox.updateCoordinates((int) x, (int) y);
     }
 
     // draws sprite at current coordinates on g
-    abstract void render(Graphics2D g, ImageObserver o);
+    abstract void draw(Canvas canvas);
 
     // returns whether intended movement of sprites
     // will cause a collision
@@ -236,8 +200,8 @@ public abstract class Sprite {
 
     // returns coordinates of center of sprite's hitbox
     // as a Point2D object
-    public Point2D.Double getHitboxCenter() {
-        return new Point2D.Double(hitBox.getX() + hitBox.getWidth() / 2,
+    public Point2D getHitboxCenter() {
+        return new Point2D(hitBox.getX() + hitBox.getWidth() / 2,
                 hitBox.getY() + hitBox.getHeight() / 2);
     }
 

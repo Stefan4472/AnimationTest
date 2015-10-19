@@ -139,7 +139,7 @@ public class Spaceship extends Sprite {
     }
 
     @Override
-    void render(Graphics2D g, ImageObserver o) {
+    void draw(Graphics2D g, ImageObserver o) {
         g.drawImage(defaultImage, (int) x, (int) y, o);
         if (moving) {
             g.drawImage(movingAnimation.nextFrame(), (int) x, (int) y, o);
