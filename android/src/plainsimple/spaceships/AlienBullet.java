@@ -3,15 +3,12 @@ package plainsimple.spaceships;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import java.awt.*;
-import java.awt.image.ImageObserver;
-
 /**
  * Created by Stefan on 8/29/2015.
  */
 public class AlienBullet extends Sprite {
 
-    public AlienBullet(Bitmap defaultImage, double x, double y, Board board) {
+    public AlienBullet(Bitmap defaultImage, float x, float y, Board board) {
         super(defaultImage, x, y, board);
         initAlienBullet();
     }

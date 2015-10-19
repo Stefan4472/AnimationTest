@@ -11,13 +11,13 @@ import java.awt.image.ImageObserver;
  */
 public class Rocket extends Sprite {
 
-    public Rocket(Bitmap defaultImage, double x, double y, Board board) {
+    public Rocket(Bitmap defaultImage, float x, float y, Board board) {
         super(defaultImage, x, y, board);
         damage = 20;
         initMissile();
     }
 
-    public Rocket(Bitmap defaultImage, double x, double y, int damage, Board board) {
+    public Rocket(Bitmap defaultImage, float x, float y, int damage, Board board) {
         super(defaultImage, x, y, board);
         this.damage = damage;
         initMissile();

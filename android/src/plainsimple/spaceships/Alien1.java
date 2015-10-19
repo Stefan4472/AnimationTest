@@ -19,7 +19,7 @@ public class Alien1 extends Alien {
         initAlien();
     }
 
-    public Alien1(Bitmap defaultImage, double x, double y, Board board) {
+    public Alien1(Bitmap defaultImage, float x, float y, Board board) {
         super(defaultImage, x, y, board);
         initAlien();
     }

@@ -11,8 +11,8 @@ import java.util.Random;
 public abstract class Sprite {
 
     // coordinates of sprite
-    protected double x;
-    protected double y;
+    protected float x;
+    protected float y;
 
     // intended movement in x and y directions each frame
     protected double speedX;
@@ -103,7 +103,7 @@ public abstract class Sprite {
         this.board = board;
     }
 
-    public Sprite(Bitmap defaultImage, double x, double y, Board board) {
+    public Sprite(Bitmap defaultImage, float x, float y, Board board) {
         this.defaultImage = defaultImage;
         this.x = x;
         this.y = y;
@@ -136,25 +136,25 @@ public abstract class Sprite {
         height = defaultImage.getHeight();
     }
 
-    public double getX() {
+    public float getX() {
         return x;
     }
 
-    public double getY() {
+    public float getY() {
         return y;
     }
 
-    public void setX(double x) {
+    public void setX(float x) {
         this.x = x;
         hitBox.updateCoordinates((int) x, hitBox.getY());
     }
 
-    public void setY(double y) {
+    public void setY(float y) {
         this.y = y;
         hitBox.updateCoordinates(hitBox.getX(), (int) y);
     }
 
-    public void setCoordinates(double x, double y) {
+    public void setCoordinates(float x, float y) {
         this.x = x;
         this.y = y;
         hitBox.updateCoordinates((int) x, (int) y);

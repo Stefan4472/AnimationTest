@@ -33,7 +33,7 @@ public abstract class Alien extends Sprite {
         super(defaultImage, board);
     }
 
-    public Alien(Bitmap defaultImage, double x, double y, Board board) {
+    public Alien(Bitmap defaultImage, float x, float y, Board board) {
         super(defaultImage, x, y, board);
     }
 

@@ -141,7 +141,7 @@ public class Map {
     }
 
     // returns sprite initialized to coordinates (x,y) given tileID
-    private Sprite getMapTile(int tileID, double x, double y) throws IndexOutOfBoundsException {
+    private Sprite getMapTile(int tileID, float x, float y) throws IndexOutOfBoundsException {
         switch (tileID) {
             case OBSTACLE:
                 return new Obstacle("tiles/obstacle/obstacle_tile.png", x, y, board);
@@ -159,7 +159,7 @@ public class Map {
     }
 
     // sets specified fields and adds sprite to arraylist
-    private void addTile(Sprite s, double speedX, double speedY, Board board) {
+    private void addTile(Sprite s, float speedX, float speedY, Board board) {
         s.setSpeedX(speedX);
         s.setSpeedY(speedY);
         s.setBoard(board);

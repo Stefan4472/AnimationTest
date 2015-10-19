@@ -14,7 +14,7 @@ public class Coin extends Sprite {
         initObstacle();
     }
 
-    public Coin(Bitmap defaultImage, double x, double y, Board board) {
+    public Coin(Bitmap defaultImage, float x, float y, Board board) {
         super(defaultImage, x, y, board);
         initObstacle();
     }

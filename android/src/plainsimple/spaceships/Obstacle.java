@@ -3,9 +3,6 @@ package plainsimple.spaceships;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import java.awt.*;
-import java.awt.image.ImageObserver;
-
 /**
  * Created by Stefan on 8/20/2015.
  */
@@ -16,7 +13,7 @@ public class Obstacle extends Sprite {
         initObstacle();
     }
 
-    public Obstacle(Bitmap defaultImage, double x, double y, Board board) {
+    public Obstacle(Bitmap defaultImage, float x, float y, Board board) {
         super(defaultImage, x, y, board);
         initObstacle();
     }

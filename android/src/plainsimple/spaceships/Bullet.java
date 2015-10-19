@@ -14,12 +14,12 @@ public class Bullet extends Sprite {
 
     private SpriteAnimation bulletFiring;
 
-    // bulletType defines bullet damage and sprite
+    // bulletType defines bullet damage and sprite // todo: make constants
     // bulletType 1: laser cannon
     // bulletType 2: ion cannon
     // bulletType 3: plasma cannon
     // bulletType 4: plutonium cannon
-    public Bullet(Bitmap defaultImage, double x, double y, int bulletType, Board board) {
+    public Bullet(Bitmap defaultImage, float x, float y, int bulletType, Board board) {
         super(defaultImage, x, y, board);
         if (bulletType == 1) {
             damage = 10;
