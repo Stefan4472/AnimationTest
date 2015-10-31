@@ -16,7 +16,7 @@ public class Spaceship extends Sprite {
 
     private final float MAX_SPEED_Y = 3.5f;
 
-    private SpriteAnimation movingAnimation;
+    private SpriteAnimation movingAnimation; // todo: resources static?
     private SpriteAnimation fireRocketAnimation;
     private SpriteAnimation explodeAnimation;
 
