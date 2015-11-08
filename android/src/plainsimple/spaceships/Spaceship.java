@@ -28,7 +28,7 @@ public class Spaceship extends Sprite {
 
     private boolean firesBullets;
     // ms to wait between firing bullets
-    private int bulletDelay = 100; // todo: bulletType determines delay as well
+    private int bulletDelay = 100; // todo: bulletType determines delay
     private int bulletType = Bullet.BULLET_LASER;
     private long lastFiredBullet;
     private boolean firingBullets;
@@ -76,7 +76,6 @@ public class Spaceship extends Sprite {
         projectiles = new ArrayList<>();
         lastFiredBullet = 0;
         lastFiredRocket = 0;
-
         damage = 100;
         controllable = true;
         collides = true;

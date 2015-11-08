@@ -32,7 +32,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private float drawScaleW;
     private float drawScaleH;
 
-    private Spaceship spaceship;
     // num pixels scrolled
     private int scrollCounter = 0;
     // whether game is paused currently
@@ -126,15 +125,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                             // establish scale factors based on original background image's dimensions
                             scaleW = screenW / backgroundImg.getWidth();
                             scaleH = screenH / backgroundImg.getHeight();
-
-                            Bitmap spaceshipImg = BitmapFactory.decodeResource(myContext.getResources(),
-                                    R.drawable.spaceship_sprite); // todo: load and scale resources, init sprites
-
-
-                            // scale resources
                             Bitmap.createScaledBitmap(backgroundImg, screenW, screenH, true);
-                            Bitmap.createScaledBitmap(spaceshipImg, (int) (spaceshipImg.getWidth() * scaleW),
-                                    (int) (spaceshipImg.getHeight() * scaleH), true);
+
+                            background = new Background(screenW, screenH);
+                            map = new Map(screenW, screenH, scaleW, scaleH, myContext);
                             onTitle = false;
                         }
                         break;
