@@ -67,8 +67,8 @@ public class Spaceship extends Sprite {
     }
 
     // default constructor
-    public Spaceship(Bitmap defaultImage, int x, int y, Board board) {
-        super(defaultImage, x, y, board);
+    public Spaceship(Bitmap defaultImage, int x, int y) {
+        super(defaultImage, x, y);
         initCraft();
     }
 
@@ -109,14 +109,14 @@ public class Spaceship extends Sprite {
 
     // fires two rockets
     public void fireRockets() {
-        projectiles.add(new Rocket(rocketBitmap, x + 43, y + 15, rocketType, board));
-        projectiles.add(new Rocket(rocketBitmap, x + 43, y + 33, rocketType, board));
+        projectiles.add(new Rocket(rocketBitmap, x + 43, y + 15, rocketType));
+        projectiles.add(new Rocket(rocketBitmap, x + 43, y + 33, rocketType));
     }
 
     // fires two bullets
     public void fireBullets() {
-        projectiles.add(new Bullet(bulletBitmap, x + 43, y + 15, bulletType, board));
-        projectiles.add(new Bullet(bulletBitmap, x + 43, y + 33, bulletType, board));
+        projectiles.add(new Bullet(bulletBitmap, x + 43, y + 15, bulletType));
+        projectiles.add(new Bullet(bulletBitmap, x + 43, y + 33, bulletType));
     }
 
     public void updateSpeeds() {

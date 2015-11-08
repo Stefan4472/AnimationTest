@@ -8,8 +8,8 @@ import android.graphics.Canvas;
  */
 public class AlienBullet extends Sprite {
 
-    public AlienBullet(Bitmap defaultImage, float x, float y, Board board) {
-        super(defaultImage, x, y, board);
+    public AlienBullet(Bitmap defaultImage, float x, float y) {
+        super(defaultImage, x, y);
         initAlienBullet();
     }
 

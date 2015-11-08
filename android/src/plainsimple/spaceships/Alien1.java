@@ -16,8 +16,8 @@ public class Alien1 extends Alien {
 
     private Bitmap bulletBitmap;
 
-    public Alien1(Bitmap defaultImage, float x, float y, Board board) {
-        super(defaultImage, x, y, board);
+    public Alien1(Bitmap defaultImage, float x, float y) {
+        super(defaultImage, x, y);
         initAlien();
     }
 
@@ -27,8 +27,8 @@ public class Alien1 extends Alien {
         period = 250 + random.nextInt(100);
         vShift = random.nextInt(20);
         hShift = -random.nextInt(3);
-        hp = 20 + (int) board.getDifficulty() / 3;
-        bulletDelay = 2_000 - board.getDifficulty() * 5;
+        hp = 20 + (int) GameView.difficulty / 3;
+        bulletDelay = 2_000 - GameView.difficulty * 5;
         bulletSpeed = -2.0f - random.nextInt(10) / 10;
         hitBox.setOffsets(5, 5);
         hitBox.setDimensions(40, 40);
@@ -68,7 +68,7 @@ public class Alien1 extends Alien {
     public void handleCollision(Sprite s) {
         if (!(s instanceof AlienBullet)) {
             if (s instanceof Bullet || s instanceof Rocket) {
-                board.incrementScore(s.damage);
+                GameView.score += s.damage;
             }
             hp -= s.damage;
             if (hp < 0) { // todo: death animation
@@ -88,7 +88,7 @@ public class Alien1 extends Alien {
     @Override
     void fireBullet(Sprite s) {
         Point2D target = s.getHitboxCenter();
-        AlienBullet b = new AlienBullet(bulletBitmap, x, y + 20, board);
+        AlienBullet b = new AlienBullet(bulletBitmap, x, y + 20);
         b.setSpeedX(bulletSpeed);
         double frames_to_impact = (x - s.x) / bulletSpeed;
         b.setSpeedY((y - target.getY()) / frames_to_impact);

@@ -1,19 +1,13 @@
 package plainsimple.spaceships;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
  * Created by Stefan on 8/12/2015.
  */
-public class Board extends JPanel implements ActionListener {
+public class Board { // todo: change to List, not ArrayList
 
-    private Timer timer;
     private Spaceship spaceship;
 
     private int boardWidth;
@@ -31,8 +25,6 @@ public class Board extends JPanel implements ActionListener {
     private double difficulty = 0.0f;
     // score in current run
     private int score = 0;
-    // time, in ms, last frame was completed
-    private long lastTime = 0;
 
     // Number of milliseconds to wait before repainting
     private final int DELAY = 10;
@@ -40,31 +32,21 @@ public class Board extends JPanel implements ActionListener {
     public Spaceship getSpaceship() {
         return spaceship;
     }
-
     public Map getMap() {
         return map;
     }
-
     public double getDifficulty() {
         return difficulty;
     }
-
-    public void incrementScore(int add) {
-        score += add;
-    }
+    public void incrementScore(int add) { score += add; }
 
     public Board(int boardWidth, int boardHeight) {
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
-        setPreferredSize(new Dimension(boardWidth, boardHeight));
         initBoard();
     }
 
     private void initBoard() { // todo: optimize images? https://community.oracle.com/thread/1263684
-        addKeyListener(new TAdapter());
-        setFocusable(true);
-        setDoubleBuffered(true);
-
         spaceship = new Spaceship("sprites/spaceship/spaceship_sprite.png", -50, 125, this);
         spaceship.setBullets(true, 1, 100);
         spaceship.setRockets(true, 1, 420);
@@ -75,23 +57,8 @@ public class Board extends JPanel implements ActionListener {
                 "tiles/background/space3_tile.png",
                 "tiles/background/space4_tile.png"
         });
-        paused = false;
         map = new Map(this);
-
-        /* calls actionPerformed() every DELAY milliseconds */
-        timer = new Timer(DELAY, this);
-        timer.start();
-    }
-
-
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        doDrawing(g);
-
-        // used for compatibility with Linux
-        Toolkit.getDefaultToolkit().sync();
+        paused = false;
     }
 
     // draws screen
@@ -202,23 +169,5 @@ public class Board extends JPanel implements ActionListener {
             spaceship.setY(boardHeight - spaceship.getHeight());
         }
         spaceship.updateActions();
-    }
-
-    // sends keystrokes to spaceship
-    private class TAdapter extends KeyAdapter {
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            spaceship.keyReleased(e);
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_P) {
-                paused = !paused; // toggle pause // todo: worry about pause and mainscreen in fxml
-            } else {
-                spaceship.keyPressed(e);
-            }
-        }
     }
 }

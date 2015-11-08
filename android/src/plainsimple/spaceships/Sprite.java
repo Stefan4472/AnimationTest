@@ -35,17 +35,11 @@ public abstract class Sprite {
     // whether or not sprite is currently moving
     protected boolean moving; // todo: remove?
 
-    protected final int BOARD_WIDTH = 600;
-    protected final int BOARD_HEIGHT = 400;
-
     // hitbox for collision detection todo: complex shapes
     protected Hitbox hitBox;
 
     // sprite default image
     protected Bitmap defaultImage;
-
-    // board on which this sprite exists
-    protected Board board;
 
     // random number generator
     protected Random random;
@@ -99,21 +93,16 @@ public abstract class Sprite {
         this.hp = hp;
     }
 
-    public void setBoard(Board board) {
-        this.board = board;
-    }
-
-    public Sprite(Bitmap defaultImage, float x, float y, Board board) {
+    public Sprite(Bitmap defaultImage, float x, float y) {
         this.defaultImage = defaultImage;
         this.x = x;
         this.y = y;
-        this.board = board;
         initSprite();
     }
 
     // initializes with sprite at (0,0)
-    public Sprite(Bitmap defaultImage, Board board) {
-        this(defaultImage, 0, 0, board);
+    public Sprite(Bitmap defaultImage) {
+        this(defaultImage, 0, 0);
         initSprite();
     }
 
@@ -174,9 +163,9 @@ public abstract class Sprite {
         x += speedX;
         y += speedY;
         // keep in mind sprites are generated past the screen
-        if (x > BOARD_WIDTH + width || x < -width)
+        if (x > GameView.screenW + width || x < -width)
             vis = false;
-        if (y > BOARD_HEIGHT || y < -height) // todo: bounce of edge of screen
+        if (y > GameView.screenH || y < -height) // todo: bounce of edge of screen
             vis = false;
         hitBox.updateCoordinates((int) x, (int) y);
     }

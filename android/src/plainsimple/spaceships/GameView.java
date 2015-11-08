@@ -20,8 +20,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Context myContext;
     private SurfaceHolder mySurfaceHolder;
     private Bitmap backgroundImg;
-    private int screenW = 1;
-    private int screenH = 1;
+    public static int screenW;
+    public static int screenH;
     private boolean running = false;
     private boolean onTitle = true;
     private GameViewThread thread;
@@ -31,6 +31,31 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private float scaleH;
     private float drawScaleW;
     private float drawScaleH;
+
+    private Spaceship spaceship;
+    // num pixels scrolled
+    private int scrollCounter = 0;
+    // whether game is paused currently
+    private boolean paused;
+    // space background (implements parallax scrolling)
+    private Background background;
+    // generates terrain and sprites on screen
+    private Map map;
+    // difficulty level, incremented every frame
+    public static double difficulty = 0.0f;
+    // score in current run
+    public static int score = 0;
+
+    public Spaceship getSpaceship() {
+        return spaceship;
+    }
+    public Map getMap() {
+        return map;
+    }
+    public double getDifficulty() {
+        return difficulty;
+    }
+    public void incrementScore(int add) { score += add; }
 
     public GameView(Context context, AttributeSet attributes) {
         super(context, attributes);
@@ -104,6 +129,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                             Bitmap spaceshipImg = BitmapFactory.decodeResource(myContext.getResources(),
                                     R.drawable.spaceship_sprite); // todo: load and scale resources, init sprites
+
 
                             // scale resources
                             Bitmap.createScaledBitmap(backgroundImg, screenW, screenH, true);

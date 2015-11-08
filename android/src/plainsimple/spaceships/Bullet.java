@@ -16,8 +16,8 @@ public class Bullet extends Sprite {
     public final static int BULLET_PLASMA = 3;
     public final static int BULLET_PLUTONIUM = 4;
     // todo: when resources can be different defaultImage shouldn't be a parameter
-    public Bullet(Bitmap defaultImage, float x, float y, int bulletType, Board board) {
-        super(defaultImage, x, y, board);
+    public Bullet(Bitmap defaultImage, float x, float y, int bulletType) {
+        super(defaultImage, x, y);
         switch(bulletType) {
             case BULLET_LASER: // todo: figure out how to load resource in each case
                 damage = 10;

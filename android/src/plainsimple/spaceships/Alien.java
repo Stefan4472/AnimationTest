@@ -29,17 +29,13 @@ public abstract class Alien extends Sprite {
         return projectiles;
     }
 
-    public Alien(Bitmap defaultImage, Board board) {
-        super(defaultImage, board);
-    }
-
-    public Alien(Bitmap defaultImage, float x, float y, Board board) {
-        super(defaultImage, x, y, board);
+    public Alien(Bitmap defaultImage, float x, float y) {
+        super(defaultImage, x, y);
     }
 
     private void initLevel3Alien() { // todo: move to Alien3 class
         startingY = y;
-        hp = 60 + (int) board.getDifficulty() / 5;
+        hp = 60 + (int) GameView.difficulty / 5;
         bulletDelay = 500;
         bulletSpeed = -3.5f;
         hitBox.setOffsets(5, 5);
@@ -61,7 +57,7 @@ public abstract class Alien extends Sprite {
     public void handleCollision(Sprite s) {
         if (!(s instanceof AlienBullet)) {
             if (s instanceof Bullet || s instanceof Rocket) {
-                board.incrementScore(s.damage);
+                GameView.score += s.damage;
             }
             hp -= s.damage;
             if (hp < 0) { // todo: death animation

@@ -8,13 +8,8 @@ import android.graphics.Canvas;
  */
 public class Obstacle extends Sprite {
 
-    public Obstacle(Bitmap defaultImage, Board board) {
-        super(defaultImage, board);
-        initObstacle();
-    }
-
-    public Obstacle(Bitmap defaultImage, float x, float y, Board board) {
-        super(defaultImage, x, y, board);
+    public Obstacle(Bitmap defaultImage, float x, float y) {
+        super(defaultImage, x, y);
         initObstacle();
     }
 

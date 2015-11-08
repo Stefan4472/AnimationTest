@@ -9,13 +9,8 @@ import android.graphics.Canvas;
  */
 public class Coin extends Sprite {
 
-    public Coin(Bitmap defaultImage, Board board) {
-        super(defaultImage, board);
-        initObstacle();
-    }
-
-    public Coin(Bitmap defaultImage, float x, float y, Board board) {
-        super(defaultImage, x, y, board);
+    public Coin(Bitmap defaultImage, float x, float y) {
+        super(defaultImage, x, y);
         initObstacle();
     }
 
@@ -39,12 +34,12 @@ public class Coin extends Sprite {
     public void handleCollision(Sprite s) {
         if (s instanceof Spaceship) {
             vis = false;
-            board.incrementScore(100);
+            GameView.score += 100;
         }
     }
 
     @Override
     void draw(Canvas canvas) {
-        canvas.drawBitmap(defaultImage, (float) x, (float) y, null);
+        canvas.drawBitmap(defaultImage, x, y, null);
     }
 }

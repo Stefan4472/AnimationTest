@@ -35,9 +35,6 @@ public class Map {
     // generated sprites
     private ArrayList<Sprite> tiles = new ArrayList<>();
 
-    // board upon which Map lies
-    private Board board;
-
     // dimensions of screen display
     private static final int SCREEN_WIDTH = 600;
     private static final int SCREEN_HEIGHT = 300;
@@ -71,9 +68,6 @@ public class Map {
         return scrollSpeed;
     }
 
-    public void setBoard(Board board) {
-        this.board = board;
-    }
 
     public ArrayList<Sprite> getProjectiles() {
         return (ArrayList<Sprite>) tiles.stream()
@@ -83,8 +77,7 @@ public class Map {
                 .collect(Collectors.toList());
     }
 
-    public Map(Board board) {
-        this.board = board;
+    public Map() {
         initMap();
     }
 
@@ -115,14 +108,14 @@ public class Map {
                 // add any non-empty tiles in the current column at the edge of the screen
                 if (map[i][mapTileCounter] != EMPTY) {
                     addTile(getMapTile(map[i][mapTileCounter], SCREEN_WIDTH + getWOffset(), i * tileWidth),
-                            (int) scrollSpeed, 0, board);
+                            (int) scrollSpeed, 0);
                 }
             }
             mapTileCounter++;
 
             // generate more tiles
             if (mapTileCounter == map[0].length) {
-                map = generateTiles(board.getDifficulty(), rows);
+                map = generateTiles(GameView.difficulty, rows);
                 mapTileCounter = 0;
             }
             lastTile = getWTile();
@@ -133,7 +126,7 @@ public class Map {
     // difficulty starts at 0 and increases by 0.01/frame,
     // or 1 per second
     public float updateScrollSpeed() {
-        scrollSpeed = (float) (-4.0f - board.getDifficulty() / 20);
+        scrollSpeed = (float) (-4.0f - GameView.difficulty / 20);
         if (scrollSpeed < -20) {
             scrollSpeed = -20;
         }
@@ -144,25 +137,24 @@ public class Map {
     private Sprite getMapTile(int tileID, float x, float y) throws IndexOutOfBoundsException {
         switch (tileID) {
             case OBSTACLE:
-                return new Obstacle("tiles/obstacle/obstacle_tile.png", x, y, board);
+                return new Obstacle("tiles/obstacle/obstacle_tile.png", x, y);
             case OBSTACLE_INVIS:
-                Sprite tile = new Obstacle("tiles/obstacle/obstacle_tile.png", x, y, board);
+                Sprite tile = new Obstacle("tiles/obstacle/obstacle_tile.png", x, y);
                 tile.setCollides(false);
                 return tile;
             case COIN:
-                return new Coin("tiles/coin/coin_tile.png", x, y, board);
+                return new Coin("tiles/coin/coin_tile.png", x, y);
             case ALIEN_LVL1:
-                return new Alien1("sprites/alien/alien_sprite.png", x, y, board);
+                return new Alien1("sprites/alien/alien_sprite.png", x, y);
             default:
                 throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
         }
     }
 
     // sets specified fields and adds sprite to arraylist
-    private void addTile(Sprite s, float speedX, float speedY, Board board) {
+    private void addTile(Sprite s, float speedX, float speedY) {
         s.setSpeedX(speedX);
         s.setSpeedY(speedY);
-        s.setBoard(board);
         tiles.add(s);
     }
 

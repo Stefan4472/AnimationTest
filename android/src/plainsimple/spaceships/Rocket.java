@@ -12,8 +12,8 @@ public class Rocket extends Sprite {
     public final static int ROCKET = 1;
 
     // todo: figure out resource loading and whether to pass a bitmap
-    public Rocket(Bitmap defaultImage, float x, float y, int rocketType, Board board) {
-        super(defaultImage, x, y, board);
+    public Rocket(Bitmap defaultImage, float x, float y, int rocketType) {
+        super(defaultImage, x, y);
         switch(rocketType) {
             case ROCKET:
                 break;
