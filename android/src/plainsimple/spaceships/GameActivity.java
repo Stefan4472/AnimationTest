@@ -10,14 +10,19 @@ import android.view.WindowManager;
  */
 public class GameActivity extends Activity {
 
+    private GameView gameView;
+
+    /* Called when activity first created */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GameView game_view = new GameView(this);
-        game_view.setKeepScreenOn(true);
+        // go full screen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(game_view);
+        // set content view/layout to gameview layout
+        setContentView(R.layout.gameview_layout);
+        gameView = (GameView) findViewById(R.id.spaceships);
+        gameView.setKeepScreenOn(true);
     }
 }

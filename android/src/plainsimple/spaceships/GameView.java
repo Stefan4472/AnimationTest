@@ -25,6 +25,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean running = false;
     private boolean onTitle = true;
     private GameViewThread thread;
+    private int backgroundOrigW;
+    private int backgroundOrigH;
+    private float scaleW;
+    private float scaleH;
+    private float drawScaleW;
+    private float drawScaleH;
 
     public GameView(Context context, AttributeSet attributes) {
         super(context, attributes);
@@ -89,9 +95,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     case MotionEvent.ACTION_MOVE:
                         break;
                     case MotionEvent.ACTION_UP: // handle user clicking something
-                        if (onTitle) {
+                        if (onTitle) { // change to game screen. Load resources
                             backgroundImg = BitmapFactory.decodeResource(myContext.getResources(),
-                                    R.drawable.background);
+                                    R.drawable.game_background);
+                            // establish scale factors based on original background image's dimensions
+                            scaleW = screenW / backgroundImg.getWidth();
+                            scaleH = screenH / backgroundImg.getHeight();
+                            
+
+                            // scale resources
                             Bitmap.createScaledBitmap(backgroundImg, screenW, screenH, true);
                             onTitle = false;
                         }
