@@ -101,10 +101,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                             // establish scale factors based on original background image's dimensions
                             scaleW = screenW / backgroundImg.getWidth();
                             scaleH = screenH / backgroundImg.getHeight();
-                            
+
+                            Bitmap spaceshipImg = BitmapFactory.decodeResource(myContext.getResources(),
+                                    R.drawable.spaceship_sprite);
 
                             // scale resources
                             Bitmap.createScaledBitmap(backgroundImg, screenW, screenH, true);
+                            Bitmap.createScaledBitmap(spaceshipImg, (int) (spaceshipImg.getWidth() * scaleW),
+                                    (int) (spaceshipImg.getHeight() * scaleH), true);
                             onTitle = false;
                         }
                         break;
@@ -117,7 +121,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             synchronized (mySurfaceHolder) {
                 screenW = width;
                 screenH = height;
-                backgroundImg = Bitmap.createScaledBitmap(backgroundImg, width, height, true);
+                //backgroundImg = Bitmap.createScaledBitmap(backgroundImg, width, height, true);
             }
         }
 

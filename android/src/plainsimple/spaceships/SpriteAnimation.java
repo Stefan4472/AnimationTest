@@ -32,7 +32,7 @@ public class SpriteAnimation {
     // reads in spritesheet consisting of one row of sprites
     // initializes all frames now so as to cut down on processing time later
     public SpriteAnimation(Bitmap spriteSheet, int frameWidth,
-                           int frameHeight, int frameSpeed, boolean loop) throws IOException {
+                           int frameHeight, int frameSpeed, boolean loop) {
 
         int frames_w = spriteSheet.getWidth() / frameWidth;
         int frames_h = spriteSheet.getHeight() / frameHeight;

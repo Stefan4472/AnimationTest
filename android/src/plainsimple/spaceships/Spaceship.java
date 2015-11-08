@@ -20,10 +20,13 @@ public class Spaceship extends Sprite {
     private SpriteAnimation fireRocketAnimation;
     private SpriteAnimation explodeAnimation;
 
+    private Bitmap rocketBitmap;
+    private Bitmap bulletBitmap;
+
     // whether user has control over spaceship
     boolean controllable;
 
-    public final int BULLET_LASER = 1;
+    public final int BULLET_LASER = 1; // todo: move to bullet class. Also, rocket types
     public final int BULLET_ION = 2;
     public final int BULLET_PLASMA = 3;
 
@@ -51,7 +54,6 @@ public class Spaceship extends Sprite {
     public void setControllable(boolean controllable) {
         this.controllable = controllable;
     }
-
     public void setHP(int hp) {
         this.hp = hp;
     }
@@ -75,14 +77,6 @@ public class Spaceship extends Sprite {
     }
 
     private void initCraft() {
-        try { // todo: this will not catch all errors... Resources should be initialized in main or Board.java
-            movingAnimation = new SpriteAnimation("sprites/spaceship/spaceship_moving_spritesheet_diff.png", 50, 50, 5, true);
-            fireRocketAnimation = new SpriteAnimation("sprites/spaceship/spaceship_firing_spritesheet_diff.png", 50, 50, 8, false);
-            explodeAnimation = new SpriteAnimation("sprites/spaceship/spaceship_exploding_spritesheet_diff.png", 50, 50, 5, false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         projectiles = new ArrayList<>();
         lastFiredBullet = 0;
         lastFiredRocket = 0;
@@ -92,6 +86,16 @@ public class Spaceship extends Sprite {
         collides = true;
         hitBox.setDimensions(33, 28);
         hitBox.setOffsets(12, 11);
+    }
+
+    // get spritesheet bitmaps and construct them
+    public void injectResources(Bitmap movingSpriteSheet, Bitmap fireRocketSpriteSheet,
+                                Bitmap explodeSpriteSheet, Bitmap rocketBitmap, Bitmap bulletBitmap) {
+        movingAnimation = new SpriteAnimation(movingSpriteSheet, 50, 50, 5, true);
+        fireRocketAnimation = new SpriteAnimation(fireRocketSpriteSheet, 50, 50, 8, false);
+        explodeAnimation = new SpriteAnimation(explodeSpriteSheet, 50, 50, 5, false);
+        this.rocketBitmap = rocketBitmap;
+        this.bulletBitmap = bulletBitmap;
     }
 
     public void updateActions() {
@@ -109,14 +113,14 @@ public class Spaceship extends Sprite {
 
     // fires two rockets
     public void fireRockets() {
-        projectiles.add(new Rocket(x + 43, y + 15, rocketType, board));
-        projectiles.add(new Rocket(x + 43, y + 33, rocketType, board));
+        projectiles.add(new Rocket(rocketBitmap, x + 43, y + 15, rocketType, board));
+        projectiles.add(new Rocket(rocketBitmap, x + 43, y + 33, rocketType, board));
     }
 
     // fires two bullets
     public void fireBullets() {
-        projectiles.add(new Bullet(x + 43, y + 15, bulletType, board));
-        projectiles.add(new Bullet(x + 43, y + 33, bulletType, board));
+        projectiles.add(new Bullet(bulletBitmap, x + 43, y + 15, bulletType, board));
+        projectiles.add(new Bullet(bulletBitmap, x + 43, y + 33, bulletType, board));
     }
 
     public void updateSpeeds() {
