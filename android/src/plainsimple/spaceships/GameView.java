@@ -102,7 +102,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         private void draw(Canvas canvas) {
             try {
-                canvas.drawBitmap(backgroundImg, 0, 0, null);
+                canvas.drawBitmap(background.getBitmap(), 0, 0, null);
             } catch (Exception e) {
             }
         }
@@ -127,7 +127,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                             scaleH = screenH / backgroundImg.getHeight();
                             Bitmap.createScaledBitmap(backgroundImg, screenW, screenH, true);
 
-                            background = new Background(screenW, screenH);
+                            background = new Background(screenW, screenH, scaleW, scaleH, myContext);
                             map = new Map(screenW, screenH, scaleW, scaleH, myContext);
                             onTitle = false;
                         }

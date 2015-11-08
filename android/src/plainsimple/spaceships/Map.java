@@ -91,15 +91,6 @@ public class Map {
         return scrollSpeed;
     }
 
-
-    public ArrayList<Sprite> getProjectiles() { // todo: map.update method, map.draw(canvas) method
-        return (ArrayList<Sprite>) tiles.stream()
-                .filter(s -> s.getClass().equals(Alien.class))
-                .map(s -> ((Alien) s).getProjectiles())
-                .flatMap(b -> b.stream())
-                .collect(Collectors.toList());
-    }
-
     public Map(int screenW, int screenH, float scaleW, float scaleH, Context context) {
         this.context = context;
         this.screenW = screenW;
