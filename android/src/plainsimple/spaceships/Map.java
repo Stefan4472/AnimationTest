@@ -33,6 +33,10 @@ public class Map {
     private Bitmap spaceshipExplodeSpriteSheet;
     private Bitmap rocketBitmap;
     private Bitmap spaceshipBulletBitmap;
+    private Bitmap obstacleBitmap;
+    private Bitmap coinBitmap;
+    private Bitmap alien1Bitmap;
+    private Bitmap alienBulletBitmap;
 
     // number of rows of tiles that fit in map
     private int rows;
@@ -143,7 +147,25 @@ public class Map {
         spaceship.setBullets(true, Bullet.BULLET_LASER, 100);
         spaceship.setRockets(true, Rocket.ROCKET, 420);
 
-        
+        obstacleBitmap = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.obstacle_tile);
+        obstacleBitmap = Bitmap.createScaledBitmap(obstacleBitmap, (int) (obstacleBitmap.getWidth() * scaleW),
+                (int) (obstacleBitmap.getHeight() * scaleH), true);
+
+        coinBitmap = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.coin_tile);
+        coinBitmap = Bitmap.createScaledBitmap(coinBitmap, (int) (coinBitmap.getWidth() * scaleW),
+                (int) (coinBitmap.getHeight() * scaleH), true);
+
+        alien1Bitmap = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.alien_sprite);
+        alien1Bitmap = Bitmap.createScaledBitmap(alien1Bitmap, (int) (alien1Bitmap.getWidth() * scaleW),
+                (int) (alien1Bitmap.getHeight() * scaleH), true);
+
+        alienBulletBitmap = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.alien_bullet);
+        alienBulletBitmap = Bitmap.createScaledBitmap(alienBulletBitmap, (int) (alienBulletBitmap.getWidth() * scaleW),
+                (int) (alienBulletBitmap.getHeight() * scaleH), true);
     }
 
     // current horizontal tile
@@ -196,15 +218,17 @@ public class Map {
     private Sprite getMapTile(int tileID, float x, float y) throws IndexOutOfBoundsException {
         switch (tileID) {
             case OBSTACLE:
-                return new Obstacle("tiles/obstacle/obstacle_tile.png", x, y);
+                return new Obstacle(obstacleBitmap, x, y);
             case OBSTACLE_INVIS:
-                Sprite tile = new Obstacle("tiles/obstacle/obstacle_tile.png", x, y);
+                Sprite tile = new Obstacle(obstacleBitmap, x, y);
                 tile.setCollides(false);
                 return tile;
             case COIN:
-                return new Coin("tiles/coin/coin_tile.png", x, y);
+                return new Coin(coinBitmap, x, y);
             case ALIEN_LVL1:
-                return new Alien1("sprites/alien/alien_sprite.png", x, y);
+                Alien1 alien_1 = new Alien1(alien1Bitmap, x, y);
+                alien_1.injectResources(alienBulletBitmap);
+                return alien_1;
             default:
                 throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
         }
