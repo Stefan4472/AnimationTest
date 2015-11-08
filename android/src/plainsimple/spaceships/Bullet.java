@@ -3,10 +3,6 @@ package plainsimple.spaceships;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import java.awt.*;
-import java.awt.image.ImageObserver;
-import java.io.IOException;
-
 /**
  * Created by Stefan on 8/17/2015.
  */
@@ -14,34 +10,40 @@ public class Bullet extends Sprite {
 
     private SpriteAnimation bulletFiring;
 
-    // bulletType defines bullet damage and sprite // todo: make constants
-    // bulletType 1: laser cannon
-    // bulletType 2: ion cannon
-    // bulletType 3: plasma cannon
-    // bulletType 4: plutonium cannon
+    // bulletType defines bullet damage and sprite
+    public final static int BULLET_LASER = 1;
+    public final static int BULLET_ION = 2;
+    public final static int BULLET_PLASMA = 3;
+    public final static int BULLET_PLUTONIUM = 4;
+    // todo: when resources can be different defaultImage shouldn't be a parameter
     public Bullet(Bitmap defaultImage, float x, float y, int bulletType, Board board) {
         super(defaultImage, x, y, board);
-        if (bulletType == 1) {
-            damage = 10;
-            // loadDefaultImage("laser_bullet.png");
-        } else if (bulletType == 2) {
-            damage = 20;
-            // loadDefaultImage("ion_bullet.png");
-        } else if (bulletType == 3) {
-            damage = 30;
-            // loadDefaultImage("plasma_bullet.png");
-        } else {
-            System.out.println("Invalid bulletType (" + bulletType + ")");
+        switch(bulletType) {
+            case BULLET_LASER: // todo: figure out how to load resource in each case
+                damage = 10;
+                break;
+            case BULLET_ION:
+                damage = 20;
+                break;
+            case BULLET_PLASMA:
+                damage = 30;
+                break;
+            case BULLET_PLUTONIUM:
+                damage = 40;
+                break;
+            default:
+                System.out.println("Invalid bulletType (" + bulletType + ")");
+                break;
         }
         initBullet();
     }
 
     private void initBullet() {
-        try {
+        /*try {
             bulletFiring = new SpriteAnimation("sprites/spaceship/bullet_firing_spritesheet.png", 9, 3, 1, false);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
         hitBox.setDimensions(9, 3);
         speedX = 5.0f;
         bulletFiring.start();
@@ -63,10 +65,11 @@ public class Bullet extends Sprite {
 
     @Override
     void draw(Canvas canvas) {
-        if (bulletFiring.isPlaying()) {
+        /*if (bulletFiring.isPlaying()) {
             canvas.drawBitmap(bulletFiring.nextFrame(), x, y, null);
         } else {
             canvas.drawBitmap(defaultImage, x, y, null);
-        }
+        }*/
+        canvas.drawBitmap(defaultImage, x, y, null);
     }
 }

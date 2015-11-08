@@ -3,16 +3,21 @@ package plainsimple.spaceships;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import java.awt.*;
-import java.awt.image.ImageObserver;
-
 /**
  * Created by Stefan on 8/13/2015.
  */
 public class Rocket extends Sprite {
 
+    // todo: different rocket types (?)
+    public final static int ROCKET = 1;
+
+    // todo: figure out resource loading and whether to pass a bitmap
     public Rocket(Bitmap defaultImage, float x, float y, int rocketType, Board board) {
         super(defaultImage, x, y, board);
+        switch(rocketType) {
+            case ROCKET:
+                break;
+        }
         initMissile();
     }
 

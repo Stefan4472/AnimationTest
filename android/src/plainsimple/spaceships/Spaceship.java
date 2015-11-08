@@ -26,21 +26,17 @@ public class Spaceship extends Sprite {
     // whether user has control over spaceship
     boolean controllable;
 
-    public final int BULLET_LASER = 1; // todo: move to bullet class. Also, rocket types
-    public final int BULLET_ION = 2;
-    public final int BULLET_PLASMA = 3;
-
     private boolean firesBullets;
     // ms to wait between firing bullets
-    private int bulletDelay = 100;
-    private int bulletType = 10;
+    private int bulletDelay = 100; // todo: bulletType determines delay as well
+    private int bulletType = Bullet.BULLET_LASER;
     private long lastFiredBullet;
     private boolean firingBullets;
 
     private boolean firesRockets;
     // ms to wait between firing rockets
     private int rocketDelay = 420;
-    private int rocketType = 40;
+    private int rocketType = Rocket.ROCKET;
     private long lastFiredRocket;
     private boolean firingRockets;
 

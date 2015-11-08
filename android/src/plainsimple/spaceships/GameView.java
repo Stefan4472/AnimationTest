@@ -103,7 +103,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                             scaleH = screenH / backgroundImg.getHeight();
 
                             Bitmap spaceshipImg = BitmapFactory.decodeResource(myContext.getResources(),
-                                    R.drawable.spaceship_sprite);
+                                    R.drawable.spaceship_sprite); // todo: load and scale resources, init sprites
 
                             // scale resources
                             Bitmap.createScaledBitmap(backgroundImg, screenW, screenH, true);

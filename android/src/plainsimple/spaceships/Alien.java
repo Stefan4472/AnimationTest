@@ -37,7 +37,7 @@ public abstract class Alien extends Sprite {
         super(defaultImage, x, y, board);
     }
 
-    private void initLevel3Alien() {
+    private void initLevel3Alien() { // todo: move to Alien3 class
         startingY = y;
         hp = 60 + (int) board.getDifficulty() / 5;
         bulletDelay = 500;
@@ -52,7 +52,7 @@ public abstract class Alien extends Sprite {
     @Override
     abstract void updateActions();
 
-    // update's speedX and speedY of spaceship
+    // updates speedX and speedY of spaceship
     @Override
     abstract void updateSpeeds();
 

@@ -6,7 +6,7 @@ import android.graphics.Canvas;
 /**
  * Created by Stefan on 9/26/2015.
  */
-public class Alien2 extends Alien {
+public class Alien2 extends Alien { // todo: not implemented
 
     public Alien2(Bitmap defaultImage, Board board) {
         super(defaultImage, board);

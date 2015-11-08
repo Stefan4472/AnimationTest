@@ -14,10 +14,7 @@ public class Alien1 extends Alien {
     private int vShift;
     private int hShift;
 
-    public Alien1(Bitmap defaultImage, Board board) {
-        super(defaultImage, board);
-        initAlien();
-    }
+    private Bitmap bulletBitmap;
 
     public Alien1(Bitmap defaultImage, float x, float y, Board board) {
         super(defaultImage, x, y, board);
@@ -37,6 +34,10 @@ public class Alien1 extends Alien {
         hitBox.setDimensions(40, 40);
         damage = 50;
         speedX = -2.0f;
+    }
+
+    public void injectResources(Bitmap bulletBitmap) {
+        this.bulletBitmap = bulletBitmap;
     }
 
     @Override
@@ -87,7 +88,7 @@ public class Alien1 extends Alien {
     @Override
     void fireBullet(Sprite s) {
         Point2D target = s.getHitboxCenter();
-        AlienBullet b = new AlienBullet(x, y + 20, board);
+        AlienBullet b = new AlienBullet(bulletBitmap, x, y + 20, board);
         b.setSpeedX(bulletSpeed);
         double frames_to_impact = (x - s.x) / bulletSpeed;
         b.setSpeedY((y - target.getY()) / frames_to_impact);
