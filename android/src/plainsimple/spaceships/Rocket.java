@@ -11,11 +11,23 @@ public class Rocket extends Sprite {
     // todo: different rocket types (?)
     public final static int ROCKET = 1;
 
+    public int delay;
+
+    public static int getDelay(int rocketType) {
+        switch (rocketType) {
+            case ROCKET:
+                return 420;
+            default:
+                return -1;
+        }
+    }
+
     // todo: figure out resource loading and whether to pass a bitmap
     public Rocket(Bitmap defaultImage, float x, float y, int rocketType) {
         super(defaultImage, x, y);
         switch(rocketType) {
             case ROCKET:
+                delay = 420;
                 break;
         }
         initMissile();

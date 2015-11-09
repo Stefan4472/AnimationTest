@@ -9,27 +9,49 @@ import android.graphics.Canvas;
 public class Bullet extends Sprite {
 
     private SpriteAnimation bulletFiring;
+    // delay between fired bullets
+    private int delay;
 
     // bulletType defines bullet damage and sprite
-    public final static int BULLET_LASER = 1;
-    public final static int BULLET_ION = 2;
-    public final static int BULLET_PLASMA = 3;
-    public final static int BULLET_PLUTONIUM = 4;
+    public final static int LASER = 1;
+    public final static int ION = 2;
+    public final static int PLASMA = 3;
+    public final static int PLUTONIUM = 4;
+
+    public static int getDelay(int bulletType) {
+        switch(bulletType) {
+            case LASER:
+                return 150;
+            case ION:
+                return 130;
+            case PLASMA:
+                return 100;
+            case PLUTONIUM:
+                return 170;
+            default:
+                return -1;
+        }
+    }
+
     // todo: when resources can be different defaultImage shouldn't be a parameter
     public Bullet(Bitmap defaultImage, float x, float y, int bulletType) {
         super(defaultImage, x, y);
         switch(bulletType) {
-            case BULLET_LASER: // todo: figure out how to load resource in each case
+            case LASER: // todo: figure out how to load resource in each case
                 damage = 10;
+                delay = 150;
                 break;
-            case BULLET_ION:
+            case ION:
                 damage = 20;
+                delay = 130;
                 break;
-            case BULLET_PLASMA:
+            case PLASMA:
                 damage = 30;
+                delay = 100;
                 break;
-            case BULLET_PLUTONIUM:
+            case PLUTONIUM:
                 damage = 40;
+                delay = 170;
                 break;
             default:
                 System.out.println("Invalid bulletType (" + bulletType + ")");

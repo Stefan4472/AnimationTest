@@ -3,8 +3,10 @@ package plainsimple.spaceships;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -38,20 +40,20 @@ public class Map {
     private Bitmap alien1Bitmap;
     private Bitmap alienBulletBitmap;
 
-    // number of rows of tiles that fit in map
+    // number of rows of sprites that fit in map
     private int rows;
 
-    // number of tiles elapsed since last map was generated
+    // number of sprites elapsed since last map was generated
     private int mapTileCounter = 0;
 
     // keeps track of tile spaceship was on last time map was updated
     private long lastTile = 0;
 
-    // default speed of tiles scrolling across the map
+    // default speed of sprites scrolling across the map
     private float scrollSpeed = -4.0f;
 
     // generated sprites
-    private ArrayList<Sprite> tiles = new ArrayList<>();
+    private ArrayList<Sprite> sprites = new ArrayList<>();
 
     // spaceship
     private Spaceship spaceship;
@@ -83,10 +85,7 @@ public class Map {
     // used for generating random numbers
     private static Random random = new Random();
 
-    public ArrayList<Sprite> getTiles() {
-        return tiles;
-    }
-
+    public Spaceship getSpaceship() { return spaceship; }
     public float getScrollSpeed() {
         return scrollSpeed;
     }
@@ -135,8 +134,8 @@ public class Map {
         spaceship = new Spaceship(spaceshipImg, -spaceshipImg.getWidth(), screenH / 2 - spaceshipImg.getHeight() / 2);
         spaceship.injectResources(spaceshipMovingSpriteSheet, spaceshipFireRocketSpriteSheet,
                 spaceshipExplodeSpriteSheet, rocketBitmap, spaceshipBulletBitmap);
-        spaceship.setBullets(true, Bullet.BULLET_LASER, 100);
-        spaceship.setRockets(true, Rocket.ROCKET, 420);
+        spaceship.setBullets(true, Bullet.LASER);
+        spaceship.setRockets(true, Rocket.ROCKET);
 
         obstacleBitmap = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.obstacle_sprite);
@@ -169,15 +168,20 @@ public class Map {
         return (int) x % tileWidth;
     }
 
-    // adds any new tiles and generates a new set of tiles if needed
+    // adds any new sprites and generates a new set of sprites if needed
     public void update() {
+        updateMap();
+        updateSprites();
+    }
+
+    private void updateMap() {
         scrollSpeed = updateScrollSpeed(); // todo: figure out how to update scrollspeed gradually without letting sprites become disjointed
         this.x += (int) scrollSpeed;
 
-        // perform rendering if spaceship has changed tiles
+        // take care of map rendering
         if (getWTile() != lastTile) {
             for (int i = 0; i < map.length; i++) {
-                // add any non-empty tiles in the current column at the edge of the screen
+                // add any non-empty sprites in the current column at the edge of the screen
                 if (map[i][mapTileCounter] != EMPTY) {
                     addTile(getMapTile(map[i][mapTileCounter], screenW + getWOffset(), i * tileWidth),
                             (int) scrollSpeed, 0);
@@ -185,7 +189,7 @@ public class Map {
             }
             mapTileCounter++;
 
-            // generate more tiles
+            // generate more sprites
             if (mapTileCounter == map[0].length) {
                 map = generateTiles(GameView.difficulty, rows);
                 mapTileCounter = 0;
@@ -194,6 +198,53 @@ public class Map {
         }
     }
 
+    private void updateSprites() {
+        if(!GameView.paused) {
+            updateSpaceship();
+            GameView.scrollCounter -= scrollSpeed;
+            GameView.score += GameView.difficulty / 2;
+            Iterator<Sprite> i = sprites.iterator(); // todo: get all sprites together, collisions, etc.
+            while(i.hasNext()) {
+                Sprite s = i.next();
+                if(s.inBounds) {
+                    s.updateActions();
+                    s.updateSpeeds();
+                    s.move(); // todo: remove
+                } else {
+                    i.remove();
+                }
+            }
+        }
+    }
+
+    private void updateSpaceship() {
+        spaceship.updateSpeeds();
+
+        // for when spaceship first comes on to screen
+        if (spaceship.getX() < 200) {
+            spaceship.setControllable(false);
+            spaceship.setSpeedX(4.0f);
+        } else if (spaceship.getX() > 200) {
+            spaceship.setX(200);
+            spaceship.setSpeedX(0.0f);
+            spaceship.setControllable(true);
+        }
+        // prevent spaceship from going off-screen
+        if (spaceship.getY() < 0) {
+            spaceship.setY(0);
+        } else if (spaceship.getY() > screenH - spaceship.getHeight()) {
+            spaceship.setY(screenH - spaceship.getHeight());
+        }
+        spaceship.updateActions();
+    }
+
+    // draws sprites on canvas
+    public void draw(Canvas canvas) {
+        for(Sprite s : sprites) {
+            s.draw(canvas);
+        }
+        spaceship.draw(canvas);
+    }
     // calculates scrollspeed based on difficulty
     // difficulty starts at 0 and increases by 0.01/frame,
     // or 1 per second
@@ -229,10 +280,10 @@ public class Map {
     private void addTile(Sprite s, float speedX, float speedY) {
         s.setSpeedX(speedX);
         s.setSpeedY(speedY);
-        tiles.add(s);
+        sprites.add(s);
     }
 
-    // generates a map of tiles based on difficulty and number of rows
+    // generates a map of sprites based on difficulty and number of rows
     // in screen vertically.
     // difficulty determines probability of certain obstacles, coin
     // trails, and todo powerups
@@ -385,7 +436,7 @@ public class Map {
         for (int i = col; i < generated[0].length && i < end_col && coinsLeft > 0; i++, coinsLeft--) {
             if (generated[row][i] == EMPTY) {
                 generated[row][i] = COIN;
-            } else { // search for nearby empty tiles
+            } else { // search for nearby empty sprites
                 if(row < generated.length - 1 && generated[row + 1][i] == EMPTY) {
                     row += 1;
                     generated[row][i] = COIN;

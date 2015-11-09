@@ -41,14 +41,14 @@ public class Alien1 extends Alien {
     }
 
     @Override
-    public void updateActions() {
-        if (distanceTo(board.getSpaceship()) < 400 &&
+    public void updateActions() { // todo: shoot at spaceship
+        /*if (distanceTo(board.getSpaceship()) < 400 &&
                 lastFiredBullet + bulletDelay <= System.currentTimeMillis()) {
             if (getP(0.2f)) {
                 fireBullet(board.getSpaceship());
                 lastFiredBullet = System.currentTimeMillis();
             }
-        }
+        }*/
     }
 
     @Override

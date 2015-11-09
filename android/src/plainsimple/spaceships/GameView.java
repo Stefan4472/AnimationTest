@@ -33,9 +33,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private float drawScaleH;
 
     // num pixels scrolled
-    private int scrollCounter = 0;
+    public static int scrollCounter = 0;
     // whether game is paused currently
-    private boolean paused;
+    public static boolean paused;
     // space background (implements parallax scrolling)
     private Background background;
     // generates terrain and sprites on screen
@@ -48,13 +48,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public Map getMap() {
         return map;
     }
-    public double getDifficulty() {
-        return difficulty;
+    public static void incrementScrollCounter(int increment) {
+        scrollCounter += increment;
     }
-    public void incrementScore(int add) { score += add; }
 
     public GameView(Context context, AttributeSet attributes) {
         super(context, attributes);
+        System.out.print("Constructing GameView");
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
 
@@ -100,7 +100,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         private void draw(Canvas canvas) {
             try {
                 canvas.drawBitmap(background.getBitmap(), 0, 0, null);
+                map.draw(canvas);
+                if (scrollCounter > 30) { // scroll background slowly
+                    background.scroll(1);
+                    scrollCounter = 0;
+                }
             } catch (Exception e) {
+                System.out.print("Error drawing canvas");
             }
         }
 

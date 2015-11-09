@@ -3,7 +3,6 @@ package plainsimple.spaceships;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -27,15 +26,11 @@ public class Spaceship extends Sprite {
     boolean controllable;
 
     private boolean firesBullets;
-    // ms to wait between firing bullets
-    private int bulletDelay = 100; // todo: bulletType determines delay
-    private int bulletType = Bullet.BULLET_LASER;
+    private int bulletType = Bullet.LASER;
     private long lastFiredBullet;
     private boolean firingBullets;
 
     private boolean firesRockets;
-    // ms to wait between firing rockets
-    private int rocketDelay = 420;
     private int rocketType = Rocket.ROCKET;
     private long lastFiredRocket;
     private boolean firingRockets;
@@ -54,16 +49,14 @@ public class Spaceship extends Sprite {
         this.hp = hp;
     }
 
-    public void setBullets(boolean firesBullets, int bulletType, int bulletDelay) {
+    public void setBullets(boolean firesBullets, int bulletType) {
         this.firesBullets = firesBullets;
         this.bulletType = bulletType;
-        this.bulletDelay = bulletDelay;
     }
 
-    public void setRockets(boolean firesRockets, int rocketType, int rocketDelay) {
+    public void setRockets(boolean firesRockets, int rocketType) {
         this.firesRockets = firesRockets;
         this.rocketType = rocketType;
-        this.rocketType = rocketDelay;
     }
 
     // default constructor
@@ -94,12 +87,12 @@ public class Spaceship extends Sprite {
     }
 
     public void updateActions() {
-        if (firingBullets && lastFiredBullet + bulletDelay <= System.currentTimeMillis()) {
+        if (firingBullets && lastFiredBullet + Bullet.getDelay(bulletType) <= System.currentTimeMillis()) {
             fireBullets();
             lastFiredBullet = System.currentTimeMillis();
         }
 
-        if (firingRockets && lastFiredRocket + rocketDelay <= System.currentTimeMillis()) {
+        if (firingRockets && lastFiredRocket + Rocket.getDelay(rocketType) <= System.currentTimeMillis()) {
             fireRockets();
             lastFiredRocket = System.currentTimeMillis();
             fireRocketAnimation.start();

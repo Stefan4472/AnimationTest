@@ -28,6 +28,8 @@ public abstract class Sprite {
 
     // whether or not sprite is visible on screen
     protected boolean vis;
+    // whether or not sprite is in screen bounds
+    protected boolean inBounds;
     // whether or not sprite can collide with other sprites
     protected boolean collides; // todo: flags all in one bitwise operator?
     // whether or not sprite has had a collision
@@ -68,6 +70,7 @@ public abstract class Sprite {
     public void setVisible(Boolean visible) {
         vis = visible;
     }
+    public boolean isInBounds() { return inBounds; }
     public boolean getCollides() {
         return collides;
     }
@@ -163,10 +166,13 @@ public abstract class Sprite {
         x += speedX;
         y += speedY;
         // keep in mind sprites are generated past the screen
-        if (x > GameView.screenW + width || x < -width)
-            vis = false;
-        if (y > GameView.screenH || y < -height) // todo: bounce of edge of screen
-            vis = false;
+        if (x > GameView.screenW + width || x < -width) {
+            inBounds = false;
+        } else if (y > GameView.screenH || y < -height) { // todo: bounce off edge of screen
+            inBounds = false;
+        } else {
+            inBounds = true;
+        }
         hitBox.updateCoordinates((int) x, (int) y);
     }
 
