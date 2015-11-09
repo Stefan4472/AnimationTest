@@ -153,7 +153,7 @@ public class Spaceship extends Sprite {
     }
 
     // Sets direction of sprite based on key pressed.
-    public void keyPressed(KeyEvent e) {
+    /*public void keyPressed(KeyEvent e) {
         if (controllable) {
             int key = e.getKeyCode();
             if (key == KeyEvent.VK_UP) {
@@ -182,5 +182,5 @@ public class Spaceship extends Sprite {
                 firingRockets = false;
             }
         }
-    }
+    }*/
 }

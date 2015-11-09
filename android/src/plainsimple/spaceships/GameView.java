@@ -45,9 +45,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // score in current run
     public static int score = 0;
 
-    public Spaceship getSpaceship() {
-        return spaceship;
-    }
     public Map getMap() {
         return map;
     }
@@ -125,8 +122,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                             // establish scale factors based on original background image's dimensions
                             scaleW = screenW / backgroundImg.getWidth();
                             scaleH = screenH / backgroundImg.getHeight();
-                            Bitmap.createScaledBitmap(backgroundImg, screenW, screenH, true);
-
+                            // initialize background and map
                             background = new Background(screenW, screenH, scaleW, scaleH, myContext);
                             map = new Map(screenW, screenH, scaleW, scaleH, myContext);
                             onTitle = false;

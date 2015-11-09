@@ -139,12 +139,12 @@ public class Map {
         spaceship.setRockets(true, Rocket.ROCKET, 420);
 
         obstacleBitmap = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.obstacle_tile);
+                R.drawable.obstacle_sprite);
         obstacleBitmap = Bitmap.createScaledBitmap(obstacleBitmap, (int) (obstacleBitmap.getWidth() * scaleW),
                 (int) (obstacleBitmap.getHeight() * scaleH), true);
 
         coinBitmap = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.coin_tile);
+                R.drawable.coin_sprite);
         coinBitmap = Bitmap.createScaledBitmap(coinBitmap, (int) (coinBitmap.getWidth() * scaleW),
                 (int) (coinBitmap.getHeight() * scaleH), true);
 
