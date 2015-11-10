@@ -79,8 +79,8 @@ public class Map {
     private int nextRow;
 
     // dimensions of basic mapTiles
-    private final int tileWidth = 50; // todo: what about bigger/smaller sprites?
-    private final int tileHeight = 50;
+    private int tileWidth; // todo: what about bigger/smaller sprites?
+    private int tileHeight;
 
     // used for generating random numbers
     private static Random random = new Random();
@@ -90,12 +90,13 @@ public class Map {
         return scrollSpeed;
     }
 
-    public Map(int screenW, int screenH, float scaleW, float scaleH, Context context) {
-        this.context = context;
+    public Map(int screenW, int screenH, float scaleW, float scaleH) {
         this.screenW = screenW;
         this.screenH = screenH;
         this.scaleW = scaleW;
         this.scaleH = scaleH;
+        tileWidth = screenH / 6;
+        tileHeight = screenH / 6;
         rows = screenH / tileHeight;
         map = new byte[6][7];
         nextRow = random.nextInt(6);
@@ -221,11 +222,11 @@ public class Map {
         spaceship.updateSpeeds();
 
         // for when spaceship first comes on to screen
-        if (spaceship.getX() < 200) {
+        if (spaceship.getX() < screenW / 3) {
             spaceship.setControllable(false);
             spaceship.setSpeedX(4.0f);
-        } else if (spaceship.getX() > 200) {
-            spaceship.setX(200);
+        } else if (spaceship.getX() > screenW / 3) {
+            spaceship.setX(screenW / 3);
             spaceship.setSpeedX(0.0f);
             spaceship.setControllable(true);
         }

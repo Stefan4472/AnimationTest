@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -54,7 +55,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public GameView(Context context, AttributeSet attributes) {
         super(context, attributes);
-        System.out.print("Constructing GameView");
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
 
@@ -99,12 +99,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         private void draw(Canvas canvas) {
             try {
-                canvas.drawBitmap(background.getBitmap(), 0, 0, null);
-                map.draw(canvas);
+                /*canvas.drawBitmap(background.getBitmap(), 0, 0, null);
+                /*map.draw(canvas);
                 if (scrollCounter > 30) { // scroll background slowly
                     background.scroll(1);
                     scrollCounter = 0;
-                }
+                }*/
+                canvas.drawBitmap(backgroundImg, 0, 0, null);
+                background.getBitmap().getWidth();
             } catch (Exception e) {
                 System.out.print("Error drawing canvas");
             }
@@ -125,12 +127,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         if (onTitle) { // change to game screen. Load resources
                             backgroundImg = BitmapFactory.decodeResource(myContext.getResources(),
                                     R.drawable.game_background);
+                            myContext.getResources();
                             // establish scale factors based on original background image's dimensions
                             scaleW = screenW / backgroundImg.getWidth();
                             scaleH = screenH / backgroundImg.getHeight();
                             // initialize background and map
-                            background = new Background(screenW, screenH, scaleW, scaleH, myContext);
-                            map = new Map(screenW, screenH, scaleW, scaleH, myContext);
+                            initBackground();
+                            //map = new Map(screenW, screenH, scaleW, scaleH, myContext);
                             onTitle = false;
                         }
                         break;
@@ -139,11 +142,23 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             return true;
         }
 
+        private void initBackground() {
+            Bitmap[] tiles = {
+                BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space1_tile),
+                        BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space2_tile),
+                        BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space3_tile),
+                        BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space4_tile)
+            };
+            Log.d("Myapp", "yo now" + tiles.length);
+            backgroundImg = tiles[0];
+            background = new Background(screenW, screenH, scaleW, scaleH, tiles);
+        }
+
         public void setSurfaceSize(int width, int height) {
             synchronized (mySurfaceHolder) {
                 screenW = width;
                 screenH = height;
-                //backgroundImg = Bitmap.createScaledBitmap(backgroundImg, width, height, true);
+                backgroundImg = Bitmap.createScaledBitmap(backgroundImg, width, height, true);
             }
         }
 
