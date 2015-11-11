@@ -103,6 +103,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         private void draw(Canvas canvas) {
             try {
                 canvas.drawBitmap(background.getBitmap(), 0, 0, null);
+                map.update();
                 map.draw(canvas);
                 scrollCounter += map.getSpaceship().getSpeedX();
                 if (scrollCounter > 30) { // scroll background slowly

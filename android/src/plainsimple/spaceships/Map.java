@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import java.util.*;
 
@@ -158,20 +159,23 @@ public class Map {
     }
 
     private void updateSprites() {
+        Log.d("Map Class", "Updating Sprites");
         if(!GameView.paused) {
             updateSpaceship();
             GameView.scrollCounter -= scrollSpeed;
             GameView.score += GameView.difficulty / 2;
+
             Iterator<Sprite> i = sprites.iterator(); // todo: get all sprites together, collisions, etc.
             while(i.hasNext()) {
                 Sprite s = i.next();
-                if(s.inBounds) {
+                Log.d("Map Class", s.getX() + "," + s.getY() + " with speed " + s.getSpeedX() + " and inBounds = " + s.inBounds);
+                //if(s.inBounds) {
                     s.updateActions();
                     s.updateSpeeds();
                     s.move(); // todo: remove
-                } else {
-                    i.remove();
-                }
+                //} else {
+                    //i.remove();
+                //}
             }
         }
     }
@@ -202,6 +206,7 @@ public class Map {
         for(Sprite s : sprites) {
             s.draw(canvas);
         }
+        spaceship.move();
         spaceship.draw(canvas);
     }
     // calculates scrollspeed based on difficulty

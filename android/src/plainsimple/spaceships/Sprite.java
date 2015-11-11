@@ -168,7 +168,7 @@ public abstract class Sprite {
         // keep in mind sprites are generated past the screen
         if (x > GameView.screenW + width || x < -width) {
             inBounds = false;
-        } else if (y > GameView.screenH || y < -height) { // todo: bounce off edge of screen
+        } else if (y > GameView.screenH + height || y < -height) { // todo: bounce off edge of screen
             inBounds = false;
         } else {
             inBounds = true;

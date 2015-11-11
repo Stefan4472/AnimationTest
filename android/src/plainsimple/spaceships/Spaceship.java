@@ -132,15 +132,15 @@ public class Spaceship extends Sprite {
 
     @Override
     void draw(Canvas canvas) {
-        canvas.drawBitmap(defaultImage, (float) x, (float) y, null);
+        canvas.drawBitmap(defaultImage, x, y, null);
         if (moving) {
-            canvas.drawBitmap(movingAnimation.nextFrame(), (float) x, (float) y, null);
+            canvas.drawBitmap(movingAnimation.nextFrame(), x, y, null);
         }
         if (fireRocketAnimation.isPlaying()) {
-            canvas.drawBitmap(fireRocketAnimation.nextFrame(), (float) x, (float) y, null);
+            canvas.drawBitmap(fireRocketAnimation.nextFrame(), x, y, null);
         }
         if (explodeAnimation.isPlaying()) {
-            canvas.drawBitmap(explodeAnimation.nextFrame(), (float) x, (float) y, null);
+            canvas.drawBitmap(explodeAnimation.nextFrame(), x, y, null);
         }
 
     }
