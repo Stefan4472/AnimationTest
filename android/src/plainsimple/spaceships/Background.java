@@ -25,7 +25,7 @@ public class Background {
     private int screenH;
     // coordinates of upper-left of "window" being shown
     private int x = 0;
-    // dimensions of tiles
+    // dimension of tile (square)
     private int tileWidth;
     private int tileHeight;
     private static final Random random = new Random();

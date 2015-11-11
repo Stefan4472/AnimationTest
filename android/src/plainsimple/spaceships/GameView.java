@@ -132,12 +132,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                                     R.drawable.game_background);
                             myContext.getResources();
                             // establish scale factors based on original background image's dimensions
-                            scaleW = screenW / backgroundOrigW;
-                            scaleH = screenH / backgroundOrigH;
+                            scaleW = screenW / (float) backgroundOrigW;
+                            scaleH = screenH / (float) backgroundOrigH;
+                            Log.d("GameView Class", "Screen " + screenW + "," + screenH + " orig screen " + backgroundOrigW + "," + backgroundOrigH + " scaling " + scaleW + "," + scaleH);
                             // initialize background and map
                             initBackground();
                             initMap();
                             onTitle = false;
+                        } else {
+
                         }
                         break;
                 }
@@ -178,7 +181,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             resources.put(Map.alienBulletSprite, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.alien_bullet));
             map = new Map(screenW, screenH, scaleW, scaleH, resources);
-
         }
 
         public void setSurfaceSize(int width, int height) {

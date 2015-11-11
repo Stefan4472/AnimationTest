@@ -158,6 +158,45 @@ public class Map {
         }
     }
 
+    // calculates scrollspeed based on difficulty
+    // difficulty starts at 0 and increases by 0.01/frame,
+    // or 1 per second
+    public float updateScrollSpeed() {
+        scrollSpeed = (float) (-4.0f - GameView.difficulty / 20);
+        if (scrollSpeed < -20) {
+            scrollSpeed = -20;
+        }
+        return scrollSpeed;
+    }
+
+    // returns sprite initialized to coordinates (x,y) given tileID
+    private Sprite getMapTile(int tileID, float x, float y) throws IndexOutOfBoundsException {
+        Log.d("Map Class", "Sprite " + tileID + " initialized at " + x + "," + y);
+        switch (tileID) {
+            case OBSTACLE:
+                return new Obstacle(resources.get(obstacleSprite), x, y);
+            case OBSTACLE_INVIS:
+                Sprite tile = new Obstacle(resources.get(obstacleSprite), x, y);
+                tile.setCollides(false);
+                return tile;
+            case COIN:
+                return new Coin(resources.get(coinSprite), x, y);
+            case ALIEN_LVL1:
+                Alien1 alien_1 = new Alien1(resources.get(alien1Sprite), x, y);
+                alien_1.injectResources(resources.get(alienBulletSprite));
+                return alien_1;
+            default:
+                throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
+        }
+    }
+
+    // sets specified fields and adds sprite to arraylist
+    private void addTile(Sprite s, float speedX, float speedY) {
+        s.setSpeedX(speedX);
+        s.setSpeedY(speedY);
+        sprites.add(s);
+    }
+
     private void updateSprites() {
         Log.d("Map Class", "Updating Sprites");
         if(!GameView.paused) {
@@ -168,7 +207,7 @@ public class Map {
             Iterator<Sprite> i = sprites.iterator(); // todo: get all sprites together, collisions, etc.
             while(i.hasNext()) {
                 Sprite s = i.next();
-                Log.d("Map Class", s.getX() + "," + s.getY() + " with speed " + s.getSpeedX() + " and inBounds = " + s.inBounds);
+                //Log.d("Map Class", s.getX() + "," + s.getY() + " with speed " + s.getSpeedX() + " and inBounds = " + s.inBounds);
                 //if(s.inBounds) {
                     s.updateActions();
                     s.updateSpeeds();
@@ -208,43 +247,6 @@ public class Map {
         }
         spaceship.move();
         spaceship.draw(canvas);
-    }
-    // calculates scrollspeed based on difficulty
-    // difficulty starts at 0 and increases by 0.01/frame,
-    // or 1 per second
-    public float updateScrollSpeed() {
-        scrollSpeed = (float) (-4.0f - GameView.difficulty / 20);
-        if (scrollSpeed < -20) {
-            scrollSpeed = -20;
-        }
-        return scrollSpeed;
-    }
-
-    // returns sprite initialized to coordinates (x,y) given tileID
-    private Sprite getMapTile(int tileID, float x, float y) throws IndexOutOfBoundsException {
-        switch (tileID) {
-            case OBSTACLE:
-                return new Obstacle(resources.get(obstacleSprite), x, y);
-            case OBSTACLE_INVIS:
-                Sprite tile = new Obstacle(resources.get(obstacleSprite), x, y);
-                tile.setCollides(false);
-                return tile;
-            case COIN:
-                return new Coin(resources.get(coinSprite), x, y);
-            case ALIEN_LVL1:
-                Alien1 alien_1 = new Alien1(resources.get(alien1Sprite), x, y);
-                alien_1.injectResources(resources.get(alienBulletSprite));
-                return alien_1;
-            default:
-                throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
-        }
-    }
-
-    // sets specified fields and adds sprite to arraylist
-    private void addTile(Sprite s, float speedX, float speedY) {
-        s.setSpeedX(speedX);
-        s.setSpeedY(speedY);
-        sprites.add(s);
     }
 
     // generates a map of sprites based on difficulty and number of rows
