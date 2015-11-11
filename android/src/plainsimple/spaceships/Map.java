@@ -128,12 +128,6 @@ public class Map {
         return (int) x % tileWidth;
     }
 
-    // adds any new sprites and generates a new set of sprites if needed
-    public void update() {
-        updateMap();
-        updateSprites();
-    }
-
     private void updateMap() {
         scrollSpeed = updateScrollSpeed(); // todo: figure out how to update scrollspeed gradually without letting sprites become disjointed
         this.x += (int) scrollSpeed;
@@ -171,7 +165,7 @@ public class Map {
 
     // returns sprite initialized to coordinates (x,y) given tileID
     private Sprite getMapTile(int tileID, float x, float y) throws IndexOutOfBoundsException {
-        Log.d("Map Class", "Sprite " + tileID + " initialized at " + x + "," + y);
+        //Log.d("Map Class", "Sprite " + tileID + " initialized at " + x + "," + y);
         switch (tileID) {
             case OBSTACLE:
                 return new Obstacle(resources.get(obstacleSprite), x, y);
@@ -197,8 +191,13 @@ public class Map {
         sprites.add(s);
     }
 
+    // adds any new sprites and generates a new set of sprites if needed
+    public void update() {
+        updateMap();
+        updateSprites();
+    }
+
     private void updateSprites() {
-        Log.d("Map Class", "Updating Sprites");
         if(!GameView.paused) {
             updateSpaceship();
             GameView.scrollCounter -= scrollSpeed;
@@ -208,13 +207,13 @@ public class Map {
             while(i.hasNext()) {
                 Sprite s = i.next();
                 //Log.d("Map Class", s.getX() + "," + s.getY() + " with speed " + s.getSpeedX() + " and inBounds = " + s.inBounds);
-                //if(s.inBounds) {
+                if(s.inBounds) {
                     s.updateActions();
                     s.updateSpeeds();
                     s.move(); // todo: remove
-                //} else {
-                    //i.remove();
-                //}
+                } else {
+                    i.remove();
+                }
             }
         }
     }

@@ -16,18 +16,10 @@ public class Background {
     private Bitmap[] tiles;
     // grid of tile ID's instructing how to display background
     private byte[][] background;
-    // whether to re-draw background
-    private boolean render = true;
-    // last-rendered image
-    private Bitmap renderedImage;
-    // dimensions of screen display
-    private int screenW;
-    private int screenH;
     // coordinates of upper-left of "window" being shown
     private int x = 0;
-    // dimension of tile (square)
+    // tile side length (square)
     private int tileWidth;
-    private int tileHeight;
     private static final Random random = new Random();
 
     public int getX() {
@@ -45,15 +37,11 @@ public class Background {
     }
 
     // construct tiles using names of tile files
-    public Background(int screenW, int screenH, float scaleW, float scaleH, Bitmap[] tiles) {
-        this.screenW = screenW;
-        this.screenH = screenH;
+    public Background(int screenW, int screenH, float scaleH, Bitmap[] tiles) {
         this.tiles = tiles;
-        scaleResources(scaleW, scaleH);
+        scaleResources(scaleH);
 
-        background = new byte[screenH / tileHeight][screenW / tileWidth + 1];
-        renderedImage = Bitmap.createBitmap(screenW, screenH, Bitmap.Config.ARGB_8888);
-
+        background = new byte[(int) Math.ceil(screenH / tileWidth)][(int) Math.ceil(screenW / tileWidth)];
 
         // fill background randomly with space tiles
         for (int i = 0; i < background.length; i++) {
@@ -64,40 +52,30 @@ public class Background {
     }
 
     // scales tiles to proper size
-    private void scaleResources(float scaleW, float scaleH) {
-        tileWidth = (int) (tiles[0].getWidth() * scaleW);
-        tileHeight = (int) (tiles[0].getHeight() * scaleH);
+    private void scaleResources(float scaleH) {
+        tileWidth = (int) (tiles[0].getHeight() * scaleH);
         for(int i = 0; i < tiles.length; i++) {
-            tiles[i] = Bitmap.createScaledBitmap(tiles[i], (int) (tiles[i].getWidth() * scaleW),
-                    (int) (tiles[i].getHeight() * scaleH), true);
+            tiles[i] = Bitmap.createScaledBitmap(tiles[i], tileWidth, tileWidth, true);
         }
     }
 
-    // shifts screen x units left, renders and returns current background
-    public Bitmap getBitmap() {
-        // only redraws background if it has been scrolled.
-        // otherwise returns last-rendered background
-        if (render) {
-            Canvas canvas = new Canvas(renderedImage);
-            int w_offset = getWOffset();
+    // shifts screen x units left, draws background to canvas
+    public void draw(Canvas canvas) {
+        int w_offset = getWOffset();
 
-            for (int i = 0; i < background.length; i++) { // rows
-                for (int j = 0; j < background[1].length; j++) { // columns
-                    int loc_x = j * tileWidth - w_offset;
-                    int loc_y = i * tileHeight;
-                    //Log.d("Background Class", i + "," + j + ",(" + loc_x + "," + loc_y + ")" + background.length + "," + background[0].length);
-                    canvas.drawBitmap(tiles[background[i][(j + getWTile()) % background[0].length]], loc_x, loc_y, null);
-                }
+        for (int i = 0; i < background.length; i++) { // rows // todo: fix or simplify
+            for (int j = 0; j < background[1].length; j++) { // columns
+                int loc_x = j * tileWidth - w_offset;
+                int loc_y = i * tileWidth;
+                //Log.d("Background Class", i + "," + j + ",(" + loc_x + "," + loc_y + ")" + background.length + "," + background[0].length);
+                canvas.drawBitmap(tiles[background[i][(j + getWTile()) % background[0].length]], loc_x, loc_y, null);
             }
-            render = false;
         }
-        return renderedImage;
     }
 
     // moves background x units left giving the
     // appearance of forward motion
     public void scroll(int x) {
         this.x += x;
-        render = true;
     }
 }

@@ -102,7 +102,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         private void draw(Canvas canvas) {
             try {
-                canvas.drawBitmap(background.getBitmap(), 0, 0, null);
+                //background.draw(canvas);
                 map.update();
                 map.draw(canvas);
                 scrollCounter += map.getSpaceship().getSpeedX();
@@ -155,7 +155,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space3_tile),
                         BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space4_tile)
             };
-            background = new Background(screenW, screenH, scaleW, scaleH, tiles);
+            background = new Background(screenW, screenH, scaleH, tiles);
         }
 
         private void initMap() {
