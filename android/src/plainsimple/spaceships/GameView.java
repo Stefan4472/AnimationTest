@@ -106,7 +106,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     scrollCounter = 0;
                 }*/
                 canvas.drawBitmap(backgroundImg, 0, 0, null);
-                background.getBitmap().getWidth();
+                canvas.drawBitmap(background.getBitmap(), 0, 0, null);
             } catch (Exception e) {
                 System.out.print("Error drawing canvas");
             }
@@ -150,7 +150,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space4_tile)
             };
             Log.d("Myapp", "yo now" + tiles.length);
-            backgroundImg = tiles[0];
             background = new Background(screenW, screenH, scaleW, scaleH, tiles);
         }
 
@@ -158,7 +157,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             synchronized (mySurfaceHolder) {
                 screenW = width;
                 screenH = height;
-                backgroundImg = Bitmap.createScaledBitmap(backgroundImg, width, height, true);
+                //backgroundImg = Bitmap.createScaledBitmap(backgroundImg, width, height, true);
             }
         }
 

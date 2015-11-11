@@ -67,11 +67,8 @@ public class Background {
 
     // scales tiles to proper size
     private void scaleResources(float scaleW, float scaleH) {
-        Log.d("Background Class", "tiles[0].getWidth() = " + tiles[0].getWidth());
-        Log.d("Background Class", "scaleW = " + scaleW + " and scaleH = " + scaleH);
         tileWidth = (int) (tiles[0].getWidth() * scaleW);
         tileHeight = (int) (tiles[0].getHeight() * scaleH);
-        Log.d("Background Class", "tileWidth = " + scaleW + " and tileHeight = " + scaleH);
         for(int i = 0; i < tiles.length; i++) {
             tiles[i] = Bitmap.createScaledBitmap(tiles[i], (int) (tiles[i].getWidth() * scaleW),
                     (int) (tiles[i].getHeight() * scaleH), true);
@@ -86,11 +83,11 @@ public class Background {
             Canvas canvas = new Canvas(renderedImage);
             int w_offset = getWOffset();
 
-            for (int i = 0; i < background[0].length; i++) { // rows
+            for (int i = 0; i < background.length; i++) { // rows
                 for (int j = 0; j < background[1].length; j++) { // columns
                     int loc_x = j * tileWidth - w_offset;
                     int loc_y = i * tileHeight;
-
+                    Log.d("Background Class", i + "," + j + ",(" + loc_x + "," + loc_y + ")" + background.length + "," + background[0].length);
                     canvas.drawBitmap(tiles[background[i][(j + getWTile()) % background[0].length]], loc_x, loc_y, null);
                 }
             }
