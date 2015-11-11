@@ -5,16 +5,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Auto-generation of sprites
  */
 public class Map {
-
-    private Context context;
 
     // grid of tile ID's instructing how to display map
     private byte[][] map;
@@ -28,20 +24,22 @@ public class Map {
     private static final int ALIEN_LVL2 = 5; // level 2 alien
     private static final int ALIEN_LVL3 = 6; // level 3 alien
 
-    // resources
-    private Bitmap spaceshipImg;
-    private Bitmap spaceshipMovingSpriteSheet;
-    private Bitmap spaceshipFireRocketSpriteSheet;
-    private Bitmap spaceshipExplodeSpriteSheet;
-    private Bitmap rocketBitmap;
-    private Bitmap spaceshipBulletBitmap;
-    private Bitmap obstacleBitmap;
-    private Bitmap coinBitmap;
-    private Bitmap alien1Bitmap;
-    private Bitmap alienBulletBitmap;
+    private Hashtable<String, Bitmap> resources;
+
+    // used to refer to resources in Hashtable
+    public static final String spaceshipSprite = "spaceshipSprite";
+    public static final String spaceshipMovingSpriteSheet = "spaceshipMovingSpritesheet";
+    public static final String spaceshipFireRocketSpriteSheet = "spaceshipFireRocketSpriteSheet";
+    public static final String spaceshipExplodeSpriteSheet = "spaceshipExplodeSpriteSheet";
+    public static final String rocketSprite = "rocketSprite";
+    public static final String spaceshipBulletSprite = "spaceshipBulletSprite";
+    public static final String obstacleSprite = "obstacleSprite";
+    public static final String coinSprite = "coinSprite";
+    public static final String alien1Sprite = "alien1Sprite";
+    public static final String alienBulletSprite = "alienBulletSprite";
 
     // number of rows of sprites that fit in map
-    private int rows;
+    private static final int rows = 6;
 
     // number of sprites elapsed since last map was generated
     private int mapTileCounter = 0;
@@ -49,7 +47,7 @@ public class Map {
     // keeps track of tile spaceship was on last time map was updated
     private long lastTile = 0;
 
-    // default speed of sprites scrolling across the map
+    // default speed of sprites scrolling across the map // todo: make percentage of screen (1%?)
     private float scrollSpeed = -4.0f;
 
     // generated sprites
@@ -90,73 +88,33 @@ public class Map {
         return scrollSpeed;
     }
 
-    public Map(int screenW, int screenH, float scaleW, float scaleH) {
+    public Map(int screenW, int screenH, float scaleW, float scaleH, Hashtable<String, Bitmap> resources) {
         this.screenW = screenW;
         this.screenH = screenH;
         this.scaleW = scaleW;
         this.scaleH = scaleH;
-        tileWidth = screenH / 6;
-        tileHeight = screenH / 6;
-        rows = screenH / tileHeight;
-        map = new byte[6][7];
+        this.resources = resources;
+        tileWidth = this.screenH / rows;
+        tileHeight = this.screenH / rows;
+        map = new byte[rows][screenW / tileWidth];
         nextRow = random.nextInt(6);
         initResources();
     }
 
     private void initResources() {
-        spaceshipImg = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.spaceship_sprite); // todo: load and scale resources, init sprites
-        spaceshipImg = Bitmap.createScaledBitmap(spaceshipImg,
-                (int) (spaceshipImg.getWidth() * scaleW), (int) (spaceshipImg.getHeight() * scaleH), true);
-        spaceshipMovingSpriteSheet = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.spaceship_moving_spritesheet_diff);
-        spaceshipMovingSpriteSheet= Bitmap.createScaledBitmap(spaceshipMovingSpriteSheet,
-                (int) (spaceshipMovingSpriteSheet.getWidth() * scaleW),
-                (int) (spaceshipMovingSpriteSheet.getHeight() * scaleH), true);
-        spaceshipExplodeSpriteSheet = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.spaceship_exploding_spritesheet_diff);
-        spaceshipExplodeSpriteSheet= Bitmap.createScaledBitmap(spaceshipExplodeSpriteSheet,
-                (int) (spaceshipExplodeSpriteSheet.getWidth() * scaleW),
-                (int) (spaceshipExplodeSpriteSheet.getHeight() * scaleH), true);
-        spaceshipFireRocketSpriteSheet = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.spaceship_firing_spritesheet_diff);
-        spaceshipFireRocketSpriteSheet = Bitmap.createScaledBitmap(spaceshipFireRocketSpriteSheet,
-                (int) (spaceshipFireRocketSpriteSheet.getWidth() * scaleW),
-                (int) (spaceshipFireRocketSpriteSheet.getHeight() * scaleH), true);
-        rocketBitmap = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.rocket_sprite);
-        rocketBitmap = Bitmap.createScaledBitmap(rocketBitmap,
-                (int) (rocketBitmap.getWidth() * scaleW), (int) (rocketBitmap.getHeight() * scaleH), true);
-        spaceshipBulletBitmap = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.bullet_sprite);
-        spaceshipBulletBitmap = Bitmap.createScaledBitmap(spaceshipBulletBitmap,
-                (int) (spaceshipBulletBitmap.getWidth() * scaleW),
-                (int) (spaceshipBulletBitmap.getHeight() * scaleH), true);
-        spaceship = new Spaceship(spaceshipImg, -spaceshipImg.getWidth(), screenH / 2 - spaceshipImg.getHeight() / 2);
-        spaceship.injectResources(spaceshipMovingSpriteSheet, spaceshipFireRocketSpriteSheet,
-                spaceshipExplodeSpriteSheet, rocketBitmap, spaceshipBulletBitmap);
+        // scale graphics resources
+        for (String key : resources.keySet()) {
+            resources.put(key, Bitmap.createScaledBitmap(resources.get(key),
+                    (int) (resources.get(key).getWidth() * scaleW),
+                    (int) (resources.get(key).getHeight() * scaleH), true));
+        }
+        spaceship = new Spaceship(resources.get(spaceshipSprite), -resources.get(spaceshipSprite).getWidth(),
+                screenH / 2 - resources.get(spaceshipSprite).getHeight() / 2);
+        spaceship.injectResources(resources.get(spaceshipMovingSpriteSheet),
+                resources.get(spaceshipFireRocketSpriteSheet), resources.get(spaceshipExplodeSpriteSheet),
+                resources.get(rocketSprite), resources.get(spaceshipBulletSprite));
         spaceship.setBullets(true, Bullet.LASER);
         spaceship.setRockets(true, Rocket.ROCKET);
-
-        obstacleBitmap = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.obstacle_sprite);
-        obstacleBitmap = Bitmap.createScaledBitmap(obstacleBitmap, (int) (obstacleBitmap.getWidth() * scaleW),
-                (int) (obstacleBitmap.getHeight() * scaleH), true);
-
-        coinBitmap = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.coin_sprite);
-        coinBitmap = Bitmap.createScaledBitmap(coinBitmap, (int) (coinBitmap.getWidth() * scaleW),
-                (int) (coinBitmap.getHeight() * scaleH), true);
-
-        alien1Bitmap = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.alien_sprite);
-        alien1Bitmap = Bitmap.createScaledBitmap(alien1Bitmap, (int) (alien1Bitmap.getWidth() * scaleW),
-                (int) (alien1Bitmap.getHeight() * scaleH), true);
-
-        alienBulletBitmap = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.alien_bullet);
-        alienBulletBitmap = Bitmap.createScaledBitmap(alienBulletBitmap, (int) (alienBulletBitmap.getWidth() * scaleW),
-                (int) (alienBulletBitmap.getHeight() * scaleH), true);
     }
 
     // current horizontal tile
@@ -261,16 +219,16 @@ public class Map {
     private Sprite getMapTile(int tileID, float x, float y) throws IndexOutOfBoundsException {
         switch (tileID) {
             case OBSTACLE:
-                return new Obstacle(obstacleBitmap, x, y);
+                return new Obstacle(resources.get(obstacleSprite), x, y);
             case OBSTACLE_INVIS:
-                Sprite tile = new Obstacle(obstacleBitmap, x, y);
+                Sprite tile = new Obstacle(resources.get(obstacleSprite), x, y);
                 tile.setCollides(false);
                 return tile;
             case COIN:
-                return new Coin(coinBitmap, x, y);
+                return new Coin(resources.get(coinSprite), x, y);
             case ALIEN_LVL1:
-                Alien1 alien_1 = new Alien1(alien1Bitmap, x, y);
-                alien_1.injectResources(alienBulletBitmap);
+                Alien1 alien_1 = new Alien1(resources.get(alien1Sprite), x, y);
+                alien_1.injectResources(resources.get(alienBulletSprite));
                 return alien_1;
             default:
                 throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");

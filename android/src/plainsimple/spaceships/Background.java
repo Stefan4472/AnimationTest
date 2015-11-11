@@ -49,8 +49,6 @@ public class Background {
         this.screenW = screenW;
         this.screenH = screenH;
         this.tiles = tiles;
-        Log.d("Background Class", "tiles.length = " + this.tiles.length);
-        Log.d("Background Class", "this.tiles == null? " + (this.tiles == null));
         scaleResources(scaleW, scaleH);
 
         background = new byte[screenH / tileHeight][screenW / tileWidth + 1];
@@ -87,7 +85,7 @@ public class Background {
                 for (int j = 0; j < background[1].length; j++) { // columns
                     int loc_x = j * tileWidth - w_offset;
                     int loc_y = i * tileHeight;
-                    Log.d("Background Class", i + "," + j + ",(" + loc_x + "," + loc_y + ")" + background.length + "," + background[0].length);
+                    //Log.d("Background Class", i + "," + j + ",(" + loc_x + "," + loc_y + ")" + background.length + "," + background[0].length);
                     canvas.drawBitmap(tiles[background[i][(j + getWTile()) % background[0].length]], loc_x, loc_y, null);
                 }
             }

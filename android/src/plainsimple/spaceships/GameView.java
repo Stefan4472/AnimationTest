@@ -13,6 +13,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
+import java.util.Hashtable;
+
 /**
  * Created by Stefan on 10/17/2015.
  */
@@ -26,8 +28,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean running = false;
     private boolean onTitle = true;
     private GameViewThread thread;
-    private int backgroundOrigW;
-    private int backgroundOrigH;
+    // original width and height of background
+    private final int backgroundOrigW = 800;
+    private final int backgroundOrigH = 600;
     private float scaleW;
     private float scaleH;
     private float drawScaleW;
@@ -99,14 +102,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         private void draw(Canvas canvas) {
             try {
-                /*canvas.drawBitmap(background.getBitmap(), 0, 0, null);
-                /*map.draw(canvas);
+                canvas.drawBitmap(background.getBitmap(), 0, 0, null);
+                map.draw(canvas);
+                scrollCounter += map.getSpaceship().getSpeedX();
                 if (scrollCounter > 30) { // scroll background slowly
                     background.scroll(1);
                     scrollCounter = 0;
-                }*/
-                canvas.drawBitmap(backgroundImg, 0, 0, null);
-                canvas.drawBitmap(background.getBitmap(), 0, 0, null);
+                }
             } catch (Exception e) {
                 System.out.print("Error drawing canvas");
             }
@@ -129,11 +131,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                                     R.drawable.game_background);
                             myContext.getResources();
                             // establish scale factors based on original background image's dimensions
-                            scaleW = screenW / backgroundImg.getWidth();
-                            scaleH = screenH / backgroundImg.getHeight();
+                            scaleW = screenW / backgroundOrigW;
+                            scaleH = screenH / backgroundOrigH;
                             // initialize background and map
                             initBackground();
-                            //map = new Map(screenW, screenH, scaleW, scaleH, myContext);
+                            initMap();
                             onTitle = false;
                         }
                         break;
@@ -149,8 +151,33 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space3_tile),
                         BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space4_tile)
             };
-            Log.d("Myapp", "yo now" + tiles.length);
             background = new Background(screenW, screenH, scaleW, scaleH, tiles);
+        }
+
+        private void initMap() {
+            Hashtable<String, Bitmap> resources = new Hashtable<>();
+            resources.put(Map.spaceshipSprite, BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.spaceship_sprite)); // todo: load and scale resources, init sprites
+            resources.put(Map.spaceshipMovingSpriteSheet, BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.spaceship_moving_spritesheet_diff));
+            resources.put(Map.spaceshipExplodeSpriteSheet, BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.spaceship_exploding_spritesheet_diff));
+            resources.put(Map.spaceshipFireRocketSpriteSheet, BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.spaceship_firing_spritesheet_diff));
+            resources.put(Map.rocketSprite, BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.rocket_sprite));
+            resources.put(Map.spaceshipBulletSprite, BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.bullet_sprite));
+            resources.put(Map.obstacleSprite, BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.obstacle_sprite));
+            resources.put(Map.coinSprite, BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.coin_sprite));
+            resources.put(Map.alien1Sprite, BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.alien_sprite));
+            resources.put(Map.alienBulletSprite, BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.alien_bullet));
+            map = new Map(screenW, screenH, scaleW, scaleH, resources);
+
         }
 
         public void setSurfaceSize(int width, int height) {
