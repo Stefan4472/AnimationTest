@@ -1,6 +1,8 @@
 package plainsimple.spaceships;
 
 import android.graphics.Bitmap;
+import android.util.Log;
+
 import java.io.IOException;
 
 /**
@@ -8,50 +10,49 @@ import java.io.IOException;
  */
 public class SpriteAnimation {
 
+    private Bitmap spriteSheet;
+
+    // dimensions of each frame
+    private int frameW;
+    private int frameH;
+
+    // dimensions of sprite sheet (images)
+    private int sheetW;
+    private int sheetH;
+
+    // number of frames in loop
+    private int numFrames;
+
     // whether or not to loop animation
     private boolean loop;
 
     // whether or not this animation is playing
-    private boolean isPlaying;
+    private boolean isPlaying = false;
 
-    // wether or not animation has already played
-    private boolean hasPlayed;
-
-    // frames of the animation to play in order
-    private Bitmap[] frames;
+    // whether or not animation has already played
+    private boolean hasPlayed = false;
 
     // current position in array of frames
-    private int frameCounter;
+    private int frameCounter = 0;
 
     // number of frames to display each sprite
     private int frameSpeed;
 
     // counts number of frames current sprite has been shown
-    private int frameSpeedCounter;
+    private int frameSpeedCounter = 0;
 
     // reads in spritesheet consisting of one row of sprites
     // initializes all frames now so as to cut down on processing time later
-    public SpriteAnimation(Bitmap spriteSheet, int frameWidth,
-                           int frameHeight, int frameSpeed, boolean loop) {
-
-        int frames_w = spriteSheet.getWidth() / frameWidth;
-        int frames_h = spriteSheet.getHeight() / frameHeight;
-
-        frames = new Bitmap[frames_w * frames_h];
-
-        for (int i = 0; i < frames_w; i++) {
-            for (int j = 0; j < frames_h; j++) {
-                frames[i] = Bitmap.createBitmap(spriteSheet, i * frameWidth, j * frameHeight, frameWidth, frameHeight);
-            }
-        }
-
+    public SpriteAnimation(Bitmap spriteSheet, int frameW,
+                           int frameH, int frameSpeed, boolean loop) {
+        this.spriteSheet = spriteSheet;
+        this.frameW = frameW;
+        this.frameH = frameH;
+        this.sheetW = spriteSheet.getWidth() / frameW;
+        this.sheetH = spriteSheet.getHeight() / frameH;
+        numFrames = sheetW * sheetH;
         this.frameSpeed = frameSpeed;
-        this.frameSpeedCounter = 0;
-
-        frameCounter = 0;
-        hasPlayed = false;
         this.loop = loop;
-        isPlaying = false;
     }
 
     // resets fields so that nextFrame() can play animation
@@ -69,8 +70,9 @@ public class SpriteAnimation {
     // returns next image in animation
     // starts animation if it is not playing already
     public Bitmap nextFrame() {
-        if (!isPlaying) // todo: good practice is to start animation before calling nextFrame()
+        if (!isPlaying) { // todo: good practice is to start animation before calling nextFrame()
             start();
+        }
 
         if (frameSpeedCounter == frameSpeed) {
             frameCounter++;
@@ -79,24 +81,24 @@ public class SpriteAnimation {
             frameSpeedCounter++;
         }
 
-        if (loop) { // reached end of loop, start from beginning
-            if (frameCounter == frames.length) {
-                frameCounter = 0;
-                hasPlayed = true;
-            }
-        } else { // reached end of loop
-            if (frameCounter == frames.length - 1) {
-                isPlaying = false;
-                hasPlayed = true;
-            }
+        // reached end of loop
+        if(!loop && frameCounter == numFrames - 1) {
+            hasPlayed = true;
+            isPlaying = false;
+        } else if(loop && frameCounter == numFrames) {
+            hasPlayed = true;
+            frameCounter = 0;
         }
-        return frames[frameCounter];
+        Log.d("SpriteAnimation Class", frameCounter + "," + ((int) Math.ceil(frameCounter / sheetW) - 1) * frameW + "," + (frameCounter % (frameW + 1)) * frameH);
+        // todo: better way to get subimage? // todo: allow for multi-row spritesheets!
+        //return Bitmap.createBitmap(spriteSheet, 0, 0, 100, 100);
+        return Bitmap.createBitmap(spriteSheet, frameW * frameCounter, 0, frameW, frameH);
     }
 
     // stops animation
     public void stop() {
         isPlaying = false;
-        frameCounter = 0;
+        // frameCounter = 0;
     }
 
 }
