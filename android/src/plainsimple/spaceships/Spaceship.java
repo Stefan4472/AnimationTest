@@ -78,10 +78,10 @@ public class Spaceship extends Sprite {
 
     // get spritesheet bitmaps and construct them
     public void injectResources(Bitmap movingSpriteSheet, Bitmap fireRocketSpriteSheet,
-                                Bitmap explodeSpriteSheet, Bitmap rocketBitmap, Bitmap bulletBitmap) {
-        movingAnimation = new SpriteAnimation(movingSpriteSheet, 50, 50, 5, true);
-        fireRocketAnimation = new SpriteAnimation(fireRocketSpriteSheet, 50, 50, 8, false);
-        explodeAnimation = new SpriteAnimation(explodeSpriteSheet, 50, 50, 5, false);
+                                Bitmap explodeSpriteSheet, Bitmap rocketBitmap, Bitmap bulletBitmap) { // todo: fix so dimensions are right
+        movingAnimation = new SpriteAnimation(movingSpriteSheet, defaultImage.getWidth(), defaultImage.getHeight(), 5, true);
+        fireRocketAnimation = new SpriteAnimation(fireRocketSpriteSheet, defaultImage.getWidth(), defaultImage.getHeight(), 8, false);
+        explodeAnimation = new SpriteAnimation(explodeSpriteSheet, defaultImage.getWidth(), defaultImage.getHeight(), 5, false);
         this.rocketBitmap = rocketBitmap;
         this.bulletBitmap = bulletBitmap;
     }

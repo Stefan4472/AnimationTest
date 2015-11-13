@@ -89,7 +89,7 @@ public class SpriteAnimation {
             hasPlayed = true;
             frameCounter = 0;
         }
-        Log.d("SpriteAnimation Class", frameCounter + "," + ((int) Math.ceil(frameCounter / sheetW) - 1) * frameW + "," + (frameCounter % (frameW + 1)) * frameH);
+        Log.d("SpriteAnimation Class", frameCounter + "," + (frameW * frameCounter) + "," + 0 + "," + frameW + "," + frameH);
         // todo: better way to get subimage? // todo: allow for multi-row spritesheets!
         //return Bitmap.createBitmap(spriteSheet, 0, 0, 100, 100);
         return Bitmap.createBitmap(spriteSheet, frameW * frameCounter, 0, frameW, frameH);
