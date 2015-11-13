@@ -102,7 +102,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         private void draw(Canvas canvas) {
             try {
-                //background.draw(canvas);
+                background.draw(canvas);
                 map.update();
                 map.draw(canvas);
                 scrollCounter += map.getSpaceship().getSpeedX();

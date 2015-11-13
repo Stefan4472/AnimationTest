@@ -103,10 +103,13 @@ public class Map {
     }
 
     private void initResources() {
+        Log.d("Map Class", "Scaling Factor " + scaleH);
         // scale graphics resources
         for (String key : resources.keySet()) {
+            // scale so textures remain square and are scaled using height
+           // Log.d("Map Class", key + ": orig " + resources.get(key).getHeight() + ", scaled " + scale_length);
             resources.put(key, Bitmap.createScaledBitmap(resources.get(key),
-                    (int) (resources.get(key).getWidth() * scaleW),
+                    (int) (resources.get(key).getWidth() * scaleH),
                     (int) (resources.get(key).getHeight() * scaleH), true));
         }
         spaceship = new Spaceship(resources.get(spaceshipSprite), -resources.get(spaceshipSprite).getWidth(),

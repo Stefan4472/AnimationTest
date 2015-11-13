@@ -2,6 +2,7 @@ package plainsimple.spaceships;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -62,6 +63,8 @@ public class Spaceship extends Sprite {
     // default constructor
     public Spaceship(Bitmap defaultImage, int x, int y) {
         super(defaultImage, x, y);
+        width = defaultImage.getWidth();
+        height = defaultImage.getHeight();
         initCraft();
     }
 
@@ -72,16 +75,17 @@ public class Spaceship extends Sprite {
         damage = 100;
         controllable = true;
         collides = true;
-        hitBox.setDimensions(33, 28);
-        hitBox.setOffsets(12, 11);
+        hitBox.setDimensions((int) (width * 0.66), (int) (height * 0.55));
+        hitBox.setOffsets(width - hitBox.getWidth(), height - hitBox.getHeight());
     }
 
     // get spritesheet bitmaps and construct them
     public void injectResources(Bitmap movingSpriteSheet, Bitmap fireRocketSpriteSheet,
                                 Bitmap explodeSpriteSheet, Bitmap rocketBitmap, Bitmap bulletBitmap) { // todo: fix so dimensions are right
-        movingAnimation = new SpriteAnimation(movingSpriteSheet, defaultImage.getWidth(), defaultImage.getHeight(), 5, true);
-        fireRocketAnimation = new SpriteAnimation(fireRocketSpriteSheet, defaultImage.getWidth(), defaultImage.getHeight(), 8, false);
-        explodeAnimation = new SpriteAnimation(explodeSpriteSheet, defaultImage.getWidth(), defaultImage.getHeight(), 5, false);
+        Log.d("Spaceship Class", width + "x" + height);
+        movingAnimation = new SpriteAnimation(movingSpriteSheet, width, height, 5, true);
+        fireRocketAnimation = new SpriteAnimation(fireRocketSpriteSheet, width, height, 8, false);
+        explodeAnimation = new SpriteAnimation(explodeSpriteSheet, width, height, 5, false);
         this.rocketBitmap = rocketBitmap;
         this.bulletBitmap = bulletBitmap;
     }

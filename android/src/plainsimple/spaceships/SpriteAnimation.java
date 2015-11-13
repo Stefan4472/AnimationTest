@@ -48,9 +48,10 @@ public class SpriteAnimation {
         this.spriteSheet = spriteSheet;
         this.frameW = frameW;
         this.frameH = frameH;
-        this.sheetW = spriteSheet.getWidth() / frameW;
-        this.sheetH = spriteSheet.getHeight() / frameH;
+        sheetW = spriteSheet.getWidth() / frameW;
+        sheetH = spriteSheet.getHeight() / frameH;
         numFrames = sheetW * sheetH;
+        Log.d("SpriteAnimation Class", spriteSheet.getWidth() + "," + spriteSheet.getHeight() + "," + this.frameW + "," + this.frameH + "," + sheetW + "," + sheetH);
         this.frameSpeed = frameSpeed;
         this.loop = loop;
     }
@@ -89,7 +90,7 @@ public class SpriteAnimation {
             hasPlayed = true;
             frameCounter = 0;
         }
-        Log.d("SpriteAnimation Class", frameCounter + "," + (frameW * frameCounter) + "," + 0 + "," + frameW + "," + frameH);
+        //Log.d("SpriteAnimation Class", sheetW + "," + sheetH + " with start at " + (frameW * frameCounter) + " and dimensions " + frameW + "," + frameH);
         // todo: better way to get subimage? // todo: allow for multi-row spritesheets!
         //return Bitmap.createBitmap(spriteSheet, 0, 0, 100, 100);
         return Bitmap.createBitmap(spriteSheet, frameW * frameCounter, 0, frameW, frameH);
