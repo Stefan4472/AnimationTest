@@ -52,7 +52,7 @@ public class Map {
     private float scrollSpeed = -4.0f;
 
     // generated sprites
-    private ArrayList<Sprite> sprites = new ArrayList<>();
+    private List<Sprite> sprites = new ArrayList<>();
 
     // spaceship
     private Spaceship spaceship;

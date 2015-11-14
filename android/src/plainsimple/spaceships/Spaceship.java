@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Stefan on 8/13/2015.
@@ -37,9 +38,9 @@ public class Spaceship extends Sprite {
     private boolean firingRockets;
 
     // keeps track of fired bullets and rockets
-    private ArrayList<Sprite> projectiles;
+    private List<Sprite> projectiles;
 
-    public ArrayList<Sprite> getProjectiles() {
+    public List<Sprite> getProjectiles() {
         return projectiles;
     }
 

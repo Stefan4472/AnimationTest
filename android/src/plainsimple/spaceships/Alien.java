@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Stefan on 8/28/2015.
@@ -15,7 +16,7 @@ public abstract class Alien extends Sprite {
     protected long lastFiredBullet = 0;
 
     protected double bulletSpeed;
-    protected ArrayList<Sprite> projectiles = new ArrayList<>();
+    protected List<Sprite> projectiles = new ArrayList<>();
 
     // frames since alien was constructed
     // used for calculating trajectory
@@ -25,7 +26,7 @@ public abstract class Alien extends Sprite {
     // used as a reference for calculating trajectory
     protected double startingY;
 
-    public ArrayList<Sprite> getProjectiles() {
+    public List<Sprite> getProjectiles() {
         return projectiles;
     }
 
