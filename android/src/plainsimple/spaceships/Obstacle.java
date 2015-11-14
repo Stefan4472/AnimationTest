@@ -2,6 +2,7 @@ package plainsimple.spaceships;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 
 /**
  * Created by Stefan on 8/20/2015.
@@ -10,8 +11,6 @@ public class Obstacle extends Sprite {
 
     public Obstacle(Bitmap defaultImage, float x, float y) {
         super(defaultImage, x, y);
-        width = defaultImage.getWidth();
-        height = defaultImage.getHeight();
         initObstacle();
     }
 

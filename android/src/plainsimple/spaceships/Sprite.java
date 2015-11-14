@@ -100,12 +100,16 @@ public abstract class Sprite {
         this.defaultImage = defaultImage;
         this.x = x;
         this.y = y;
+        width = defaultImage.getWidth();
+        height = defaultImage.getHeight();
         initSprite();
     }
 
     // initializes with sprite at (0,0)
     public Sprite(Bitmap defaultImage) {
         this(defaultImage, 0, 0);
+        width = defaultImage.getWidth();
+        height = defaultImage.getHeight();
         initSprite();
     }
 

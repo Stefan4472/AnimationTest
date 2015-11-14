@@ -11,8 +11,6 @@ public class Coin extends Sprite {
 
     public Coin(Bitmap defaultImage, float x, float y) {
         super(defaultImage, x, y);
-        width = defaultImage.getWidth();
-        height = defaultImage.getHeight();
         initObstacle();
     }
 

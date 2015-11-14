@@ -211,8 +211,7 @@ public class Map {
                 //Log.d("Map Class", s.getX() + "," + s.getY() + " with speed " + s.getSpeedX() + " and inBounds = " + s.inBounds);
                 if(s.inBounds) {
                     s.updateActions();
-                    s.updateSpeeds();
-                    // todo: remove
+                    s.updateSpeeds(); // todo: hit detection
                 } else {
                     i.remove();
                 }

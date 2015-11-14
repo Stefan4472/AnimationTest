@@ -63,8 +63,6 @@ public class Spaceship extends Sprite {
     // default constructor
     public Spaceship(Bitmap defaultImage, int x, int y) {
         super(defaultImage, x, y);
-        width = defaultImage.getWidth();
-        height = defaultImage.getHeight();
         initCraft();
     }
 
@@ -82,7 +80,6 @@ public class Spaceship extends Sprite {
     // get spritesheet bitmaps and construct them
     public void injectResources(Bitmap movingSpriteSheet, Bitmap fireRocketSpriteSheet,
                                 Bitmap explodeSpriteSheet, Bitmap rocketBitmap, Bitmap bulletBitmap) { // todo: fix so dimensions are right
-        Log.d("Spaceship Class", width + "x" + height);
         movingAnimation = new SpriteAnimation(movingSpriteSheet, width, height, 5, true);
         fireRocketAnimation = new SpriteAnimation(fireRocketSpriteSheet, width, height, 8, false);
         explodeAnimation = new SpriteAnimation(explodeSpriteSheet, width, height, 5, false);
