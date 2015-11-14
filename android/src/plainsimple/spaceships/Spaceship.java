@@ -50,6 +50,8 @@ public class Spaceship extends Sprite {
     public void setHP(int hp) {
         this.hp = hp;
     }
+    public void setFiringBullets(boolean firingBullets) { this.firingBullets = firingBullets; }
+    public void setFiringRockets(boolean firingRockets) { this.firingRockets = firingRockets; }
 
     public void setBullets(boolean firesBullets, int bulletType) {
         this.firesBullets = firesBullets;

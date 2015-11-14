@@ -27,14 +27,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public static int screenH;
     private boolean running = false;
     private boolean onTitle = true;
+    private boolean shooting = false;
     private GameViewThread thread;
     // original width and height of background
     private final int backgroundOrigW = 800;
     private final int backgroundOrigH = 600;
     private float scaleW;
     private float scaleH;
-    private float drawScaleW;
-    private float drawScaleH;
 
     // num pixels scrolled
     public static int scrollCounter = 0;
@@ -103,6 +102,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         private void draw(Canvas canvas) {
             try {
                 background.draw(canvas);
+                map.setShooting(shooting);
                 map.update();
                 map.draw(canvas);
                 scrollCounter += map.getSpaceship().getSpeedX();
@@ -123,6 +123,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                 switch (event_action) {
                     case MotionEvent.ACTION_DOWN:
+                        if (!onTitle) {
+                            shooting = true;
+                        }
                         break;
                     case MotionEvent.ACTION_MOVE:
                         break;
@@ -139,9 +142,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                             initBackground();
                             initMap();
                             onTitle = false;
-                        } else {
-
                         }
+                        shooting = false;
                         break;
                 }
             }

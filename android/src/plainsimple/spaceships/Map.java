@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import java.util.*;
 
@@ -56,6 +57,7 @@ public class Map {
 
     // spaceship
     private Spaceship spaceship;
+    private boolean shooting = false;
 
     // dimensions of screen display
     private int screenW;
@@ -88,6 +90,7 @@ public class Map {
     public float getScrollSpeed() {
         return scrollSpeed;
     }
+    public void setShooting(boolean shooting) { this.shooting = shooting; }
 
     public Map(int screenW, int screenH, float scaleW, float scaleH, Hashtable<String, Bitmap> resources) {
         this.screenW = screenW;
@@ -103,6 +106,7 @@ public class Map {
     }
 
     private void initResources() {
+        //int sprite_height = screenH / 6;
         // scale graphics resources
         for (String key : resources.keySet()) {
             // scale so textures remain square and are scaled using height
@@ -195,26 +199,24 @@ public class Map {
     // adds any new sprites and generates a new set of sprites if needed
     public void update() {
         updateMap();
+        updateSpaceship();
         updateSprites();
     }
 
     private void updateSprites() {
-        if(!GameView.paused) {
-            updateSpaceship();
-            GameView.scrollCounter -= scrollSpeed;
-            GameView.score += GameView.difficulty / 2;
+        GameView.scrollCounter -= scrollSpeed;
+        GameView.score += GameView.difficulty / 2;
 
-            Iterator<Sprite> i = sprites.iterator(); // todo: get all sprites together, collisions, etc.
-            while(i.hasNext()) {
-                Sprite s = i.next();
-                s.move();
-                //Log.d("Map Class", s.getX() + "," + s.getY() + " with speed " + s.getSpeedX() + " and inBounds = " + s.inBounds);
-                if(s.inBounds) {
-                    s.updateActions();
-                    s.updateSpeeds(); // todo: hit detection
-                } else {
-                    i.remove();
-                }
+        Iterator<Sprite> i = sprites.iterator(); // todo: get all sprites together, collisions, etc.
+        while(i.hasNext()) {
+            Sprite s = i.next();
+            s.move();
+            //Log.d("Map Class", s.getX() + "," + s.getY() + " with speed " + s.getSpeedX() + " and inBounds = " + s.inBounds);
+            if(s.inBounds) {
+                s.updateActions();
+                s.updateSpeeds(); // todo: hit detection
+            } else {
+                i.remove();
             }
         }
     }
@@ -237,6 +239,7 @@ public class Map {
         } else if (spaceship.getY() > screenH - spaceship.getHeight()) {
             spaceship.setY(screenH - spaceship.getHeight());
         }
+        spaceship.setFiringBullets(shooting);
         spaceship.updateActions();
     }
 
