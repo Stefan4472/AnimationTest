@@ -10,6 +10,8 @@ public class Obstacle extends Sprite {
 
     public Obstacle(Bitmap defaultImage, float x, float y) {
         super(defaultImage, x, y);
+        width = defaultImage.getWidth();
+        height = defaultImage.getHeight();
         initObstacle();
     }
 

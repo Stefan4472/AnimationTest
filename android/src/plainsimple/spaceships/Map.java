@@ -207,14 +207,15 @@ public class Map {
             Iterator<Sprite> i = sprites.iterator(); // todo: get all sprites together, collisions, etc.
             while(i.hasNext()) {
                 Sprite s = i.next();
+                s.move();
                 //Log.d("Map Class", s.getX() + "," + s.getY() + " with speed " + s.getSpeedX() + " and inBounds = " + s.inBounds);
-                //if(s.inBounds) {
+                if(s.inBounds) {
                     s.updateActions();
                     s.updateSpeeds();
-                    s.move(); // todo: remove
-                //} else {
-                    //i.remove();
-                //}
+                    // todo: remove
+                } else {
+                    i.remove();
+                }
             }
         }
     }
