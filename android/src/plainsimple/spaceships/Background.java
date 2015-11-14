@@ -41,7 +41,8 @@ public class Background {
         this.tiles = tiles;
         scaleResources(scaleH);
 
-        background = new byte[(int) Math.ceil(screenH / tileWidth)][(int) Math.ceil(screenW / tileWidth)];
+        // todo: this renders an image longer than actual screen, could be optimized
+        background = new byte[(int) Math.ceil(screenH / tileWidth)][(int) Math.ceil(screenW / tileWidth) + 2];
 
         // fill background randomly with space tiles
         for (int i = 0; i < background.length; i++) {
@@ -63,7 +64,7 @@ public class Background {
     public void draw(Canvas canvas) {
         int w_offset = getWOffset();
 
-        for (int i = 0; i < background.length; i++) { // rows // todo: fix or simplify
+        for (int i = 0; i < background.length; i++) { // rows
             for (int j = 0; j < background[1].length; j++) { // columns
                 int loc_x = j * tileWidth - w_offset;
                 int loc_y = i * tileWidth;

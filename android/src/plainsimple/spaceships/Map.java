@@ -103,11 +103,9 @@ public class Map {
     }
 
     private void initResources() {
-        Log.d("Map Class", "Scaling Factor " + scaleH);
         // scale graphics resources
         for (String key : resources.keySet()) {
             // scale so textures remain square and are scaled using height
-           // Log.d("Map Class", key + ": orig " + resources.get(key).getHeight() + ", scaled " + scale_length);
             resources.put(key, Bitmap.createScaledBitmap(resources.get(key),
                     (int) (resources.get(key).getWidth() * scaleH),
                     (int) (resources.get(key).getHeight() * scaleH), true));
@@ -140,7 +138,7 @@ public class Map {
             for (int i = 0; i < map.length; i++) {
                 // add any non-empty sprites in the current column at the edge of the screen
                 if (map[i][mapTileCounter] != EMPTY) {
-                    addTile(getMapTile(map[i][mapTileCounter], screenW + getWOffset(), i * tileWidth),
+                    addTile(getMapTile(map[i][mapTileCounter], screenW + getWOffset(), i * tileHeight),
                             (int) scrollSpeed, 0);
                 }
             }
@@ -210,13 +208,13 @@ public class Map {
             while(i.hasNext()) {
                 Sprite s = i.next();
                 //Log.d("Map Class", s.getX() + "," + s.getY() + " with speed " + s.getSpeedX() + " and inBounds = " + s.inBounds);
-                if(s.inBounds) {
+                //if(s.inBounds) {
                     s.updateActions();
                     s.updateSpeeds();
                     s.move(); // todo: remove
-                } else {
-                    i.remove();
-                }
+                //} else {
+                    //i.remove();
+                //}
             }
         }
     }
