@@ -30,12 +30,12 @@ public class Spaceship extends Sprite {
     private boolean firesBullets;
     private int bulletType = Bullet.LASER;
     private long lastFiredBullet;
-    private boolean firingBullets;
+    private boolean firingBullets = false;
 
     private boolean firesRockets;
     private int rocketType = Rocket.ROCKET;
     private long lastFiredRocket;
-    private boolean firingRockets;
+    private boolean firingRockets = false;
 
     // keeps track of fired bullets and rockets
     private List<Sprite> projectiles;
@@ -93,7 +93,9 @@ public class Spaceship extends Sprite {
     public void updateActions() {
         if (firingBullets && lastFiredBullet + Bullet.getDelay(bulletType) <= System.currentTimeMillis()) {
             fireBullets();
+            Log.d("Spaceship Class", "Fired Bullets");
             lastFiredBullet = System.currentTimeMillis();
+            Log.d("Spaceship Class", "last fired bullet " + lastFiredBullet + " delay is " + Bullet.getDelay(bulletType));
         }
 
         if (firingRockets && lastFiredRocket + Rocket.getDelay(rocketType) <= System.currentTimeMillis()) {
@@ -105,14 +107,17 @@ public class Spaceship extends Sprite {
 
     // fires two rockets
     public void fireRockets() {
-        projectiles.add(new Rocket(rocketBitmap, x + 43, y + 15, rocketType));
-        projectiles.add(new Rocket(rocketBitmap, x + 43, y + 33, rocketType));
+        projectiles.add(new Rocket(rocketBitmap, x + (int) (width * 0.86), y + (int) (0.3 * height), bulletType));
+        projectiles.add(new Rocket(rocketBitmap, x + (int) (width * 0.86), y + (int) (0.66 * height), bulletType));
     }
 
     // fires two bullets
     public void fireBullets() {
-        projectiles.add(new Bullet(bulletBitmap, x + 43, y + 15, bulletType));
-        projectiles.add(new Bullet(bulletBitmap, x + 43, y + 33, bulletType));
+        Log.d("Spaceship Class", "About to fire");
+        projectiles.add(new Bullet(bulletBitmap, x + (int) (width * 0.86), y + (int) (0.3 * height), bulletType));
+        Log.d("Spaceship Class", "Fired Bullet 1");
+        projectiles.add(new Bullet(bulletBitmap, x + (int) (width * 0.86), y + (int) (0.66 * height), bulletType));
+        Log.d("Spaceship Class", "End of fireBullets");
     }
 
     public void updateSpeeds() {

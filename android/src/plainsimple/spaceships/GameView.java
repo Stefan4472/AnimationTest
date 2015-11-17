@@ -90,11 +90,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     c = mySurfaceHolder.lockCanvas(null);
                     synchronized (mySurfaceHolder) {
                         draw(c);
+                        //Log.d("GameView Class", "Updating, shooting = " + shooting);
                     }
                 } finally {
                     if (c != null) {
                         mySurfaceHolder.unlockCanvasAndPost(c);
                     }
+                    //Log.d("GameView class", "Could not draw");
                 }
             }
         }
@@ -123,7 +125,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                 switch (event_action) {
                     case MotionEvent.ACTION_DOWN:
-                        if (!onTitle) {
+                        if (!onTitle && !shooting) {
                             shooting = true;
                         }
                         break;
@@ -142,8 +144,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                             initBackground();
                             initMap();
                             onTitle = false;
+                        } else {
+                            shooting = false;
                         }
-                        shooting = false;
                         break;
                 }
             }

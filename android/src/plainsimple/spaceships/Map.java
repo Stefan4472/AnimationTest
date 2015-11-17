@@ -54,6 +54,8 @@ public class Map {
 
     // generated sprites
     private List<Sprite> sprites = new ArrayList<>();
+    // projectiles on screen
+    private List<Sprite> projectiles = new ArrayList<>();
 
     // spaceship
     private Spaceship spaceship;
@@ -198,16 +200,17 @@ public class Map {
 
     // adds any new sprites and generates a new set of sprites if needed
     public void update() {
-        updateMap();
-        updateSpaceship();
-        updateSprites();
-    }
-
-    private void updateSprites() {
         GameView.scrollCounter -= scrollSpeed;
         GameView.score += GameView.difficulty / 2;
+        updateMap();
+        updateSpaceship();
+        projectiles.addAll(spaceship.getProjectiles());
+        updateSprites(sprites);
+        updateSprites(spaceship.getProjectiles());
+    }
 
-        Iterator<Sprite> i = sprites.iterator(); // todo: get all sprites together, collisions, etc.
+    private void updateSprites(List<Sprite> toUpdate) {
+        Iterator<Sprite> i = toUpdate.iterator(); // todo: get all sprites together, collisions, etc.
         while(i.hasNext()) {
             Sprite s = i.next();
             s.move();
@@ -246,6 +249,9 @@ public class Map {
     // draws sprites on canvas
     public void draw(Canvas canvas) {
         for(Sprite s : sprites) {
+            s.draw(canvas);
+        }
+        for(Sprite s : projectiles) {
             s.draw(canvas);
         }
         spaceship.move();
