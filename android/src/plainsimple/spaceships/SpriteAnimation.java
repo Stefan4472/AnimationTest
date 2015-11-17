@@ -51,7 +51,6 @@ public class SpriteAnimation {
         sheetW = spriteSheet.getWidth() / frameW;
         sheetH = spriteSheet.getHeight() / frameH;
         numFrames = sheetW * sheetH;
-        Log.d("SpriteAnimation Class", spriteSheet.getWidth() + "," + spriteSheet.getHeight() + "," + this.frameW + "," + this.frameH + "," + sheetW + "," + sheetH);
         this.frameSpeed = frameSpeed;
         this.loop = loop;
     }

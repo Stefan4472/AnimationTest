@@ -68,7 +68,7 @@ public class Bullet extends Sprite {
         }*/
         hitBox.setDimensions(9, 3);
         speedX = 5.0f;
-        bulletFiring.start();
+        //bulletFiring.start();
     }
 
     public void updateActions() {
