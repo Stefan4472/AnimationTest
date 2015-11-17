@@ -40,9 +40,16 @@ public class Spaceship extends Sprite {
     // keeps track of fired bullets and rockets
     private List<Sprite> projectiles;
 
-    public List<Sprite> getProjectiles() {
-        return projectiles;
+    public List<Sprite> getProjectiles() { return projectiles; }
+    public List<Sprite> getAndClearProjectiles() {
+        List<Sprite> copy = new ArrayList<>();
+        for(Sprite p : projectiles) {
+            copy.add(p);
+        }
+        projectiles.clear();
+        return copy;
     }
+
 
     public void setControllable(boolean controllable) {
         this.controllable = controllable;
@@ -93,7 +100,6 @@ public class Spaceship extends Sprite {
     public void updateActions() {
         if (firingBullets && lastFiredBullet + Bullet.getDelay(bulletType) <= System.currentTimeMillis()) {
             fireBullets();
-            Log.d("Spaceship Class", "Fired Bullets");
             lastFiredBullet = System.currentTimeMillis();
             Log.d("Spaceship Class", "last fired bullet " + lastFiredBullet + " delay is " + Bullet.getDelay(bulletType));
         }
@@ -113,11 +119,8 @@ public class Spaceship extends Sprite {
 
     // fires two bullets
     public void fireBullets() {
-        Log.d("Spaceship Class", "About to fire");
         projectiles.add(new Bullet(bulletBitmap, x + (int) (width * 0.86), y + (int) (0.3 * height), bulletType));
-        Log.d("Spaceship Class", "Fired Bullet 1");
         projectiles.add(new Bullet(bulletBitmap, x + (int) (width * 0.86), y + (int) (0.66 * height), bulletType));
-        Log.d("Spaceship Class", "End of fireBullets");
     }
 
     public void updateSpeeds() {

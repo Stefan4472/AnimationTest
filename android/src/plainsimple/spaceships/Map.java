@@ -204,9 +204,10 @@ public class Map {
         GameView.score += GameView.difficulty / 2;
         updateMap();
         updateSpaceship();
-        projectiles.addAll(spaceship.getProjectiles());
+        projectiles.addAll(spaceship.getAndClearProjectiles());
+        //projectiles.addAll(getAlienBullets(sprites)) // todo: copy in alien bullets
         updateSprites(sprites);
-        updateSprites(spaceship.getProjectiles());
+        updateSprites(projectiles);
     }
 
     private void updateSprites(List<Sprite> toUpdate) {
@@ -214,7 +215,6 @@ public class Map {
         while(i.hasNext()) {
             Sprite s = i.next();
             s.move();
-            //Log.d("Map Class", s.getX() + "," + s.getY() + " with speed " + s.getSpeedX() + " and inBounds = " + s.inBounds);
             if(s.inBounds) {
                 s.updateActions();
                 s.updateSpeeds(); // todo: hit detection
