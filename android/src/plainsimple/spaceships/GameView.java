@@ -90,13 +90,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     c = mySurfaceHolder.lockCanvas(null);
                     synchronized (mySurfaceHolder) {
                         draw(c);
-                        //Log.d("GameView Class", "Updating, shooting = " + shooting);
+                        Log.d("GameView Class", "Updating, shooting = " + shooting);
                     }
                 } finally {
                     if (c != null) {
                         mySurfaceHolder.unlockCanvasAndPost(c);
                     }
-                    //Log.d("GameView class", "Could not draw");
                 }
             }
         }

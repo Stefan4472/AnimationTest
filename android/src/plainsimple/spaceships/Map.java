@@ -206,7 +206,7 @@ public class Map {
         updateSpaceship();
         projectiles.addAll(spaceship.getProjectiles());
         updateSprites(sprites);
-        updateSprites(spaceship.getProjectiles());
+        //updateSprites(spaceship.getProjectiles());
     }
 
     private void updateSprites(List<Sprite> toUpdate) {
@@ -242,7 +242,7 @@ public class Map {
         } else if (spaceship.getY() > screenH - spaceship.getHeight()) {
             spaceship.setY(screenH - spaceship.getHeight());
         }
-        spaceship.setFiringBullets(shooting);
+        //spaceship.setFiringBullets(shooting);
         spaceship.updateActions();
     }
 
