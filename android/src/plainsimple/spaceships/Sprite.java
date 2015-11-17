@@ -167,8 +167,8 @@ public abstract class Sprite {
     // moves sprite using speedX and speedY, updates hitbox,
     // and checks if sprite is still visible
     protected void move() {
-        x += speedX;
-        y += speedY;
+        x += GameView.screenW * speedX;
+        y += GameView.screenH * speedY;
         // keep in mind sprites are generated past the screen
         if (x > GameView.screenW + width || x < -width) {
             inBounds = false;

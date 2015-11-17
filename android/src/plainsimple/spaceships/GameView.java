@@ -36,7 +36,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private float scaleH;
 
     // num pixels scrolled
-    public static int scrollCounter = 0;
+    public static float scrollCounter = 0;
     // whether game is paused currently
     public static boolean paused;
     // space background (implements parallax scrolling)
@@ -51,7 +51,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public Map getMap() {
         return map;
     }
-    public static void incrementScrollCounter(int increment) {
+    public static void incrementScrollCounter(float increment) {
         scrollCounter += increment;
     }
 
@@ -106,7 +106,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 map.update();
                 map.draw(canvas);
                 scrollCounter += map.getSpaceship().getSpeedX();
-                if (scrollCounter > 30) { // scroll background slowly
+                if (scrollCounter > 0.05) { // scroll background slowly
                     background.scroll(1);
                     scrollCounter = 0;
                 }
@@ -137,7 +137,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                             // establish scale factors based on original background image's dimensions
                             scaleW = screenW / (float) backgroundOrigW;
                             scaleH = screenH / (float) backgroundOrigH;
-                            Log.d("GameView Class", "Screen " + screenW + "," + screenH + " orig screen " + backgroundOrigW + "," + backgroundOrigH + " scaling " + scaleW + "," + scaleH);
                             // initialize background and map
                             initBackground();
                             initMap();

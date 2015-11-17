@@ -50,7 +50,7 @@ public class Map {
     private long lastTile = 0;
 
     // default speed of sprites scrolling across the map // todo: make percentage of screen (1%?)
-    private float scrollSpeed = -4.0f;
+    private float scrollSpeed = -0.005f;
 
     // generated sprites
     private List<Sprite> sprites = new ArrayList<>();
@@ -163,7 +163,7 @@ public class Map {
     // difficulty starts at 0 and increases by 0.01/frame,
     // or 1 per second
     public float updateScrollSpeed() {
-        scrollSpeed = (float) (-4.0f - GameView.difficulty / 20);
+        scrollSpeed = (float) (-0.005f - GameView.difficulty / 800);
         if (scrollSpeed < -20) {
             scrollSpeed = -20;
         }
@@ -172,7 +172,6 @@ public class Map {
 
     // returns sprite initialized to coordinates (x,y) given tileID
     private Sprite getMapTile(int tileID, float x, float y) throws IndexOutOfBoundsException {
-        //Log.d("Map Class", "Sprite " + tileID + " initialized at " + x + "," + y);
         switch (tileID) {
             case OBSTACLE:
                 return new Obstacle(resources.get(obstacleSprite), x, y);
@@ -230,7 +229,7 @@ public class Map {
         // for when spaceship first comes on to screen
         if (spaceship.getX() < screenW / 3) {
             spaceship.setControllable(false);
-            spaceship.setSpeedX(4.0f);
+            spaceship.setSpeedX(0.003f);
         } else if (spaceship.getX() > screenW / 3) {
             spaceship.setX(screenW / 3);
             spaceship.setSpeedX(0.0f);

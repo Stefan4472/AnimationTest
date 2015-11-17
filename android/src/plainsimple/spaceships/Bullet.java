@@ -40,35 +40,31 @@ public class Bullet extends Sprite {
             case LASER: // todo: figure out how to load resource in each case
                 damage = 10;
                 delay = 150;
+                hitBox.setDimensions(9, 3);
+                speedX = 0.01f;
                 break;
             case ION:
                 damage = 20;
                 delay = 130;
+                hitBox.setDimensions(9, 3);
+                speedX = 0.011f;
                 break;
             case PLASMA:
                 damage = 30;
                 delay = 100;
+                hitBox.setDimensions(9, 3);
+                speedX = 0.012f;
                 break;
             case PLUTONIUM:
                 damage = 40;
                 delay = 170;
+                hitBox.setDimensions(9, 3);
+                speedX = 0.013f;
                 break;
             default:
                 System.out.println("Invalid bulletType (" + bulletType + ")");
                 break;
         }
-        initBullet();
-    }
-
-    private void initBullet() {
-        /*try {
-            bulletFiring = new SpriteAnimation("sprites/spaceship/bullet_firing_spritesheet.png", 9, 3, 1, false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-        hitBox.setDimensions(9, 3);
-        speedX = 5.0f;
-        //bulletFiring.start();
     }
 
     public void updateActions() {
@@ -87,11 +83,6 @@ public class Bullet extends Sprite {
 
     @Override
     void draw(Canvas canvas) {
-        /*if (bulletFiring.isPlaying()) {
-            canvas.drawBitmap(bulletFiring.nextFrame(), x, y, null);
-        } else {
-            canvas.drawBitmap(defaultImage, x, y, null);
-        }*/
         canvas.drawBitmap(defaultImage, x, y, null);
     }
 }

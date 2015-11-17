@@ -15,7 +15,7 @@ public class Spaceship extends Sprite {
     // arrowkey direction in y
     private int dy;
 
-    private final float MAX_SPEED_Y = 3.5f;
+    private final float MAX_SPEED_Y = 0.012f;
 
     private SpriteAnimation movingAnimation; // todo: resources static?
     private SpriteAnimation fireRocketAnimation;
@@ -101,7 +101,6 @@ public class Spaceship extends Sprite {
         if (firingBullets && lastFiredBullet + Bullet.getDelay(bulletType) <= System.currentTimeMillis()) {
             fireBullets();
             lastFiredBullet = System.currentTimeMillis();
-            Log.d("Spaceship Class", "last fired bullet " + lastFiredBullet + " delay is " + Bullet.getDelay(bulletType));
         }
 
         if (firingRockets && lastFiredRocket + Rocket.getDelay(rocketType) <= System.currentTimeMillis()) {
@@ -126,7 +125,7 @@ public class Spaceship extends Sprite {
     public void updateSpeeds() {
         speedY = Math.abs(speedY);
         if (speedY < MAX_SPEED_Y) {
-            speedY += 0.25;
+            speedY += 0.0008;
         } else if (speedY > MAX_SPEED_Y) {
             speedY = MAX_SPEED_Y;
         }

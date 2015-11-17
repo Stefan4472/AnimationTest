@@ -28,22 +28,18 @@ public class Rocket extends Sprite {
         switch(rocketType) {
             case ROCKET:
                 delay = 420;
+                speedX = 0.0067f;
+                hitBox.setDimensions(9, 3);
                 break;
         }
-        initMissile();
-    }
-
-    private void initMissile() {
-        speedX = 2.0f;
-        hitBox.setDimensions(9, 3);
     }
 
     public void updateActions() {
 
     }
 
-    public void updateSpeeds() {
-        if (speedX < 2.05)
+    public void updateSpeeds() { // todo: relative speeds
+        /*if (speedX < 2.05)
             speedX += 0.001;
         else if (speedX < 2.1)
             speedX += 0.005;
@@ -54,7 +50,7 @@ public class Rocket extends Sprite {
         else if (speedX < 3.0)
             speedX += 0.15;
         else
-            speedX += 0.05;
+            speedX += 0.05;*/
     }
 
     public void handleCollision(Sprite s) {
