@@ -50,7 +50,7 @@ public class Map {
     private long lastTile = 0;
 
     // default speed of sprites scrolling across the map // todo: make percentage of screen (1%?)
-    private float scrollSpeed = -0.005f;
+    private float scrollSpeed = -0.0067f;
 
     // generated sprites
     private List<Sprite> sprites = new ArrayList<>();
@@ -137,7 +137,7 @@ public class Map {
 
     private void updateMap() {
         scrollSpeed = updateScrollSpeed(); // todo: figure out how to update scrollspeed gradually without letting sprites become disjointed
-        this.x += (int) scrollSpeed;
+        this.x += GameView.screenW * scrollSpeed;
 
         // take care of map rendering
         if (getWTile() != lastTile) {
@@ -145,7 +145,7 @@ public class Map {
                 // add any non-empty sprites in the current column at the edge of the screen
                 if (map[i][mapTileCounter] != EMPTY) {
                     addTile(getMapTile(map[i][mapTileCounter], screenW + getWOffset(), i * tileHeight),
-                            (int) scrollSpeed, 0);
+                            scrollSpeed, 0);
                 }
             }
             mapTileCounter++;
@@ -163,9 +163,9 @@ public class Map {
     // difficulty starts at 0 and increases by 0.01/frame,
     // or 1 per second
     public float updateScrollSpeed() {
-        scrollSpeed = (float) (-0.005f - GameView.difficulty / 800);
-        if (scrollSpeed < -20) {
-            scrollSpeed = -20;
+        scrollSpeed = (float) (-0.0067f - GameView.difficulty / 800.0);
+        if (scrollSpeed < -0.03) { // scroll speed ceiling
+            scrollSpeed = -0.03f;
         }
         return scrollSpeed;
     }
@@ -227,11 +227,11 @@ public class Map {
         spaceship.updateSpeeds();
 
         // for when spaceship first comes on to screen
-        if (spaceship.getX() < screenW / 3) {
+        if (spaceship.getX() < screenW / 4) {
             spaceship.setControllable(false);
             spaceship.setSpeedX(0.003f);
-        } else if (spaceship.getX() > screenW / 3) {
-            spaceship.setX(screenW / 3);
+        } else if (spaceship.getX() > screenW / 4) {
+            spaceship.setX(screenW / 4);
             spaceship.setSpeedX(0.0f);
             spaceship.setControllable(true);
         }
@@ -487,12 +487,14 @@ public class Map {
     }
 
     // prints map in a 2-d array
-    private void printMap(byte[][] map) {
+    private String mapToString(byte[][] map) {
+        String result = "";
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
-                System.out.print(map[i][j] + "\t");
+                result += map[i][j] + "\t";
             }
-            System.out.println();
+            result += "\n";
         }
+        return result;
     }
 }

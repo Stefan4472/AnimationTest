@@ -2,6 +2,7 @@ package plainsimple.spaceships;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import java.util.Random;
 

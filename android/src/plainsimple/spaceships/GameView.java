@@ -110,6 +110,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     background.scroll(1);
                     scrollCounter = 0;
                 }
+                difficulty += 0.01f; // todo: difficulty an int or long
             } catch (Exception e) {
                 System.out.print("Error drawing canvas");
             }
