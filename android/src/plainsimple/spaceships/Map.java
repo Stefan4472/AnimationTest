@@ -50,7 +50,7 @@ public class Map {
     private long lastTile = 0;
 
     // default speed of sprites scrolling across the map // todo: make percentage of screen (1%?)
-    private float scrollSpeed = -0.0067f;
+    private float scrollSpeed = -0.0025f;
 
     // generated sprites
     private List<Sprite> sprites = new ArrayList<>();
@@ -163,7 +163,7 @@ public class Map {
     // difficulty starts at 0 and increases by 0.01/frame,
     // or 1 per second
     public float updateScrollSpeed() {
-        scrollSpeed = (float) (-0.0067f - GameView.difficulty / 800.0);
+        scrollSpeed = (float) (-0.0025f - GameView.difficulty / 1500.0);
         if (scrollSpeed < -0.03) { // scroll speed ceiling
             scrollSpeed = -0.03f;
         }
