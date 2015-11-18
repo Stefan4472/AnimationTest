@@ -2,6 +2,7 @@ package plainsimple.spaceships;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 
 /**
  * Created by Stefan on 9/26/2015.
@@ -29,11 +30,11 @@ public class Alien1 extends Alien {
         hShift = -random.nextInt(3);
         hp = 20 + (int) GameView.difficulty / 3;
         bulletDelay = 2_000 - GameView.difficulty * 5;
-        bulletSpeed = -2.0f - random.nextInt(10) / 10;
-        hitBox.setOffsets(5, 5);
-        hitBox.setDimensions(40, 40);
+        bulletSpeed = -0.002f - random.nextInt(5) / 10000.0;
+        hitBox.setDimensions((int) (width * 0.8), (int) (height * 0.8));
+        hitBox.setOffsets(width - hitBox.getWidth(), height - hitBox.getHeight());
         damage = 50;
-        speedX = -2.0f;
+        speedX = -0.0035f;
     }
 
     public void injectResources(Bitmap bulletBitmap) {
@@ -60,8 +61,9 @@ public class Alien1 extends Alien {
         } else { // todo: flying up
             projected_y = amplitude * Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
         }
-        speedY = projected_y - y;
+        speedY = (projected_y - y) / 600; // todo: more elegant
         elapsedFrames++;
+        Log.d("Alien1 Class", "Location " + x + "," + y + " with speed " + speedX + "," + speedY);
     }
 
     @Override

@@ -163,7 +163,7 @@ public class Map {
     // difficulty starts at 0 and increases by 0.01/frame,
     // or 1 per second
     public float updateScrollSpeed() {
-        scrollSpeed = (float) (-0.0025f - GameView.difficulty / 1500.0);
+        scrollSpeed = (float) (-0.0025f - GameView.difficulty / 2000.0);
         if (scrollSpeed < -0.03) { // scroll speed ceiling
             scrollSpeed = -0.03f;
         }
