@@ -63,7 +63,6 @@ public class Alien1 extends Alien {
         }
         speedY = (projected_y - y) / 600; // todo: more elegant
         elapsedFrames++;
-        Log.d("Alien1 Class", "Location " + x + "," + y + " with speed " + speedX + "," + speedY);
     }
 
     @Override
