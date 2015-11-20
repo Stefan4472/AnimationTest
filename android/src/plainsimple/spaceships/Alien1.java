@@ -17,8 +17,8 @@ public class Alien1 extends Alien {
 
     private Bitmap bulletBitmap;
 
-    public Alien1(Bitmap defaultImage, float x, float y) {
-        super(defaultImage, x, y);
+    public Alien1(Bitmap defaultImage, float x, float y, Map map) {
+        super(defaultImage, x, y, map);
         initAlien();
     }
 
@@ -28,8 +28,8 @@ public class Alien1 extends Alien {
         period = 250 + random.nextInt(100);
         vShift = random.nextInt(20);
         hShift = -random.nextInt(3);
-        hp = 20 + (int) GameView.difficulty / 3;
-        bulletDelay = 2_000 - GameView.difficulty * 5;
+        hp = 20 + (int) map.getDifficulty() / 3;
+        bulletDelay = 2_000 - map.getDifficulty() * 5;
         bulletSpeed = -0.002f - random.nextInt(5) / 10000.0;
         hitBox.setDimensions((int) (width * 0.8), (int) (height * 0.8));
         hitBox.setOffsets(width - hitBox.getWidth(), height - hitBox.getHeight());
@@ -43,13 +43,13 @@ public class Alien1 extends Alien {
 
     @Override
     public void updateActions() { // todo: shoot at spaceship
-        /*if (distanceTo(board.getSpaceship()) < 400 &&
+        if (distanceTo(map.getSpaceship()) < 400 &&
                 lastFiredBullet + bulletDelay <= System.currentTimeMillis()) {
             if (getP(0.2f)) {
-                fireBullet(board.getSpaceship());
+                fireBullet(map.getSpaceship());
                 lastFiredBullet = System.currentTimeMillis();
             }
-        }*/
+        }
     }
 
     @Override
@@ -69,7 +69,7 @@ public class Alien1 extends Alien {
     public void handleCollision(Sprite s) {
         if (!(s instanceof AlienBullet)) {
             if (s instanceof Bullet || s instanceof Rocket) {
-                GameView.score += s.damage;
+                map.incrementScore(s.getDamage());
             }
             hp -= s.damage;
             if (hp < 0) { // todo: death animation

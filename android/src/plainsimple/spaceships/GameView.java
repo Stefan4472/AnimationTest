@@ -35,24 +35,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private float scaleW;
     private float scaleH;
 
-    // num pixels scrolled
-    public static float scrollCounter = 0;
     // whether game is paused currently
     public static boolean paused;
     // space background (implements parallax scrolling)
     private Background background;
     // generates terrain and sprites on screen
     private Map map;
-    // difficulty level, incremented every frame
-    public static double difficulty = 0.0f;
-    // score in current run
-    public static int score = 0;
+    // num pixels scrolled
+    public static float scrollCounter = 0;
 
     public Map getMap() {
         return map;
-    }
-    public static void incrementScrollCounter(float increment) {
-        scrollCounter += increment;
     }
 
     public GameView(Context context, AttributeSet attributes) {
@@ -106,11 +99,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 map.update();
                 map.draw(canvas);
                 scrollCounter += map.getSpaceship().getSpeedX();
-                if (scrollCounter > 0.05) { // scroll background slowly
+                if (scrollCounter > 0.04) { // scroll background slowly
                     background.scroll(1);
                     scrollCounter = 0;
                 }
-                difficulty += 0.01f; // todo: difficulty an int or long
             } catch (Exception e) {
                 System.out.print("Error drawing canvas");
             }
@@ -141,9 +133,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                             // initialize background and map
                             initBackground();
                             initMap();
-                            // reset difficulty and score
-                            difficulty = 0;
-                            score = 0;
                             onTitle = false;
                         } else {
                             shooting = false;

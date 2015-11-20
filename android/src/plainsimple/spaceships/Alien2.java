@@ -8,15 +8,15 @@ import android.graphics.Canvas;
  */
 public class Alien2 extends Alien { // todo: not implemented
 
-    public Alien2(Bitmap defaultImage, float x, float y) {
-        super(defaultImage, x, y);
+    public Alien2(Bitmap defaultImage, float x, float y, Map map) {
+        super(defaultImage, x, y, map);
         initAlien();
     }
 
     private void initAlien() {
         startingY = y;
-        hp = 40 + (int) GameView.difficulty / 4;
-        bulletDelay = 1_000 - GameView.difficulty;
+        hp = 40 + (int) map.getDifficulty() / 4;
+        bulletDelay = 1_000 - map.getDifficulty();
         bulletSpeed = -3.0f - random.nextInt(5) / 5;
         hitBox.setOffsets(5, 5);
         hitBox.setDimensions(40, 40);

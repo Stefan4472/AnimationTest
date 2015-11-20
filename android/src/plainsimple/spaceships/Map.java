@@ -69,6 +69,10 @@ public class Map {
 
     // coordinates of upper-left of "window" being shown
     private long x = 0;
+    // difficulty level, incremented every frame
+    private double difficulty = 0.0f;
+    // score in current run
+    private int score = 0;
 
     // length of coin trails
     private static final int coinTrailLength = 18;
@@ -93,9 +97,13 @@ public class Map {
         return scrollSpeed;
     }
     public void setShooting(boolean shooting) { this.shooting = shooting; }
+    public double getDifficulty() { return difficulty; }
+    public int getScore() { return score; }
+    public void incrementScore(int increment) {
+        score += increment;
+    }
 
     public Map(int screenW, int screenH, float scaleW, float scaleH, Hashtable<String, Bitmap> resources) {
-        Log.d("Map Class", "Initialized Map");
         this.screenW = screenW;
         this.screenH = screenH;
         this.scaleW = scaleW;
@@ -153,7 +161,7 @@ public class Map {
 
             // generate more sprites
             if (mapTileCounter == map[0].length) {
-                map = generateTiles(GameView.difficulty, rows);
+                map = generateTiles(difficulty, rows);
                 mapTileCounter = 0;
             }
             lastTile = getWTile();
@@ -164,8 +172,7 @@ public class Map {
     // difficulty starts at 0 and increases by 0.01/frame,
     // or 1 per second
     public float updateScrollSpeed() {
-        Log.d("Map Class", "Scrollspeed = " + scrollSpeed);
-        scrollSpeed = (float) (-0.0025f - GameView.difficulty / 2500.0);
+        scrollSpeed = (float) (-0.0025f - difficulty / 2500.0);
         if (scrollSpeed < -0.025) { // scroll speed ceiling
             scrollSpeed = -0.025f;
         }
@@ -182,9 +189,9 @@ public class Map {
                 tile.setCollides(false);
                 return tile;
             case COIN:
-                return new Coin(resources.get(coinSprite), x, y);
+                return new Coin(resources.get(coinSprite), x, y, this);
             case ALIEN_LVL1:
-                Alien1 alien_1 = new Alien1(resources.get(alien1Sprite), x, y);
+                Alien1 alien_1 = new Alien1(resources.get(alien1Sprite), x, y, this);
                 alien_1.injectResources(resources.get(alienBulletSprite));
                 return alien_1;
             default:
@@ -202,7 +209,8 @@ public class Map {
     // adds any new sprites and generates a new set of sprites if needed
     public void update() {
         GameView.scrollCounter -= scrollSpeed;
-        GameView.score += GameView.difficulty / 2;
+        score += difficulty / 2;
+        difficulty += 0.01f;
         updateMap();
         updateSpaceship();
         projectiles.addAll(spaceship.getAndClearProjectiles());

@@ -9,8 +9,10 @@ import android.graphics.Canvas;
  */
 public class Coin extends Sprite {
 
-    public Coin(Bitmap defaultImage, float x, float y) {
+    private Map map;
+    public Coin(Bitmap defaultImage, float x, float y, Map map) {
         super(defaultImage, x, y);
+        this.map = map;
         initObstacle();
     }
 
@@ -34,7 +36,7 @@ public class Coin extends Sprite {
     public void handleCollision(Sprite s) {
         if (s instanceof Spaceship) {
             vis = false;
-            GameView.score += 100;
+            map.incrementScore(100);
         }
     }
 
