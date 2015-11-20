@@ -214,23 +214,9 @@ public class Map {
         updateMap();
         updateSpaceship();
         projectiles.addAll(spaceship.getAndClearProjectiles());
-        //projectiles.addAll(getAlienBullets(sprites)) // todo: copy in alien bullets
+        getAlienBullets(projectiles, sprites);
         updateSprites(sprites);
         updateSprites(projectiles);
-    }
-
-    private void updateSprites(List<Sprite> toUpdate) {
-        Iterator<Sprite> i = toUpdate.iterator(); // todo: get all sprites together, collisions, etc.
-        while(i.hasNext()) {
-            Sprite s = i.next();
-            s.move();
-            if(s.inBounds) {
-                s.updateActions();
-                s.updateSpeeds(); // todo: hit detection
-            } else {
-                i.remove();
-            }
-        }
     }
 
     private void updateSpaceship() {
@@ -255,6 +241,29 @@ public class Map {
         spaceship.updateActions();
     }
 
+    private void updateSprites(List<Sprite> toUpdate) {
+        Iterator<Sprite> i = toUpdate.iterator(); // todo: get all sprites together, collisions, etc.
+        while(i.hasNext()) {
+            Sprite s = i.next();
+            s.move();
+            if(s.inBounds) {
+                s.updateActions();
+                s.updateSpeeds(); // todo: hit detection
+            } else {
+                i.remove();
+            }
+        }
+    }
+
+    // goes through sprites, and for each alien uses getAndClearProjectiles,
+    // adds those projectiles to projectiles list
+    private void getAlienBullets(List<Sprite> projectiles, List<Sprite> sprites) {
+        for(Sprite s : sprites) {
+            if(s instanceof Alien) {
+                projectiles.addAll(((Alien) s).getAndClearProjectiles());
+            }
+        }
+    }
     // draws sprites on canvas
     public void draw(Canvas canvas) {
         for(Sprite s : sprites) {

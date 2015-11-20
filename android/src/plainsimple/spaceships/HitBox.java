@@ -39,7 +39,7 @@ public class Hitbox {
         this.offsetY = offsetY;
     }
 
-    public void setDimensions(int width, int height) {
+    public void setDimensions(int width, int height) { // todo: test hitboxes
         rect.right = rect.left + width;
         rect.bottom = rect.top - height;
     }

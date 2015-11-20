@@ -30,6 +30,14 @@ public abstract class Alien extends Sprite {
     public List<Sprite> getProjectiles() {
         return projectiles;
     }
+    public List<Sprite> getAndClearProjectiles() {
+        List<Sprite> copy = new ArrayList<>();
+        for(Sprite p : projectiles) {
+            copy.add(p);
+        }
+        projectiles.clear();
+        return copy;
+    }
 
     public Alien(Bitmap defaultImage, float x, float y, Map map) {
         super(defaultImage, x, y);
