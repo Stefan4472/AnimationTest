@@ -141,6 +141,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                             // initialize background and map
                             initBackground();
                             initMap();
+                            // reset difficulty and score
+                            difficulty = 0;
+                            score = 0;
                             onTitle = false;
                         } else {
                             shooting = false;

@@ -95,6 +95,7 @@ public class Map {
     public void setShooting(boolean shooting) { this.shooting = shooting; }
 
     public Map(int screenW, int screenH, float scaleW, float scaleH, Hashtable<String, Bitmap> resources) {
+        Log.d("Map Class", "Initialized Map");
         this.screenW = screenW;
         this.screenH = screenH;
         this.scaleW = scaleW;
@@ -163,9 +164,10 @@ public class Map {
     // difficulty starts at 0 and increases by 0.01/frame,
     // or 1 per second
     public float updateScrollSpeed() {
-        scrollSpeed = (float) (-0.0025f - GameView.difficulty / 2000.0);
-        if (scrollSpeed < -0.03) { // scroll speed ceiling
-            scrollSpeed = -0.03f;
+        Log.d("Map Class", "Scrollspeed = " + scrollSpeed);
+        scrollSpeed = (float) (-0.0025f - GameView.difficulty / 2500.0);
+        if (scrollSpeed < -0.025) { // scroll speed ceiling
+            scrollSpeed = -0.025f;
         }
         return scrollSpeed;
     }
