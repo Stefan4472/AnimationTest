@@ -60,6 +60,8 @@ public class Map {
     // spaceship
     private Spaceship spaceship;
     private boolean shooting = false;
+    // direction of spaceship movement (+1 up, -1 down, otherwise 0)
+    private int direction = 0;
 
     // dimensions of screen display
     private int screenW;
@@ -97,6 +99,7 @@ public class Map {
         return scrollSpeed;
     }
     public void setShooting(boolean shooting) { this.shooting = shooting; }
+    public void setDirection(int direction) { this.direction = direction; }
     public double getDifficulty() { return difficulty; }
     public int getScore() { return score; }
     public void incrementScore(int increment) {
@@ -220,6 +223,7 @@ public class Map {
     }
 
     private void updateSpaceship() {
+        spaceship.setDirection(direction);
         spaceship.updateSpeeds();
 
         // for when spaceship first comes on to screen
