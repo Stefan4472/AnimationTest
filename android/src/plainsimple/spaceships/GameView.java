@@ -4,6 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -18,7 +22,7 @@ import java.util.Hashtable;
 /**
  * Created by Stefan on 10/17/2015.
  */
-public class GameView extends SurfaceView implements SurfaceHolder.Callback {
+public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener {
 
     private Context myContext;
     private SurfaceHolder mySurfaceHolder;
@@ -42,17 +46,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // generates terrain and sprites on screen
     private Map map;
     // num pixels scrolled
-    public static float scrollCounter = 0;
+    public static float scrollCounter = 0; // todo: make non-static
 
-    public Map getMap() {
-        return map;
-    }
+    private SensorManager aSensorManager;
+    private Sensor accelerometer;
 
     public GameView(Context context, AttributeSet attributes) {
         super(context, attributes);
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
 
+        // get sensor manager, check if accelerometer, get accelerometer
+        aSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        if (aSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            accelerometer = aSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            aSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME); // todo: test with SENSOR_DELAY_NORMAL?
+        } else {
+            Log.d("GameView Class", "No Accelerometer");
+        }
         thread = new GameViewThread(holder, context, new Handler() {
             @Override
             public void handleMessage(Message m) {
@@ -194,6 +205,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         return thread.doTouchEvent(motionEvent);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 
     @Override
