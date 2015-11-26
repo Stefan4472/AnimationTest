@@ -8,7 +8,7 @@ import java.io.IOException;
 /**
  * Created by Stefan on 8/13/2015.
  */
-public class SpriteAnimation {
+public class SpriteAnimation { // todo: pause (returns same frame each time) and reverse methods
 
     private Bitmap spriteSheet;
 

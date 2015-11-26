@@ -1,11 +1,7 @@
 package plainsimple.spaceships;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.util.Log;
-import android.view.MotionEvent;
 
 import java.util.*;
 
@@ -60,14 +56,15 @@ public class Map {
     // spaceship
     private Spaceship spaceship;
     private boolean shooting = false;
-    // direction of spaceship movement (+1 up, -1 down, otherwise 0)
-    private int direction = 0;
 
     // dimensions of screen display
     private int screenW;
     private int screenH;
     private float scaleW;
     private float scaleH;
+
+    // inclination of screen
+    private int inclination;
 
     // coordinates of upper-left of "window" being shown
     private long x = 0;
@@ -99,7 +96,7 @@ public class Map {
         return scrollSpeed;
     }
     public void setShooting(boolean shooting) { this.shooting = shooting; }
-    public void setDirection(int direction) { this.direction = direction; }
+    public void setInclination(int inclination) { this.inclination = inclination; }
     public double getDifficulty() { return difficulty; }
     public int getScore() { return score; }
     public void incrementScore(int increment) {
@@ -223,7 +220,7 @@ public class Map {
     }
 
     private void updateSpaceship() {
-        spaceship.setDirection(direction);
+        spaceship.setTilt(inclination);
         spaceship.updateSpeeds();
 
         // for when spaceship first comes on to screen

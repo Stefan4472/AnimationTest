@@ -15,7 +15,17 @@ public class Spaceship extends Sprite {
     // arrowkey direction in y
     private int dy;
 
-    private final float MAX_SPEED_Y = 0.012f;
+    // tilt of screen
+    private int tilt;
+    private int lastTilt;
+    // tilt of screen for no movement to take place
+    private int defaultTilt = 23;
+    // threshold around defaultTilt before any movement takes place
+    private int movementThreshold = 5;
+    // max tilt (degrees) in either direction from default
+    private int maxInclination = 20;
+
+    private float maxSpeedY = 0.012f;
 
     private SpriteAnimation movingAnimation; // todo: resources static?
     private SpriteAnimation fireRocketAnimation;
@@ -59,7 +69,20 @@ public class Spaceship extends Sprite {
     }
     public void setFiringBullets(boolean firingBullets) { this.firingBullets = firingBullets; }
     public void setFiringRockets(boolean firingRockets) { this.firingRockets = firingRockets; }
-    public void setDirection(int direction) { dy = direction; }
+
+    // sets current tilt of device and uses it to determine dy
+    public void setTilt(int tilt) {
+        Log.d("Spaceship Class", "Inclination is " + tilt);
+        lastTilt = this.tilt;
+        this.tilt = tilt;
+        if(tilt > defaultTilt + movementThreshold && tilt <= defaultTilt + maxInclination) {
+            y = (GameView.screenH / 2.0f) + (GameView.screenH / 2.0f) * (tilt - defaultTilt - movementThreshold)
+                    / (defaultTilt - movementThreshold);
+        } /*else if(tilt < defaultTilt - movementThreshold && tilt <= defaultTilt - maxInclination) {
+            y = (GameView.screenH / 2.0f) - (GameView.screenH / 2.0f) * (tilt - defaultTilt - movementThreshold)
+                    / (defaultTilt - movementThreshold);
+        }*/
+    }
 
     public void setBullets(boolean firesBullets, int bulletType) {
         this.firesBullets = firesBullets;
@@ -125,10 +148,10 @@ public class Spaceship extends Sprite {
 
     public void updateSpeeds() {
         speedY = Math.abs(speedY);
-        if (speedY < MAX_SPEED_Y) {
+        if (speedY < maxSpeedY) {
             speedY += 0.0008;
-        } else if (speedY > MAX_SPEED_Y) {
-            speedY = MAX_SPEED_Y;
+        } else if (speedY > maxSpeedY) {
+            speedY = maxSpeedY;
         }
         speedY *= dy;
     }
