@@ -13,17 +13,13 @@ import java.util.List;
 public class Spaceship extends Sprite {
 
     // arrowkey direction in y
-    private int dy;
+    private int dy = 0;
+    private int lastdy = 0;
 
     // tilt of screen
     private double tilt;
     private double lastTilt;
-    // tilt of screen for no movement to take place
-    private int defaultTilt = 23;
-    // threshold around defaultTilt before any movement takes place
-    private int movementThreshold = 5;
-    // max tilt (degrees) in either direction from default
-    private int maxInclination = 20;
+    private double tiltThreshold = 0.9;
 
     private float maxSpeedY = 0.012f;
 
@@ -75,14 +71,15 @@ public class Spaceship extends Sprite {
         lastTilt = this.tilt;
         this.tilt = tilt;
         double tilt_change = tilt - lastTilt;
-        if(tilt_change > 0.3 && tilt <= maxInclination) {
-            dy = +1;
-        } else if(tilt_change < -0.3 && tilt >= 0) {
-            dy = -1;
+        if(Math.abs(tilt_change) > tiltThreshold) {
+            if (tilt_change < -0.3) {
+                dy = -1;
+            } else if (tilt_change > 0.3) {
+                dy = +1;
+            }
         } else {
             dy = 0;
         }
-        Log.d("Spaceship Class", "Tilt Updated to " + tilt + " diff of " + tilt_change + " and dy = " + dy);
     }
 
     public void setBullets(boolean firesBullets, int bulletType) {
@@ -149,19 +146,22 @@ public class Spaceship extends Sprite {
 
     public void updateSpeeds() {
         //Log.d("Spaceship Class", "Updating Speeds");
-        speedY = Math.abs(speedY);
-        if (speedY < maxSpeedY) {
-            speedY += 0.0008;
-        } else if (speedY > maxSpeedY) {
-            speedY = maxSpeedY;
-        } else if(speedY < 0) {
-            speedY = 0;
-        }
         if(dy == 0) { // slow down
-            speedY += -dy * 0.001;
+            if(speedY < 0) {
+                speedY += 0.0001;
+            } else if(speedY > 0) {
+                speedY -= 0.0001;
+            }
         } else {
+            speedY = Math.abs(speedY);
+            if (speedY < maxSpeedY) {
+                speedY += 0.0008;
+            } else if (speedY > maxSpeedY) {
+                speedY = maxSpeedY;
+            }
             speedY *= dy;
         }
+        Log.d("Spaceship Class", "dy = " + dy + " speedY = " + (GameView.screenH * speedY));
     }
 
     public void handleCollision(Sprite s) {
