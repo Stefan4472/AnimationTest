@@ -145,11 +145,12 @@ public class Spaceship extends Sprite {
     }
 
     public void updateSpeeds() {
-        //Log.d("Spaceship Class", "Updating Speeds");
         if(dy == 0) { // slow down
-            if(speedY < 0) {
+            if (speedY < 0 && speedY > -0.0001 || speedY > 0 && speedY < 0.0001) {
+                speedY = 0;
+            } else if (speedY < 0) {
                 speedY += 0.0001;
-            } else if(speedY > 0) {
+            } else if (speedY > 0) {
                 speedY -= 0.0001;
             }
         } else {
@@ -161,7 +162,7 @@ public class Spaceship extends Sprite {
             }
             speedY *= dy;
         }
-        Log.d("Spaceship Class", "dy = " + dy + " speedY = " + (GameView.screenH * speedY));
+        Log.d("Spaceship Class", "dy = " + dy + " speedY = " + speedY);
     }
 
     public void handleCollision(Sprite s) {
