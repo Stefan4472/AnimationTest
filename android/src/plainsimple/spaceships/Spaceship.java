@@ -16,8 +16,8 @@ public class Spaceship extends Sprite {
     private int dy;
 
     // tilt of screen
-    private int tilt;
-    private int lastTilt;
+    private double tilt;
+    private double lastTilt;
     // tilt of screen for no movement to take place
     private int defaultTilt = 23;
     // threshold around defaultTilt before any movement takes place
@@ -70,18 +70,19 @@ public class Spaceship extends Sprite {
     public void setFiringBullets(boolean firingBullets) { this.firingBullets = firingBullets; }
     public void setFiringRockets(boolean firingRockets) { this.firingRockets = firingRockets; }
 
-    // sets current tilt of device and uses it to determine dy
-    public void setTilt(int tilt) {
-        Log.d("Spaceship Class", "Inclination is " + tilt);
+    // sets current tilt of device and determines dy
+    public void setTilt(double tilt) {
         lastTilt = this.tilt;
         this.tilt = tilt;
-        if(tilt > defaultTilt + movementThreshold && tilt <= defaultTilt + maxInclination) {
-            y = (GameView.screenH / 2.0f) + (GameView.screenH / 2.0f) * (tilt - defaultTilt - movementThreshold)
-                    / (defaultTilt - movementThreshold);
-        } /*else if(tilt < defaultTilt - movementThreshold && tilt <= defaultTilt - maxInclination) {
-            y = (GameView.screenH / 2.0f) - (GameView.screenH / 2.0f) * (tilt - defaultTilt - movementThreshold)
-                    / (defaultTilt - movementThreshold);
-        }*/
+        double tilt_change = tilt - lastTilt;
+        if(tilt_change > 0.3 && tilt <= maxInclination) {
+            dy = +1;
+        } else if(tilt_change < -0.3 && tilt >= 0) {
+            dy = -1;
+        } else {
+            dy = 0;
+        }
+        Log.d("Spaceship Class", "Tilt Updated to " + tilt + " diff of " + tilt_change + " and dy = " + dy);
     }
 
     public void setBullets(boolean firesBullets, int bulletType) {
@@ -147,13 +148,20 @@ public class Spaceship extends Sprite {
     }
 
     public void updateSpeeds() {
+        //Log.d("Spaceship Class", "Updating Speeds");
         speedY = Math.abs(speedY);
         if (speedY < maxSpeedY) {
             speedY += 0.0008;
         } else if (speedY > maxSpeedY) {
             speedY = maxSpeedY;
+        } else if(speedY < 0) {
+            speedY = 0;
         }
-        speedY *= dy;
+        if(dy == 0) { // slow down
+            speedY += -dy * 0.001;
+        } else {
+            speedY *= dy;
+        }
     }
 
     public void handleCollision(Sprite s) {

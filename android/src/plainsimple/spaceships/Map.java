@@ -63,9 +63,6 @@ public class Map {
     private float scaleW;
     private float scaleH;
 
-    // inclination of screen
-    private int inclination;
-
     // coordinates of upper-left of "window" being shown
     private long x = 0;
     // difficulty level, incremented every frame
@@ -96,7 +93,10 @@ public class Map {
         return scrollSpeed;
     }
     public void setShooting(boolean shooting) { this.shooting = shooting; }
-    public void setInclination(int inclination) { this.inclination = inclination; }
+    public void setScreenTilt(double screenTilt) {
+        spaceship.setTilt(screenTilt);
+        spaceship.updateSpeeds();
+    }
     public double getDifficulty() { return difficulty; }
     public int getScore() { return score; }
     public void incrementScore(int increment) {
@@ -220,9 +220,6 @@ public class Map {
     }
 
     private void updateSpaceship() {
-        spaceship.setTilt(inclination);
-        spaceship.updateSpeeds();
-
         // for when spaceship first comes on to screen
         if (spaceship.getX() < screenW / 4) {
             spaceship.setControllable(false);

@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
 import java.util.Hashtable;
 
@@ -50,7 +49,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     private SensorManager aSensorManager;
     private Sensor accelerometer;
-    private int deviceInclination;
+    private long lastSample = 0;
+    private final static int sampleRateMS = 20;
 
     public GameView(Context context, AttributeSet attributes) {
         super(context, attributes);
@@ -61,7 +61,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         aSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         if (aSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
             accelerometer = aSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            aSensorManager.registerListener(this, accelerometer, 200_000); // todo: test with SENSOR_DELAY_NORMAL? // todo: works with Level 9 API +
+            aSensorManager.registerListener(this, accelerometer, 1_000_000); // todo: test with SENSOR_DELAY_NORMAL? // todo: works with Level 9 API +
         } else {
             Log.d("GameView Class", "No Accelerometer");
         }
@@ -107,8 +107,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         private void draw(Canvas canvas) {
             try {
                 background.draw(canvas);
-                map.setShooting(shooting);
-                map.setInclination(deviceInclination);
                 map.update();
                 map.draw(canvas);
                 scrollCounter += map.getSpaceship().getSpeedX();
@@ -130,7 +128,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 switch (event_action) {
                     case MotionEvent.ACTION_DOWN:
                         if (!onTitle && !shooting) {
-                            shooting = true;
+                            map.setShooting(true);
                         }
                         break;
                     case MotionEvent.ACTION_MOVE:
@@ -148,7 +146,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                             initMap();
                             onTitle = false;
                         } else {
-                            shooting = false;
+                            map.setShooting(false);
                         }
                         break;
                 }
@@ -211,16 +209,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) { // todo: tilt depends on default device orientation (landscape/portrait)
-        float[] g = sensorEvent.values.clone();
+        // restrict sample rate
+        if(lastSample + sampleRateMS <= System.currentTimeMillis()) {
+            float[] g = sensorEvent.values.clone();
+            float norm = (float) (Math.sqrt(g[0] * g[0] + g[1] * g[1] + g[2] * g[2])); // todo: understand this code
 
-        float norm = (float) (Math.sqrt(g[0] * g[0] + g[1] * g[1] + g[2] * g[2])); // todo: understand this code
+            // normalize the accelerometer vector (y-axis only)
+            g[2] = g[2] / norm;
 
-        // Normalize the accelerometer vector
-        g[0] = g[0] / norm;
-        g[1] = g[1] / norm;
-        g[2] = g[2] / norm;
-
-        deviceInclination = (int) Math.round(Math.toDegrees(Math.acos(g[2])));
+            if(map != null) {
+                map.setScreenTilt(Math.toDegrees(Math.acos(g[2])));
+            }
+        }
+        lastSample = System.currentTimeMillis();
     }
 
     @Override
