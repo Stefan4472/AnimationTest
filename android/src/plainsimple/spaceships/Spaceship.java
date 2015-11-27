@@ -21,7 +21,10 @@ public class Spaceship extends Sprite {
     private double lastTilt;
     private double tiltThreshold = 0.9;
 
-    private float maxSpeedY = 0.012f;
+    private float maxSpeedY = 0.01f;
+    // values to add to speed when accelerating and "decelerating"
+    private final float accelerate = 0.008f;
+    private final float decelerate = 0.004f;
 
     private SpriteAnimation movingAnimation; // todo: resources static?
     private SpriteAnimation fireRocketAnimation;
@@ -65,22 +68,6 @@ public class Spaceship extends Sprite {
     }
     public void setFiringBullets(boolean firingBullets) { this.firingBullets = firingBullets; }
     public void setFiringRockets(boolean firingRockets) { this.firingRockets = firingRockets; }
-
-    // sets current tilt of device and determines dy
-    public void setTilt(double tilt) {
-        lastTilt = this.tilt;
-        this.tilt = tilt;
-        double tilt_change = tilt - lastTilt;
-        if(Math.abs(tilt_change) > tiltThreshold) {
-            if (tilt_change < -0.3) {
-                dy = -1;
-            } else if (tilt_change > 0.3) {
-                dy = +1;
-            }
-        } else {
-            dy = 0;
-        }
-    }
 
     public void setBullets(boolean firesBullets, int bulletType) {
         this.firesBullets = firesBullets;
@@ -144,25 +131,42 @@ public class Spaceship extends Sprite {
         projectiles.add(new Bullet(bulletBitmap, x + (int) (width * 0.86), y + (int) (0.66 * height), bulletType));
     }
 
-    public void updateSpeeds() {
-        if(dy == 0) { // slow down
-            if (speedY < 0 && speedY > -0.0001 || speedY > 0 && speedY < 0.0001) {
-                speedY = 0;
-            } else if (speedY < 0) {
-                speedY += 0.0001;
-            } else if (speedY > 0) {
-                speedY -= 0.0001;
+    // sets current tilt of device and determines dy
+    public void setTilt(double tilt) {
+        lastTilt = this.tilt;
+        this.tilt = tilt;
+        lastdy = dy;
+        double tilt_change = tilt - lastTilt;
+        if(Math.abs(tilt_change) > tiltThreshold) {
+            if (tilt_change < 0) {
+                dy = -1;
+            } else if (tilt_change > 0) {
+                dy = +1;
             }
         } else {
-            speedY = Math.abs(speedY);
-            if (speedY < maxSpeedY) {
-                speedY += 0.0008;
-            } else if (speedY > maxSpeedY) {
-                speedY = maxSpeedY;
-            }
-            speedY *= dy;
+            dy = 0;
         }
-        Log.d("Spaceship Class", "dy = " + dy + " speedY = " + speedY);
+    }
+    public void updateSpeeds() {
+        if(dy == lastdy) {
+            if (dy == 0) { // slow down
+                if (speedY < 0 && speedY > -decelerate || speedY > 0 && speedY < decelerate) {
+                    speedY = 0;
+                } else if (speedY < 0) {
+                    speedY += decelerate;
+                } else if (speedY > 0) {
+                    speedY -= decelerate;
+                }
+            } else {
+                speedY = Math.abs(speedY);
+                if (speedY < maxSpeedY) {
+                    speedY += accelerate;
+                } else if (speedY > maxSpeedY) {
+                    speedY = maxSpeedY;
+                }
+                speedY *= dy;
+            }
+        }
     }
 
     public void handleCollision(Sprite s) {
