@@ -127,7 +127,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
                 switch (event_action) {
                     case MotionEvent.ACTION_DOWN:
-                        if (!onTitle && !shooting) {
+                        if (!onTitle) {
                             map.setShooting(true);
                         }
                         break;
@@ -141,6 +141,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                             // establish scale factors based on original background image's dimensions
                             scaleW = screenW / (float) backgroundOrigW;
                             scaleH = screenH / (float) backgroundOrigH;
+                            Log.d("GameView Class", "screenW = " + screenW + " screenH = " + screenH + " scaleH = " + scaleH);
                             // initialize background and map
                             initBackground();
                             initMap();
@@ -161,10 +162,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                         BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space3_tile),
                         BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space4_tile)
             };
+            Log.d("GameView Class", "Dimensions of tile: " + tiles[0].getWidth() + " * " + tiles[0].getHeight());
             background = new Background(screenW, screenH, scaleH, tiles);
         }
 
-        private void initMap() {
+        private void initMap() { // todo: auto-scales based on device resolution... Problem?
             Hashtable<String, Bitmap> resources = new Hashtable<>();
             resources.put(Map.spaceshipSprite, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.spaceship_sprite)); // todo: load and scale resources, init sprites
@@ -186,6 +188,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     R.drawable.alien_sprite));
             resources.put(Map.alienBulletSprite, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.alien_bullet));
+            Log.d("GameView Class", "Dimensions of sprite: " + resources.get(Map.spaceshipSprite).getWidth() + " * " + resources.get(Map.spaceshipSprite).getHeight());
             map = new Map(screenW, screenH, scaleW, scaleH, resources);
         }
 
