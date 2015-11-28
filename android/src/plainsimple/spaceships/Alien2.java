@@ -35,9 +35,15 @@ public class Alien2 extends Alien { // todo: not implemented
     }
 
     @Override
+    void handleCollision(Sprite s) {
+
+    }
+
+    @Override
     public void draw(Canvas canvas) {
         canvas.drawBitmap(defaultImage, x, y, null);
     }
+
     @Override
     void fireBullet(Sprite s) {
 

@@ -17,8 +17,8 @@ public class Coin extends Sprite {
     }
 
     private void initObstacle() {
-        hitBox.setOffsets(15, 5);
-        hitBox.setDimensions(20, 40);
+        hitBox.setDimensions((int) (width * 0.4), (int) (height * 0.8));
+        hitBox.setOffsets((width - hitBox.getWidth()) / 2, (height - hitBox.getHeight()) / 2);
     }
 
     public void updateCurrentImage() {

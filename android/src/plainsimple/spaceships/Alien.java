@@ -65,19 +65,7 @@ public abstract class Alien extends Sprite {
 
     // handles collision with specified sprite
     @Override
-    public void handleCollision(Sprite s) {
-        if (!(s instanceof AlienBullet)) { // todo: clean up
-            if (s instanceof Bullet || s instanceof Rocket) {
-                map.incrementScore(s.getDamage());
-            }
-            hp -= s.damage;
-            if (hp < 0) { // todo: death animation
-                vis = false;
-                // collides = false;
-                hp = 0;
-            }
-        }
-    }
+    abstract void handleCollision(Sprite s);
 
     @Override
     abstract void draw(Canvas canvas);

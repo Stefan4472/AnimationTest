@@ -9,7 +9,11 @@ public class Hitbox {
 
     private Rect rect;
 
-    // dimensions of Rect
+    // sprite's point of drawing
+    private int x;
+    private int y;
+
+    // dimensions of hitbox
     private int width;
     private int height;
 
@@ -19,19 +23,13 @@ public class Hitbox {
 
     public Rect getRect() { return rect; }
     public void setRect(Rect rect) { this.rect = rect; }
-    public int getX() { return rect.left; }
-    public int getY() { return rect.top; }
+    public int getX() { return x; }
+    public int getY() { return y; }
     public int getWidth() { return width; }
     public int getHeight() { return height; }
     public int getOffsetX() { return offsetX; }
     public int getOffsetY() {
         return offsetY;
-    }
-    public void setOffsetX(int offsetX) {
-        this.offsetX = offsetX;
-    }
-    public void setOffsetY(int offsetY) {
-        this.offsetY = offsetY;
     }
 
     public void setOffsets(int offsetX, int offsetY) {
@@ -39,11 +37,9 @@ public class Hitbox {
         this.offsetY = offsetY;
     }
 
-    public void setDimensions(int width, int height) { // todo: test hitboxes
+    public void setDimensions(int width, int height) {
         this.width = width;
         this.height = height;
-        rect.right = rect.left + width;
-        rect.bottom = rect.top - height;
     }
 
     public Hitbox() {
@@ -54,20 +50,14 @@ public class Hitbox {
         offsetY = 0;
     }
 
-    public Hitbox(int left, int top, int width, int height, int offsetX, int offsetY) {
-        rect = new Rect(top - height, left, left + width, top);
-        this.width = width;
-        this.height = height;
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
-    }
-
     // resets hitbox to new coordinates, keeping width and height
     public void updateCoordinates(int newX, int newY) {
-        rect.top = newY;
-        rect.left = newX;
-        rect.bottom = newY + height;
-        rect.right = newX + width;
+        this.x = newX;
+        this.y = newY;
+        rect.top = y + offsetY;
+        rect.left = x + offsetX;
+        rect.bottom = y + offsetY + height;
+        rect.right = x + offsetX + width;
     }
 
     // returns whether hitboxes intersect

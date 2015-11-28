@@ -2,7 +2,6 @@ package plainsimple.spaceships;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.util.Log;
 
 /**
  * Created by Stefan on 8/20/2015.
@@ -16,7 +15,7 @@ public class Obstacle extends Sprite {
 
     private void initObstacle() {
         hitBox.setDimensions((int) (width * 0.9), (int) (height * 0.9));
-        hitBox.setOffsets(width - hitBox.getWidth(), height - hitBox.getHeight());
+        hitBox.setOffsets((width - hitBox.getWidth()) / 2, (height - hitBox.getHeight()) / 2);
         damage = Integer.MAX_VALUE;
     }
 

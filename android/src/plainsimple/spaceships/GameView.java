@@ -1,9 +1,7 @@
 package plainsimple.spaceships;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
+import android.graphics.*;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -109,7 +107,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 background.draw(canvas);
                 map.update();
                 map.draw(canvas);
-                scrollCounter += map.getSpaceship().getSpeedX();
+                                scrollCounter += map.getSpaceship().getSpeedX();
                 if (scrollCounter > 0.04) { // scroll background slowly
                     background.scroll(1);
                     scrollCounter = 0;

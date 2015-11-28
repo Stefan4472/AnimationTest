@@ -42,7 +42,7 @@ public class Alien1 extends Alien {
     }
 
     @Override
-    public void updateActions() { // todo: shoot at spaceship
+    public void updateActions() { // todo: avoid straight vertical shots
         if (distanceTo(map.getSpaceship()) < 400 &&
                 lastFiredBullet + bulletDelay <= System.currentTimeMillis()) {
             if (getP(0.2f)) {
@@ -67,10 +67,8 @@ public class Alien1 extends Alien {
 
     @Override
     public void handleCollision(Sprite s) {
-        if (!(s instanceof AlienBullet)) {
-            if (s instanceof Bullet || s instanceof Rocket) {
-                map.incrementScore(s.getDamage());
-            }
+        if (s instanceof Bullet || s instanceof Rocket) {
+            map.incrementScore(s.getDamage());
             hp -= s.damage;
             if (hp < 0) { // todo: death animation
                 vis = false;
@@ -89,9 +87,10 @@ public class Alien1 extends Alien {
     @Override
     void fireBullet(Sprite s) {
         Point2D target = s.getHitboxCenter();
-        AlienBullet b = new AlienBullet(bulletBitmap, x, y + 20);
+        Log.d("Alien1 Class", "Firing on " + target.getX() + "," + target.getY());
+        AlienBullet b = new AlienBullet(bulletBitmap, x, y + (int) (height * 0.4));
         b.setSpeedX(bulletSpeed);
-        double frames_to_impact = (x - s.x) / bulletSpeed;
+        double frames_to_impact = (x - s.getX()) / bulletSpeed;
         b.setSpeedY((y - target.getY()) / frames_to_impact);
         projectiles.add(b);
     }

@@ -151,12 +151,6 @@ public abstract class Sprite {
         hitBox.updateCoordinates(hitBox.getX(), (int) y);
     }
 
-    public void setCoordinates(float x, float y) {
-        this.x = x;
-        this.y = y;
-        hitBox.updateCoordinates((int) x, (int) y);
-    }
-
     // update/handle any actions sprite takes
     abstract void updateActions();
 

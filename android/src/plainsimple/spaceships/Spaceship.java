@@ -2,6 +2,8 @@ package plainsimple.spaceships;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ public class Spaceship extends Sprite {
 
     private float maxSpeedY = 0.01f;
     // values to add to speed when accelerating and "decelerating"
-    private final float accelerate = 0.008f;
+    private final float accelerateConst = 0.002f;
     private final float decelerate = 0.004f;
 
     private SpriteAnimation movingAnimation; // todo: resources static?
@@ -92,9 +94,8 @@ public class Spaceship extends Sprite {
         damage = 100;
         controllable = true;
         collides = true;
-        Log.d("Spaceship Class", "Width " + width + " height " + height);
         hitBox.setDimensions((int) (width * 0.66), (int) (height * 0.55));
-        hitBox.setOffsets(width - hitBox.getWidth(), height - hitBox.getHeight());
+        hitBox.setOffsets((width - hitBox.getWidth()) / 2, (height - hitBox.getHeight()) / 2);
     }
 
     // get spritesheet bitmaps and construct them
@@ -161,7 +162,7 @@ public class Spaceship extends Sprite {
             } else {
                 speedY = Math.abs(speedY);
                 if (speedY < maxSpeedY) {
-                    speedY += accelerate; // todo: speed a factor of tilt change
+                    speedY += accelerateConst * Math.abs((tilt - lastTilt)); // todo: speed a factor of tilt change
                 } else if (speedY > maxSpeedY) {
                     speedY = maxSpeedY;
                 }
@@ -191,6 +192,5 @@ public class Spaceship extends Sprite {
         if (explodeAnimation.isPlaying()) {
             canvas.drawBitmap(explodeAnimation.nextFrame(), x, y, null);
         }
-
     }
 }
