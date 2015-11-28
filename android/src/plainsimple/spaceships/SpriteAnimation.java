@@ -67,6 +67,11 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
         return isPlaying;
     }
 
+    // whether animation has played
+    public boolean hasPlayed() {
+        return hasPlayed;
+    }
+
     // returns next image in animation
     // starts animation if it is not playing already
     public Bitmap nextFrame() {

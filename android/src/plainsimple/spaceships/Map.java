@@ -249,7 +249,7 @@ public class Map {
         while(i.hasNext()) {
             Sprite s = i.next();
             s.move();
-            if(s.inBounds) {
+            if(s.isInBounds() && s.isVisible()) {
                 s.updateActions();
                 s.updateSpeeds(); // todo: hit detection
             } else {

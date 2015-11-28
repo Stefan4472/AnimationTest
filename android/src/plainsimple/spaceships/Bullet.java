@@ -18,21 +18,6 @@ public class Bullet extends Sprite {
     public final static int PLASMA = 3;
     public final static int PLUTONIUM = 4;
 
-    public static int getDelay(int bulletType) {
-        switch(bulletType) {
-            case LASER:
-                return 150;
-            case ION:
-                return 130;
-            case PLASMA:
-                return 100;
-            case PLUTONIUM:
-                return 170;
-            default:
-                return -1;
-        }
-    }
-
     // todo: when resources can be different defaultImage shouldn't be a parameter
     public Bullet(Bitmap defaultImage, float x, float y, int bulletType) {
         super(defaultImage, x, y);
@@ -67,6 +52,22 @@ public class Bullet extends Sprite {
         }
     }
 
+    // returns delay (ms) given bulletType
+    public static int getDelay(int bulletType) {
+        switch(bulletType) {
+            case LASER:
+                return 150;
+            case ION:
+                return 130;
+            case PLASMA:
+                return 100;
+            case PLUTONIUM:
+                return 170;
+            default:
+                return -1;
+        }
+    }
+
     public void updateActions() {
 
     }
@@ -77,8 +78,9 @@ public class Bullet extends Sprite {
 
     public void handleCollision(Sprite s) {
         collision = true;
-        if (s instanceof Obstacle || s instanceof Alien)
+        if (s instanceof Obstacle || s instanceof Alien) {
             vis = false;
+        }
     }
 
     @Override

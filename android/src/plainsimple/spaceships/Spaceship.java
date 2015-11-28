@@ -128,8 +128,8 @@ public class Spaceship extends Sprite {
 
     // fires two bullets
     public void fireBullets() {
-        projectiles.add(new Bullet(bulletBitmap, x + (int) (width * 0.86), y + (int) (0.3 * height), bulletType));
-        projectiles.add(new Bullet(bulletBitmap, x + (int) (width * 0.86), y + (int) (0.66 * height), bulletType));
+        projectiles.add(new Bullet(bulletBitmap, x + (int) (width * 0.78), y + (int) (0.28 * height), bulletType));
+        projectiles.add(new Bullet(bulletBitmap, x + (int) (width * 0.78), y + (int) (0.66 * height), bulletType));
     }
 
     // sets current tilt of device and determines dy
@@ -161,7 +161,7 @@ public class Spaceship extends Sprite {
             } else {
                 speedY = Math.abs(speedY);
                 if (speedY < maxSpeedY) {
-                    speedY += accelerate;
+                    speedY += accelerate; // todo: speed a factor of tilt change
                 } else if (speedY > maxSpeedY) {
                     speedY = maxSpeedY;
                 }
@@ -172,7 +172,7 @@ public class Spaceship extends Sprite {
 
     public void handleCollision(Sprite s) {
         hp -= s.getDamage();
-        if (hp < 0) {
+        if (hp < 0 && !explodeAnimation.isPlaying()) { // todo: check when explodeAnimation has played and use for end game logic
             explodeAnimation.start();
             hp = 0;
             collision = true;
@@ -193,36 +193,4 @@ public class Spaceship extends Sprite {
         }
 
     }
-
-    // Sets direction of sprite based on key pressed.
-    /*public void keyPressed(KeyEvent e) {
-        if (controllable) {
-            int key = e.getKeyCode();
-            if (key == KeyEvent.VK_UP) {
-                dy = -1;
-            } else if (key == KeyEvent.VK_DOWN) {
-                dy = 1;
-            } else if (key == KeyEvent.VK_SPACE && firesBullets) {
-                firingBullets = true;
-            } else if (key == KeyEvent.VK_X && firesRockets) {
-                firingRockets = true;
-            }
-        }
-    }
-
-    // sets movement direction to zero once key is released
-    public void keyReleased(KeyEvent e) {
-        if (controllable) {
-            int key = e.getKeyCode();
-            if (key == KeyEvent.VK_UP) {
-                dy = 0;
-            } else if (key == KeyEvent.VK_DOWN) {
-                dy = 0;
-            } else if (key == KeyEvent.VK_SPACE) {
-                firingBullets = false;
-            } else if (key == KeyEvent.VK_X) {
-                firingRockets = false;
-            }
-        }
-    }*/
 }
