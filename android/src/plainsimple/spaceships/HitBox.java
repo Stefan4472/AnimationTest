@@ -40,6 +40,8 @@ public class Hitbox {
     }
 
     public void setDimensions(int width, int height) { // todo: test hitboxes
+        this.width = width;
+        this.height = height;
         rect.right = rect.left + width;
         rect.bottom = rect.top - height;
     }
@@ -64,7 +66,7 @@ public class Hitbox {
     public void updateCoordinates(int newX, int newY) {
         rect.top = newY;
         rect.left = newX;
-        rect.bottom = newY - height;
+        rect.bottom = newY + height;
         rect.right = newX + width;
     }
 

@@ -92,6 +92,7 @@ public class Spaceship extends Sprite {
         damage = 100;
         controllable = true;
         collides = true;
+        Log.d("Spaceship Class", "Width " + width + " height " + height);
         hitBox.setDimensions((int) (width * 0.66), (int) (height * 0.55));
         hitBox.setOffsets(width - hitBox.getWidth(), height - hitBox.getHeight());
     }
