@@ -145,7 +145,7 @@ public class Map {
     }
 
     private void updateMap() {
-        scrollSpeed = updateScrollSpeed(); // todo: figure out how to update scrollspeed gradually without letting sprites become disjointed
+        scrollSpeed = updateScrollSpeed(); // todo: figure out how to update scrollspeed without letting sprites become disjointed
         this.x += GameView.screenW * scrollSpeed;
 
         // take care of map rendering
@@ -215,6 +215,9 @@ public class Map {
         updateSpaceship();
         projectiles.addAll(spaceship.getAndClearProjectiles());
         getAlienBullets(projectiles, sprites);
+        for(Sprite sprite : sprites) {
+            checkCollisions(sprite, projectiles);
+        }
         updateSprites(sprites);
         updateSprites(projectiles);
     }
@@ -235,6 +238,8 @@ public class Map {
         } else if (spaceship.getY() > screenH - spaceship.getHeight()) {
             spaceship.setY(screenH - spaceship.getHeight());
         }
+        checkCollisions(spaceship, projectiles);
+        checkCollisions(spaceship, sprites);
         spaceship.setFiringBullets(shooting);
         spaceship.updateActions();
     }
@@ -262,6 +267,18 @@ public class Map {
             }
         }
     }
+
+    // checks sprite against each sprite in list
+    // calls handleCollision method if a collision is detected
+    private void checkCollisions(Sprite sprite, List<Sprite> toCheck) {
+        for(Sprite s : toCheck) {
+            if(sprite.collidesWith(s)) {
+                sprite.handleCollision(s);
+                s.handleCollision(sprite);
+            }
+        }
+    }
+
     // draws sprites on canvas
     public void draw(Canvas canvas) {
         for(Sprite s : sprites) {
