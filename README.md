@@ -1,2 +1,4 @@
-# AnimationTest
-Testing out how to do simple animations with Java
+# SpaceShips
+A space-themed infinite runner for Android  
+
+Current development level: Alpha
