@@ -195,8 +195,8 @@ public abstract class Sprite {
     // returns coordinates of center of sprite's hitbox
     // as a Point2D object
     public Point2D getHitboxCenter() {
-        return new Point2D(hitBox.getX() + hitBox.getWidth() / 2,
-                hitBox.getY() + hitBox.getHeight() / 2);
+        return new Point2D(hitBox.getX() + hitBox.getOffsetX() + hitBox.getWidth() / 2,
+                hitBox.getY() + hitBox.getOffsetY() + hitBox.getHeight() / 2);
     }
 
     public boolean getP(double probability) {

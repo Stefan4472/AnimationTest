@@ -87,7 +87,6 @@ public class Alien1 extends Alien {
     @Override
     void fireBullet(Sprite s) {
         Point2D target = s.getHitboxCenter();
-        Log.d("Alien1 Class", "Firing on " + target.getX() + "," + target.getY());
         AlienBullet b = new AlienBullet(bulletBitmap, x, y + (int) (height * 0.4));
         b.setSpeedX(bulletSpeed);
         double frames_to_impact = (x - s.getX()) / bulletSpeed;
