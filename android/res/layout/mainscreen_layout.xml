@@ -4,8 +4,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/title_graphic" >
-    <Button android:id="@+id/playbutton"
+        <ImageButton android:id="@+id/playbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Play Now" />
+            android:src="@drawable/play_button_up"
+            android:onClick="onPlayPressed" />
+        <Button android:id="@+id/storebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Store"
+            android:onClick="onStorePressed" />
+        <Button android:id="@+id/statsbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stats"
+            android:onClick="onStatsPressed" />
 </LinearLayout>
