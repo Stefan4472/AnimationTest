@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 
 /**
  * Created by Stefan on 10/17/2015.
@@ -21,6 +22,7 @@ public class TitleView extends View {
     private int screenW;
     private int screenH;
     private Context context;
+    private Button playNowBtn = (Button) findViewById(R.id.playbutton);
 
 
     public TitleView(Context context) {
@@ -74,6 +76,7 @@ public class TitleView extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 playButtonPressed = false;
+                launchGameIntent();
                 break;
         }
         invalidate();
