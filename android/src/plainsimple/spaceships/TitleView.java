@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -20,6 +21,7 @@ public class TitleView extends View {
     private int screenW;
     private int screenH;
     private Context context;
+
 
     public TitleView(Context context) {
         super(context);
@@ -71,14 +73,16 @@ public class TitleView extends View {
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
-                if(playButtonPressed) {
-                    Intent game_intent = new Intent(context, GameActivity.class);
-                    context.startActivity(game_intent);
-                }
                 playButtonPressed = false;
                 break;
         }
         invalidate();
         return true;
+    }
+
+    // starts the game activity
+    private void launchGameIntent() {
+        Intent game_intent = new Intent(context, GameActivity.class);
+        context.startActivity(game_intent);
     }
 }
