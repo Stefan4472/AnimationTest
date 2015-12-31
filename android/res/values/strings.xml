@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Spaceships</string>
+    <string name="button_play">Play</string>
+    <string name="button_store">Store</string>
+    <string name="button_stats">Stats</string>
 </resources>
