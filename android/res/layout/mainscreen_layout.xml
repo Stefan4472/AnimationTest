@@ -4,19 +4,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/title_graphic" >
-        <ImageButton android:id="@+id/playbutton"
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/play_button_up"
-            android:onClick="onPlayPressed" />
-        <Button android:id="@+id/storebutton"
+            android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            android:src="@drawable/menubutton_custom"
+            android:onClick="onPlayPressed"
+            style="?android:attr/borderlessButtonStyle" />
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Store"
-            android:onClick="onStorePressed" />
-        <Button android:id="@+id/statsbutton"
+            android:onClick="onStorePressed"
+            style="?android:attr/borderlessButtonStyle" />
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Stats"
-            android:onClick="onStatsPressed" />
+            android:onClick="onStatsPressed"
+            style="?android:attr/borderlessButtonStyle" />
 </LinearLayout>

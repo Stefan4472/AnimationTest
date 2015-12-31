@@ -10,8 +10,6 @@ import android.view.WindowManager;
 
 public class SpaceShipsActivity extends Activity {
 
-    private TitleView titleView;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,8 +19,19 @@ public class SpaceShipsActivity extends Activity {
         setContentView(R.layout.mainscreen_layout);
     }
 
+    // handle user pressing "Play" button
     public void onPlayPressed(View view) {
         Intent game_intent = new Intent(this, GameActivity.class);
         this.startActivity(game_intent);
+    }
+
+    // handle user pressing "Store" button
+    public void onStorePressed(View view) {
+
+    }
+
+    // handle user pressing "Stats" button
+    public void onStatsPressed(View view) {
+
     }
 }

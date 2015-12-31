@@ -133,8 +133,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                         break;
                     case MotionEvent.ACTION_UP: // handle user clicking something
                         if (onTitle) { // change to game screen. Load resources
-                            backgroundImg = BitmapFactory.decodeResource(myContext.getResources(),
-                                    R.drawable.game_background);
                             myContext.getResources();
                             // establish scale factors based on original background image's dimensions
                             scaleW = screenW / (float) backgroundOrigW;
