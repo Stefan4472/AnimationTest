@@ -1,31 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/title_graphic" >
     <!-- Play Button -->
     <ImageButton
+        android:id="@+id/playbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:text="@string/button_play"
         android:background="@drawable/menubutton_custom"
         android:onClick="onPlayPressed"
         style="@style/MenuStyle" />
     <!-- Store Button -->
+    <!-- or style="?android:attr/borderlessButtonStyle" ? -->
     <Button
+        android:id="@+id/storebutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/playbutton"
         android:text="@string/button_store"
         android:onClick="onStorePressed"
         android:background="?android:attr/selectableItemBackground"
         style="@style/MenuStyle" />
     <!-- Stats Button -->
     <Button
+        android:id="@+id/statsbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/storebutton"
         android:text="@string/button_stats"
         android:onClick="onStatsPressed"
         android:background="?android:attr/selectableItemBackground"
         style="@style/MenuStyle" />
-</LinearLayout>
+</RelativeLayout>

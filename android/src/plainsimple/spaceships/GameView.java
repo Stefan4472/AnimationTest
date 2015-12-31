@@ -107,7 +107,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 background.draw(canvas);
                 map.update();
                 map.draw(canvas);
-                                scrollCounter += map.getSpaceship().getSpeedX();
+                scrollCounter += map.getSpaceship().getSpeedX();
                 if (scrollCounter > 0.04) { // scroll background slowly
                     background.scroll(1);
                     scrollCounter = 0;
