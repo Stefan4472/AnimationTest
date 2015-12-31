@@ -11,19 +11,22 @@
         android:text="@string/button_play"
         android:src="@drawable/menubutton_custom"
         android:onClick="onPlayPressed"
-        style="?android:attr/borderlessButtonStyle" />
+        android:background="?android:attr/selectableItemBackground"
+        style="@style/MenuStyle" />
     <!-- Store Button -->
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/button_store"
         android:onClick="onStorePressed"
-        style="?android:attr/borderlessButtonStyle" />
+        android:background="?android:attr/selectableItemBackground"
+        style="@style/MenuStyle" />
     <!-- Stats Button -->
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/button_stats"
         android:onClick="onStatsPressed"
-        style="?android:attr/borderlessButtonStyle" />
+        android:background="?android:attr/selectableItemBackground"
+        style="@style/MenuStyle" />
 </LinearLayout>
