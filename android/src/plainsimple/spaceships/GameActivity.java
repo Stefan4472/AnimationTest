@@ -2,6 +2,7 @@ package plainsimple.spaceships;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -24,5 +25,10 @@ public class GameActivity extends Activity {
         setContentView(R.layout.gameview_layout);
         gameView = (GameView) findViewById(R.id.spaceships);
         gameView.setKeepScreenOn(true);
+    }
+
+    // handle user pressing pause button //todo: is this an okay way of handling the event?
+    public void onPausePressed(View view) {
+        gameView.onPausePressed();
     }
 }
