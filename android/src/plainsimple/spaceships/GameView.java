@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import java.util.Hashtable;
@@ -37,7 +38,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private float scaleW;
     private float scaleH;
 
-
+    private ImageButton pauseButton = (ImageButton) findViewById(R.id.pausebutton);
 
     // whether game is paused currently
     public static boolean paused = false; // todo: non-static?
@@ -142,6 +143,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                             // establish scale factors based on original background image's dimensions
                             scaleW = screenW / (float) backgroundOrigW;
                             scaleH = screenH / (float) backgroundOrigH;
+                            // set button sources
+                            // pauseButton.setBackgroundResource(R.drawable.pausebutton_pause); // todo: causes activity to crash
                             // initialize background and map
                             initBackground();
                             initMap();
@@ -209,6 +212,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     }
 
     public void onPausePressed() {
+        if(paused) { // todo: causes activity to crash
+            pauseButton.setBackgroundResource(R.drawable.pausebutton_pause);
+        } else {
+            pauseButton.setBackgroundResource(R.drawable.pausebutton_play);
+        }
         paused = !paused;
     }
     @Override
