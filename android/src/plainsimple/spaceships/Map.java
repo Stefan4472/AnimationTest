@@ -2,6 +2,7 @@ package plainsimple.spaceships;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import java.util.*;
 
@@ -45,7 +46,7 @@ public class Map {
     // keeps track of tile spaceship was on last time map was updated
     private long lastTile = 0;
 
-    // default speed of sprites scrolling across the map // todo: make percentage of screen (1%?)
+    // default speed of sprites scrolling across the map
     private float scrollSpeed = -0.0025f;
 
     // generated sprites
@@ -60,8 +61,7 @@ public class Map {
     // dimensions of screen display
     private int screenW;
     private int screenH;
-    private float scaleW;
-    private float scaleH;
+    private float scalingFactor;
 
     // coordinates of upper-left of "window" being shown
     private long x = 0;
@@ -103,11 +103,13 @@ public class Map {
         score += increment;
     }
 
-    public Map(int screenW, int screenH, float scaleW, float scaleH, Hashtable<String, Bitmap> resources) {
+    /* screenW, screenH: dimensions of screen
+     * scalingFactor: factor used to scale resources
+     * resources: hashtable containing resources with proper keys
+     */
+    public Map(int screenW, int screenH, Hashtable<String, Bitmap> resources) {
         this.screenW = screenW;
         this.screenH = screenH;
-        this.scaleW = scaleW;
-        this.scaleH = scaleH;
         this.resources = resources;
         tileWidth = this.screenH / rows;
         tileHeight = this.screenH / rows;
@@ -116,14 +118,20 @@ public class Map {
         initResources();
     }
 
-    private void initResources() {
-        //int sprite_height = screenH / 6;
+    private void initResources() { // previous method: scalingFactor = screenH / backgroundOrigH
+        // calculate scaling factor
+        scalingFactor = (screenH / 6.0f) / (float) resources.get(spaceshipSprite).getHeight();
+        Log.d("Map Class", "ScalingFactor = " + scalingFactor +
+                " and new spaceship height = " + (scalingFactor * resources.get(spaceshipSprite).getHeight())
+                + " and screenH = " + screenH);
         // scale graphics resources
         for (String key : resources.keySet()) {
             // scale so textures remain square and are scaled using height
             resources.put(key, Bitmap.createScaledBitmap(resources.get(key),
-                    (int) (resources.get(key).getWidth() * scaleH),
-                    (int) (resources.get(key).getHeight() * scaleH), true));
+                    (int) (resources.get(key).getWidth() * scalingFactor),
+                    (int) (resources.get(key).getHeight() * scalingFactor), true));
+            Log.d("Map Class", key + " = " + resources.get(key).getWidth() + "*" +
+                    resources.get(key).getHeight());
         }
         spaceship = new Spaceship(resources.get(spaceshipSprite), -resources.get(spaceshipSprite).getWidth(),
                 screenH / 2 - resources.get(spaceshipSprite).getHeight() / 2);

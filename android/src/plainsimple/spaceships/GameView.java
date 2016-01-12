@@ -35,7 +35,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     // original width and height of background
     private final int backgroundOrigW = 800;
     private final int backgroundOrigH = 600;
-    private float scaleW;
     private float scaleH;
 
     private ImageButton pauseButton = (ImageButton) findViewById(R.id.pausebutton);
@@ -141,7 +140,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                         if (onTitle) { // change to game screen. Load resources
                             myContext.getResources();
                             // establish scale factors based on original background image's dimensions
-                            scaleW = screenW / (float) backgroundOrigW;
                             scaleH = screenH / (float) backgroundOrigH;
                             // set button sources
                             // pauseButton.setBackgroundResource(R.drawable.pausebutton_pause); // todo: causes activity to crash
@@ -191,13 +189,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             resources.put(Map.alienBulletSprite, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.alien_bullet));
             Log.d("GameView Class", "Dimensions of sprite: " + resources.get(Map.spaceshipSprite).getWidth() + " * " + resources.get(Map.spaceshipSprite).getHeight());
-            map = new Map(screenW, screenH, scaleW, scaleH, resources);
+            map = new Map(screenW, screenH, resources);
         }
 
         public void setSurfaceSize(int width, int height) {
             synchronized (mySurfaceHolder) {
                 screenW = width;
                 screenH = height;
+                Log.d("GameView Class", "Screen = " + screenW + "*" + screenH);
             }
         }
 
