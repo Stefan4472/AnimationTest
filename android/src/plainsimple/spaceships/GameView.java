@@ -37,8 +37,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private final int backgroundOrigH = 600;
     private float scaleH;
 
-    private ImageButton pauseButton = (ImageButton) findViewById(R.id.pausebutton);
-
     // whether game is paused currently
     public static boolean paused = false; // todo: non-static?
     // space background (implements parallax scrolling)
@@ -141,8 +139,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                             myContext.getResources();
                             // establish scale factors based on original background image's dimensions
                             scaleH = screenH / (float) backgroundOrigH;
-                            // set button sources
-                            // pauseButton.setBackgroundResource(R.drawable.pausebutton_pause); // todo: causes activity to crash
                             // initialize background and map
                             initBackground();
                             initMap();
@@ -210,7 +206,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         return thread.doTouchEvent(motionEvent);
     }
 
-    public void onPausePressed() {
+    public void onPausePressed(ImageButton pauseButton) {
         if(paused) { // todo: causes activity to crash
             pauseButton.setBackgroundResource(R.drawable.pausebutton_pause);
         } else {

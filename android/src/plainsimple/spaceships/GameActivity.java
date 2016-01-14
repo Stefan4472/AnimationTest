@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 
 /**
  * Created by Stefan on 10/17/2015.
@@ -12,6 +13,7 @@ import android.view.WindowManager;
 public class GameActivity extends Activity {
 
     private GameView gameView;
+    private ImageButton pauseButton;
 
     /* Called when activity first created */
     @Override
@@ -25,10 +27,12 @@ public class GameActivity extends Activity {
         setContentView(R.layout.gameview_layout);
         gameView = (GameView) findViewById(R.id.spaceships);
         gameView.setKeepScreenOn(true);
+        pauseButton = (ImageButton) findViewById(R.id.pausebutton);
+        pauseButton.setBackgroundResource(R.drawable.pausebutton_pause);
     }
 
     // handle user pressing pause button //todo: is this an okay way of handling the event?
     public void onPausePressed(View view) {
-        gameView.onPausePressed();
+        gameView.onPausePressed(pauseButton);
     }
 }
