@@ -19,9 +19,8 @@ public class Spaceship extends Sprite {
     private int lastdy = 0;
 
     // tilt of screen
-    private double tilt;
-    private double lastTilt;
-    private double tiltThreshold = 0.9;
+    private float tiltChange;
+    private float tiltThreshold = 0.01f;
 
     private float maxSpeedY = 0.01f;
     // values to add to speed when accelerating and "decelerating"
@@ -134,16 +133,16 @@ public class Spaceship extends Sprite {
     }
 
     // sets current tilt of device and determines dy
-    public void setTilt(double tilt) {
-        lastTilt = this.tilt;
-        this.tilt = tilt;
-        lastdy = dy;
-        double tilt_change = tilt - lastTilt;
-        if(Math.abs(tilt_change) > tiltThreshold) {
-            if (tilt_change < 0) {
-                dy = -1;
-            } else if (tilt_change > 0) {
+    public void setTiltChange(float tiltChange) {
+        this.tiltChange = tiltChange;
+        // filter irregular movement
+        if(Math.abs(tiltChange) > tiltThreshold) {
+            // negative is tilting away from player -> move up
+            // positive is tilting toward player -> move down
+            if(tiltChange > 0) {
                 dy = +1;
+            } else {
+                dy = -1;
             }
         } else {
             dy = 0;
@@ -152,24 +151,22 @@ public class Spaceship extends Sprite {
 
     @Override
     public void updateSpeeds() {
-        if(dy == lastdy) {
-            if (dy == 0) { // slow down
-                if (speedY < 0 && speedY > -decelerate || speedY > 0 && speedY < decelerate) {
-                    speedY = 0;
-                } else if (speedY < 0) {
-                    speedY += decelerate;
-                } else if (speedY > 0) {
-                    speedY -= decelerate;
-                }
-            } else {
-                speedY = Math.abs(speedY);
-                if (speedY < maxSpeedY) {
-                    speedY += accelerateConst * Math.abs((tilt - lastTilt)); // todo: speed a factor of tilt change
-                } else if (speedY > maxSpeedY) {
-                    speedY = maxSpeedY;
-                }
-                speedY *= dy;
+        if (dy == 0) { // slow down
+            if (speedY < 0 && speedY > -decelerate || speedY > 0 && speedY < decelerate) {
+                speedY = 0;
+            } else if (speedY < 0) {
+                speedY += decelerate;
+            } else if (speedY > 0) {
+                speedY -= decelerate;
             }
+        } else {
+            speedY = Math.abs(speedY);
+            if (speedY < maxSpeedY) {
+                speedY += accelerateConst * Math.abs(tiltChange); // todo: speed a factor of tilt change
+            } else if (speedY > maxSpeedY) {
+                speedY = maxSpeedY;
+            }
+            speedY *= dy;
         }
     }
 

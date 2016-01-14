@@ -2,7 +2,6 @@ package plainsimple.spaceships;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.util.Log;
 
 import java.util.*;
 
@@ -93,10 +92,6 @@ public class Map {
         return scrollSpeed;
     }
     public void setShooting(boolean shooting) { this.shooting = shooting; }
-    public void setScreenTilt(double screenTilt) {
-        spaceship.setTilt(screenTilt);
-        spaceship.updateSpeeds();
-    }
     public double getDifficulty() { return difficulty; }
     public int getScore() { return score; }
     public void incrementScore(int increment) {
@@ -105,8 +100,7 @@ public class Map {
 
     /* screenW, screenH: dimensions of screen
      * scalingFactor: factor used to scale resources
-     * resources: hashtable containing resources with proper keys
-     */
+     * resources: hashtable containing resources with proper keys */
     public Map(int screenW, int screenH, Hashtable<String, Bitmap> resources) {
         this.screenW = screenW;
         this.screenH = screenH;
@@ -121,17 +115,12 @@ public class Map {
     private void initResources() { // previous method: scalingFactor = screenH / backgroundOrigH
         // calculate scaling factor
         scalingFactor = (screenH / 6.0f) / (float) resources.get(spaceshipSprite).getHeight();
-        Log.d("Map Class", "ScalingFactor = " + scalingFactor +
-                " and new spaceship height = " + (scalingFactor * resources.get(spaceshipSprite).getHeight())
-                + " and screenH = " + screenH);
         // scale graphics resources
         for (String key : resources.keySet()) {
             // scale so textures remain square and are scaled using height
             resources.put(key, Bitmap.createScaledBitmap(resources.get(key),
                     (int) (resources.get(key).getWidth() * scalingFactor),
                     (int) (resources.get(key).getHeight() * scalingFactor), true));
-            Log.d("Map Class", key + " = " + resources.get(key).getWidth() + "*" +
-                    resources.get(key).getHeight());
         }
         spaceship = new Spaceship(resources.get(spaceshipSprite), -resources.get(spaceshipSprite).getWidth(),
                 screenH / 2 - resources.get(spaceshipSprite).getHeight() / 2);
@@ -269,6 +258,11 @@ public class Map {
         }
     }
 
+    public void updateGyro(float yValue) {
+        spaceship.setTiltChange(yValue);
+        spaceship.updateSpeeds();
+    }
+    
     // goes through sprites, and for each alien uses getAndClearProjectiles,
     // adds those projectiles to projectiles list
     private void getAlienBullets(List<Sprite> projectiles, List<Sprite> sprites) {

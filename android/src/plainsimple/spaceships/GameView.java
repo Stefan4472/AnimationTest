@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import java.util.Hashtable;
@@ -46,8 +45,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     // num pixels scrolled
     public static float scrollCounter = 0; // todo: make non-static
 
-    private SensorManager aSensorManager;
-    private Sensor accelerometer;
+    private SensorManager gSensorManager;
+    private Sensor gyroscope;
     private long lastSample = 0;
     private final static int sampleRateMS = 20;
 
@@ -56,11 +55,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
 
-        // get sensor manager, check if accelerometer, get accelerometer
-        aSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        if (aSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
-            accelerometer = aSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            aSensorManager.registerListener(this, accelerometer, 1_000_000); // todo: test with SENSOR_DELAY_NORMAL? // todo: works with Level 9 API +
+        // get sensor manager, check if gyroscope, get gyroscope
+        gSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        if (gSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
+            gyroscope = gSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+            gSensorManager.registerListener(this, gyroscope, 1_000_000); // todo: test with SENSOR_DELAY_NORMAL? // todo: works with Level 9 API +
         } else {
             Log.d("GameView Class", "No Accelerometer");
         }
@@ -218,14 +217,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public void onSensorChanged(SensorEvent sensorEvent) { // todo: tilt depends on default device orientation (landscape/portrait)
         // restrict sample rate
         if(lastSample + sampleRateMS <= System.currentTimeMillis()) {
-            float[] g = sensorEvent.values.clone();
-            float norm = (float) (Math.sqrt(g[0] * g[0] + g[1] * g[1] + g[2] * g[2])); // todo: understand this code
-
-            // normalize the accelerometer vector (y-axis only)
-            g[2] = g[2] / norm;
-
+            System.out.println(sensorEvent.values[1]);
             if(map != null) {
-                map.setScreenTilt(Math.toDegrees(Math.acos(g[2])));
+                // send y-value of gyro to map
+                map.updateGyro(sensorEvent.values[1]);
             }
         }
         lastSample = System.currentTimeMillis();
@@ -252,6 +247,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         thread.setRunning(false);
-        aSensorManager.unregisterListener(this);
+        gSensorManager.unregisterListener(this);
     }
 }
