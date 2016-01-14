@@ -231,6 +231,7 @@ public class Map {
     }
 
     private void updateSpaceship() {
+        spaceship.move();
         // for when spaceship first comes on to screen
         if (spaceship.getX() < screenW / 4) {
             spaceship.setControllable(false);
@@ -295,7 +296,6 @@ public class Map {
         for(Sprite s : projectiles) {
             s.draw(canvas);
         }
-        spaceship.move();
         spaceship.draw(canvas);
     }
 

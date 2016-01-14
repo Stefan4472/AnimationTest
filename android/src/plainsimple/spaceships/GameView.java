@@ -105,16 +105,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         private void draw(Canvas canvas) {
             try {
+                background.draw(canvas);
                 if(!paused) {
-                    background.draw(canvas);
                     map.update();
-                    map.draw(canvas);
                     scrollCounter += map.getSpaceship().getSpeedX();
                     if (scrollCounter > 0.04) { // scroll background slowly
                         background.scroll(1);
                         scrollCounter = 0;
                     }
                 }
+                map.draw(canvas);
             } catch (Exception e) {
                 System.out.print("Error drawing canvas");
             }
