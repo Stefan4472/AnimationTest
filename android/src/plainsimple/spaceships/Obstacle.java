@@ -18,14 +18,22 @@ public class Obstacle extends Sprite {
         damage = Integer.MAX_VALUE;
     }
 
+    @Override
     public void updateActions() {
 
     }
 
+    @Override
     public void updateSpeeds() {
 
     }
 
+    @Override
+    public void updateAnimations() {
+
+    }
+
+    @Override
     public void handleCollision(Sprite s) {
 
     }

@@ -251,6 +251,7 @@ public class Map {
         checkCollisions(spaceship, sprites);
         spaceship.setFiringBullets(shooting);
         spaceship.updateActions();
+        spaceship.updateAnimations();
     }
 
     private void updateSprites(List<Sprite> toUpdate) {
@@ -261,6 +262,7 @@ public class Map {
             if(s.isInBounds() && s.isVisible()) {
                 s.updateActions();
                 s.updateSpeeds(); // todo: hit detection
+                s.updateAnimations();
             } else {
                 i.remove();
             }

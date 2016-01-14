@@ -66,6 +66,11 @@ public class Alien1 extends Alien {
     }
 
     @Override
+    public void updateAnimations() {
+
+    }
+
+    @Override
     public void handleCollision(Sprite s) {
         if (s instanceof Bullet || s instanceof Rocket) {
             map.incrementScore(s.getDamage());

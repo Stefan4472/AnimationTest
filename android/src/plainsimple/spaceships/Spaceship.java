@@ -108,12 +108,12 @@ public class Spaceship extends Sprite {
         this.bulletBitmap = bulletBitmap;
     }
 
+    @Override
     public void updateActions() {
         if (firingBullets && lastFiredBullet + Bullet.getDelay(bulletType) <= System.currentTimeMillis()) {
             fireBullets();
             lastFiredBullet = System.currentTimeMillis();
         }
-
         if (firingRockets && lastFiredRocket + Rocket.getDelay(rocketType) <= System.currentTimeMillis()) {
             fireRockets();
             lastFiredRocket = System.currentTimeMillis();
@@ -149,6 +149,8 @@ public class Spaceship extends Sprite {
             dy = 0;
         }
     }
+
+    @Override
     public void updateSpeeds() {
         if(dy == lastdy) {
             if (dy == 0) { // slow down
@@ -171,6 +173,20 @@ public class Spaceship extends Sprite {
         }
     }
 
+    @Override
+    public void updateAnimations() {
+        if (movingAnimation.isPlaying()) {
+            movingAnimation.incrementFrame();
+        }
+        if (fireRocketAnimation.isPlaying()) {
+            fireRocketAnimation.incrementFrame();
+        }
+        if (explodeAnimation.isPlaying()) {
+            explodeAnimation.incrementFrame();
+        }
+    }
+
+    @Override
     public void handleCollision(Sprite s) {
         hp -= s.getDamage();
         if (hp < 0 && !explodeAnimation.isPlaying()) { // todo: check when explodeAnimation has played and use for end game logic
@@ -184,13 +200,13 @@ public class Spaceship extends Sprite {
     void draw(Canvas canvas) {
         canvas.drawBitmap(defaultImage, x, y, null);
         if (moving) {
-            canvas.drawBitmap(movingAnimation.nextFrame(), x, y, null);
+            canvas.drawBitmap(movingAnimation.currentFrame(), x, y, null);
         }
         if (fireRocketAnimation.isPlaying()) {
-            canvas.drawBitmap(fireRocketAnimation.nextFrame(), x, y, null);
+            canvas.drawBitmap(fireRocketAnimation.currentFrame(), x, y, null);
         }
         if (explodeAnimation.isPlaying()) {
-            canvas.drawBitmap(explodeAnimation.nextFrame(), x, y, null);
+            canvas.drawBitmap(explodeAnimation.currentFrame(), x, y, null);
         }
     }
 }

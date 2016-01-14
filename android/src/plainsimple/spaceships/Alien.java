@@ -63,6 +63,9 @@ public abstract class Alien extends Sprite {
     @Override
     abstract void updateSpeeds();
 
+    @Override
+    abstract void updateAnimations();
+
     // handles collision with specified sprite
     @Override
     abstract void handleCollision(Sprite s);

@@ -30,6 +30,11 @@ public class AlienBullet extends Sprite {
     }
 
     @Override
+    public void updateAnimations() {
+
+    }
+
+    @Override
     public void handleCollision(Sprite s) {
         if(s instanceof Spaceship) {
             vis = false;

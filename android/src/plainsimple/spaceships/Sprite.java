@@ -156,6 +156,8 @@ public abstract class Sprite {
 
     abstract void updateSpeeds();
 
+    abstract void updateAnimations();
+
     // handles collision with s
     abstract void handleCollision(Sprite s);
 
@@ -178,10 +180,8 @@ public abstract class Sprite {
     // draws sprite at current coordinates on g
     abstract void draw(Canvas canvas);
 
-    // returns whether intended movement of sprites
-    // will cause a collision
-    // todo: calculate specific point of collides and use setX and setY methods to move sprites there
-    public boolean collidesWith(Sprite s) { // todo: set flag first then setSpeed
+    // returns whether hitbox of this sprite intersects hitbox of specified sprite
+    public boolean collidesWith(Sprite s) {
         if (!collides || !s.collides)
             return false;
         return hitBox.intersects(s.hitBox);
@@ -200,6 +200,6 @@ public abstract class Sprite {
     }
 
     public boolean getP(double probability) {
-        return random.nextInt(1000000) + 1 <= probability * 1000000;
+        return random.nextInt(1_000_000) + 1 <= probability * 1_000_000;
     }
 }

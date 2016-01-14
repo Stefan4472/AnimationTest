@@ -56,10 +56,19 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
     }
 
     // resets fields so that nextFrame() can play animation
-    public void start() {
+    public void start() { // todo: good practice is to start animation before calling nextFrame()
         isPlaying = true;
         frameCounter = 0;
         frameSpeedCounter = 0;
+    }
+
+    // stops animation
+    public void stop() {
+        isPlaying = false;
+    }
+
+    public void reset() {
+        frameCounter = 0;
     }
 
     // whether animation has finished or not
@@ -72,13 +81,8 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
         return hasPlayed;
     }
 
-    // returns next image in animation
-    // starts animation if it is not playing already
-    public Bitmap nextFrame() {
-        if (!isPlaying) { // todo: good practice is to start animation before calling nextFrame()
-            start();
-        }
-
+    // progresses frame counter by one
+    public void incrementFrame() {
         if (frameSpeedCounter == frameSpeed) {
             frameCounter++;
             frameSpeedCounter = 0;
@@ -94,16 +98,25 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
             hasPlayed = true;
             frameCounter = 0;
         }
-        //Log.d("SpriteAnimation Class", sheetW + "," + sheetH + " with start at " + (frameW * frameCounter) + " and dimensions " + frameW + "," + frameH);
+    }
+
+    // returns current frame of animation
+    // starts animation if it is not playing already
+    public Bitmap currentFrame() {
+        if (!isPlaying) {
+            start();
+        }
         // todo: better way to get subimage? // todo: allow for multi-row spritesheets!
-        //return Bitmap.createBitmap(spriteSheet, 0, 0, 100, 100);
         return Bitmap.createBitmap(spriteSheet, frameW * frameCounter, 0, frameW, frameH);
     }
 
-    // stops animation
-    public void stop() {
-        isPlaying = false;
-        // frameCounter = 0;
+    // returns next image in animation
+    // starts animation if it is not playing already
+    public Bitmap nextFrame() {
+        if (!isPlaying) {
+            start();
+        }
+        incrementFrame();
+        return currentFrame();
     }
-
 }

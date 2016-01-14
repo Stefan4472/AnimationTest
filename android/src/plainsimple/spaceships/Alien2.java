@@ -25,17 +25,22 @@ public class Alien2 extends Alien { // todo: not implemented
     }
 
     @Override
-    void updateActions() {
+    public void updateActions() {
 
     }
 
     @Override
-    void updateSpeeds() {
+    public void updateSpeeds() {
 
     }
 
     @Override
-    void handleCollision(Sprite s) {
+    public void updateAnimations() {
+
+    }
+
+    @Override
+    public void handleCollision(Sprite s) {
 
     }
 
@@ -45,7 +50,7 @@ public class Alien2 extends Alien { // todo: not implemented
     }
 
     @Override
-    void fireBullet(Sprite s) {
+    public void fireBullet(Sprite s) {
 
     }
 }

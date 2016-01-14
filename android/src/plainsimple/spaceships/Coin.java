@@ -21,18 +21,22 @@ public class Coin extends Sprite {
         hitBox.setOffsets((width - hitBox.getWidth()) / 2, (height - hitBox.getHeight()) / 2);
     }
 
-    public void updateCurrentImage() {
-
-    }
-
+    @Override
     public void updateActions() {
 
     }
 
+    @Override
     public void updateSpeeds() {
 
     }
 
+    @Override
+    public void updateAnimations() {
+
+    }
+
+    @Override
     public void handleCollision(Sprite s) {
         if (s instanceof Spaceship) {
             vis = false;

@@ -8,7 +8,6 @@ import android.graphics.Canvas;
  */
 public class Bullet extends Sprite {
 
-    private SpriteAnimation bulletFiring;
     // delay between fired bullets
     private int delay;
 
@@ -68,14 +67,22 @@ public class Bullet extends Sprite {
         }
     }
 
+    @Override
     public void updateActions() {
 
     }
 
+    @Override
     public void updateSpeeds() {
 
     }
 
+    @Override
+    public void updateAnimations() {
+
+    }
+
+    @Override
     public void handleCollision(Sprite s) {
         collision = true;
         if (s instanceof Obstacle || s instanceof Alien) {

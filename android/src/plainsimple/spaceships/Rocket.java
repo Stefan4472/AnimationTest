@@ -34,10 +34,12 @@ public class Rocket extends Sprite {
         }
     }
 
+    @Override
     public void updateActions() {
 
     }
 
+    @Override
     public void updateSpeeds() { // todo: relative speeds
         /*if (speedX < 2.05)
             speedX += 0.001;
@@ -53,11 +55,18 @@ public class Rocket extends Sprite {
             speedX += 0.05;*/
     }
 
+    @Override
     public void handleCollision(Sprite s) {
         collision = true;
         vis = false;
     }
 
+    @Override
+    public void updateAnimations() {
+
+    }
+
+    @Override
     public void draw(Canvas canvas) {
         canvas.drawBitmap(defaultImage, x, y, null);
     }
