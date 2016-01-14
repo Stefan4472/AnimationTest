@@ -14,7 +14,8 @@ public class AlienBullet extends Sprite {
     }
 
     private void initAlienBullet() {
-        hitBox.setDimensions(10, 10);
+        // todo: change size for better-looking hit detection? (see Issue #13)
+        hitBox.setDimensions(width, height);
         damage = 20;
     }
 

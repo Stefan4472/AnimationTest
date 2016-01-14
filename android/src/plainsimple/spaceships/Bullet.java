@@ -25,25 +25,25 @@ public class Bullet extends Sprite {
             case LASER: // todo: figure out how to load resource in each case
                 damage = 10;
                 delay = 150;
-                hitBox.setDimensions(9, 3);
+                hitBox.setDimensions((int) (width * 1.5f), height);
                 speedX = 0.01f;
                 break;
             case ION:
                 damage = 20;
                 delay = 130;
-                hitBox.setDimensions(9, 3);
+                hitBox.setDimensions((int) (width * 1.5f), height);
                 speedX = 0.011f;
                 break;
             case PLASMA:
                 damage = 30;
                 delay = 100;
-                hitBox.setDimensions(9, 3);
+                hitBox.setDimensions((int) (width * 1.5f), height);
                 speedX = 0.012f;
                 break;
             case PLUTONIUM:
                 damage = 40;
                 delay = 170;
-                hitBox.setDimensions(9, 3);
+                hitBox.setDimensions((int) (width * 1.5f), height);
                 speedX = 0.013f;
                 break;
             default:

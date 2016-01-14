@@ -29,7 +29,7 @@ public class Rocket extends Sprite {
             case ROCKET:
                 delay = 420;
                 speedX = 0.0067f;
-                hitBox.setDimensions(9, 3);
+                hitBox.setDimensions((int) (width * 1.5f), height);
                 break;
         }
     }
