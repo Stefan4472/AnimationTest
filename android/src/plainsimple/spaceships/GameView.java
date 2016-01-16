@@ -153,10 +153,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         private void initBackground() {
             Bitmap[] tiles = {
-                BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space1_tile),
-                        BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space2_tile),
-                        BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space3_tile),
-                        BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space4_tile)
+                BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space_tile),
+                        BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space_tile),
+                        BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space_tile),
+                        BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space_tile)
             };
             background = new Background(screenW, screenH, scaleH, tiles);
         }
