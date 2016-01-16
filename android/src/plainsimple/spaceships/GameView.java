@@ -76,6 +76,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public GameViewThread getThread() {
         return thread;
     }
+    public Map getMap() { return map; }
 
     class GameViewThread extends Thread {
 
@@ -206,20 +207,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     }
 
     public void onPausePressed(ImageButton pauseButton) {
-        if(paused) { // todo: causes activity to crash
+        if(paused) { // todo: move button handling back to GameActivity Class. Should only change paused
             pauseButton.setBackgroundResource(R.drawable.pausebutton_pause);
         } else {
             pauseButton.setBackgroundResource(R.drawable.pausebutton_play);
         }
         paused = !paused;
-    }
-
-    public void toggleBullets() {
-
-    }
-
-    public void toggleRockets() {
-
     }
 
     @Override

@@ -40,11 +40,12 @@ public class GameActivity extends Activity {
 
     }
 
-    public void onToggleBulletsPressed(View view) {
-        gameView.toggleBullets();
+    public void onToggleBulletPressed(View view) {
+        // todo: performance issues?
+        gameView.getMap().getSpaceship().setFiringMode(Spaceship.BULLET_MODE);
     }
 
-    public void onToggleRocketsPressed(View view) {
-        gameView.toggleRockets();
+    public void onToggleRocketPressed(View view) {
+        gameView.getMap().getSpaceship().setFiringMode(Spaceship.ROCKET_MODE);
     }
 }

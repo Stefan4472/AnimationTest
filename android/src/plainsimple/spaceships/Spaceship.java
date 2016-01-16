@@ -2,9 +2,6 @@ package plainsimple.spaceships;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,15 +37,19 @@ public class Spaceship extends Sprite {
     private boolean firesBullets;
     private int bulletType = Bullet.LASER;
     private long lastFiredBullet;
-    private boolean firingBullets = false;
 
     private boolean firesRockets;
     private int rocketType = Rocket.ROCKET;
     private long lastFiredRocket;
-    private boolean firingRockets = false;
 
     // keeps track of fired bullets and rockets
     private List<Sprite> projectiles;
+
+    // current setting: bullets or rockets
+    private int firingMode = BULLET_MODE;
+    private boolean shooting = false;
+    public static final int BULLET_MODE = 1;
+    public static final int ROCKET_MODE = 2;
 
     public List<Sprite> getProjectiles() { return projectiles; }
     public List<Sprite> getAndClearProjectiles() {
@@ -67,8 +68,8 @@ public class Spaceship extends Sprite {
     public void setHP(int hp) {
         this.hp = hp;
     }
-    public void setFiringBullets(boolean firingBullets) { this.firingBullets = firingBullets; }
-    public void setFiringRockets(boolean firingRockets) { this.firingRockets = firingRockets; }
+    public void setShooting(boolean shooting) { this.shooting = shooting; }
+    public void setFiringMode(int firingMode) { this.firingMode = firingMode; }
 
     public void setBullets(boolean firesBullets, int bulletType) {
         this.firesBullets = firesBullets;
@@ -109,11 +110,13 @@ public class Spaceship extends Sprite {
 
     @Override
     public void updateActions() {
-        if (firingBullets && lastFiredBullet + Bullet.getDelay(bulletType) <= System.currentTimeMillis()) {
+        if (shooting && firingMode == BULLET_MODE &&
+                lastFiredBullet + Bullet.getDelay(bulletType) <= System.currentTimeMillis()) {
             fireBullets();
             lastFiredBullet = System.currentTimeMillis();
         }
-        if (firingRockets && lastFiredRocket + Rocket.getDelay(rocketType) <= System.currentTimeMillis()) {
+        if (shooting && firingMode == ROCKET_MODE &&
+                lastFiredRocket + Rocket.getDelay(rocketType) <= System.currentTimeMillis()) {
             fireRockets();
             lastFiredRocket = System.currentTimeMillis();
             fireRocketAnimation.start();

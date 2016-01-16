@@ -238,7 +238,7 @@ public class Map {
         }
         checkCollisions(spaceship, projectiles);
         checkCollisions(spaceship, sprites);
-        spaceship.setFiringBullets(shooting);
+        spaceship.setShooting(shooting);
         spaceship.updateActions();
         spaceship.updateAnimations();
     }
