@@ -83,7 +83,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         public GameViewThread(SurfaceHolder surfaceHolder, Context context, Handler handler) {
             mySurfaceHolder = surfaceHolder;
             myContext = context;
-            backgroundImg = BitmapFactory.decodeResource(context.getResources(), R.drawable.title_graphic);
         }
 
         @Override
