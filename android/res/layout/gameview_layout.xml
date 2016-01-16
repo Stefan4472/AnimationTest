@@ -24,6 +24,23 @@
             android:onClick="onPausePressed"
             style="?android:attr/borderlessButtonStyle" />
         <ImageButton
+            android:id="@+id/mutebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/pausebutton"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:onClick="onMutePressed"
+            style="?android:attr/borderlessButtonStyle" />
+        <TextView
+            android:id="@+id/scoredisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="45dp"
+            android:textColor="#ffffff"
+            android:text="Score"/>
+        <ImageButton
             android:id="@+id/toggleBullet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
