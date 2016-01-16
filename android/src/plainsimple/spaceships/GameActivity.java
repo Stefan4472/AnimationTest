@@ -35,4 +35,16 @@ public class GameActivity extends Activity {
     public void onPausePressed(View view) {
         gameView.onPausePressed(pauseButton);
     }
+
+    public void onMutePressed(View view) {
+
+    }
+
+    public void onToggleBulletsPressed(View view) {
+        gameView.toggleBullets();
+    }
+
+    public void onToggleRocketsPressed(View view) {
+        gameView.toggleRockets();
+    }
 }

@@ -213,6 +213,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
         paused = !paused;
     }
+
+    public void toggleBullets() {
+
+    }
+
+    public void toggleRockets() {
+
+    }
+
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) { // todo: tilt depends on default device orientation (landscape/portrait)
         // restrict sample rate // todo: currently disabled (see Issue #10)
