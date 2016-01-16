@@ -14,6 +14,8 @@ public class GameActivity extends Activity {
 
     private GameView gameView;
     private ImageButton pauseButton;
+    private ImageButton toggleBulletButton;
+    private ImageButton toggleRocketButton;
 
     /* Called when activity first created */
     @Override
@@ -29,6 +31,10 @@ public class GameActivity extends Activity {
         gameView.setKeepScreenOn(true);
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pausebutton_pause);
+        toggleBulletButton = (ImageButton) findViewById(R.id.toggleBulletButton);
+        toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
+        toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
+        toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
     }
 
     // handle user pressing pause button //todo: is this an okay way of handling the event?
@@ -43,9 +49,13 @@ public class GameActivity extends Activity {
     public void onToggleBulletPressed(View view) {
         // todo: performance issues?
         gameView.getMap().getSpaceship().setFiringMode(Spaceship.BULLET_MODE);
+        toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
+        toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
     }
 
     public void onToggleRocketPressed(View view) {
         gameView.getMap().getSpaceship().setFiringMode(Spaceship.ROCKET_MODE);
+        toggleRocketButton.setBackgroundResource(R.drawable.rockets_button_pressed);
+        toggleBulletButton.setBackgroundResource(R.drawable.bullets_button);
     }
 }

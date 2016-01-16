@@ -41,23 +41,22 @@
             android:textColor="#ffffff"
             android:text="Score"/>
         <ImageButton
-            android:id="@+id/toggleBullet"
+            android:id="@+id/toggleBulletButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/bullets_button"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
+            android:layout_margineLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
             android:onClick="onToggleBulletPressed"
             style="?android:attr/borderlessButtonStyle" />
         <ImageButton
-            android:id="@+id/toggleRocket"
+            android:id="@+id/toggleRocketButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/rockets_button"
             android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@id/toggleBullet"
+            android:layout_toRightOf="@id/toggleBulletButton"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
             android:onClick="onToggleRocketPressed"
