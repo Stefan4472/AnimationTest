@@ -13,18 +13,12 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical">
-        <!-- Shoot button, which fills screen but is transparent -->
-        <Button
-            android:id="@+id/shootbutton"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:visibility="invisible"
-            android:onClick="onShootPressed" />
         <ImageButton
             android:id="@+id/pausebutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
             android:onClick="onPausePressed"
@@ -33,7 +27,9 @@
             android:id="@+id/toggleBullet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
+            android:src="@drawable/bullets_button"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="10dp"
             android:onClick="onToggleBulletPressed"
@@ -42,9 +38,11 @@
             android:id="@+id/toggleRocket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:src="@drawable/rockets_button"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/toggleBullet"
+            android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
-            android:layout_toLeftOf="@id/shootbutton"
             android:onClick="onToggleRocketPressed"
             style="?android:attr/borderlessButtonStyle" />
     </RelativeLayout>
