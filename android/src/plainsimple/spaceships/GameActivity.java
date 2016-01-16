@@ -14,6 +14,7 @@ public class GameActivity extends Activity {
 
     private GameView gameView;
     private ImageButton pauseButton;
+    private ImageButton muteButton;
     private ImageButton toggleBulletButton;
     private ImageButton toggleRocketButton;
 
@@ -31,6 +32,8 @@ public class GameActivity extends Activity {
         gameView.setKeepScreenOn(true);
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pausebutton_pause);
+        muteButton = (ImageButton) findViewById(R.id.mutebutton);
+        muteButton.setBackgroundResource(R.drawable.mute_button);
         toggleBulletButton = (ImageButton) findViewById(R.id.toggleBulletButton);
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
@@ -39,11 +42,23 @@ public class GameActivity extends Activity {
 
     // handle user pressing pause button //todo: is this an okay way of handling the event?
     public void onPausePressed(View view) {
-        gameView.onPausePressed(pauseButton);
+        if(gameView.getPaused()) {
+            pauseButton.setBackgroundResource(R.drawable.pausebutton_pause);
+            gameView.setPaused(false);
+        } else {
+            pauseButton.setBackgroundResource(R.drawable.pausebutton_play);
+            gameView.setPaused(true);
+        }
     }
 
     public void onMutePressed(View view) {
-
+        if(gameView.getMuted()) {
+            muteButton.setBackgroundResource(R.drawable.mute_button);
+            gameView.setMuted(false);
+        } else {
+            muteButton.setBackgroundResource(R.drawable.mute_button_muted);
+            gameView.setMuted(true);
+        }
     }
 
     public void onToggleBulletPressed(View view) {

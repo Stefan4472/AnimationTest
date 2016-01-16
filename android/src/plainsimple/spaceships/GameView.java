@@ -24,20 +24,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     private Context myContext;
     private SurfaceHolder mySurfaceHolder;
-    private Bitmap backgroundImg;
+    // todo: make non-static
     public static int screenW;
     public static int screenH;
     private boolean running = false;
     private boolean onTitle = true;
     private boolean shooting = false;
     private GameViewThread thread;
-    // original width and height of background
-    private final int backgroundOrigW = 800;
-    private final int backgroundOrigH = 600;
-    private float scaleH;
 
     // whether game is paused currently
-    public static boolean paused = false; // todo: non-static?
+    private boolean paused = false; // todo: non-static?
+    // whether sound on or off
+    private boolean muted = false;
     // space background (implements parallax scrolling)
     private Background background;
     // generates terrain and sprites on screen
@@ -49,6 +47,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private Sensor gyroscope;
     private long lastSample = 0;
     private final static int sampleRateMS = 20;
+
+    public void setMuted(boolean muted) { this.muted = muted; }
+    public boolean getMuted() { return muted; }
+    public void setPaused(boolean paused) { this.paused = paused; }
+    public boolean getPaused() { return paused; }
 
     public GameView(Context context, AttributeSet attributes) {
         super(context, attributes);
@@ -136,8 +139,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     case MotionEvent.ACTION_UP: // handle user clicking something
                         if (onTitle) { // change to game screen. Load resources
                             myContext.getResources();
-                            // establish scale factors based on original background image's dimensions
-                            scaleH = screenH / (float) backgroundOrigH;
                             // initialize background and map
                             initBackground();
                             initMap();
@@ -158,7 +159,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                         BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space_tile),
                         BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space_tile)
             };
-            background = new Background(screenW, screenH, scaleH, tiles);
+            // todo: clean up
+            // calculate scaling factor
+            float scalingFactor = (screenH / 6.0f) / (float) BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.spaceship_sprite).getHeight();
+            background = new Background(screenW, screenH, scalingFactor, tiles);
         }
 
         private void initMap() { // todo: auto-scales based on device resolution... Problem?
@@ -203,15 +208,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         return thread.doTouchEvent(motionEvent);
-    }
-
-    public void onPausePressed(ImageButton pauseButton) {
-        if(paused) { // todo: move button handling back to GameActivity Class. Should only change paused
-            pauseButton.setBackgroundResource(R.drawable.pausebutton_pause);
-        } else {
-            pauseButton.setBackgroundResource(R.drawable.pausebutton_play);
-        }
-        paused = !paused;
     }
 
     @Override

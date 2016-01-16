@@ -88,15 +88,13 @@ public class Map {
     private static Random random = new Random();
 
     public Spaceship getSpaceship() { return spaceship; }
-    public float getScrollSpeed() {
-        return scrollSpeed;
-    }
     public void setShooting(boolean shooting) { this.shooting = shooting; }
     public double getDifficulty() { return difficulty; }
     public int getScore() { return score; }
     public void incrementScore(int increment) {
         score += increment;
     }
+
 
     /* screenW, screenH: dimensions of screen
      * scalingFactor: factor used to scale resources
@@ -143,7 +141,7 @@ public class Map {
 
     private void updateMap() {
         scrollSpeed = updateScrollSpeed(); // todo: figure out how to update scrollspeed without letting sprites become disjointed
-        this.x += GameView.screenW * scrollSpeed;
+        this.x += screenW * scrollSpeed;
 
         // take care of map rendering
         if (getWTile() != lastTile) {

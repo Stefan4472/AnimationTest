@@ -36,7 +36,7 @@ public class Background {
         return x % tileWidth;
     }
 
-    // construct tiles using names of tile files
+    // construct tiles using names of tile files // todo: establish scaling factor (see Map class)
     public Background(int screenW, int screenH, float scaleH, Bitmap[] tiles) {
         this.tiles = tiles;
         scaleResources(scaleH);
