@@ -135,7 +135,11 @@ public class Spaceship extends Sprite {
     // sets current tilt of device and determines dy
     public void setTiltChange(float tiltChange) {
         this.tiltChange = tiltChange;
-        // filter irregular movement
+    }
+
+    @Override
+    public void updateSpeeds() {
+        // filter noise
         if(Math.abs(tiltChange) > tiltThreshold) {
             // negative is tilting away from player -> move up
             // positive is tilting toward player -> move down
@@ -147,10 +151,6 @@ public class Spaceship extends Sprite {
         } else {
             dy = 0;
         }
-    }
-
-    @Override
-    public void updateSpeeds() {
         if (dy == 0) { // slow down
             if (speedY < 0 && speedY > -decelerate || speedY > 0 && speedY < decelerate) {
                 speedY = 0;

@@ -215,15 +215,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     }
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) { // todo: tilt depends on default device orientation (landscape/portrait)
-        // restrict sample rate
-        if(lastSample + sampleRateMS <= System.currentTimeMillis()) {
+        // restrict sample rate // todo: currently disabled (see Issue #10)
+        /*if(lastSample + sampleRateMS <= System.currentTimeMillis()) {
             System.out.println(sensorEvent.values[1]);
             if(map != null) {
                 // send y-value of gyro to map
                 map.updateGyro(sensorEvent.values[1]);
             }
         }
-        lastSample = System.currentTimeMillis();
+        lastSample = System.currentTimeMillis();*/
     }
 
     @Override

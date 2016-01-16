@@ -3,10 +3,23 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
+    <!-- Displays game graphics -->
     <plainsimple.spaceships.GameView
         android:id="@+id/spaceships"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
+    <!-- Overlay on game graphics with UI components -->
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+        <!-- Shoot button, which fills screen but is transparent -->
+        <Button
+            android:id="@+id/shootbutton"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:visibility="invisible"
+            android:onClick="onShootPressed" />
         <ImageButton
             android:id="@+id/pausebutton"
             android:layout_width="wrap_content"
@@ -16,4 +29,23 @@
             android:layout_marginTop="10dp"
             android:onClick="onPausePressed"
             style="?android:attr/borderlessButtonStyle" />
+        <ImageButton
+            android:id="@+id/toggleBullet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:onClick="onToggleBulletPressed"
+            style="?android:attr/borderlessButtonStyle" />
+        <ImageButton
+            android:id="@+id/toggleRocket"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_toLeftOf="@id/shootbutton"
+            android:onClick="onToggleRocketPressed"
+            style="?android:attr/borderlessButtonStyle" />
+    </RelativeLayout>
 </FrameLayout>
