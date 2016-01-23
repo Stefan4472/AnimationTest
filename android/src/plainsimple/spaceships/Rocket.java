@@ -14,26 +14,30 @@ public class Rocket extends Sprite {
     // number of to delay between firing rockets
     public int delay;
 
+    public static final int ROCKET_DAMAGE = 40;
+    public static final int ROCKET_DELAY = 40;
+    public static final float ROCKET_SPEED_X = 0.0067f;
+
+    public Rocket(Bitmap defaultImage, float x, float y, int rocketType) {
+        super(defaultImage, x, y);
+        hitBox.setDimensions((int) (width * 1.5f), height);
+        switch(rocketType) {
+            case ROCKET:
+                delay = ROCKET_DELAY;
+                speedX = ROCKET_SPEED_X;
+                break;
+        }
+    }
+
     public static int getDelay(int rocketType) {
         switch (rocketType) {
             case ROCKET:
-                return 40;
+                return ROCKET_DELAY;
             default:
                 return -1;
         }
     }
 
-    // todo: figure out resource loading and whether to pass a bitmap
-    public Rocket(Bitmap defaultImage, float x, float y, int rocketType) {
-        super(defaultImage, x, y);
-        switch(rocketType) {
-            case ROCKET:
-                delay = 420;
-                speedX = 0.0067f;
-                hitBox.setDimensions((int) (width * 1.5f), height);
-                break;
-        }
-    }
 
     @Override
     public void updateActions() {
@@ -42,18 +46,7 @@ public class Rocket extends Sprite {
 
     @Override
     public void updateSpeeds() { // todo: relative speeds
-        /*if (speedX < 2.05)
-            speedX += 0.001;
-        else if (speedX < 2.1)
-            speedX += 0.005;
-        else if (speedX < 2.5)
-            speedX += 0.05;
-        else if (speedX < 3.0)
-            speedX += 0.1;
-        else if (speedX < 3.0)
-            speedX += 0.15;
-        else
-            speedX += 0.05;*/
+
     }
 
     @Override

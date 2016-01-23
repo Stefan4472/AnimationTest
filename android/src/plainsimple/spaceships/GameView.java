@@ -166,7 +166,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             background = new Background(screenW, screenH, scalingFactor, tiles);
         }
 
-        private void initMap() { // todo: need to know which resources to load based on what bullets/rockets equipped
+        private void initMap() { // todo: need to know which resources to load based on what bullets/rockets equipped. Load only needed resources
             Hashtable<String, Bitmap> resources = new Hashtable<>();
             resources.put(Map.spaceshipSprite, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.spaceship_sprite));
