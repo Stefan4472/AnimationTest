@@ -166,10 +166,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             background = new Background(screenW, screenH, scalingFactor, tiles);
         }
 
-        private void initMap() { // todo: auto-scales based on device resolution... Problem?
+        private void initMap() { // todo: need to know which resources to load based on what bullets/rockets equipped
             Hashtable<String, Bitmap> resources = new Hashtable<>();
             resources.put(Map.spaceshipSprite, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.spaceship_sprite)); // todo: load and scale resources, init sprites
+                    R.drawable.spaceship_sprite));
             resources.put(Map.spaceshipMovingSpriteSheet, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.spaceship_moving_spritesheet_diff));
             resources.put(Map.spaceshipExplodeSpriteSheet, BitmapFactory.decodeResource(myContext.getResources(),
@@ -188,7 +188,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     R.drawable.alien_sprite));
             resources.put(Map.alienBulletSprite, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.alien_bullet));
-            Log.d("GameView Class", "Dimensions of sprite: " + resources.get(Map.spaceshipSprite).getWidth() + " * " + resources.get(Map.spaceshipSprite).getHeight());
             map = new Map(screenW, screenH, resources);
         }
 
@@ -196,7 +195,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             synchronized (mySurfaceHolder) {
                 screenW = width;
                 screenH = height;
-                Log.d("GameView Class", "Screen = " + screenW + "*" + screenH);
             }
         }
 

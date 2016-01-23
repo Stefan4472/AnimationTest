@@ -40,7 +40,7 @@ public class Spaceship extends Sprite {
 
     private boolean firesRockets;
     private int rocketType = Rocket.ROCKET;
-    private long lastFiredRocket;
+    private int lastFiredRocket;
 
     // keeps track of fired bullets and rockets
     private List<Sprite> projectiles;
@@ -110,15 +110,15 @@ public class Spaceship extends Sprite {
 
     @Override
     public void updateActions() {
-        if (shooting && firingMode == BULLET_MODE &&
-                lastFiredBullet + Bullet.getDelay(bulletType) <= System.currentTimeMillis()) {
+        lastFiredBullet++;
+        if (shooting && firingMode == BULLET_MODE && lastFiredBullet >= Bullet.getDelay(bulletType)) {
             fireBullets();
-            lastFiredBullet = System.currentTimeMillis();
+            lastFiredBullet = 0;
         }
-        if (shooting && firingMode == ROCKET_MODE &&
-                lastFiredRocket + Rocket.getDelay(rocketType) <= System.currentTimeMillis()) {
+        lastFiredRocket++;
+        if (shooting && firingMode == ROCKET_MODE && lastFiredRocket >= Rocket.getDelay(rocketType)) {
             fireRockets();
-            lastFiredRocket = System.currentTimeMillis();
+            lastFiredRocket = 0;
             fireRocketAnimation.start();
         }
     }

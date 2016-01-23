@@ -11,12 +11,13 @@ public class Rocket extends Sprite {
     // todo: different rocket types (?)
     public final static int ROCKET = 1;
 
+    // number of to delay between firing rockets
     public int delay;
 
     public static int getDelay(int rocketType) {
         switch (rocketType) {
             case ROCKET:
-                return 420;
+                return 40;
             default:
                 return -1;
         }
