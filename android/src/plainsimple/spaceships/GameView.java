@@ -40,8 +40,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private Background background;
     // generates terrain and sprites on screen
     private Map map;
-    // num pixels scrolled
-    public static float scrollCounter = 0; // todo: make non-static
+    // relative speed of background scrolling to foreground scrolling
+    private static final float SCROLL_SPEED_CONST = 0.4f;
 
     private SensorManager gSensorManager;
     private Sensor gyroscope;
@@ -110,11 +110,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 background.draw(canvas);
                 if(!paused) {
                     map.update();
-                    scrollCounter += map.getSpaceship().getSpeedX();
-                    if (scrollCounter > 0.04) { // scroll background slowly
-                        background.scroll(1);
-                        scrollCounter = 0;
-                    }
+                    background.scroll((int) (-map.getScrollSpeed() * screenW * SCROLL_SPEED_CONST));
                 }
                 map.draw(canvas);
             } catch (Exception e) {

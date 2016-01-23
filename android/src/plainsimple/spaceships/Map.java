@@ -94,6 +94,9 @@ public class Map {
     public void incrementScore(int increment) {
         score += increment;
     }
+    public float getScrollSpeed() {
+        return scrollSpeed;
+    }
 
 
     /* screenW, screenH: dimensions of screen
@@ -203,7 +206,6 @@ public class Map {
 
     // adds any new sprites and generates a new set of sprites if needed
     public void update() {
-        GameView.scrollCounter -= scrollSpeed;
         score += difficulty / 2;
         difficulty += 0.01f;
         updateMap();
