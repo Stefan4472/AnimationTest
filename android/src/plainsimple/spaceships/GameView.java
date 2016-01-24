@@ -13,8 +13,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import java.util.Hashtable;
 
@@ -177,10 +175,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     R.drawable.spaceship_exploding_spritesheet_diff));
             resources.put(Map.spaceshipFireRocketSpriteSheet, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.spaceship_firing_spritesheet_diff));
+            // see current rocket type equipped and decode corresponding sprite
             resources.put(Map.rocketSprite, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.rocket_sprite));
+            // see current bullet type equipped and decode corresponding sprite
+
             resources.put(Map.spaceshipBulletSprite, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.bullet_sprite));
+                    R.drawable.laser_bullet_sprite));
             resources.put(Map.obstacleSprite, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.obstacle_sprite));
             resources.put(Map.coinSprite, BitmapFactory.decodeResource(myContext.getResources(),
@@ -194,6 +195,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         private void initScoreDisplay() {
             // todo: calculate pixels based on density-independent pixels
+            // todo: make it look better
             scoreDisplay = new ScoreDisplay(10, 20);
             scoreDisplay.setStartXY(10, 10 + (int) scoreDisplay.getPaint().getTextSize());
         }

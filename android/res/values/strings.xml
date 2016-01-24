@@ -4,4 +4,6 @@
     <string name="button_play">Play</string>
     <string name="button_store">Store</string>
     <string name="button_stats">Stats</string>
+    <string name="equipped_bullet">EQUIPPED_BULLET</string>
+    <string name="equipped_rocket">EQUIPPED_ROCKET</string>
 </resources>
