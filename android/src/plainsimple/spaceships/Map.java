@@ -34,6 +34,7 @@ public class Map {
     public static final String obstacleSprite = "obstacleSprite";
     public static final String coinSprite = "coinSprite";
     public static final String alien1Sprite = "alien1Sprite";
+    public static final String alienExplodeSpriteSheet = "alienExplodeSpriteSheet";
     public static final String alienBulletSprite = "alienBulletSprite";
 
     // number of rows of sprites that fit in map
@@ -108,7 +109,7 @@ public class Map {
         this.resources = resources;
         tileWidth = this.screenH / rows;
         tileHeight = this.screenH / rows;
-        map = new byte[rows][screenW / tileWidth];
+        map = new byte[1][screenW / tileWidth];
         nextRow = random.nextInt(6);
         initResources();
     }
@@ -188,7 +189,7 @@ public class Map {
                 return new Coin(resources.get(coinSprite), x, y, this);
             case ALIEN_LVL1:
                 Alien1 alien_1 = new Alien1(resources.get(alien1Sprite), x, y, this);
-                alien_1.injectResources(resources.get(alienBulletSprite));
+                alien_1.injectResources(resources.get(alienBulletSprite), resources.get(alienExplodeSpriteSheet));
                 return alien_1;
             default:
                 throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");

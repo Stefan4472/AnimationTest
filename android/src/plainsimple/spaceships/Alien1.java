@@ -16,6 +16,7 @@ public class Alien1 extends Alien {
     private int hShift;
 
     private Bitmap bulletBitmap;
+    private SpriteAnimation explodeAnimation;
 
     public Alien1(Bitmap defaultImage, float x, float y, Map map) {
         super(defaultImage, x, y, map);
@@ -37,8 +38,9 @@ public class Alien1 extends Alien {
         speedX = -0.0035f;
     }
 
-    public void injectResources(Bitmap bulletBitmap) {
+    public void injectResources(Bitmap bulletBitmap, Bitmap explodeSpriteSheet) {
         this.bulletBitmap = bulletBitmap;
+        explodeAnimation = new SpriteAnimation(explodeSpriteSheet, width, height, 5, false);
     }
 
     @Override
@@ -49,6 +51,10 @@ public class Alien1 extends Alien {
                 fireBullet(map.getSpaceship());
                 lastFiredBullet = System.currentTimeMillis();
             }
+        }
+        // disappear if alien has exploded
+        if(explodeAnimation.hasPlayed()) {
+            vis = false;
         }
     }
 
@@ -67,7 +73,9 @@ public class Alien1 extends Alien {
 
     @Override
     public void updateAnimations() {
-
+        if (explodeAnimation.isPlaying()) {
+            explodeAnimation.incrementFrame();
+        }
     }
 
     @Override
@@ -75,9 +83,10 @@ public class Alien1 extends Alien {
         if (s instanceof Bullet || s instanceof Rocket) {
             map.incrementScore(s.getDamage());
             hp -= s.damage;
-            if (hp < 0) { // todo: death animation
-                vis = false;
+            if (hp < 0 && !explodeAnimation.isPlaying()) { // todo: death animation
+                explodeAnimation.start();
                 hp = 0;
+                collision = true;
             }
         }
     }
@@ -85,6 +94,9 @@ public class Alien1 extends Alien {
     @Override
     public void draw(Canvas canvas) {
         canvas.drawBitmap(defaultImage, x, y, null);
+        if(explodeAnimation.isPlaying()) {
+            canvas.drawBitmap(explodeAnimation.currentFrame(), x, y, null);
+        }
     }
 
     // fires bullet at sprite based on current trajectories

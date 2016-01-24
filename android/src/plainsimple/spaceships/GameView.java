@@ -196,6 +196,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     R.drawable.coin_sprite));
             resources.put(Map.alien1Sprite, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.alien_sprite));
+            resources.put(Map.alienExplodeSpriteSheet, BitmapFactory.decodeResource(myContext.getResources(), // todo: use different animation (not Spaceship one)
+                    R.drawable.spaceship_exploding_spritesheet_diff));
             resources.put(Map.alienBulletSprite, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.alien_bullet));
             map = new Map(screenW, screenH, resources);
