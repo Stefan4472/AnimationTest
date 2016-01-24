@@ -11,7 +11,7 @@ public class Bullet extends Sprite {
     // number of frames to delay between fired bullets
     private int delay;
 
-    // bulletType defines bullet damage and sprite
+    // bulletType defines bullet damage and sprite // todo: use R.drawable constants
     public final static int LASER = 1;
     public final static int ION = 2;
     public final static int PLASMA = 3;

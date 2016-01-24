@@ -128,8 +128,6 @@ public class Map {
         spaceship.injectResources(resources.get(spaceshipMovingSpriteSheet),
                 resources.get(spaceshipFireRocketSpriteSheet), resources.get(spaceshipExplodeSpriteSheet),
                 resources.get(rocketSprite), resources.get(spaceshipBulletSprite));
-        spaceship.setBullets(true, Bullet.LASER);
-        spaceship.setRockets(true, Rocket.ROCKET);
     }
 
     // current horizontal tile

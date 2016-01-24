@@ -71,14 +71,33 @@ public class Spaceship extends Sprite {
     public void setShooting(boolean shooting) { this.shooting = shooting; }
     public void setFiringMode(int firingMode) { this.firingMode = firingMode; }
 
-    public void setBullets(boolean firesBullets, int bulletType) {
+    // convert drawable id of bullet sprite to a constant
+    public void setBullets(boolean firesBullets, int drawableID) { // todo: this is confusing. Use R.drawable constants
         this.firesBullets = firesBullets;
-        this.bulletType = bulletType;
+        switch (drawableID) {
+            case R.drawable.laser_bullet_sprite:
+                this.bulletType = Bullet.LASER;
+                break;
+            case R.drawable.ion_bullet_sprite:
+                this.bulletType = Bullet.ION;
+                break;
+            default:
+                this.bulletType = Bullet.LASER;
+                break;
+        }
     }
 
-    public void setRockets(boolean firesRockets, int rocketType) {
+    // convert drawable id of rocket sprite to a constant
+    public void setRockets(boolean firesRockets, int drawableID) {
         this.firesRockets = firesRockets;
-        this.rocketType = rocketType;
+        switch (drawableID) {
+            case R.drawable.rocket_sprite:
+                this.rocketType = Rocket.ROCKET;
+                break;
+            default:
+                this.rocketType = Rocket.ROCKET;
+                break;
+        }
     }
 
     // default constructor

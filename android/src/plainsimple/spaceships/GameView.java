@@ -183,7 +183,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                             R.drawable.rocket_sprite);
             resources.put(Map.rocketSprite, BitmapFactory.decodeResource(myContext.getResources(),
                     rocket_resource));
-            
+
             // get current bullet type equipped and decode corresponding sprite
             int bullet_resource = SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_bullet),
                     R.drawable.laser_bullet_sprite);
@@ -199,6 +199,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             resources.put(Map.alienBulletSprite, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.alien_bullet));
             map = new Map(screenW, screenH, resources);
+            map.getSpaceship().setBullets(true, bullet_resource);
+            map.getSpaceship().setRockets(true, rocket_resource);
         }
 
         private void initScoreDisplay() {
