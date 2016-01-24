@@ -3,6 +3,7 @@ package plainsimple.spaceships;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 
 /**
  * Created by Stefan on 1/23/2016.
@@ -10,7 +11,7 @@ import android.graphics.Paint;
 public class ScoreDisplay {
 
     // score to display
-    private int score;
+    private int score = 0;
     // Paint used for drawText on canvas
     private Paint paint;
     // coordinates on canvas to start drawing score
@@ -21,8 +22,17 @@ public class ScoreDisplay {
         this.paint = paint;
     }
 
+    public Paint getPaint() {
+        return paint;
+    }
+
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public void setStartXY(int startX, int startY) {
+        this.startX = startX;
+        this.startY = startY;
     }
 
     public ScoreDisplay(int startX, int startY) {
@@ -30,7 +40,8 @@ public class ScoreDisplay {
         this.startY = startY;
         paint = new Paint();
         paint.setColor(Color.WHITE);
-        paint.setTextSize(16);
+        paint.setTextSize(44);
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
     }
 
     public void draw(Canvas canvas) {

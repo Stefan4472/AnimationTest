@@ -37,7 +37,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private boolean paused = false;
     // whether sound on or off
     private boolean muted = false;
-    // TextView to print score to
+    // used to render score on screen
     private ScoreDisplay scoreDisplay;
     // space background (implements parallax scrolling)
     private Background background;
@@ -116,6 +116,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     background.scroll((int) (-map.getScrollSpeed() * screenW * SCROLL_SPEED_CONST));
                 }
                 map.draw(canvas);
+                scoreDisplay.setScore(map.getScore());
+                scoreDisplay.draw(canvas);
             } catch (Exception e) {
                 System.out.print("Error drawing canvas");
             }
@@ -138,9 +140,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     case MotionEvent.ACTION_UP: // handle user clicking something
                         if (onTitle) { // change to game screen. Load resources
                             myContext.getResources();
-                            // initialize background and map
                             initBackground();
                             initMap();
+                            initScoreDisplay();
                             onTitle = false;
                         } else {
                             map.setShooting(false);
@@ -190,6 +192,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             map = new Map(screenW, screenH, resources);
         }
 
+        private void initScoreDisplay() {
+            // todo: calculate pixels based on density-independent pixels
+            scoreDisplay = new ScoreDisplay(10, 20);
+            scoreDisplay.setStartXY(10, 10 + (int) scoreDisplay.getPaint().getTextSize());
+        }
         public void setSurfaceSize(int width, int height) {
             synchronized (mySurfaceHolder) {
                 screenW = width;
