@@ -1,7 +1,9 @@
 package plainsimple.spaceships;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +12,9 @@ import android.view.WindowManager;
 
 public class SpaceShipsActivity extends Activity {
 
+    // global preferences
+    public static SharedPreferences preferences;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,6 +22,7 @@ public class SpaceShipsActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.mainscreen_layout);
+        preferences = this.getPreferences(Context.MODE_PRIVATE);
     }
 
     // handle user pressing "Play" button

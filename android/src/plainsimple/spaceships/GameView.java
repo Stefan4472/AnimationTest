@@ -1,6 +1,7 @@
 package plainsimple.spaceships;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.*;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Space;
 
 import java.util.Hashtable;
 
@@ -175,13 +177,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     R.drawable.spaceship_exploding_spritesheet_diff));
             resources.put(Map.spaceshipFireRocketSpriteSheet, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.spaceship_firing_spritesheet_diff));
-            // see current rocket type equipped and decode corresponding sprite
-            resources.put(Map.rocketSprite, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.rocket_sprite));
-            // see current bullet type equipped and decode corresponding sprite
 
+            // get current rocket type equipped and decode corresponding sprite
+            int rocket_resource = SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_rocket),
+                            R.drawable.rocket_sprite);
+            resources.put(Map.rocketSprite, BitmapFactory.decodeResource(myContext.getResources(),
+                    rocket_resource));
+            
+            // get current bullet type equipped and decode corresponding sprite
+            int bullet_resource = SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_bullet),
+                    R.drawable.laser_bullet_sprite);
             resources.put(Map.spaceshipBulletSprite, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.laser_bullet_sprite));
+                    bullet_resource));
+
             resources.put(Map.obstacleSprite, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.obstacle_sprite));
             resources.put(Map.coinSprite, BitmapFactory.decodeResource(myContext.getResources(),
