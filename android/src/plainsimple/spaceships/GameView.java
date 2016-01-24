@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import java.util.Hashtable;
 
@@ -33,9 +34,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private GameViewThread thread;
 
     // whether game is paused currently
-    private boolean paused = false; // todo: non-static?
+    private boolean paused = false;
     // whether sound on or off
     private boolean muted = false;
+    // TextView to print score to
+    private ScoreDisplay scoreDisplay;
     // space background (implements parallax scrolling)
     private Background background;
     // generates terrain and sprites on screen
