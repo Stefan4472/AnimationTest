@@ -2,6 +2,7 @@ package plainsimple.spaceships;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 
 /**
  * Created by Stefan on 8/13/2015.
@@ -25,6 +26,7 @@ public class Rocket extends Sprite {
             case ROCKET:
                 delay = ROCKET_DELAY;
                 speedX = ROCKET_SPEED_X;
+                damage = ROCKET_DAMAGE;
                 break;
         }
     }

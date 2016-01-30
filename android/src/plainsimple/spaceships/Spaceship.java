@@ -2,6 +2,7 @@ package plainsimple.spaceships;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,8 +145,8 @@ public class Spaceship extends Sprite {
 
     // fires two rockets
     public void fireRockets() {
-        projectiles.add(new Rocket(rocketBitmap, x + (int) (width * 0.86), y + (int) (0.3 * height), bulletType));
-        projectiles.add(new Rocket(rocketBitmap, x + (int) (width * 0.86), y + (int) (0.66 * height), bulletType));
+        projectiles.add(new Rocket(rocketBitmap, x + (int) (width * 0.80), y + (int) (0.29 * height), rocketType));
+        projectiles.add(new Rocket(rocketBitmap, x + (int) (width * 0.80), y + (int) (0.65 * height), rocketType));
     }
 
     // fires two bullets

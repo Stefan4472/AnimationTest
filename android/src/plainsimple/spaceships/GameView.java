@@ -184,6 +184,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             resources.put(Map.rocketSprite, BitmapFactory.decodeResource(myContext.getResources(),
                     rocket_resource));
 
+            SpaceShipsActivity.preferences.edit().putInt(myContext.getString(R.string.equipped_bullet),
+                    R.drawable.laser_bullet_sprite).commit();
             // get current bullet type equipped and decode corresponding sprite
             int bullet_resource = SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_bullet),
                     R.drawable.laser_bullet_sprite);
@@ -211,6 +213,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             scoreDisplay = new ScoreDisplay(10, 20);
             scoreDisplay.setStartXY(10, 10 + (int) scoreDisplay.getPaint().getTextSize());
         }
+
         public void setSurfaceSize(int width, int height) {
             synchronized (mySurfaceHolder) {
                 screenW = width;
