@@ -214,9 +214,9 @@ public class Map {
                 tile.setCollides(false);
                 return tile;
             case TileGenerator.COIN:
-                return new Coin(coinSprite, coinSpinSheet, coinDisappearSheet, x, y, this);
+                return new Coin(coinSprite, coinSpinSheet, coinDisappearSheet, x, y);
             case TileGenerator.ALIEN_LVL1:
-                Alien1 alien_1 = new Alien1(alien1Sprite, x, y, this);
+                Alien1 alien_1 = new Alien1(alien1Sprite, x, y, difficulty, spaceship);
                 alien_1.injectResources(alienBulletSprite, alienExplodeSheet);
                 return alien_1;
             default:
@@ -233,7 +233,7 @@ public class Map {
 
     // adds any new sprites and generates a new set of sprites if needed
     public void update() {
-        score += difficulty / 2;
+        //score += difficulty / 2; // todo: increment score based on difficulty
         difficulty += 0.01f;
         updateMap();
         updateSpaceship();
@@ -242,6 +242,7 @@ public class Map {
         for(Sprite sprite : sprites) {
             checkCollisions(sprite, projectiles);
         }
+        score += spaceship.getAndClearScore();
         updateSprites(sprites);
         updateSprites(projectiles);
     }

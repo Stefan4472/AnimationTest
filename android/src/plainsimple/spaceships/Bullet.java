@@ -11,6 +11,9 @@ public class Bullet extends Sprite {
     // number of frames to delay between fired bullets
     private int delay;
 
+    // points awarded for scoring a hit
+    private int score;
+
     // bulletType defines bullet damage and sprite // todo: use R.drawable constants
     public final static int LASER = 1;
     public final static int ION = 2;
@@ -84,6 +87,13 @@ public class Bullet extends Sprite {
         }
     }
 
+    // returns score and resets it to zero
+    public int getAndClearScore() {
+        int score_copy = score;
+        score = 0;
+        return score_copy;
+    }
+
     @Override
     public void updateActions() {
 
@@ -102,9 +112,10 @@ public class Bullet extends Sprite {
     @Override
     public void handleCollision(Sprite s) {
         collision = true;
-        if (s instanceof Obstacle || s instanceof Alien) {
-            vis = false;
+        if (s instanceof Alien) {
+            score += damage;
         }
+        vis = false;
     }
 
     @Override

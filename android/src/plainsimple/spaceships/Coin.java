@@ -9,16 +9,14 @@ import android.graphics.Canvas;
  */
 public class Coin extends Sprite {
 
-    private Map map;
     private SpriteAnimation spin;
     private SpriteAnimation disappear;
 
-    public Coin(Bitmap defaultImage, Bitmap spinAnimation, Bitmap disappearAnimation, float x, float y, Map map) {
+    public Coin(Bitmap defaultImage, Bitmap spinAnimation, Bitmap disappearAnimation, float x, float y) {
         super(defaultImage, x, y);
         spin = new SpriteAnimation(spinAnimation, width, height, 5, true);
         spin.start();
         disappear = new SpriteAnimation(disappearAnimation, width, height, 1, false);
-        this.map = map;
         initObstacle();
     }
 
@@ -52,7 +50,6 @@ public class Coin extends Sprite {
     public void handleCollision(Sprite s) {
         if (s instanceof Spaceship) {
             disappear.start();
-            map.incrementScore(100);
         }
     }
 

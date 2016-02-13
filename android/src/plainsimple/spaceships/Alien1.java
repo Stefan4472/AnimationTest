@@ -17,9 +17,13 @@ public class Alien1 extends Alien {
 
     private Bitmap bulletBitmap;
     private SpriteAnimation explodeAnimation;
+    private Spaceship spaceship;
+    private double difficulty;
 
-    public Alien1(Bitmap defaultImage, float x, float y, Map map) {
-        super(defaultImage, x, y, map);
+    public Alien1(Bitmap defaultImage, float x, float y, double difficulty, Spaceship spaceship) {
+        super(defaultImage, x, y);
+        this.spaceship = spaceship;
+        this.difficulty = difficulty;
         initAlien();
     }
 
@@ -29,8 +33,8 @@ public class Alien1 extends Alien {
         period = 250 + random.nextInt(100);
         vShift = random.nextInt(20);
         hShift = -random.nextInt(3);
-        hp = 20 + (int) map.getDifficulty() / 3;
-        bulletDelay = 2_000 - map.getDifficulty() * 5;
+        hp = 20 + (int) (difficulty / 3);
+        bulletDelay = 2_000 - (int) (difficulty * 5);
         bulletSpeed = -0.002f - random.nextInt(5) / 10000.0;
         hitBox.setDimensions((int) (width * 0.8), (int) (height * 0.8));
         hitBox.setOffsets(width - hitBox.getWidth(), height - hitBox.getHeight());
@@ -45,10 +49,10 @@ public class Alien1 extends Alien {
 
     @Override
     public void updateActions() { // todo: avoid straight vertical shots
-        if (distanceTo(map.getSpaceship()) < 400 &&
+        if (distanceTo(spaceship) < 0.8 &&
                 lastFiredBullet + bulletDelay <= System.currentTimeMillis()) {
             if (getP(0.2f)) {
-                fireBullet(map.getSpaceship());
+                fireBullet(spaceship);
                 lastFiredBullet = System.currentTimeMillis();
             }
         }
@@ -81,9 +85,8 @@ public class Alien1 extends Alien {
     @Override
     public void handleCollision(Sprite s) {
         if (s instanceof Bullet || s instanceof Rocket) {
-            map.incrementScore(s.getDamage());
             hp -= s.damage;
-            if (hp < 0 && !explodeAnimation.isPlaying()) { // todo: death animation
+            if (hp < 0 && !explodeAnimation.isPlaying()) {
                 explodeAnimation.start();
                 hp = 0;
                 collision = true;

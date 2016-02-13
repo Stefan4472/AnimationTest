@@ -45,6 +45,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private Map map;
     // relative speed of background scrolling to foreground scrolling
     private static final float SCROLL_SPEED_CONST = 0.4f;
+    // points a coin is worth
+    public static final int COIN_VALUE = 100;
 
     private SensorManager gSensorManager;
     private Sensor gyroscope;

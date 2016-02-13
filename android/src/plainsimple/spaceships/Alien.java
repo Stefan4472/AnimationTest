@@ -14,7 +14,6 @@ public abstract class Alien extends Sprite {
     // ms to wait between firing bullets
     protected double bulletDelay;
     protected long lastFiredBullet = 0;
-    protected Map map;
 
     protected double bulletSpeed;
     protected List<Sprite> projectiles = new ArrayList<>();
@@ -39,14 +38,13 @@ public abstract class Alien extends Sprite {
         return copy;
     }
 
-    public Alien(Bitmap defaultImage, float x, float y, Map map) {
+    public Alien(Bitmap defaultImage, float x, float y) {
         super(defaultImage, x, y);
-        this.map = map;
     }
 
     private void initLevel3Alien() { // todo: move to Alien3 class
         startingY = y;
-        hp = 60 + (int) map.getDifficulty() / 5;
+        hp = 60;
         bulletDelay = 500;
         bulletSpeed = -3.5f;
         hitBox.setOffsets(5, 5);
