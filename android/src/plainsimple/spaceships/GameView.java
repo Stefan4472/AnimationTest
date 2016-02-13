@@ -196,6 +196,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     R.drawable.obstacle_sprite));
             resources.put(Map.coinSprite, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.coin_sprite));
+            resources.put(Map.coinSpinSpriteSheet, BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.coin_spinning_spritesheet));
+            resources.put(Map.coinCollectedSpriteSheet, BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.coin_collected_spritesheet));
             resources.put(Map.alien1Sprite, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.alien_sprite));
             resources.put(Map.alienExplodeSpriteSheet, BitmapFactory.decodeResource(myContext.getResources(), // todo: use different animation (not Spaceship one)

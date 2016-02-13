@@ -33,6 +33,8 @@ public class Map {
     public static final String spaceshipBulletSprite = "spaceshipBulletSprite";
     public static final String obstacleSprite = "obstacleSprite";
     public static final String coinSprite = "coinSprite";
+    public static final String coinSpinSpriteSheet = "coinSpinSpriteSheet";
+    public static final String coinCollectedSpriteSheet = "coinCollectedSpriteSheet";
     public static final String alien1Sprite = "alien1Sprite";
     public static final String alienExplodeSpriteSheet = "alienExplodeSpriteSheet";
     public static final String alienBulletSprite = "alienBulletSprite";
@@ -186,7 +188,8 @@ public class Map {
                 tile.setCollides(false);
                 return tile;
             case COIN:
-                return new Coin(resources.get(coinSprite), x, y, this);
+                return new Coin(resources.get(coinSprite), resources.get(coinSpinSpriteSheet), resources.get(coinCollectedSpriteSheet),
+                        x, y, this);
             case ALIEN_LVL1:
                 Alien1 alien_1 = new Alien1(resources.get(alien1Sprite), x, y, this);
                 alien_1.injectResources(resources.get(alienBulletSprite), resources.get(alienExplodeSpriteSheet));
