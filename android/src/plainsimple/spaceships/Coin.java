@@ -15,8 +15,9 @@ public class Coin extends Sprite {
 
     public Coin(Bitmap defaultImage, Bitmap spinAnimation, Bitmap disappearAnimation, float x, float y, Map map) {
         super(defaultImage, x, y);
-        spin = new SpriteAnimation(spinAnimation, 50, 50, 5, true);
-        disappear = new SpriteAnimation(disappearAnimation, 50, 50, 2, false);
+        spin = new SpriteAnimation(spinAnimation, width, height, 5, true);
+        spin.start();
+        disappear = new SpriteAnimation(disappearAnimation, width, height, 1, false);
         this.map = map;
         initObstacle();
     }
