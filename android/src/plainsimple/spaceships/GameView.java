@@ -168,45 +168,46 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         private void initMap() { // todo: need to know which resources to load based on what bullets/rockets equipped. Load only needed resources
-            Hashtable<String, Bitmap> resources = new Hashtable<>();
-            resources.put(Map.spaceshipSprite, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.spaceship_sprite));
-            resources.put(Map.spaceshipMovingSpriteSheet, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.spaceship_moving_spritesheet_diff));
-            resources.put(Map.spaceshipExplodeSpriteSheet, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.spaceship_exploding_spritesheet_diff));
-            resources.put(Map.spaceshipFireRocketSpriteSheet, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.spaceship_firing_spritesheet_diff));
+            Bitmap spaceshipSprite = BitmapFactory.decodeResource(myContext.getResources(), R.drawable.spaceship_sprite);
+            Bitmap spaceshipMoveSheet = BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.spaceship_moving_spritesheet_diff);
+            Bitmap spaceshipExplodeSheet = BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.spaceship_exploding_spritesheet_diff);
+            Bitmap spaceshipFireRocketSheet = BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.spaceship_firing_spritesheet_diff);
 
             // get current rocket type equipped and decode corresponding sprite
             int rocket_resource = SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_rocket),
                             R.drawable.rocket_sprite);
-            resources.put(Map.rocketSprite, BitmapFactory.decodeResource(myContext.getResources(),
-                    rocket_resource));
+            Bitmap rocketSprite = BitmapFactory.decodeResource(myContext.getResources(),
+                    rocket_resource);
 
             SpaceShipsActivity.preferences.edit().putInt(myContext.getString(R.string.equipped_bullet),
                     R.drawable.laser_bullet_sprite).commit();
             // get current bullet type equipped and decode corresponding sprite
             int bullet_resource = SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_bullet),
                     R.drawable.laser_bullet_sprite);
-            resources.put(Map.spaceshipBulletSprite, BitmapFactory.decodeResource(myContext.getResources(),
-                    bullet_resource));
+            Bitmap spaceshipBulletSprite = BitmapFactory.decodeResource(myContext.getResources(),
+                    bullet_resource);
 
-            resources.put(Map.obstacleSprite, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.obstacle_sprite));
-            resources.put(Map.coinSprite, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.coin_sprite));
-            resources.put(Map.coinSpinSpriteSheet, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.coin_spinning_spritesheet));
-            resources.put(Map.coinCollectedSpriteSheet, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.coin_collected_spritesheet));
-            resources.put(Map.alien1Sprite, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.alien_sprite));
-            resources.put(Map.alienExplodeSpriteSheet, BitmapFactory.decodeResource(myContext.getResources(), // todo: use different animation (not Spaceship one)
-                    R.drawable.spaceship_exploding_spritesheet_diff));
-            resources.put(Map.alienBulletSprite, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.alien_bullet));
-            map = new Map(screenW, screenH, resources);
+            Bitmap obstacleSprite = BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.obstacle_sprite);
+            Bitmap coinSprite = BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.coin_sprite);
+            Bitmap coinSpinSheet = BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.coin_spinning_spritesheet);
+            Bitmap coinDisappearSheet = BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.coin_collected_spritesheet);
+            Bitmap alien1Sprite = BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.alien_sprite);
+            Bitmap alienExplodeSheet = BitmapFactory.decodeResource(myContext.getResources(), // todo: use different animation (not Spaceship one)
+                    R.drawable.spaceship_exploding_spritesheet_diff);
+            Bitmap alienBulletSprite = BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.alien_bullet);
+            map = new Map(screenW, screenH, spaceshipSprite, spaceshipMoveSheet, spaceshipFireRocketSheet,
+                    spaceshipExplodeSheet, rocketSprite, spaceshipBulletSprite, obstacleSprite,
+                    coinSprite, coinSpinSheet, coinDisappearSheet, alien1Sprite, alienExplodeSheet,
+                    alienBulletSprite);
             map.getSpaceship().setBullets(true, bullet_resource);
             map.getSpaceship().setRockets(true, rocket_resource);
         }

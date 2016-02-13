@@ -22,22 +22,20 @@ public class Map {
     private static final int ALIEN_LVL2 = 5; // level 2 alien
     private static final int ALIEN_LVL3 = 6; // level 3 alien
 
-    private Hashtable<String, Bitmap> resources;
-
     // used to refer to resources in Hashtable
-    public static final String spaceshipSprite = "spaceshipSprite";
-    public static final String spaceshipMovingSpriteSheet = "spaceshipMovingSpritesheet";
-    public static final String spaceshipFireRocketSpriteSheet = "spaceshipFireRocketSpriteSheet";
-    public static final String spaceshipExplodeSpriteSheet = "spaceshipExplodeSpriteSheet";
-    public static final String rocketSprite = "rocketSprite";
-    public static final String spaceshipBulletSprite = "spaceshipBulletSprite";
-    public static final String obstacleSprite = "obstacleSprite";
-    public static final String coinSprite = "coinSprite";
-    public static final String coinSpinSpriteSheet = "coinSpinSpriteSheet";
-    public static final String coinCollectedSpriteSheet = "coinCollectedSpriteSheet";
-    public static final String alien1Sprite = "alien1Sprite";
-    public static final String alienExplodeSpriteSheet = "alienExplodeSpriteSheet";
-    public static final String alienBulletSprite = "alienBulletSprite";
+    public static Bitmap spaceshipSprite;
+    public static Bitmap spaceshipMoveSheet;
+    public static Bitmap spaceshipFireRocketSheet;
+    public static Bitmap spaceshipExplodeSheet;
+    public static Bitmap rocketSprite;
+    public static Bitmap spaceshipBulletSprite;
+    public static Bitmap obstacleSprite;
+    public static Bitmap coinSprite;
+    public static Bitmap coinSpinSheet;
+    public static Bitmap coinDisappearSheet;
+    public static Bitmap alien1Sprite;
+    public static Bitmap alienExplodeSheet;
+    public static Bitmap alienBulletSprite;
 
     // number of rows of sprites that fit in map
     private static final int rows = 6;
@@ -101,36 +99,85 @@ public class Map {
         return scrollSpeed;
     }
 
-
     /* screenW, screenH: dimensions of screen
      * scalingFactor: factor used to scale resources
      * resources: hashtable containing resources with proper keys */
-    public Map(int screenW, int screenH, Hashtable<String, Bitmap> resources) {
+    public Map(int screenW, int screenH, Bitmap spaceshipSprite, Bitmap spaceshipMoveSheet,
+               Bitmap spaceshipFireRocketSheet, Bitmap spaceshipExplodeSheet,
+               Bitmap rocketSprite, Bitmap spaceshipBulletSprite, Bitmap obstacleSprite,
+               Bitmap coinSprite, Bitmap coinSpinSheet, Bitmap coinDisappearSheet,
+               Bitmap alien1Sprite, Bitmap alienExplodeSheet, Bitmap alienBulletSprite) {
         this.screenW = screenW;
         this.screenH = screenH;
-        this.resources = resources;
         tileWidth = this.screenH / rows;
         tileHeight = this.screenH / rows;
         map = new byte[1][screenW / tileWidth];
         nextRow = random.nextInt(6);
+        this.spaceshipSprite = spaceshipSprite;
+        this.spaceshipMoveSheet = spaceshipMoveSheet;
+        this.spaceshipFireRocketSheet = spaceshipFireRocketSheet;
+        this.spaceshipExplodeSheet = spaceshipExplodeSheet;
+        this.rocketSprite = rocketSprite;
+        this.spaceshipBulletSprite = spaceshipBulletSprite;
+        this.obstacleSprite = obstacleSprite;
+        this.coinSprite = coinSprite;
+        this.coinSpinSheet = coinSpinSheet;
+        this.coinDisappearSheet = coinDisappearSheet;
+        this.alien1Sprite = alien1Sprite;
+        this.alienExplodeSheet = alienExplodeSheet;
+        this.alienBulletSprite = alienBulletSprite;
         initResources();
     }
 
     private void initResources() {
         // calculate scaling factor
-        scalingFactor = (screenH / 6.0f) / (float) resources.get(spaceshipSprite).getHeight();
-        // scale graphics resources
-        for (String key : resources.keySet()) {
-            // scale so textures remain square and are scaled using height
-            resources.put(key, Bitmap.createScaledBitmap(resources.get(key),
-                    (int) (resources.get(key).getWidth() * scalingFactor),
-                    (int) (resources.get(key).getHeight() * scalingFactor), true));
-        }
-        spaceship = new Spaceship(resources.get(spaceshipSprite), -resources.get(spaceshipSprite).getWidth(),
-                screenH / 2 - resources.get(spaceshipSprite).getHeight() / 2);
-        spaceship.injectResources(resources.get(spaceshipMovingSpriteSheet),
-                resources.get(spaceshipFireRocketSpriteSheet), resources.get(spaceshipExplodeSpriteSheet),
-                resources.get(rocketSprite), resources.get(spaceshipBulletSprite));
+        scalingFactor = (screenH / 6.0f) / (float) spaceshipSprite.getHeight();
+        // scale graphics resources. Want textures to remain square. Scale using using height
+        spaceshipSprite = Bitmap.createScaledBitmap(spaceshipSprite,
+                    (int) (spaceshipSprite.getWidth() * scalingFactor),
+                    (int) (spaceshipSprite.getHeight() * scalingFactor), true);
+        spaceshipMoveSheet = Bitmap.createScaledBitmap(spaceshipMoveSheet,
+                (int) (spaceshipMoveSheet.getWidth() * scalingFactor),
+                (int) (spaceshipMoveSheet.getHeight() * scalingFactor), true);
+        spaceshipFireRocketSheet = Bitmap.createScaledBitmap(spaceshipFireRocketSheet,
+                (int) (spaceshipFireRocketSheet.getWidth() * scalingFactor),
+                (int) (spaceshipFireRocketSheet.getHeight() * scalingFactor), true);
+        spaceshipExplodeSheet = Bitmap.createScaledBitmap(spaceshipExplodeSheet,
+                (int) (spaceshipExplodeSheet.getWidth() * scalingFactor),
+                (int) (spaceshipExplodeSheet.getHeight() * scalingFactor), true);
+        rocketSprite = Bitmap.createScaledBitmap(rocketSprite,
+                (int) (rocketSprite.getWidth() * scalingFactor),
+                (int) (rocketSprite.getHeight() * scalingFactor), true);
+        spaceshipBulletSprite = Bitmap.createScaledBitmap(spaceshipBulletSprite,
+                (int) (spaceshipBulletSprite.getWidth() * scalingFactor),
+                (int) (spaceshipBulletSprite.getHeight() * scalingFactor), true);
+        obstacleSprite = Bitmap.createScaledBitmap(obstacleSprite,
+                (int) (obstacleSprite.getWidth() * scalingFactor),
+                (int) (obstacleSprite.getHeight() * scalingFactor), true);
+        coinSprite = Bitmap.createScaledBitmap(coinSprite,
+                (int) (coinSprite.getWidth() * scalingFactor),
+                (int) (coinSprite.getHeight() * scalingFactor), true);
+        coinSpinSheet = Bitmap.createScaledBitmap(coinSpinSheet,
+                (int) (coinSpinSheet.getWidth() * scalingFactor),
+                (int) (coinSpinSheet.getHeight() * scalingFactor), true);
+        coinDisappearSheet = Bitmap.createScaledBitmap(coinDisappearSheet,
+                (int) (coinDisappearSheet.getWidth() * scalingFactor),
+                (int) (coinDisappearSheet.getHeight() * scalingFactor), true);
+        alien1Sprite = Bitmap.createScaledBitmap(alien1Sprite,
+                (int) (alien1Sprite.getWidth() * scalingFactor),
+                (int) (alien1Sprite.getHeight() * scalingFactor), true);
+        alienExplodeSheet = Bitmap.createScaledBitmap(alienExplodeSheet,
+                (int) (alienExplodeSheet.getWidth() * scalingFactor),
+                (int) (alienExplodeSheet.getHeight() * scalingFactor), true);
+        alienBulletSprite = Bitmap.createScaledBitmap(alienBulletSprite,
+                (int) (alienBulletSprite.getWidth() * scalingFactor),
+                (int) (alienBulletSprite.getHeight() * scalingFactor), true);
+
+
+        spaceship = new Spaceship(spaceshipSprite, -spaceshipSprite.getWidth(),
+                screenH / 2 - spaceshipSprite.getHeight() / 2);
+        spaceship.injectResources(spaceshipMoveSheet, spaceshipFireRocketSheet, spaceshipExplodeSheet,
+                rocketSprite, spaceshipBulletSprite);
     }
 
     // current horizontal tile
@@ -182,17 +229,16 @@ public class Map {
     private Sprite getMapTile(int tileID, float x, float y) throws IndexOutOfBoundsException {
         switch (tileID) {
             case OBSTACLE:
-                return new Obstacle(resources.get(obstacleSprite), x, y);
+                return new Obstacle(obstacleSprite, x, y);
             case OBSTACLE_INVIS:
-                Sprite tile = new Obstacle(resources.get(obstacleSprite), x, y);
+                Sprite tile = new Obstacle(obstacleSprite, x, y);
                 tile.setCollides(false);
                 return tile;
             case COIN:
-                return new Coin(resources.get(coinSprite), resources.get(coinSpinSpriteSheet), resources.get(coinCollectedSpriteSheet),
-                        x, y, this);
+                return new Coin(coinSprite, coinSpinSheet, coinDisappearSheet, x, y, this);
             case ALIEN_LVL1:
-                Alien1 alien_1 = new Alien1(resources.get(alien1Sprite), x, y, this);
-                alien_1.injectResources(resources.get(alienBulletSprite), resources.get(alienExplodeSpriteSheet));
+                Alien1 alien_1 = new Alien1(alien1Sprite, x, y, this);
+                alien_1.injectResources(alienBulletSprite, alienExplodeSheet);
                 return alien_1;
             default:
                 throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
