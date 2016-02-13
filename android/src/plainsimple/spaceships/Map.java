@@ -114,7 +114,7 @@ public class Map {
         initResources();
     }
 
-    private void initResources() { // previous method: scalingFactor = screenH / backgroundOrigH
+    private void initResources() {
         // calculate scaling factor
         scalingFactor = (screenH / 6.0f) / (float) resources.get(spaceshipSprite).getHeight();
         // scale graphics resources
