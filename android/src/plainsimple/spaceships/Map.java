@@ -91,7 +91,7 @@ public class Map {
         tileWidth = this.screenH / rows;
         tileHeight = this.screenH / rows;
         map = new byte[1][screenW / tileWidth];
-        tileGenerator = new TileGenerator();
+        tileGenerator = new TileGenerator(rows);
         this.spaceshipSprite = spaceshipSprite;
         this.spaceshipMoveSheet = spaceshipMoveSheet;
         this.spaceshipFireRocketSheet = spaceshipFireRocketSheet;
@@ -186,7 +186,7 @@ public class Map {
 
             // generate more sprites
             if (mapTileCounter == map[0].length) {
-                map = tileGenerator.generateTiles(difficulty, rows);
+                map = tileGenerator.generateTiles(difficulty);
                 mapTileCounter = 0;
             }
             lastTile = getWTile();
