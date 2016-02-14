@@ -50,7 +50,6 @@ public class Map {
 
     // spaceship
     private Spaceship spaceship;
-    private boolean shooting = false;
 
     // dimensions of screen display
     private int screenW;
@@ -69,7 +68,7 @@ public class Map {
     private int tileHeight;
 
     public Spaceship getSpaceship() { return spaceship; }
-    public void setShooting(boolean shooting) { this.shooting = shooting; }
+    public void setShooting(boolean shooting) { spaceship.setShooting(shooting); }
     public double getDifficulty() { return difficulty; }
     public int getScore() { return score; }
     public void incrementScore(int increment) {
@@ -171,7 +170,6 @@ public class Map {
     }
 
     private void updateMap() {
-        scrollSpeed = updateScrollSpeed(); // todo: figure out how to update scrollspeed without letting sprites become disjointed
         this.x += screenW * scrollSpeed;
 
         // take care of map rendering
@@ -188,7 +186,7 @@ public class Map {
             // generate more sprites
             if (mapTileCounter == map[0].length) {
                 map = tileGenerator.generateTiles(difficulty);
-                Log.d("Map Class", TileGenerator.mapToString(map));
+                scrollSpeed = updateScrollSpeed();
                 mapTileCounter = 0;
             }
             lastTile = getWTile();
@@ -239,7 +237,7 @@ public class Map {
         difficulty += 0.01f;
         updateMap();
         updateSpaceship();
-        projectiles.addAll(spaceship.getAndClearProjectiles());
+        projectiles.addAll(spaceship.getAndClearProjectiles()); // todo: does scoring work properly?
         getAlienBullets(projectiles, sprites);
         for(Sprite sprite : sprites) {
             checkCollisions(sprite, projectiles);
@@ -255,7 +253,7 @@ public class Map {
         if (spaceship.getX() < screenW / 4) {
             spaceship.setControllable(false);
             spaceship.setSpeedX(0.003f);
-        } else if (spaceship.getX() > screenW / 4) {
+        } else {
             spaceship.setX(screenW / 4);
             spaceship.setSpeedX(0.0f);
             spaceship.setControllable(true);
@@ -268,7 +266,6 @@ public class Map {
         }
         checkCollisions(spaceship, projectiles);
         checkCollisions(spaceship, sprites);
-        spaceship.setShooting(shooting);
         spaceship.updateActions();
         spaceship.updateAnimations();
     }
