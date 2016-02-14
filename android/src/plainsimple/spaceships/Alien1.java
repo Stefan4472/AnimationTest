@@ -2,7 +2,6 @@ package plainsimple.spaceships;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.util.Log;
 
 /**
  * Created by Stefan on 9/26/2015.
@@ -85,7 +84,7 @@ public class Alien1 extends Alien {
 
     @Override
     public void handleCollision(Sprite s) {
-        if (s instanceof Bullet || s instanceof Rocket) {
+        if (s instanceof Bullet || s instanceof Rocket || s instanceof Spaceship) {
             hp -= s.damage;
             if (hp < 0 && !explodeAnimation.isPlaying()) {
                 explodeAnimation.start();

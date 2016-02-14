@@ -2,6 +2,7 @@ package plainsimple.spaceships;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import java.util.*;
 
@@ -187,6 +188,7 @@ public class Map {
             // generate more sprites
             if (mapTileCounter == map[0].length) {
                 map = tileGenerator.generateTiles(difficulty);
+                Log.d("Map Class", TileGenerator.mapToString(map));
                 mapTileCounter = 0;
             }
             lastTile = getWTile();

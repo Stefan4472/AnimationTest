@@ -80,7 +80,7 @@ public class TileGenerator {
 
     // generates map cluster of simple obstacle // todo: generate buffers separately, as empty arrays in between non-empty arrays
     private byte[][] generateObstacles() {
-        int size = 10 + random.nextInt(5), row = 0;
+        int size = 10 + random.nextInt(5), row = random.nextInt(rows);
         byte[][] generated = new byte[rows][size];
         for (int i = 0; i < size; i++) {
             if (getP(0.2f)) {
@@ -97,6 +97,7 @@ public class TileGenerator {
                 if (row > 0 && getP(0.2)) {
                     generated[row - 1][i] = OBSTACLE;
                 }
+                row = random.nextInt(rows);
             }
         }
         return generated;
@@ -115,8 +116,8 @@ public class TileGenerator {
                 generated[i][0] = OBSTACLE;
             }
         }
-        for (int i = 1; i < tunnel_length; i++) {
-            if (getP(change_path) && i < tunnel_length - 2) {
+        for (int j = 1; j < tunnel_length; j++) {
+            if (j < tunnel_length - 2 && getP(change_path)) {
                 change_path = -0.1f;
                 // determine which direction to change in
                 int direction = 0;
@@ -133,20 +134,31 @@ public class TileGenerator {
                         direction = 1;
                     }
                 }
-                for (int j = 0; j < rows; j++) {
-                    if (j != row && j != row + direction) {
-                        generated[j][i] = OBSTACLE;
-                        generated[j][i + 1] = OBSTACLE;
+                for (int i = 0; i < rows; i++) {
+                    if (i == row || i == row + direction) {
+                        generated[i][j] = EMPTY;
+                        generated[i][j + 1] = EMPTY;
+                    } else if (i == row + 2 * direction) {
+                        generated[i][j] = OBSTACLE;
+                        generated[i][j + 1] = OBSTACLE;
+                    } else if (i == row - direction) {
+                        generated[i][j] = OBSTACLE;
+                        generated[i][j + 1] = OBSTACLE;
+                    } else {
+                        generated[i][j] = OBSTACLE_INVIS;
+                        generated[i][j + 1] = OBSTACLE_INVIS;
                     }
                 }
-                i++;
+                j++;
                 row += direction;
             } else {
-                for (int j = 0; j < rows; j++) {
-                    if (j < row - 1 || j > row + 1) {
-                        generated[j][i] = OBSTACLE_INVIS;
-                    } else if (j != row) {
-                        generated[j][i] = OBSTACLE;
+                for (int i = 0; i < rows; i++) {
+                    if (i == row) {
+                        generated[i][j] = EMPTY;
+                    } else if (i == row + 1 || i == row - 1) {
+                        generated[i][j] = OBSTACLE;
+                    } else {
+                        generated[i][j] = OBSTACLE_INVIS;
                     }
                 }
                 change_path += 0.05f;
@@ -257,7 +269,7 @@ public class TileGenerator {
     }
 
     // prints map in a 2-d array
-    private String mapToString(byte[][] map) {
+    public static String mapToString(byte[][] map) {
         String result = "";
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
