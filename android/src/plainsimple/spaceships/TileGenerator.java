@@ -17,7 +17,7 @@ public class TileGenerator {
     public static final int ALIEN_LVL3 = 6; // level 3 alien
 
     // length of coin trails
-    private static final int coinTrailLength = 18;
+    private static final int coinTrailLength = 15;
     // number of coins remaining in current trail
     private int coinsLeft;
     // number of rows of tiles to generate
@@ -26,18 +26,12 @@ public class TileGenerator {
     private boolean genBuffer;
     // length of buffer
     private int bufferLength = 3;
-    // whether to continue a coin trail in the next chunk
-    private boolean continueCoinTrail = false;
-    // index of row to be left clear in first column of next chunk
-    // (used to guide coin trails between chunks and ensure map is
-    // not impossible)
-    private int nextRow;
+
 
     // used for generating random numbers
     private static Random random = new Random();
 
     public TileGenerator(int rows) {
-        nextRow = random.nextInt(6);
         genBuffer = true;
         this.rows = rows;
     }
@@ -106,7 +100,6 @@ public class TileGenerator {
     // generates tunnel
     private byte[][] generateTunnel() {
         int tunnel_length = 18 + random.nextInt(10);
-        // create 3-tile buffer zone on each end of tunnel
         byte[][] generated = new byte[rows][tunnel_length];
         int row = 1 + random.nextInt(rows - 2);
         float change_path = 0.0f;
@@ -170,7 +163,7 @@ public class TileGenerator {
     private byte[][] generateAlien() {
         int size = 4 + random.nextInt(10);
         byte[][] generated = new byte[rows][size];
-        generated[random.nextInt(6)][size / 2] = ALIEN_LVL1;
+        generated[1 + random.nextInt(4)][size / 2] = ALIEN_LVL1;
         return generated;
     }
 
@@ -179,7 +172,7 @@ public class TileGenerator {
         int size = (num_aliens + 1) * 8;
         byte[][] generated = new byte[rows][size];
         for (int i = 0; i < num_aliens; i++) {
-            generated[random.nextInt(6)][8 * (i + 1)] = ALIEN_LVL1;
+            generated[1 + random.nextInt(4)][8 * (i + 1)] = ALIEN_LVL1;
         }
         return generated;
     }
