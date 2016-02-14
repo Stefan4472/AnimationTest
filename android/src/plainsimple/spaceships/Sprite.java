@@ -187,9 +187,10 @@ public abstract class Sprite {
         return hitBox.intersects(s.hitBox);
     }
 
-    // returns distance between origin points of sprites
+    // returns distance between centers of sprite hitboxes, as portion of screen width
     public double distanceTo(Sprite s) {
-        return Math.sqrt(Math.pow((s.x - x), 2) + Math.pow((s.y - y), 2));
+        return Math.sqrt(Math.pow((s.getHitboxCenter().getX() - getHitboxCenter().getX()), 2)
+                + Math.pow((s.getHitboxCenter().getY() - getHitboxCenter().getY()), 2)) / GameView.screenW;
     }
 
     // returns coordinates of center of sprite's hitbox

@@ -27,14 +27,15 @@ public class Alien1 extends Alien {
         initAlien();
     }
 
-    private void initAlien() {
+    private void initAlien() { // todo: randomized stuff is pretty arbitrary
         startingY = y;
         amplitude = 70 + random.nextInt(60);
         period = 250 + random.nextInt(100);
         vShift = random.nextInt(20);
         hShift = -random.nextInt(3);
         hp = 20 + (int) (difficulty / 3);
-        bulletDelay = 2_000 - (int) (difficulty * 5);
+        bulletDelay = 30;
+        framesSinceLastBullet = bulletDelay;
         bulletSpeed = -0.002f - random.nextInt(5) / 10000.0;
         hitBox.setDimensions((int) (width * 0.8), (int) (height * 0.8));
         hitBox.setOffsets(width - hitBox.getWidth(), height - hitBox.getHeight());
@@ -44,16 +45,16 @@ public class Alien1 extends Alien {
 
     public void injectResources(Bitmap bulletBitmap, Bitmap explodeSpriteSheet) {
         this.bulletBitmap = bulletBitmap;
-        explodeAnimation = new SpriteAnimation(explodeSpriteSheet, width, height, 5, false);
+        explodeAnimation = new SpriteAnimation(explodeSpriteSheet, width, height, 3, false);
     }
 
     @Override
     public void updateActions() { // todo: avoid straight vertical shots
-        if (distanceTo(spaceship) < 0.8 &&
-                lastFiredBullet + bulletDelay <= System.currentTimeMillis()) {
+        framesSinceLastBullet++;
+        if (distanceTo(spaceship) < 0.8 && framesSinceLastBullet >= bulletDelay) {
             if (getP(0.2f)) {
                 fireBullet(spaceship);
-                lastFiredBullet = System.currentTimeMillis();
+                framesSinceLastBullet = 0;
             }
         }
         // disappear if alien has exploded

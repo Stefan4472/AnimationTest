@@ -11,9 +11,9 @@ import java.util.List;
  */
 public abstract class Alien extends Sprite {
 
-    // ms to wait between firing bullets
-    protected double bulletDelay;
-    protected long lastFiredBullet = 0;
+    // frames to wait between firing bullets
+    protected int bulletDelay;
+    protected int framesSinceLastBullet = 0;
 
     protected double bulletSpeed;
     protected List<Sprite> projectiles = new ArrayList<>();

@@ -40,7 +40,7 @@ public class Spaceship extends Sprite {
 
     private boolean firesBullets;
     private int bulletType = Bullet.LASER;
-    private long lastFiredBullet;
+    private int lastFiredBullet;
 
     private boolean firesRockets;
     private int rocketType = Rocket.ROCKET;
