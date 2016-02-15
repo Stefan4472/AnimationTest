@@ -212,6 +212,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     alienBulletSprite);
             map.getSpaceship().setBullets(true, bullet_resource);
             map.getSpaceship().setRockets(true, rocket_resource);
+            map.getSpaceship().setHP(30);
         }
 
         private void initScoreDisplay() {

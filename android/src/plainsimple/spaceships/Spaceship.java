@@ -69,9 +69,6 @@ public class Spaceship extends Sprite {
     public void setControllable(boolean controllable) {
         this.controllable = controllable;
     }
-    public void setHP(int hp) {
-        this.hp = hp;
-    }
     public void setShooting(boolean shooting) { this.shooting = shooting; }
     public void setFiringMode(int firingMode) { this.firingMode = firingMode; }
 

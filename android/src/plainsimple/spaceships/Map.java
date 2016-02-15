@@ -45,8 +45,10 @@ public class Map {
 
     // generated sprites
     private List<Sprite> sprites = new ArrayList<>();
-    // projectiles on screen
-    private List<Sprite> projectiles = new ArrayList<>();
+    // projectiles on screen fired by spaceship
+    private List<Sprite> ssProjectiles = new ArrayList<>();
+    // projectiles on screen fired by aliens
+    private List<Sprite> alienProjectiles = new ArrayList<>();
 
     // spaceship
     private Spaceship spaceship;
@@ -236,19 +238,25 @@ public class Map {
         //score += difficulty / 2; // todo: increment score based on difficulty
         difficulty += 0.01f;
         updateMap();
-        updateSpaceship();
-        projectiles.addAll(spaceship.getAndClearProjectiles()); // todo: does scoring work properly?
-        getAlienBullets(projectiles, sprites);
+        updateSpaceship(); // todo: does scoring work properly?
+        getAlienBullets(alienProjectiles, sprites);
+        // check collisions between sprites and spaceship projectiles
         for(Sprite sprite : sprites) {
-            checkCollisions(sprite, projectiles);
+            checkCollisions(sprite, ssProjectiles);
         }
+        checkCollisions(spaceship, sprites);
+        checkCollisions(spaceship, alienProjectiles);
         score += spaceship.getAndClearScore();
         updateSprites(sprites);
-        updateSprites(projectiles);
+        updateSprites(ssProjectiles);
+        updateSprites(alienProjectiles);
+        spaceship.updateAnimations();
     }
 
     private void updateSpaceship() {
         spaceship.move();
+        spaceship.updateActions();
+        ssProjectiles.addAll(spaceship.getAndClearProjectiles());
         // for when spaceship first comes on to screen
         if (spaceship.getX() < screenW / 4) {
             spaceship.setControllable(false);
@@ -264,10 +272,6 @@ public class Map {
         } else if (spaceship.getY() > screenH - spaceship.getHeight()) {
             spaceship.setY(screenH - spaceship.getHeight());
         }
-        checkCollisions(spaceship, projectiles);
-        checkCollisions(spaceship, sprites);
-        spaceship.updateActions();
-        spaceship.updateAnimations();
     }
 
     private void updateSprites(List<Sprite> toUpdate) {
@@ -294,7 +298,7 @@ public class Map {
     // adds those projectiles to projectiles list
     private void getAlienBullets(List<Sprite> projectiles, List<Sprite> sprites) {
         for(Sprite s : sprites) {
-            if(s instanceof Alien) {
+            if (s instanceof Alien) {
                 projectiles.addAll(((Alien) s).getAndClearProjectiles());
             }
         }
@@ -313,10 +317,13 @@ public class Map {
 
     // draws sprites on canvas
     public void draw(Canvas canvas) {
-        for(Sprite s : sprites) {
+        for (Sprite s : sprites) {
             s.draw(canvas);
         }
-        for(Sprite s : projectiles) {
+        for (Sprite s : ssProjectiles) {
+            s.draw(canvas);
+        }
+        for (Sprite s : alienProjectiles) {
             s.draw(canvas);
         }
         spaceship.draw(canvas);
