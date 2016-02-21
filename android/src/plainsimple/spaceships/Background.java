@@ -47,8 +47,11 @@ public class Background {
         drawSpace.setVariance(0.2);
         drawSpace.setDensity(3);
         drawSpace.setStarSize(5);
-        drawSpace.setUseGradient(true);
-        drawSpace.setBackgroundGradient(new LinearGradient(0, 0, screenW, 0, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP));
+        //drawSpace.setUseGradient(true);
+        //drawSpace.setBackgroundGradient(new LinearGradient(0, 0, screenW, 0, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP));
+        for (int i = 0; i < imageTiles.length; i++) {
+            imageTiles[i] = drawSpace.drawSpace(TILE_WIDTH, tileHeight);
+        }
     }
 
     // draws background on canvas
@@ -58,7 +61,9 @@ public class Background {
         if (getOffset() == 0) {
             drawSpace.drawSpace(imageTiles[end_tile]);
         }
-
+        for (int i = 0; i < imageTiles.length; i++) {
+            canvas.drawBitmap(imageTiles[(start_tile + i) % imageTiles.length], getOffset() + i * TILE_WIDTH, 0, null);
+        }
     }
 
     // increases scroll counter by x
