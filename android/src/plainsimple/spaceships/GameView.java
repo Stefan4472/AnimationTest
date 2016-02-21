@@ -112,7 +112,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         private void draw(Canvas canvas) {
             try {
-                background.draw(canvas);
+                //background.draw(canvas);
                 if(!paused) {
                     map.update();
                     background.scroll((int) (-map.getScrollSpeed() * screenW * SCROLL_SPEED_CONST));
@@ -142,7 +142,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     case MotionEvent.ACTION_UP: // handle user clicking something
                         if (onTitle) { // change to game screen. Load resources
                             myContext.getResources();
-                            initBackground();
+                            background = new Background(screenW, screenH);
                             initMap();
                             initScoreDisplay();
                             onTitle = false;
@@ -153,20 +153,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 }
             }
             return true;
-        }
-
-        private void initBackground() {
-            Bitmap[] tiles = {
-                BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space_tile),
-                        BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space_tile),
-                        BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space_tile),
-                        BitmapFactory.decodeResource(myContext.getResources(), R.drawable.space_tile)
-            };
-            // todo: clean up
-            // calculate scaling factor
-            float scalingFactor = (screenH / 6.0f) / (float) BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.spaceship_sprite).getHeight();
-            background = new Background(screenW, screenH, scalingFactor, tiles);
         }
 
         private void initMap() { // todo: need to know which resources to load based on what bullets/rockets equipped. Load only needed resources

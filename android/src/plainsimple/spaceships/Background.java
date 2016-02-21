@@ -11,47 +11,36 @@ import java.util.Random;
  */
 public class Background {
 
-    // available tiles. Element index is Tile ID
-    private Bitmap[] tiles;
-    // grid of tile ID's instructing how to display background
-    private byte[][] background;
-    // coordinates of upper-left of "window" being shown
-    private int x = 0;
-    // tile side length (square)
-    private int tileWidth;
-    private static final Random random = new Random();
-
-    private Bitmap backgroundImg;
+    // rendered space background tiles
+    private Bitmap[] imageTiles;
+    // number of pixels scrolled
+    private int scrollCounter;
+    // width of rendered background tiles (px)
+    private static final int TILE_WIDTH = 50;
+    // height of rendered background tiles (px)
+    private int tileHeight;
+    // used to render space background
     private DrawSpace drawSpace;
 
-    public int getX() {
-        return x;
+    public int getScrollCounter() {
+        return scrollCounter;
     }
 
-    // current horizontal tile
-    private int getWTile() {
-        return x / tileWidth;
+    // index of tile that will be left-most on the screen
+    private int getStartTile() {
+        return (scrollCounter / TILE_WIDTH) % imageTiles.length;
     }
 
-    // distance, in pixels, from top left of current tile
-    private int getWOffset() {
-        return x % tileWidth;
+    // offset of left-most tile on the screen from origin of canvas
+    private int getOffset() {
+        return -(scrollCounter % TILE_WIDTH);
     }
 
-    // construct tiles using names of tile files // todo: establish scaling factor (see Map class)
-    public Background(int screenW, int screenH, float scaleH, Bitmap[] tiles) {
-        this.tiles = tiles;
-        scaleResources(scaleH);
-
+    public Background(int screenW, int screenH) {
         // todo: this renders an image longer than actual screen, could be optimized
-        background = new byte[(int) Math.ceil(screenH / tileWidth)][(int) Math.ceil(screenW / tileWidth) + 2];
-
-        // fill background randomly with space tiles
-        for (int i = 0; i < background.length; i++) {
-            for (int j = 0; j < background[i].length; j++) {
-                background[i][j] = (byte) random.nextInt(tiles.length);
-            }
-        }
+        this.tileHeight = screenH;
+        imageTiles = new Bitmap[screenW / TILE_WIDTH + 1]; // todo: what if screenW is a multiple of TILE_WIDTH?
+        scrollCounter = 0;
 
         drawSpace = new DrawSpace();
         //drawSpace.setAntiAlias(false);
@@ -60,34 +49,20 @@ public class Background {
         drawSpace.setStarSize(5);
         drawSpace.setUseGradient(true);
         drawSpace.setBackgroundGradient(new LinearGradient(0, 0, screenW, 0, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP));
-        backgroundImg = drawSpace.drawSpace(screenW, screenH);
     }
 
-    // scales tiles to proper size
-    private void scaleResources(float scaleH) {
-        tileWidth = (int) (tiles[0].getHeight() * scaleH);
-        for(int i = 0; i < tiles.length; i++) {
-            tiles[i] = Bitmap.createScaledBitmap(tiles[i], tileWidth, tileWidth, true);
-        }
-    }
-
-    // shifts screen x units left, draws background to canvas
+    // draws background on canvas
     public void draw(Canvas canvas) {
-        /*int w_offset = getWOffset();
+        int start_tile = getStartTile();
+        int end_tile = (start_tile == 0 ? imageTiles.length - 1 : start_tile - 1);
+        if (getOffset() == 0) {
+            drawSpace.drawSpace(imageTiles[end_tile]);
+        }
 
-        for (int i = 0; i < background.length; i++) { // rows
-            for (int j = 0; j < background[1].length; j++) { // columns
-                int loc_x = j * tileWidth - w_offset;
-                int loc_y = i * tileWidth;
-                canvas.drawBitmap(tiles[background[i][(j + getWTile()) % background[0].length]], loc_x, loc_y, null);
-            }
-        }*/
-        canvas.drawBitmap(backgroundImg, 0, 0, null);
     }
 
-    // moves background x units left giving the
-    // appearance of forward motion
+    // increases scroll counter by x
     public void scroll(int x) {
-        this.x += x;
+        this.scrollCounter += x;
     }
 }
