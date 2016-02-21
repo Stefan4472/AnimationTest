@@ -188,7 +188,7 @@ public class Map {
             // generate more sprites
             if (mapTileCounter == map[0].length) {
                 map = tileGenerator.generateTiles(difficulty);
-                scrollSpeed = updateScrollSpeed();
+                updateScrollSpeed();
                 mapTileCounter = 0;
             }
             lastTile = getWTile();
@@ -198,12 +198,11 @@ public class Map {
     // calculates scrollspeed based on difficulty
     // difficulty starts at 0 and increases by 0.01/frame,
     // or 1 per second
-    public float updateScrollSpeed() {
+    public void updateScrollSpeed() {
         scrollSpeed = (float) (-0.0025f - difficulty / 2500.0);
         if (scrollSpeed < -0.025) { // scroll speed ceiling
             scrollSpeed = -0.025f;
         }
-        return scrollSpeed;
     }
 
     // returns sprite initialized to coordinates (x,y) given tileID

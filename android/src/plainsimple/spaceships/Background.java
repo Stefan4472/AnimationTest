@@ -21,6 +21,10 @@ public class Background {
     private int tileHeight;
     // used to render space background
     private DrawSpace drawSpace;
+    // colors used for drawing gradients in image tiles
+    private int bgColor1;
+    private int bgColor2;
+    private int colorCounter = 0;
 
     public int getScrollCounter() {
         return scrollCounter;
@@ -43,14 +47,18 @@ public class Background {
         scrollCounter = 0;
 
         drawSpace = new DrawSpace();
-        //drawSpace.setAntiAlias(false);
+        drawSpace.setAntiAlias(false);
         drawSpace.setVariance(0.2);
         drawSpace.setDensity(3);
         drawSpace.setStarSize(5);
-        //drawSpace.setUseGradient(true);
-        //drawSpace.setBackgroundGradient(new LinearGradient(0, 0, screenW, 0, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP));
+        drawSpace.setUseGradient(true);
+        bgColor1 = Color.BLACK;
+        bgColor2 = Color.rgb(1, 1, 1);
         for (int i = 0; i < imageTiles.length; i++) {
             imageTiles[i] = drawSpace.drawSpace(TILE_WIDTH, tileHeight);
+            drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, bgColor1, bgColor2, Shader.TileMode.CLAMP));
+            bgColor1 = bgColor2;
+            bgColor2++;
         }
     }
 
@@ -59,7 +67,10 @@ public class Background {
         int start_tile = getStartTile();
         int end_tile = (start_tile == 0 ? imageTiles.length - 1 : start_tile - 1);
         if (getOffset() == 0) {
+            drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, bgColor1, bgColor2, Shader.TileMode.CLAMP));
             drawSpace.drawSpace(imageTiles[end_tile]);
+            bgColor1 = bgColor2;
+            bgColor2++;
         }
         for (int i = 0; i < imageTiles.length; i++) {
             canvas.drawBitmap(imageTiles[(start_tile + i) % imageTiles.length], getOffset() + i * TILE_WIDTH, 0, null);
