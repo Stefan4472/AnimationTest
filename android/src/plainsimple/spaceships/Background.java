@@ -1,9 +1,8 @@
 package plainsimple.spaceships;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
+import android.graphics.*;
 import android.util.Log;
+import plainsimple.galaxydraw.DrawSpace;
 
 import java.util.Random;
 
@@ -21,6 +20,9 @@ public class Background {
     // tile side length (square)
     private int tileWidth;
     private static final Random random = new Random();
+
+    private Bitmap backgroundImg;
+    private DrawSpace drawSpace;
 
     public int getX() {
         return x;
@@ -50,6 +52,15 @@ public class Background {
                 background[i][j] = (byte) random.nextInt(tiles.length);
             }
         }
+
+        drawSpace = new DrawSpace();
+        //drawSpace.setAntiAlias(false);
+        drawSpace.setVariance(0.2);
+        drawSpace.setDensity(3);
+        drawSpace.setStarSize(5);
+        drawSpace.setUseGradient(true);
+        drawSpace.setBackgroundGradient(new LinearGradient(0, 0, screenW, 0, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP));
+        backgroundImg = drawSpace.drawSpace(screenW, screenH);
     }
 
     // scales tiles to proper size
@@ -62,7 +73,7 @@ public class Background {
 
     // shifts screen x units left, draws background to canvas
     public void draw(Canvas canvas) {
-        int w_offset = getWOffset();
+        /*int w_offset = getWOffset();
 
         for (int i = 0; i < background.length; i++) { // rows
             for (int j = 0; j < background[1].length; j++) { // columns
@@ -70,7 +81,8 @@ public class Background {
                 int loc_y = i * tileWidth;
                 canvas.drawBitmap(tiles[background[i][(j + getWTile()) % background[0].length]], loc_x, loc_y, null);
             }
-        }
+        }*/
+        canvas.drawBitmap(backgroundImg, 0, 0, null);
     }
 
     // moves background x units left giving the
