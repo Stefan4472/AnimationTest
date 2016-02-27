@@ -1,6 +1,7 @@
 package plainsimple.galaxydraw;
 
 import android.graphics.*;
+import android.util.Log;
 
 import java.util.Random;
 
@@ -22,8 +23,6 @@ public class DrawSpace {
     private LinearGradient backgroundGradient;
     // stars per 2500 px (50*50 square)
     private double density;
-    // alpha value used when drawing stars
-    private int brightness;
     // radius of stars, in px
     private int starSize;
     // whether or not to use anti-alias when drawing stars
@@ -57,14 +56,6 @@ public class DrawSpace {
 
     public void setDensity(double density) {
         this.density = density;
-    }
-
-    public int getBrightness() {
-        return brightness;
-    }
-
-    public void setBrightness(int brightness) {
-        this.brightness = brightness;
     }
 
     public int getStarSize() {
@@ -110,10 +101,9 @@ public class DrawSpace {
     // init with default values
     public DrawSpace() {
         density = 5;
-        brightness = 150;
         starSize = 3;
         variance = 0.4;
-        starColor = Color.rgb(255, 255, 238);
+        starColor = Color.argb(190, 255, 255, 238);
         backgroundColor = Color.BLACK;
         antiAlias = true;
         useGradient = false;
@@ -139,6 +129,7 @@ public class DrawSpace {
         paint = new Paint();
         paint.setAntiAlias(antiAlias);
         int num_stars = (int) (canvas.getWidth() * canvas.getHeight() / 2500.0 * density);
+        int brightness = Color.alpha(starColor);
         for (int i = 0; i < num_stars; i++) {
             drawStar(canvas, random.nextInt(canvas.getWidth()), random.nextInt(canvas.getHeight()),
                     varyBrightness(brightness, variance), varySize(starSize, variance));
@@ -157,19 +148,28 @@ public class DrawSpace {
 
     private void drawStar(Canvas canvas, int x, int y, int brightness, int size) {
         paint.setColor(Color.argb(brightness, Color.red(starColor), Color.green(starColor), Color.blue(starColor)));
-        canvas.drawCircle(x, y, size, paint);
+        Log.d("DrawSpace", "Color = " + paint.getAlpha() + "," + Color.red(starColor) + Color.green(starColor) + Color.blue(starColor));
+        canvas.drawRect(x, y, x + size, y + size, paint);
     }
 
     private int varyBrightness(int value, double variance) {
-        int varied = value + random.nextInt((int) (value * variance * 100)) / 100;
-        if (varied > 255) {
-            return 255;
+        if (variance == 0) {
+            return value;
         } else {
-            return varied;
+            int varied = value + (random.nextInt(2) == 0 ? 1 : -1) * random.nextInt((int) (value * variance * 100)) / 100;
+            if (varied > 255) {
+                return 255;
+            } else {
+                return varied;
+            }
         }
     }
 
     private int varySize(int value, double variance) {
-        return value + random.nextInt((int) (value * variance * 100)) / 100;
+        if (variance == 0) {
+            return value;
+        } else {
+            return value + (random.nextInt(2) == 0 ? 1 : -1) * random.nextInt((int) (value * variance * 100)) / 100;
+        }
     }
 }

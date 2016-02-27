@@ -16,7 +16,7 @@ public class Background {
     // number of pixels scrolled
     private int scrollCounter;
     // width of rendered background tiles (px)
-    private static final int TILE_WIDTH = 50;
+    private static final int TILE_WIDTH = 200;
     // height of rendered background tiles (px)
     private int tileHeight;
     // used to render space background
@@ -48,10 +48,10 @@ public class Background {
 
         drawSpace = new DrawSpace();
         drawSpace.setAntiAlias(false);
-        drawSpace.setVariance(0.2);
+        drawSpace.setVariance(0);
         drawSpace.setDensity(3);
-        drawSpace.setStarSize(5);
-        drawSpace.setUseGradient(true);
+        drawSpace.setStarSize(8);
+        //drawSpace.setUseGradient(true);
         bgColor1 = Color.BLACK;
         bgColor2 = Color.rgb(1, 1, 1);
         for (int i = 0; i < imageTiles.length; i++) {
@@ -67,7 +67,7 @@ public class Background {
         int start_tile = getStartTile();
         int end_tile = (start_tile == 0 ? imageTiles.length - 1 : start_tile - 1);
         if (getOffset() == 0) {
-            drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, bgColor1, bgColor2, Shader.TileMode.CLAMP));
+            drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP));
             drawSpace.drawSpace(imageTiles[end_tile]);
             bgColor1 = bgColor2;
             bgColor2++;
