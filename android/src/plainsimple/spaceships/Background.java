@@ -25,6 +25,8 @@ public class Background {
     private int[] backgroundColors;
     // number of tiles it takes to transition from one color to the next
     private final double TRANSITION_DURATION = 20;
+    // keeps track of how many tiles have been drawn during this transition
+    private int transitionCounter;
     // current color on the left of the gradient
     private int currentColor;
     // index of element in backgroundColors being transitioned to
@@ -48,11 +50,12 @@ public class Background {
     public Background(int screenW, int screenH) {
         // todo: this renders an image longer than actual screen, could be optimized
         this.tileHeight = screenH;
-        imageTiles = new Bitmap[screenW / TILE_WIDTH + 1]; // todo: what if screenW is a multiple of TILE_WIDTH?
+        imageTiles = new Bitmap[screenW / TILE_WIDTH + 2]; // todo: what if screenW is a multiple of TILE_WIDTH?
         scrollCounter = 0;
         backgroundColors = new int[] { Color.BLACK, Color.BLUE, Color.WHITE };
         currentColor = backgroundColors[0];
         currentElement = 1;
+        transitionCounter = 0;
 
         drawSpace = new DrawSpace();
         drawSpace.setAntiAlias(true);
@@ -86,9 +89,15 @@ public class Background {
 
     // draws space on next tile, incrementing values
     private void drawNextTile(Bitmap tile) {
+        Log.d("Background Class", "Transition Counter = " + transitionCounter);
+        Log.d("Background Class", "Current is " + Color.alpha(currentColor) + "," + Color.red(currentColor) + "," +
+            Color.green(currentColor) + "," + Color.blue(currentColor));
+        Log.d("Background Class", "Moving to " + Color.alpha(backgroundColors[currentElement]) + "," + Color.red(backgroundColors[currentElement]) + "," +
+                Color.green(backgroundColors[currentElement]) + "," + Color.blue(backgroundColors[currentElement]));
         // transition has finished
-        if (currentColor == backgroundColors[currentElement]) {
+        if (transitionCounter == TRANSITION_DURATION) {
             currentElement = (currentElement == backgroundColors.length - 1 ? 0 : currentElement++);
+            transitionCounter = 0;
         }
         // color transitioning to
         int to_color = backgroundColors[currentElement];
@@ -96,15 +105,14 @@ public class Background {
         int from_color = backgroundColors[getLastBackgroundElement()];
         int left_color = currentColor;
         currentColor = Color.argb(
-                Color.alpha(currentColor) + (int) ((Color.alpha(to_color) - Color.alpha(from_color)) / TRANSITION_DURATION),
-                Color.red(currentColor) + (int) ((Color.red(to_color) - Color.red(from_color)) / TRANSITION_DURATION),
-                Color.green(currentColor) + (int) ((Color.green(to_color) - Color.green(from_color)) / TRANSITION_DURATION),
-                Color.blue(currentColor) + (int) ((Color.blue(to_color) - Color.blue(from_color)) / TRANSITION_DURATION)
+                (int) ((Color.alpha(to_color) - Color.alpha(from_color)) / TRANSITION_DURATION * transitionCounter),
+                (int) ((Color.red(to_color) - Color.red(from_color)) / TRANSITION_DURATION * transitionCounter),
+                (int) ((Color.green(to_color) - Color.green(from_color)) / TRANSITION_DURATION * transitionCounter),
+                (int) ((Color.blue(to_color) - Color.blue(from_color)) / TRANSITION_DURATION * transitionCounter)
         );
-        Log.d("Background Class", "left: " + Color.red(left_color) + "," + Color.green(left_color) + "," + Color.blue(left_color)
-        + " current: " + Color.red(currentColor) + "," + Color.green(currentColor) + "," + Color.blue(currentColor));
         drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, left_color, currentColor, Shader.TileMode.CLAMP));
         drawSpace.drawSpace(tile);
+        transitionCounter++;
     }
 
     // increases scroll counter by x
