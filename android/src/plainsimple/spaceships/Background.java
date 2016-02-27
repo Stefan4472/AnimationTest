@@ -21,10 +21,15 @@ public class Background {
     private int tileHeight;
     // used to render space background
     private DrawSpace drawSpace;
-    // colors used for drawing gradients in image tiles
-    private int bgColor1;
-    private int bgColor2;
-    private int colorCounter = 0;
+    // set of pre-defined colors to transition between
+    private int[] backgroundColors;
+    // number of tiles it takes to transition from one color to the next
+    private final int TRANSITION_DURATION = 20;
+    // current color on the left of the gradient
+    private int currentColor;
+    // index of element in backgroundColors being transitioned to
+    private int currentElement;
+
 
     public int getScrollCounter() {
         return scrollCounter;
@@ -45,20 +50,20 @@ public class Background {
         this.tileHeight = screenH;
         imageTiles = new Bitmap[screenW / TILE_WIDTH + 1]; // todo: what if screenW is a multiple of TILE_WIDTH?
         scrollCounter = 0;
+        backgroundColors = new int[] { Color.BLACK, Color.BLUE };
+        currentColor = backgroundColors[0];
+        currentElement = 1;
 
         drawSpace = new DrawSpace();
-        drawSpace.setAntiAlias(false);
-        drawSpace.setVariance(0);
+        drawSpace.setAntiAlias(true);
+        drawSpace.setVariance(0.2);
         drawSpace.setDensity(3);
         drawSpace.setStarSize(8);
-        //drawSpace.setUseGradient(true);
-        bgColor1 = Color.BLACK;
-        bgColor2 = Color.rgb(1, 1, 1);
+        drawSpace.setUseGradient(true);
         for (int i = 0; i < imageTiles.length; i++) {
-            imageTiles[i] = drawSpace.drawSpace(TILE_WIDTH, tileHeight);
-            drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, bgColor1, bgColor2, Shader.TileMode.CLAMP));
-            bgColor1 = bgColor2;
-            bgColor2++;
+            imageTiles[i] = Bitmap.createBitmap(TILE_WIDTH, tileHeight, Bitmap.Config.ARGB_8888);
+            drawNextTile(imageTiles[i]);
+
         }
     }
 
@@ -66,17 +71,31 @@ public class Background {
     public void draw(Canvas canvas) {
         int start_tile = getStartTile();
         int end_tile = (start_tile == 0 ? imageTiles.length - 1 : start_tile - 1);
+        // draw space on the end tile
         if (getOffset() == 0) {
-            drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP));
-            drawSpace.drawSpace(imageTiles[end_tile]);
-            bgColor1 = bgColor2;
-            bgColor2++;
+            drawNextTile(imageTiles[end_tile]);
         }
         for (int i = 0; i < imageTiles.length; i++) {
             canvas.drawBitmap(imageTiles[(start_tile + i) % imageTiles.length], getOffset() + i * TILE_WIDTH, 0, null);
         }
     }
 
+    // draws space on next tile, incrementing values
+    public void drawNextTile(Bitmap tile) {
+        // transition has finished
+        if (currentColor == backgroundColors[currentElement]) {
+            currentElement = (currentElement == backgroundColors.length - 1 ? 0 : currentElement++);
+        }
+        int left_color = currentColor;
+        currentColor = Color.argb(
+                Color.alpha(currentColor) + (Color.alpha(backgroundColors[currentElement] - Color.alpha(currentColor))) / TRANSITION_DURATION,
+                Color.red(currentColor) + (Color.red(backgroundColors[currentElement] - Color.red(currentColor))) / TRANSITION_DURATION,
+                Color.green(currentColor) + (Color.green(backgroundColors[currentElement] - Color.green(currentColor))) / TRANSITION_DURATION,
+                Color.blue(currentColor) + (Color.blue(backgroundColors[currentElement] - Color.blue(currentColor)) / TRANSITION_DURATION)
+        );
+        drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, left_color, currentColor, Shader.TileMode.CLAMP));
+        drawSpace.drawSpace(tile);
+    }
     // increases scroll counter by x
     public void scroll(int x) {
         this.scrollCounter += x;

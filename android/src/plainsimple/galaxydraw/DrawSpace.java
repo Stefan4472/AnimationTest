@@ -103,7 +103,7 @@ public class DrawSpace {
         density = 5;
         starSize = 3;
         variance = 0.4;
-        starColor = Color.argb(190, 255, 255, 238);
+        starColor = Color.argb(200, 255, 255, 238);
         backgroundColor = Color.BLACK;
         antiAlias = true;
         useGradient = false;
@@ -148,7 +148,6 @@ public class DrawSpace {
 
     private void drawStar(Canvas canvas, int x, int y, int brightness, int size) {
         paint.setColor(Color.argb(brightness, Color.red(starColor), Color.green(starColor), Color.blue(starColor)));
-        Log.d("DrawSpace", "Color = " + paint.getAlpha() + "," + Color.red(starColor) + Color.green(starColor) + Color.blue(starColor));
         canvas.drawRect(x, y, x + size, y + size, paint);
     }
 
