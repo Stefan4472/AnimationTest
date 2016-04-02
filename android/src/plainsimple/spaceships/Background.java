@@ -15,7 +15,7 @@ public class Background {
     // number of pixels scrolled
     private int pixelsScrolled;
     // width of rendered background tiles (px)
-    private static final int TILE_WIDTH = 200;
+    private static final int TILE_WIDTH = 60;
     // height of rendered background tiles (px)
     private int tileHeight;
     // used to render space background
@@ -86,11 +86,15 @@ public class Background {
 
     // draws space on next tile, incrementing values
     private void drawNextTile(Bitmap tile) {
-        //transitionCounter++;//todo: issues when counter = 0
         // transition has finished. Adjust fromElement and toElement and reset transitionCounter
         if (transitionCounter > transitionDurations[toElement]) {
             fromElement = toElement;
-            toElement = (toElement == backgroundColors.length - 1 ? 0 : toElement++);
+            //toElement = (toElement == backgroundColors.length - 1 ? 0 : toElement++);
+            if (toElement == backgroundColors.length - 1) {
+                toElement = 0;
+            } else {
+                toElement++;
+            }
             transitionCounter = 1;
         }
         // color transitioning to
@@ -100,18 +104,18 @@ public class Background {
         // calculate argb of color that should be on the left of the gradient based on the difference between the
         // colors being transitioned, transitionDuration, and transitionCounter
         int left_color = Color.argb(
-                Color.alpha(to_color) + (int) ((Color.alpha(to_color) - Color.alpha(from_color)) / transitionDurations[toElement] * transitionCounter),
-                Color.red(to_color) + (int) ((Color.red(to_color) - Color.red(from_color)) / transitionDurations[toElement] * transitionCounter),
-                Color.green(to_color) + (int) ((Color.green(to_color) - Color.green(from_color)) / transitionDurations[toElement] * transitionCounter),
-                Color.blue(to_color) + (int) ((Color.blue(to_color) - Color.blue(from_color)) / transitionDurations[toElement] * transitionCounter)
+                Color.alpha(from_color) + (int) ((Color.alpha(to_color) - Color.alpha(from_color)) / transitionDurations[toElement] * transitionCounter),
+                Color.red(from_color) + (int) ((Color.red(to_color) - Color.red(from_color)) / transitionDurations[toElement] * transitionCounter),
+                Color.green(from_color) + (int) ((Color.green(to_color) - Color.green(from_color)) / transitionDurations[toElement] * transitionCounter),
+                Color.blue(from_color) + (int) ((Color.blue(to_color) - Color.blue(from_color)) / transitionDurations[toElement] * transitionCounter)
         );
         Log.d("Background Class", colorToString(left_color) + " counter = " + transitionCounter);
         // calculate argb of color that should be on the right of the gradient
         int right_color = Color.argb(
-                Color.alpha(to_color) + (int) ((Color.alpha(to_color) - Color.alpha(from_color)) / transitionDurations[toElement] * transitionCounter),
-                Color.red(to_color) + (int) ((Color.red(to_color) - Color.red(from_color)) / transitionDurations[toElement] * transitionCounter),
-                Color.green(to_color) + (int) ((Color.green(to_color) - Color.green(from_color)) / transitionDurations[toElement] * transitionCounter),
-                Color.blue(to_color) + (int) ((Color.blue(to_color) - Color.blue(from_color)) / transitionDurations[toElement] * transitionCounter)
+                Color.alpha(from_color) + (int) ((Color.alpha(to_color) - Color.alpha(from_color)) / transitionDurations[toElement] * transitionCounter),
+                Color.red(from_color) + (int) ((Color.red(to_color) - Color.red(from_color)) / transitionDurations[toElement] * transitionCounter),
+                Color.green(from_color) + (int) ((Color.green(to_color) - Color.green(from_color)) / transitionDurations[toElement] * transitionCounter),
+                Color.blue(from_color) + (int) ((Color.blue(to_color) - Color.blue(from_color)) / transitionDurations[toElement] * transitionCounter)
         );
         //drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, left_color, right_color, Shader.TileMode.CLAMP));
         //drawSpace.drawSpace(tile);
