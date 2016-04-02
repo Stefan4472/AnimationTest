@@ -5,14 +5,15 @@ import android.util.Log;
 import plainsimple.galaxydraw.DrawSpace;
 
 /**
- * Created by Stefan on 8/18/2015.
+ * Draws the background of the game.
+ * // todo: explanation
  */
 public class Background {
 
     // rendered space background tiles
     private Bitmap[] imageTiles;
     // number of pixels scrolled
-    private int scrollCounter;
+    private int pixelsScrolled;
     // width of rendered background tiles (px)
     private static final int TILE_WIDTH = 200;
     // height of rendered background tiles (px)
@@ -27,41 +28,41 @@ public class Background {
     private double[] transitionDurations;
     // keeps track of how many tiles have been drawn during this transition
     private int transitionCounter;
-    // current color on the left of the gradient
-    private int currentColor;
+    // index of element in backgroundColors being transitioned from
+    private int fromElement;
     // index of element in backgroundColors being transitioned to
-    private int currentElement;
+    private int toElement;
 
 
-    public int getScrollCounter() {
-        return scrollCounter;
+    public int getPixelsScrolled() {
+        return pixelsScrolled;
     }
 
     // index of tile that will be left-most on the screen
     private int getStartTile() {
-        return (scrollCounter / TILE_WIDTH) % imageTiles.length;
+        return (pixelsScrolled / TILE_WIDTH) % imageTiles.length;
     }
 
     // offset of left-most tile on the screen from origin of canvas
     private int getOffset() {
-        return -(scrollCounter % TILE_WIDTH);
+        return -(pixelsScrolled % TILE_WIDTH);
     }
 
     public Background(int screenW, int screenH) {
         // todo: this renders an image longer than actual screen, could be optimized
         this.tileHeight = screenH;
         imageTiles = new Bitmap[screenW / TILE_WIDTH + 2]; // todo: what if screenW is a multiple of TILE_WIDTH?
-        scrollCounter = 0;
-        backgroundColors = new int[] { Color.BLACK, Color.BLUE, Color.WHITE };
-        transitionDurations = new double[] { 10, 10, 10 };
-        currentColor = backgroundColors[0];
-        currentElement = 1;
+        pixelsScrolled = 0;
+        backgroundColors = new int[] { Color.BLACK, Color.WHITE };
+        transitionDurations = new double[] { 10, 10 };
+        fromElement = 0;
+        toElement = 1;
         transitionCounter = 0;
 
         drawSpace = new DrawSpace();
         drawSpace.setAntiAlias(true);
         drawSpace.setVariance(0.2);
-        drawSpace.setDensity(3);
+        drawSpace.setDensity(0); // was 3
         drawSpace.setStarSize(8);
         drawSpace.setUseGradient(true);
         for (int i = 0; i < imageTiles.length; i++) {
@@ -70,11 +71,11 @@ public class Background {
         }
     }
 
-    // draws background on canvas
+    // draws imageTiles[] onto canvas in correct locations
     public void draw(Canvas canvas) {
         int start_tile = getStartTile();
         int end_tile = (start_tile == 0 ? imageTiles.length - 1 : start_tile - 1);
-        // draw space on the end tile
+        // draw space on the end tile every time a full tile has rotated through the screen
         if (getOffset() == 0) {
             drawNextTile(imageTiles[end_tile]);
         }
@@ -83,36 +84,41 @@ public class Background {
         }
     }
 
-    // returns index of last element of backgroundColors used
-    private int getLastBackgroundElement() {
-        return currentElement == 0 ? backgroundColors.length - 1 : currentElement - 1;
-    }
-
     // draws space on next tile, incrementing values
     private void drawNextTile(Bitmap tile) {
-        Log.d("Background Class", "Transition Counter = " + transitionCounter + " Current Element " + currentElement + " Last Element " + getLastBackgroundElement());
-        Log.d("Background Class", "Current is " + colorToString(currentColor));
-        Log.d("Background Class", "Last is " + colorToString(backgroundColors[getLastBackgroundElement()]));
-        Log.d("Background Class", "Moving to " + colorToString(backgroundColors[currentElement]));
-        // transition has finished
-        if (transitionCounter == transitionDurations[currentElement]) {
-            currentElement = (currentElement == backgroundColors.length - 1 ? 0 : currentElement++);
+        //Log.d("Background Class", "Transition Counter = " + transitionCounter + " Current Element " + toElement + " Last Element " + getLastBackgroundElement());
+        Log.d("Background Class", "Current is " + colorToString(backgroundColors[fromElement]));
+        //Log.d("Background Class", "Last is " + colorToString(backgroundColors[getLastBackgroundElement()]));
+        Log.d("Background Class", "Moving to " + colorToString(backgroundColors[toElement]));
+        // transition has finished. Adjust fromElement and toElement and reset transitionCounter
+        if (transitionCounter == transitionDurations[toElement]) {
+            fromElement = toElement;
+            toElement = (toElement == backgroundColors.length - 1 ? 0 : toElement++);
             transitionCounter = 0;
         }
         // color transitioning to
-        int to_color = backgroundColors[currentElement];
+        int to_color = backgroundColors[toElement];
         // color transitioning from
-        int from_color = backgroundColors[getLastBackgroundElement()];
-        int left_color = currentColor;
-        currentColor = Color.argb(
-                (int) ((Color.alpha(to_color) - Color.alpha(from_color)) / transitionDurations[currentElement] * transitionCounter),
-                (int) ((Color.red(to_color) - Color.red(from_color)) / transitionDurations[currentElement] * transitionCounter),
-                (int) ((Color.green(to_color) - Color.green(from_color)) / transitionDurations[currentElement] * transitionCounter),
-                (int) ((Color.blue(to_color) - Color.blue(from_color)) / transitionDurations[currentElement] * transitionCounter)
+        int from_color = backgroundColors[fromElement];
+        // calculate argb of color that should be on the left of the gradient based on the difference between the
+        // colors being transitioned, transitionDuration, and transitionCounter
+        int left_color = Color.argb(
+                Color.alpha(to_color) + (int) ((Color.alpha(to_color) - Color.alpha(from_color)) / transitionDurations[toElement] * transitionCounter),
+                Color.red(to_color) + (int) ((Color.red(to_color) - Color.red(from_color)) / transitionDurations[toElement] * transitionCounter),
+                Color.green(to_color) + (int) ((Color.green(to_color) - Color.green(from_color)) / transitionDurations[toElement] * transitionCounter),
+                Color.blue(to_color) + (int) ((Color.blue(to_color) - Color.blue(from_color)) / transitionDurations[toElement] * transitionCounter)
         );
-        drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, left_color, currentColor, Shader.TileMode.CLAMP));
-        drawSpace.drawSpace(tile);
         transitionCounter++;
+        // calculate argb of color that should be on the right of the gradient
+        int right_color = Color.argb(
+                Color.alpha(to_color) + (int) ((Color.alpha(to_color) - Color.alpha(from_color)) / transitionDurations[toElement] * transitionCounter),
+                Color.red(to_color) + (int) ((Color.red(to_color) - Color.red(from_color)) / transitionDurations[toElement] * transitionCounter),
+                Color.green(to_color) + (int) ((Color.green(to_color) - Color.green(from_color)) / transitionDurations[toElement] * transitionCounter),
+                Color.blue(to_color) + (int) ((Color.blue(to_color) - Color.blue(from_color)) / transitionDurations[toElement] * transitionCounter)
+        );
+        drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, left_color, right_color, Shader.TileMode.CLAMP));
+        drawSpace.drawSpace(tile);
+
     }
 
     private static String colorToString(int color) {
@@ -121,6 +127,6 @@ public class Background {
 
     // increases scroll counter by x
     public void scroll(int x) {
-        this.scrollCounter += x;
+        this.pixelsScrolled += x;
     }
 }
