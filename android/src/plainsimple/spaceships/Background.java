@@ -57,7 +57,7 @@ public class Background {
         transitionDurations = new double[] { 10, 10 };
         fromElement = 0;
         toElement = 1;
-        transitionCounter = 0;
+        transitionCounter = 1;
 
         drawSpace = new DrawSpace();
         drawSpace.setAntiAlias(true);
@@ -86,15 +86,12 @@ public class Background {
 
     // draws space on next tile, incrementing values
     private void drawNextTile(Bitmap tile) {
-        //Log.d("Background Class", "Transition Counter = " + transitionCounter + " Current Element " + toElement + " Last Element " + getLastBackgroundElement());
-        Log.d("Background Class", "Current is " + colorToString(backgroundColors[fromElement]));
-        //Log.d("Background Class", "Last is " + colorToString(backgroundColors[getLastBackgroundElement()]));
-        Log.d("Background Class", "Moving to " + colorToString(backgroundColors[toElement]));
+        //transitionCounter++;//todo: issues when counter = 0
         // transition has finished. Adjust fromElement and toElement and reset transitionCounter
-        if (transitionCounter == transitionDurations[toElement]) {
+        if (transitionCounter > transitionDurations[toElement]) {
             fromElement = toElement;
             toElement = (toElement == backgroundColors.length - 1 ? 0 : toElement++);
-            transitionCounter = 0;
+            transitionCounter = 1;
         }
         // color transitioning to
         int to_color = backgroundColors[toElement];
@@ -108,7 +105,7 @@ public class Background {
                 Color.green(to_color) + (int) ((Color.green(to_color) - Color.green(from_color)) / transitionDurations[toElement] * transitionCounter),
                 Color.blue(to_color) + (int) ((Color.blue(to_color) - Color.blue(from_color)) / transitionDurations[toElement] * transitionCounter)
         );
-        transitionCounter++;
+        Log.d("Background Class", colorToString(left_color) + " counter = " + transitionCounter);
         // calculate argb of color that should be on the right of the gradient
         int right_color = Color.argb(
                 Color.alpha(to_color) + (int) ((Color.alpha(to_color) - Color.alpha(from_color)) / transitionDurations[toElement] * transitionCounter),
@@ -116,9 +113,13 @@ public class Background {
                 Color.green(to_color) + (int) ((Color.green(to_color) - Color.green(from_color)) / transitionDurations[toElement] * transitionCounter),
                 Color.blue(to_color) + (int) ((Color.blue(to_color) - Color.blue(from_color)) / transitionDurations[toElement] * transitionCounter)
         );
-        drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, left_color, right_color, Shader.TileMode.CLAMP));
-        drawSpace.drawSpace(tile);
-
+        //drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, left_color, right_color, Shader.TileMode.CLAMP));
+        //drawSpace.drawSpace(tile);
+        Canvas c = new Canvas(tile);
+        Paint p = new Paint();
+        p.setColor(left_color);
+        c.drawRect(0, 0, tile.getWidth(), tile.getHeight(), p);
+        transitionCounter++;
     }
 
     private static String colorToString(int color) {
