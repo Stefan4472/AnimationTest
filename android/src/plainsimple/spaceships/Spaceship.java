@@ -28,6 +28,7 @@ public class Spaceship extends Sprite {
     // current tally of points scored from coins and alien hits
     private int score = 0;
 
+    private static int movingBitmapID, fireRocketBitmapID, explodeBitmapID;
     private SpriteAnimation movingAnimation; // todo: resources static?
     private SpriteAnimation fireRocketAnimation;
     private SpriteAnimation explodeAnimation;
@@ -55,6 +56,30 @@ public class Spaceship extends Sprite {
     public static final int BULLET_MODE = 1;
     public static final int ROCKET_MODE = 2;
 
+    public static int getMovingBitmapID() {
+        return movingBitmapID;
+    }
+
+    public static void setMovingBitmapID(int movingBitmapID) {
+        Spaceship.movingBitmapID = movingBitmapID;
+    }
+
+    public static int getFireRocketBitmapID() {
+        return fireRocketBitmapID;
+    }
+
+    public static void setFireRocketBitmapID(int fireRocketBitmapID) {
+        Spaceship.fireRocketBitmapID = fireRocketBitmapID;
+    }
+
+    public static int getExplodeBitmapID() {
+        return explodeBitmapID;
+    }
+
+    public static void setExplodeBitmapID(int explodeBitmapID) {
+        Spaceship.explodeBitmapID = explodeBitmapID;
+    }
+
     public List<Sprite> getProjectiles() { return projectiles; }
     public List<Sprite> getAndClearProjectiles() {
         List<Sprite> copy = new ArrayList<>();
@@ -64,7 +89,6 @@ public class Spaceship extends Sprite {
         projectiles.clear();
         return copy;
     }
-
 
     public void setControllable(boolean controllable) {
         this.controllable = controllable;
@@ -102,8 +126,8 @@ public class Spaceship extends Sprite {
     }
 
     // default constructor
-    public Spaceship(Bitmap defaultImage, int x, int y) {
-        super(defaultImage, x, y);
+    public Spaceship(int defaultImageID, int x, int y) {
+        super(defaultImageID, x, y);
         initCraft();
     }
 
@@ -234,8 +258,11 @@ public class Spaceship extends Sprite {
     }
 
     @Override
-    void draw(Canvas canvas) {
-        canvas.drawBitmap(defaultImage, x, y, null);
+    public ArrayList<float[]> getDrawParams() {
+        ArrayList<float[]> params = new ArrayList<>();
+        // define specifications for defaultImage
+        float[] defaultImgParams = {defaultImageID, x, y, 0, 0, getWidth(), getHeight()};
+        params.add(defaultImgParams);
         if (moving) {
             canvas.drawBitmap(movingAnimation.currentFrame(), x, y, null);
         }

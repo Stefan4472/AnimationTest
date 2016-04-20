@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -41,8 +42,8 @@ public abstract class Sprite {
     // hitbox for collision detection todo: complex shapes
     protected Hitbox hitBox;
 
-    // sprite default image
-    protected Bitmap defaultImage;
+    // R.drawable ID that specifies the sprite's default texture
+    protected int defaultImageID;
 
     // random number generator
     protected Random random;
@@ -97,20 +98,18 @@ public abstract class Sprite {
         this.hp = hp;
     }
 
-    public Sprite(Bitmap defaultImage, float x, float y) {
-        this.defaultImage = defaultImage;
+    public Sprite(int defaultImageID, int spriteWidth, int spriteHeight, float x, float y) {
+        this.defaultImageID = defaultImageID;
+        this.width = spriteWidth;
+        this.height = spriteHeight;
         this.x = x;
         this.y = y;
-        width = defaultImage.getWidth();
-        height = defaultImage.getHeight();
         initSprite();
     }
 
     // initializes with sprite at (0,0)
-    public Sprite(Bitmap defaultImage) {
-        this(defaultImage, 0, 0);
-        width = defaultImage.getWidth();
-        height = defaultImage.getHeight();
+    public Sprite(int defaultImageID, int spriteWidth, int spriteHeight) {
+        this(defaultImageID, spriteWidth, spriteHeight, 0, 0);
         initSprite();
     }
 
@@ -125,12 +124,6 @@ public abstract class Sprite {
         random = new Random();
         damage = 0;
         hp = 0;
-    }
-
-    // updates fields with dimensions of sprite image
-    protected void getImageDimensions() {
-        width = defaultImage.getWidth();
-        height = defaultImage.getHeight();
     }
 
     public float getX() {
@@ -161,6 +154,18 @@ public abstract class Sprite {
     // handles collision with s
     abstract void handleCollision(Sprite s);
 
+    // returns an int[][] specifying what Bitmaps to draw for the sprite
+    // each row defines the properties of a single Bitmap to be drawn for the sprite // todo: explain better
+    // columns are organized in the following way:
+    // element 0: Bitmap ID
+    // element 1: x-coordinate to draw Bitmap onto screen
+    // element 2: y-coordinate to draw Bitmap onto screen
+    // element 3: starting x-coordinate of the Bitmap to start drawing
+    // element 4: starting y-coordinate of the Bitmap to start drawing
+    // element 5: ending x-coordinate of the Bitmap
+    // element 6: ending y-coordinate of the Bitmap
+    abstract ArrayList<float[]> getDrawParams();
+
     // moves sprite using speedX and speedY, updates hitbox,
     // and checks if sprite is still visible
     protected void move() {
@@ -176,9 +181,6 @@ public abstract class Sprite {
         }
         hitBox.updateCoordinates((int) x, (int) y);
     }
-
-    // draws sprite at current coordinates on g
-    abstract void draw(Canvas canvas);
 
     // returns whether hitbox of this sprite intersects hitbox of specified sprite
     public boolean collidesWith(Sprite s) {

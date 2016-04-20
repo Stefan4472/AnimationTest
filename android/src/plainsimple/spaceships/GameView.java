@@ -20,6 +20,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Space;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 
 /**
@@ -36,6 +37,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private boolean onTitle = true;
     private boolean shooting = false;
     private GameViewThread thread;
+
+    // stores graphics with R.drawable ID as key and cached Bitmap as object
+    private HashMap<Integer, Bitmap> imgCache;
 
     // used to play short sounds
     private SoundPool soundPool;
@@ -91,6 +95,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         soundIDs = new int[1];
         soundIDs[0] = soundPool.load(context, R.raw.snap, 1);
         soundPool.play(soundIDs[0], 1, 1, 1, 0, 1.0f);
+        // set up graphics HashMap
+
         setFocusable(true);
     }
 
@@ -169,7 +175,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             return true;
         }
 
-        private void initMap() { // todo: need to know which resources to load based on what bullets/rockets equipped. Load only needed resources
+        // loads in sprites, sends ID's to the proper classes, and scales them
+        private void initImgCache() { // todo: need to know which resources to load based on what bullets/rockets equipped. Load only needed resources
             Bitmap spaceshipSprite = BitmapFactory.decodeResource(myContext.getResources(), R.drawable.spaceship_sprite);
             Bitmap spaceshipMoveSheet = BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.spaceship_moving_spritesheet_diff);
