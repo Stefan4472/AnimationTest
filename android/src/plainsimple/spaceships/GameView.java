@@ -7,8 +7,12 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -32,6 +36,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private boolean onTitle = true;
     private boolean shooting = false;
     private GameViewThread thread;
+
+    // used to play short sounds
+    private SoundPool soundPool;
+    private int[] soundIDs;
 
     // whether game is paused currently
     private boolean paused = false;
@@ -71,13 +79,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         } else {
             Log.d("GameView Class", "No Accelerometer");
         }
+        // set up thread
         thread = new GameViewThread(holder, context, new Handler() {
             @Override
             public void handleMessage(Message m) {
 
             }
         });
-
+        // set up SoundPool
+        soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+        soundIDs = new int[1];
+        soundIDs[0] = soundPool.load(context, R.raw.snap, 1);
+        soundPool.play(soundIDs[0], 1, 1, 1, 0, 1.0f);
         setFocusable(true);
     }
 
@@ -135,6 +148,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     case MotionEvent.ACTION_DOWN:
                         if (!onTitle) {
                             map.setShooting(true);
+                            soundPool.play(soundIDs[0], 1, 1, 1, 0, 1.0f);
                         }
                         break;
                     case MotionEvent.ACTION_MOVE:

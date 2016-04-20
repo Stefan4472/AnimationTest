@@ -1,6 +1,7 @@
 package plainsimple.spaceships;
 
 import android.app.Activity;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -39,6 +40,8 @@ public class GameActivity extends Activity {
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
+        // set volume control to proper stream
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
 
     // handle user pressing pause button //todo: is this an okay way of handling the event?
