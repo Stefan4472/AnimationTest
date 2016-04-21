@@ -16,7 +16,10 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Stefan on 10/17/2015.
@@ -44,12 +47,39 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private boolean paused = false;
     // whether sound on or off
     private boolean muted = false;
+    // difficulty level, incremented every frame
+    private double difficulty = 0.0f;
+    // score in current run
+    private int score = 0;
+    // dimensions of basic mapTiles
+    private int tileWidth; // todo: what about bigger/smaller sprites?
+    private int tileHeight;
     // used to render score on screen
     private ScoreDisplay scoreDisplay;
     // space background (implements parallax scrolling)
     private Background background;
-    // generates terrain and sprites on screen
-    private Map map;
+    // grid of tile ID's instructing which sprites to initialize on screen
+    private byte[][] map;
+    // used to generate tile-based terrain
+    private TileGenerator tileGenerator;
+    // number of rows of sprites that fit on screen
+    private static final int ROWS = 6;
+    // number of tiles elapsed since last map was generated
+    private int mapTileCounter = 0;
+    // keeps track of tile spaceship was on last time map was updated
+    private long lastTile = 0;
+    // coordinates of upper-left of "window" being shown
+    private long x = 0;
+    // default speed of sprites scrolling across the map
+    private float scrollSpeed = -0.0025f;
+    // active generated non-projectile sprites
+    private List<Sprite> sprites = new ArrayList<>();
+    // active projectiles on screen fired by spaceship
+    private List<Sprite> ssProjectiles = new ArrayList<>();
+    // active projectiles on screen fired by aliens
+    private List<Sprite> alienProjectiles = new ArrayList<>();
+    // spaceship
+    private Spaceship spaceship;
     // relative speed of background scrolling to foreground scrolling
     private static final float SCROLL_SPEED_CONST = 0.4f;
     // points a coin is worth
@@ -89,7 +119,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
         soundIDs = new int[1];
         soundIDs[0] = soundPool.load(context, R.raw.snap, 1);
-        soundPool.play(soundIDs[0], 1, 1, 1, 0, 1.0f);
         // set up graphics HashMap
 
         setFocusable(true);
@@ -98,7 +127,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public GameViewThread getThread() {
         return thread;
     }
-    public Map getMap() { return map; }
 
     class GameViewThread extends Thread {
 
@@ -158,6 +186,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                         if (onTitle) { // change to game screen. Load resources
                             myContext.getResources();
                             background = new Background(screenW, screenH);
+                            initImgCache();
+                            initSpaceship();
                             initMap();
                             initScoreDisplay();
                             onTitle = false;
@@ -235,6 +265,159 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             // todo: make it look better
             scoreDisplay = new ScoreDisplay(10, 20);
             scoreDisplay.setStartXY(10, 10 + (int) scoreDisplay.getPaint().getTextSize());
+        }
+
+        // current horizontal tile
+        private long getWTile() {
+            return x / tileWidth;
+        }
+
+        // number of pixels from start of current tile
+        private int getWOffset() {
+            return (int) x % tileWidth;
+        }
+
+        private void updateMap() {
+            x += screenW * scrollSpeed;
+
+            // take care of map rendering
+            if (getWTile() != lastTile) {
+                for (int i = 0; i < map.length; i++) {
+                    // add any non-empty sprites in the current column at the edge of the screen
+                    if (map[i][mapTileCounter] != TileGenerator.EMPTY) {
+                        addTile(getMapTile(map[i][mapTileCounter], screenW + getWOffset(), i * tileHeight),
+                                scrollSpeed, 0);
+                    }
+                }
+                mapTileCounter++;
+
+                // generate more sprites
+                if (mapTileCounter == map[0].length) {
+                    map = tileGenerator.generateTiles(difficulty);
+                    updateScrollSpeed();
+                    mapTileCounter = 0;
+                }
+                lastTile = getWTile();
+            }
+        }
+
+        // calculates scrollspeed based on difficulty
+        // difficulty starts at 0 and increases by 0.01/frame,
+        // or 1 per second
+        public void updateScrollSpeed() {
+            scrollSpeed = (float) (-0.0025f - difficulty / 2500.0);
+            if (scrollSpeed < -0.025) { // scroll speed ceiling
+                scrollSpeed = -0.025f;
+            }
+        }
+
+        // returns sprite initialized to coordinates (x,y) given tileID
+        private Sprite getMapTile(int tileID, float x, float y) throws IndexOutOfBoundsException {
+            switch (tileID) {
+                case TileGenerator.OBSTACLE:
+                    return new Obstacle(obstacleSprite, x, y);
+                case TileGenerator.OBSTACLE_INVIS:
+                    Sprite tile = new Obstacle(obstacleSprite, x, y);
+                    tile.setCollides(false);
+                    return tile;
+                case TileGenerator.COIN:
+                    return new Coin(coinSprite, coinSpinSheet, coinDisappearSheet, x, y);
+                case TileGenerator.ALIEN_LVL1:
+                    Alien1 alien_1 = new Alien1(alien1Sprite, x, y, difficulty, spaceship);
+                    alien_1.injectResources(alienBulletSprite, alienExplodeSheet);
+                    return alien_1;
+                default:
+                    throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
+            }
+        }
+
+        // sets specified fields and adds sprite to arraylist
+        private void addTile(Sprite s, float speedX, float speedY) {
+            s.setSpeedX(speedX);
+            s.setSpeedY(speedY);
+            sprites.add(s);
+        }
+
+        // adds any new sprites and generates a new set of sprites if needed
+        public void update() {
+            //score += difficulty / 2; // todo: increment score based on difficulty
+            difficulty += 0.01f;
+            updateMap();
+            updateSpaceship(); // todo: does scoring work properly?
+            getAlienBullets(alienProjectiles, sprites);
+            // check collisions between sprites and spaceship projectiles
+            for(Sprite sprite : sprites) {
+                checkCollisions(sprite, ssProjectiles);
+            }
+            checkCollisions(spaceship, sprites);
+            checkCollisions(spaceship, alienProjectiles);
+            score += spaceship.getAndClearScore();
+            updateSprites(sprites);
+            updateSprites(ssProjectiles);
+            updateSprites(alienProjectiles);
+            spaceship.updateAnimations();
+        }
+
+        private void updateSpaceship() {
+            spaceship.move();
+            spaceship.updateActions();
+            ssProjectiles.addAll(spaceship.getAndClearProjectiles());
+            // for when spaceship first comes on to screen
+            if (spaceship.getX() < screenW / 4) {
+                spaceship.setControllable(false);
+                spaceship.setSpeedX(0.003f);
+            } else {
+                spaceship.setX(screenW / 4);
+                spaceship.setSpeedX(0.0f);
+                spaceship.setControllable(true);
+            }
+            // prevent spaceship from going off-screen
+            if (spaceship.getY() < 0) {
+                spaceship.setY(0);
+            } else if (spaceship.getY() > screenH - spaceship.getHeight()) {
+                spaceship.setY(screenH - spaceship.getHeight());
+            }
+        }
+
+        private void updateSprites(List<Sprite> toUpdate) {
+            Iterator<Sprite> i = toUpdate.iterator(); // todo: get all sprites together, collisions, etc.
+            while(i.hasNext()) {
+                Sprite s = i.next();
+                s.move();
+                if(s.isInBounds() && s.isVisible()) {
+                    s.updateActions();
+                    s.updateSpeeds(); // todo: hit detection
+                    s.updateAnimations();
+                } else {
+                    i.remove();
+                }
+            }
+        }
+
+        public void updateGyro(float yValue) {
+            spaceship.setTiltChange(yValue);
+            spaceship.updateSpeeds();
+        }
+
+        // goes through sprites, and for each alien uses getAndClearProjectiles,
+        // adds those projectiles to projectiles list
+        private void getAlienBullets(List<Sprite> projectiles, List<Sprite> sprites) {
+            for(Sprite s : sprites) {
+                if (s instanceof Alien) {
+                    projectiles.addAll(((Alien) s).getAndClearProjectiles());
+                }
+            }
+        }
+
+        // checks sprite against each sprite in list
+        // calls handleCollision method if a collision is detected
+        private void checkCollisions(Sprite sprite, List<Sprite> toCheck) {
+            for(Sprite s : toCheck) {
+                if(sprite.collidesWith(s)) {
+                    sprite.handleCollision(s);
+                    s.handleCollision(sprite);
+                }
+            }
         }
 
         public void setSurfaceSize(int width, int height) {

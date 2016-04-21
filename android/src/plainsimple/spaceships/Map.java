@@ -2,7 +2,6 @@ package plainsimple.spaceships;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.util.Log;
 
 import java.util.*;
 
@@ -32,7 +31,7 @@ public class Map {
     public static Bitmap alienBulletSprite;
 
     // number of rows of sprites that fit in map
-    private static final int rows = 6;
+    private static final int ROWS = 6;
 
     // number of sprites elapsed since last map was generated
     private int mapTileCounter = 0;
@@ -90,10 +89,10 @@ public class Map {
                Bitmap alien1Sprite, Bitmap alienExplodeSheet, Bitmap alienBulletSprite) {
         this.screenW = screenW;
         this.screenH = screenH;
-        tileWidth = this.screenH / rows;
-        tileHeight = this.screenH / rows;
+        tileWidth = this.screenH / ROWS;
+        tileHeight = this.screenH / ROWS;
         map = new byte[1][screenW / tileWidth];
-        tileGenerator = new TileGenerator(rows);
+        tileGenerator = new TileGenerator(ROWS);
         this.spaceshipSprite = spaceshipSprite;
         this.spaceshipMoveSheet = spaceshipMoveSheet;
         this.spaceshipFireRocketSheet = spaceshipFireRocketSheet;
