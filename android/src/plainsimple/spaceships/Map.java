@@ -272,46 +272,6 @@ public class Map {
         }
     }
 
-    private void updateSprites(List<Sprite> toUpdate) {
-        Iterator<Sprite> i = toUpdate.iterator(); // todo: get all sprites together, collisions, etc.
-        while(i.hasNext()) {
-            Sprite s = i.next();
-            s.move();
-            if(s.isInBounds() && s.isVisible()) {
-                s.updateActions();
-                s.updateSpeeds(); // todo: hit detection
-                s.updateAnimations();
-            } else {
-                i.remove();
-            }
-        }
-    }
-
-    public void updateGyro(float yValue) {
-        spaceship.setTiltChange(yValue);
-        spaceship.updateSpeeds();
-    }
-    
-    // goes through sprites, and for each alien uses getAndClearProjectiles,
-    // adds those projectiles to projectiles list
-    private void getAlienBullets(List<Sprite> projectiles, List<Sprite> sprites) {
-        for(Sprite s : sprites) {
-            if (s instanceof Alien) {
-                projectiles.addAll(((Alien) s).getAndClearProjectiles());
-            }
-        }
-    }
-
-    // checks sprite against each sprite in list
-    // calls handleCollision method if a collision is detected
-    private void checkCollisions(Sprite sprite, List<Sprite> toCheck) {
-        for(Sprite s : toCheck) {
-            if(sprite.collidesWith(s)) {
-                sprite.handleCollision(s);
-                s.handleCollision(sprite);
-            }
-        }
-    }
 
     // draws sprites on canvas
     public void draw(Canvas canvas) {
