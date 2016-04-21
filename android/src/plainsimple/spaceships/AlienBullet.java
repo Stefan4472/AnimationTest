@@ -44,9 +44,9 @@ public class AlienBullet extends Sprite {
     }
 
     @Override
-    public ArrayList<float[]> getDrawParams() {
-        ArrayList<float[]> params = new ArrayList<>();
-        params.add(new float[] {defaultImageID, x, y, 0, 0, getWidth(), getHeight()});
+    public ArrayList<int[]> getDrawParams() {
+        ArrayList<int[]> params = new ArrayList<>();
+        params.add(new int[] {defaultImageID, (int) x, (int) y, 0, 0, getWidth(), getHeight()});
         return params;
     }
 }

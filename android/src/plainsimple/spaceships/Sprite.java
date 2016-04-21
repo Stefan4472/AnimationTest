@@ -164,7 +164,7 @@ public abstract class Sprite {
     // element 4: starting y-coordinate of the Bitmap to start drawing
     // element 5: ending x-coordinate of the Bitmap
     // element 6: ending y-coordinate of the Bitmap
-    abstract ArrayList<float[]> getDrawParams();
+    abstract ArrayList<int[]> getDrawParams();
 
     // moves sprite using speedX and speedY, updates hitbox,
     // and checks if sprite is still visible

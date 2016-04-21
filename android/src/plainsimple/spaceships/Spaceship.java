@@ -27,13 +27,9 @@ public class Spaceship extends Sprite {
     // current tally of points scored from coins and alien hits
     private int score = 0;
 
-    private static int movingBitmapID, fireRocketBitmapID, explodeBitmapID;
     private SpriteAnimation movingAnimation; // todo: resources static?
     private SpriteAnimation fireRocketAnimation;
     private SpriteAnimation explodeAnimation;
-
-    private Bitmap rocketBitmap;
-    private Bitmap bulletBitmap;
 
     // whether user has control over spaceship
     boolean controllable;
@@ -41,10 +37,16 @@ public class Spaceship extends Sprite {
     private boolean firesBullets;
     private int bulletType = Bullet.LASER;
     private int lastFiredBullet;
+    private int bulletBitmapID;
+    private int bulletBitmapW;
+    private int bulletBitmapH;
 
     private boolean firesRockets;
     private int rocketType = Rocket.ROCKET;
     private int lastFiredRocket;
+    private int rocketBitmapID;
+    private int rocketBitmapW;
+    private int rocketBitmapH;
 
     // keeps track of fired bullets and rockets
     private List<Sprite> projectiles;
@@ -116,17 +118,18 @@ public class Spaceship extends Sprite {
         hitBox.setOffsets((width - hitBox.getWidth()) / 2, (height - hitBox.getHeight()) / 2);
     }
 
-    // get SpriteAnimations and other necessary data
     public void injectResources(SpriteAnimation movingAnimation, SpriteAnimation fireRocketAnimation,
-            SpriteAnimation explodeAnimation, Bitmap rocketBitmap, Bitmap bulletBitmap) { // todo: fix so dimensions are right
-        /*movingAnimation = new SpriteAnimation(movingSpriteSheet, width, height, 5, true);
-        fireRocketAnimation = new SpriteAnimation(fireRocketSpriteSheet, width, height, 8, false);
-        explodeAnimation = new SpriteAnimation(explodeSpriteSheet, width, height, 5, false);*/
+            SpriteAnimation explodeAnimation, int rocketBitmapID, int rocketBitmapW, int rocketBitmapH,
+                                int bulletBitmapID, int bulletBitmapW, int bulletBitmapH) { // todo: fix so dimensions are right
         this.movingAnimation = movingAnimation;
         this.fireRocketAnimation = fireRocketAnimation;
         this.explodeAnimation = explodeAnimation;
-        this.rocketBitmap = rocketBitmap;
-        this.bulletBitmap = bulletBitmap;
+        this.rocketBitmapID = rocketBitmapID;
+        this.rocketBitmapW = rocketBitmapW;
+        this.rocketBitmapH = rocketBitmapH;
+        this.bulletBitmapID = bulletBitmapID;
+        this.bulletBitmapW = bulletBitmapW;
+        this.bulletBitmapH = bulletBitmapH;
     }
 
     @Override
@@ -146,14 +149,14 @@ public class Spaceship extends Sprite {
 
     // fires two rockets
     public void fireRockets() {
-        projectiles.add(new Rocket(rocketBitmap, x + (int) (width * 0.80), y + (int) (0.29 * height), rocketType));
-        projectiles.add(new Rocket(rocketBitmap, x + (int) (width * 0.80), y + (int) (0.65 * height), rocketType));
+        projectiles.add(new Rocket(rocketBitmapID, rocketBitmapW, rocketBitmapH, x + (int) (width * 0.80), y + (int) (0.29 * height), rocketType));
+        projectiles.add(new Rocket(rocketBitmapID, rocketBitmapW, rocketBitmapH, x + (int) (width * 0.80), y + (int) (0.65 * height), rocketType));
     }
 
     // fires two bullets
     public void fireBullets() {
-        projectiles.add(new Bullet(bulletBitmap, x + (int) (width * 0.78), y + (int) (0.28 * height), bulletType));
-        projectiles.add(new Bullet(bulletBitmap, x + (int) (width * 0.78), y + (int) (0.66 * height), bulletType));
+        projectiles.add(new Bullet(bulletBitmapID, bulletBitmapW, bulletBitmapH, x + (int) (width * 0.78), y + (int) (0.28 * height), bulletType));
+        projectiles.add(new Bullet(bulletBitmapID, bulletBitmapW, bulletBitmapH, x + (int) (width * 0.78), y + (int) (0.66 * height), bulletType));
     }
 
     // sets current tilt of device and determines dy
@@ -235,25 +238,25 @@ public class Spaceship extends Sprite {
     }
 
     @Override
-    public ArrayList<float[]> getDrawParams() {
-        ArrayList<float[]> params = new ArrayList<>();
+    public ArrayList<int[]> getDrawParams() {
+        ArrayList<int[]> params = new ArrayList<>();
         // define specifications for defaultImage
-        float[] defaultImgParams = {defaultImageID, x, y, 0, 0, getWidth(), getHeight()};
+        int[] defaultImgParams = {defaultImageID, (int) x, (int) y, 0, 0, getWidth(), getHeight()};
         params.add(defaultImgParams);
         Rect animation_src;
         if (moving) {
             animation_src = movingAnimation.getCurrentFrameSrc();
-            float[] movingImgParams = {movingAnimation.getBitmapID(), x, y, animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
+            int[] movingImgParams = {movingAnimation.getBitmapID(), (int) x, (int) y, animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
             params.add(movingImgParams);
         }
         if (fireRocketAnimation.isPlaying()) {
             animation_src = fireRocketAnimation.getCurrentFrameSrc();
-            float[] fireRocketImgParams = {fireRocketAnimation.getBitmapID(), x, y, animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
+            int[] fireRocketImgParams = {fireRocketAnimation.getBitmapID(), (int) x, (int) y, animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
             params.add(fireRocketImgParams);
         }
         if (explodeAnimation.isPlaying()) {
             animation_src = explodeAnimation.getCurrentFrameSrc();
-            float[] explodeImgParams = {explodeAnimation.getBitmapID(), x, y, animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
+            int[] explodeImgParams = {explodeAnimation.getBitmapID(), (int) x, (int) y, animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
             params.add(explodeImgParams);
         }
         return params;

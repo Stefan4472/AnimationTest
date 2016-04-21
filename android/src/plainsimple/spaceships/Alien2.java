@@ -47,8 +47,8 @@ public class Alien2 extends Alien { // todo: not implemented
     }
 
     @Override
-    public ArrayList<float[]> getDrawParams() {
-        return new ArrayList<float[]> ();
+    public ArrayList<int[]> getDrawParams() {
+        return new ArrayList<> ();
     }
 
     @Override

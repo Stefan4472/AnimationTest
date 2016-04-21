@@ -70,7 +70,7 @@ public abstract class Alien extends Sprite {
     abstract void handleCollision(Sprite s);
 
     @Override
-    abstract ArrayList<float[]> getDrawParams();
+    abstract ArrayList<int[]> getDrawParams();
 
     // fires bullet/projectile at specified sprite
     abstract void fireBullet(Sprite s); // todo: unnecessary

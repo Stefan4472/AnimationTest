@@ -159,11 +159,33 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     update();
                     background.scroll((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST));
                 }
-                map.draw(canvas); // draw sprites
+                for (Sprite s : sprites) {
+                    drawSprite(s, canvas);
+                }
+                for (Sprite s : ssProjectiles) {
+                    drawSprite(s, canvas);
+                }
+                for (Sprite s : alienProjectiles) {
+                    drawSprite(s, canvas);
+                }
+                drawSprite(spaceship, canvas);
                 scoreDisplay.setScore(score);
                 scoreDisplay.draw(canvas);
             } catch (Exception e) {
                 System.out.print("Error drawing canvas");
+            }
+        }
+
+        // draws sprite onto canvas using sprite drawing params
+        // and imageCache
+        private void drawSprite(Sprite sprite, Canvas canvas) {
+            ArrayList<int[]> draw_params = sprite.getDrawParams();
+            for (int[] img_params : draw_params) {
+                Bitmap image = imageCache.get(img_params[0]);
+                Rect src = new Rect(img_params[3], img_params[4], img_params[5], img_params[6]);
+                Rect dst = new Rect((int) sprite.getX(), (int) sprite.getY(),
+                        (int) (sprite.getX() + image.getWidth()), (int) (sprite.getY() + image.getHeight()));
+                canvas.drawBitmap(image, src, dst, null);
             }
         }
 
@@ -335,9 +357,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             Bitmap spaceship_bitmap = imageCache.get(R.drawable.spaceship_sprite);
             spaceship = new Spaceship(R.drawable.spaceship_sprite, spaceship_bitmap.getWidth(), spaceship_bitmap.getHeight(),
                     -spaceship_bitmap.getWidth(), screenH / 2 - spaceship_bitmap.getHeight() / 2);
+            SpriteAnimation movingAnimation = new SpriteAnimation(R.drawable.spaceship_moving_spritesheet_diff, width, height, 5, true);
+            SpriteAnimation fireRocketAnimation = new SpriteAnimation(R.drawable.spaceship_firing_spritesheet_diff, width, height, 8, false);
+            SpriteAnimation explodeAnimation = new SpriteAnimation(R.drawable.spaceship_exploding_spritesheet_diff, width, height, 5, false);
             spaceship.injectResources();
-            spaceship.setBullets(true, bullet_resource);
-            spaceship.setRockets(true, rocket_resource);
+            spaceship.setBullets(true, SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_bullet),
+                    R.drawable.laser_bullet_sprite));
+            spaceship.setRockets(true, SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_rocket),
+                    R.drawable.rocket_sprite));
             spaceship.setHP(30);
         }
 
@@ -362,7 +389,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         private Sprite getMapTile(int tileID, float x, float y) throws IndexOutOfBoundsException {
             switch (tileID) {
                 case TileGenerator.OBSTACLE:
-                    return new Obstacle(obstacleSprite, x, y);
+                    return new Obstacle(obstacleSpriteID, x, y);
                 case TileGenerator.OBSTACLE_INVIS:
                     Sprite tile = new Obstacle(obstacleSprite, x, y);
                     tile.setCollides(false);
