@@ -1,6 +1,5 @@
 package plainsimple.spaceships;
 
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 
 import java.util.ArrayList;
@@ -72,10 +71,10 @@ public class Spaceship extends Sprite {
     public void setBullets(boolean firesBullets, int drawableID) { // todo: this is confusing. Use R.drawable constants
         this.firesBullets = firesBullets;
         switch (drawableID) {
-            case R.drawable.laser_bullet_sprite:
+            case R.drawable.laserbullet:
                 this.bulletType = Bullet.LASER;
                 break;
-            case R.drawable.ion_bullet_sprite:
+            case R.drawable.ionbullet:
                 this.bulletType = Bullet.ION;
                 break;
             default:
@@ -88,7 +87,7 @@ public class Spaceship extends Sprite {
     public void setRockets(boolean firesRockets, int drawableID) {
         this.firesRockets = firesRockets;
         switch (drawableID) {
-            case R.drawable.rocket_sprite:
+            case R.drawable.rocket:
                 this.rocketType = Rocket.ROCKET;
                 break;
             default:
