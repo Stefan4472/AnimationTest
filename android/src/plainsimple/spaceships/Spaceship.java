@@ -1,8 +1,7 @@
 package plainsimple.spaceships;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.util.Log;
+import android.graphics.Rect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,31 +55,6 @@ public class Spaceship extends Sprite {
     public static final int BULLET_MODE = 1;
     public static final int ROCKET_MODE = 2;
 
-    public static int getMovingBitmapID() {
-        return movingBitmapID;
-    }
-
-    public static void setMovingBitmapID(int movingBitmapID) {
-        Spaceship.movingBitmapID = movingBitmapID;
-    }
-
-    public static int getFireRocketBitmapID() {
-        return fireRocketBitmapID;
-    }
-
-    public static void setFireRocketBitmapID(int fireRocketBitmapID) {
-        Spaceship.fireRocketBitmapID = fireRocketBitmapID;
-    }
-
-    public static int getExplodeBitmapID() {
-        return explodeBitmapID;
-    }
-
-    public static void setExplodeBitmapID(int explodeBitmapID) {
-        Spaceship.explodeBitmapID = explodeBitmapID;
-    }
-
-    public List<Sprite> getProjectiles() { return projectiles; }
     public List<Sprite> getAndClearProjectiles() {
         List<Sprite> copy = new ArrayList<>();
         for(Sprite p : projectiles) {
@@ -126,8 +100,8 @@ public class Spaceship extends Sprite {
     }
 
     // default constructor
-    public Spaceship(int defaultImageID, int x, int y) {
-        super(defaultImageID, x, y);
+    public Spaceship(int defaultImageID, int spriteWidth, int spriteHeight, int x, int y) {
+        super(defaultImageID, spriteWidth, spriteHeight, x, y);
         initCraft();
     }
 
@@ -142,12 +116,15 @@ public class Spaceship extends Sprite {
         hitBox.setOffsets((width - hitBox.getWidth()) / 2, (height - hitBox.getHeight()) / 2);
     }
 
-    // get spritesheet bitmaps and construct them
-    public void injectResources(Bitmap movingSpriteSheet, Bitmap fireRocketSpriteSheet,
-                                Bitmap explodeSpriteSheet, Bitmap rocketBitmap, Bitmap bulletBitmap) { // todo: fix so dimensions are right
-        movingAnimation = new SpriteAnimation(movingSpriteSheet, width, height, 5, true);
+    // get SpriteAnimations and other necessary data
+    public void injectResources(SpriteAnimation movingAnimation, SpriteAnimation fireRocketAnimation,
+            SpriteAnimation explodeAnimation, Bitmap rocketBitmap, Bitmap bulletBitmap) { // todo: fix so dimensions are right
+        /*movingAnimation = new SpriteAnimation(movingSpriteSheet, width, height, 5, true);
         fireRocketAnimation = new SpriteAnimation(fireRocketSpriteSheet, width, height, 8, false);
-        explodeAnimation = new SpriteAnimation(explodeSpriteSheet, width, height, 5, false);
+        explodeAnimation = new SpriteAnimation(explodeSpriteSheet, width, height, 5, false);*/
+        this.movingAnimation = movingAnimation;
+        this.fireRocketAnimation = fireRocketAnimation;
+        this.explodeAnimation = explodeAnimation;
         this.rocketBitmap = rocketBitmap;
         this.bulletBitmap = bulletBitmap;
     }
@@ -263,16 +240,20 @@ public class Spaceship extends Sprite {
         // define specifications for defaultImage
         float[] defaultImgParams = {defaultImageID, x, y, 0, 0, getWidth(), getHeight()};
         params.add(defaultImgParams);
+        Rect animation_src;
         if (moving) {
-            float[] movingImgParams = {movingBitmapID, x, y, movingAnimation.getStartX(), movingAnimation.getStartY(), movingAnimation.getEndX(), movingAnimation.getEndY()};
+            animation_src = movingAnimation.getCurrentFrameSrc();
+            float[] movingImgParams = {movingAnimation.getBitmapID(), x, y, animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
             params.add(movingImgParams);
         }
         if (fireRocketAnimation.isPlaying()) {
-            float[] fireRocketImgParams = {fireRocketBitmapID, x, y, fireRocketAnimation.getStartX(), fireRocketAnimation.getStartY(), fireRocketAnimation.getEndX(), fireRocketAnimation.getEndY()};
+            animation_src = fireRocketAnimation.getCurrentFrameSrc();
+            float[] fireRocketImgParams = {fireRocketAnimation.getBitmapID(), x, y, animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
             params.add(fireRocketImgParams);
         }
         if (explodeAnimation.isPlaying()) {
-            float[] explodeImgParams = {fireRocketBitmapID, x, y, explodeAnimation.getStartX(), explodeAnimation.getStartY(), explodeAnimation.getEndX(), explodeAnimation.getEndY()};
+            animation_src = explodeAnimation.getCurrentFrameSrc();
+            float[] explodeImgParams = {explodeAnimation.getBitmapID(), x, y, animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
             params.add(explodeImgParams);
         }
         return params;

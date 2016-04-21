@@ -2,6 +2,7 @@ package plainsimple.spaceships;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
 import java.util.ArrayList;
 
@@ -105,7 +106,8 @@ public class Alien1 extends Alien {
         float[] default_img_params = {defaultImageID, x, y, 0, 0, getWidth(), getHeight()};
         params.add(default_img_params);
         if(explodeAnimation.isPlaying()) {
-            float[] explode_params = {explodeBitmapID, x, y, explodeAnimation.getStartX(), explodeAnimation.getStartY(), explodeAnimation.getEndX(), explodeAnimation.getEndY()};
+            Rect spritesheet_src = explodeAnimation.getCurrentFrameSrc();
+            float[] explode_params = {explodeAnimation.getBitmapID(), x, y, spritesheet_src.left, spritesheet_src.top, spritesheet_src.right, spritesheet_src.bottom};
             params.add(explode_params);
         }
         return params;
@@ -116,7 +118,7 @@ public class Alien1 extends Alien {
     @Override
     void fireBullet(Sprite s) {
         Point2D target = s.getHitboxCenter();
-        AlienBullet b = new AlienBullet(bulletBitmap, x, y + (int) (height * 0.4));
+        AlienBullet b = new AlienBullet(bulletBitmapID, x, y + (int) (height * 0.4));
         b.setSpeedX(bulletSpeed);
         double frames_to_impact = (x - s.getX()) / bulletSpeed;
         b.setSpeedY((y - target.getY()) / frames_to_impact);

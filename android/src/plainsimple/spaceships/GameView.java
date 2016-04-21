@@ -177,6 +177,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         // loads in sprites, sends ID's to the proper classes, and scales them
         private void initImgCache() { // todo: need to know which resources to load based on what bullets/rockets equipped. Load only needed resources
+
             Bitmap spaceshipSprite = BitmapFactory.decodeResource(myContext.getResources(), R.drawable.spaceship_sprite);
             Bitmap spaceshipMoveSheet = BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.spaceship_moving_spritesheet_diff);

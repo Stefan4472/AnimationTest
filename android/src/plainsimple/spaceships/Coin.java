@@ -3,6 +3,7 @@ package plainsimple.spaceships;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
 import java.util.ArrayList;
 
@@ -25,11 +26,13 @@ public class Coin extends Sprite {
         Coin.disappearBitmapID = disappearBitmapID;
     }
 
-    public Coin(int defaultImageID, int spriteWidth, int spriteHeight, Bitmap spinAnimation, Bitmap disappearAnimation, float x, float y) {
+    public Coin(int defaultImageID, int spriteWidth, int spriteHeight, SpriteAnimation spinAnimation, SpriteAnimation disappearAnimation, float x, float y) {
         super(defaultImageID, spriteWidth, spriteHeight, x, y);
-        spin = new SpriteAnimation(spinAnimation, width, height, 5, true);
+        //spin = new SpriteAnimation(spinAnimation, width, height, 5, true);
+        spin = spinAnimation;
         spin.start();
-        disappear = new SpriteAnimation(disappearAnimation, width, height, 1, false);
+        //disappear = new SpriteAnimation(disappearAnimation, width, height, 1, false);
+        disappear = disappearAnimation;
         initObstacle();
     }
 
@@ -70,10 +73,12 @@ public class Coin extends Sprite {
     public ArrayList<float[]> getDrawParams() {
         ArrayList<float[]> params = new ArrayList<>();
         if (disappear.isPlaying()) {
-            params.add(new float[]{disappearBitmapID, x, y, disappear.getStartX(), disappear.getStartY(), disappear.getEndX(), disappear.getEndY()});
+            Rect spritesheet_src = disappear.getCurrentFrameSrc();
+            params.add(new float[]{disappear.getBitmapID(), x, y, spritesheet_src.left, spritesheet_src.top, spritesheet_src.bottom, spritesheet_src.right});
         } else {
-            params.add(new float[] {spinBitmapID, x, y, spin.getStartX(), spin.getStartY(), spin.getEndX(), spin.getEndY()});
+            Rect spritesheet_src = spin.getCurrentFrameSrc();
+            params.add(new float[]{spin.getBitmapID(), x, y, spritesheet_src.left, spritesheet_src.top, spritesheet_src.bottom, spritesheet_src.right});
         }
-
+        return params;
     }
 }
