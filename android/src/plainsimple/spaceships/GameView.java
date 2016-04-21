@@ -38,6 +38,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     // stores graphics with R.drawable ID as key and cached Bitmap as object
     private HashMap<Integer, Bitmap> imageCache;
+    // stores BitmapData with R.drawable ID as key and data as object
+    private HashMap<Integer, BitmapData> bitmapDataIndex;
 
     // used to play short sounds
     private SoundPool soundPool;
@@ -342,29 +344,38 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     R.drawable.spaceship_exploding_spritesheet_diff));
             imageCache.put(R.drawable.alien_bullet, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.alien_bullet));
+
             // calculate scaling factor using spaceship_sprite height as a baseline
             float scalingFactor = (screenH / 6.0f) / (float) imageCache.get(R.drawable.spaceship_sprite).getHeight();
-            // scale all graphics resources in imageCache. Want textures to remain square. Scale using using height
+            // set up bitmapData index
+            bitmapDataIndex = new HashMap<>();
+            Bitmap to_scale, scaled;
             for (int key : imageCache.keySet()) {
-                Bitmap to_scale = imageCache.get(key);
-                imageCache.put(key, Bitmap.createScaledBitmap(to_scale,
+                to_scale = imageCache.get(key);
+                scaled = Bitmap.createScaledBitmap(to_scale,
                         (int) (to_scale.getWidth() * scalingFactor),
-                        (int) (to_scale.getHeight() * scalingFactor), true)); // todo: use ImageData
+                        (int) (to_scale.getHeight() * scalingFactor), true);
+                // scale all graphics resources in imageCache. Want textures to remain square. Scale using using height
+                imageCache.put(key, scaled); // todo: use ImageData
+                bitmapDataIndex.put(key, new BitmapData(key, scaled.getWidth(), scaled.getHeight()));
             }
         }
 
         private void initSpaceship() { // todo: use static ImageData and assertions
-            Bitmap spaceship_bitmap = imageCache.get(R.drawable.spaceship_sprite);
-            spaceship = new Spaceship(R.drawable.spaceship_sprite, spaceship_bitmap.getWidth(), spaceship_bitmap.getHeight(),
-                    -spaceship_bitmap.getWidth(), screenH / 2 - spaceship_bitmap.getHeight() / 2);
-            SpriteAnimation movingAnimation = new SpriteAnimation(R.drawable.spaceship_moving_spritesheet_diff, width, height, 5, true);
-            SpriteAnimation fireRocketAnimation = new SpriteAnimation(R.drawable.spaceship_firing_spritesheet_diff, width, height, 8, false);
-            SpriteAnimation explodeAnimation = new SpriteAnimation(R.drawable.spaceship_exploding_spritesheet_diff, width, height, 5, false);
-            spaceship.injectResources();
-            spaceship.setBullets(true, SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_bullet),
-                    R.drawable.laser_bullet_sprite));
-            spaceship.setRockets(true, SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_rocket),
-                    R.drawable.rocket_sprite));
+            spaceship = new Spaceship(bitmapDataIndex.get(R.drawable.spaceship_sprite),
+                    -bitmapDataIndex.get(R.drawable.spaceship_sprite).getWidth(),
+                    screenH / 2 - bitmapDataIndex.get(R.drawable.spaceship_sprite).getHeight() / 2);
+            SpriteAnimation movingAnimation = new SpriteAnimation(bitmapDataIndex.get(R.drawable.spaceship_moving_spritesheet_diff), 2, 5, true);
+            SpriteAnimation fireRocketAnimation = new SpriteAnimation(bitmapDataIndex.get(R.drawable.spaceship_firing_spritesheet_diff), 4, 8, false);
+            SpriteAnimation explodeAnimation = new SpriteAnimation(bitmapDataIndex.get(R.drawable.spaceship_exploding_spritesheet_diff), 8, 5, false);
+            int bullet_resource = SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_bullet),
+                    R.drawable.laser_bullet_sprite);
+            int rocket_resource = SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_rocket),
+                    R.drawable.rocket_sprite);
+            spaceship.injectResources(movingAnimation, fireRocketAnimation, explodeAnimation,
+                    bitmapDataIndex.get(bullet_resource), bitmapDataIndex.get(rocket_resource));
+            spaceship.setBullets(true, bullet_resource);
+            spaceship.setRockets(true, rocket_resource);
             spaceship.setHP(30);
         }
 
@@ -389,16 +400,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         private Sprite getMapTile(int tileID, float x, float y) throws IndexOutOfBoundsException {
             switch (tileID) {
                 case TileGenerator.OBSTACLE:
-                    return new Obstacle(obstacleSpriteID, x, y); // todo: use static ImageData
+                    return new Obstacle(bitmapDataIndex.get(R.drawable.obstacle_sprite), x, y); // todo: use static ImageData
                 case TileGenerator.OBSTACLE_INVIS:
-                    Sprite tile = new Obstacle(obstacleSprite, x, y);
+                    Sprite tile = new Obstacle(bitmapDataIndex.get(R.drawable.obstacle_sprite), x, y);
                     tile.setCollides(false);
                     return tile;
-                case TileGenerator.COIN:
-                    return new Coin(coinSprite, coinSpinSheet, coinDisappearSheet, x, y);
+                case TileGenerator.COIN: // todo: cache SpriteAnimations
+                    SpriteAnimation coin_spin = new SpriteAnimation(bitmapDataIndex.get(R.drawable.coin_spinning_spritesheet), 1, 10, true);
+                    SpriteAnimation coin_disappear = new SpriteAnimation(bitmapDataIndex.get(R.drawable.coin_collected_spritesheet), 4, 5, false);
+                    return new Coin(bitmapDataIndex.get(R.drawable.coin_sprite), coin_spin, coin_disappear, x, y);
                 case TileGenerator.ALIEN_LVL1:
-                    Alien1 alien_1 = new Alien1(alien1Sprite, x, y, difficulty, spaceship);
-                    alien_1.injectResources(alienBulletSprite, alienExplodeSheet);
+                    Alien1 alien_1 = new Alien1(bitmapDataIndex.get(R.drawable.alien_sprite), x, y, difficulty, spaceship);
+                    SpriteAnimation alien_explode = new SpriteAnimation(bitmapDataIndex.get(R.drawable.spaceship_exploding_spritesheet_diff), 8, 5, false);
+                    alien_1.injectResources(bitmapDataIndex.get(R.drawable.alien_bullet), alien_explode);
                     return alien_1;
                 default:
                     throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");

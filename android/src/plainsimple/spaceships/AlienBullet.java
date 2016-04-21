@@ -7,14 +7,14 @@ import java.util.ArrayList;
  */
 public class AlienBullet extends Sprite {
 
-    public AlienBullet(int defaultImageID, int spriteWidth, int spriteHeight, float x, float y) {
-        super(defaultImageID, spriteWidth, spriteHeight, x, y);
+    public AlienBullet(BitmapData bitmapData, float x, float y) {
+        super(bitmapData, x, y);
         initAlienBullet();
     }
 
     private void initAlienBullet() {
         // todo: change size for better-looking hit detection? (see Issue #13)
-        hitBox.setDimensions(width, height);
+        hitBox.setDimensions(getWidth(), getHeight());
         damage = 20;
     }
 
@@ -43,7 +43,7 @@ public class AlienBullet extends Sprite {
     @Override
     public ArrayList<int[]> getDrawParams() {
         ArrayList<int[]> params = new ArrayList<>();
-        params.add(new int[] {bitmapData, (int) x, (int) y, 0, 0, getWidth(), getHeight()});
+        params.add(new int[] {bitmapData.getId(), (int) x, (int) y, 0, 0, getWidth(), getHeight()});
         return params;
     }
 }

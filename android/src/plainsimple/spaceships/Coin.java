@@ -26,8 +26,8 @@ public class Coin extends Sprite {
         Coin.disappearBitmapID = disappearBitmapID;
     }
 
-    public Coin(int defaultImageID, int spriteWidth, int spriteHeight, SpriteAnimation spinAnimation, SpriteAnimation disappearAnimation, float x, float y) {
-        super(defaultImageID, spriteWidth, spriteHeight, x, y);
+    public Coin(BitmapData bitmapData, SpriteAnimation spinAnimation, SpriteAnimation disappearAnimation, float x, float y) {
+        super(bitmapData, x, y);
         //spin = new SpriteAnimation(spinAnimation, width, height, 5, true);
         spin = spinAnimation;
         spin.start();
@@ -37,8 +37,8 @@ public class Coin extends Sprite {
     }
 
     private void initObstacle() {
-        hitBox.setDimensions((int) (width * 0.4), (int) (height * 0.8));
-        hitBox.setOffsets((width - hitBox.getWidth()) / 2, (height - hitBox.getHeight()) / 2);
+        hitBox.setDimensions((int) (getWidth() * 0.4), (int) (getHeight() * 0.8));
+        hitBox.setOffsets((getWidth() - hitBox.getWidth()) / 2, (getHeight() - hitBox.getHeight()) / 2);
     }
 
     @Override

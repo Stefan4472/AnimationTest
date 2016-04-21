@@ -7,7 +7,7 @@ import android.graphics.Rect;
  */
 public class SpriteAnimation { // todo: pause (returns same frame each time) and reverse methods
 
-    private int bitmapID;
+    private BitmapData bitmapData;
 
     // dimensions of each frame
     private int frameW;
@@ -40,13 +40,12 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
 
     // takes R.id of Bitmap representing spritesheet, which consists of one row of sprites
     // initializes all frames now so as to cut down on processing time later
-    public SpriteAnimation(int bitmapID, int spriteSheetWidth, int spriteSheetHeight, int frameW,
-                           int frameH, int frameSpeed, boolean loop) {
-        this.bitmapID = bitmapID;
+    public SpriteAnimation(BitmapData bitmapData, int frameW, int frameSpeed, boolean loop) { // todo: confusion btwn. frameW and bitmapData.getWidth()
+        this.bitmapData = bitmapData;
         this.frameW = frameW;
-        this.frameH = frameH;
-        sheetW = bitmapID / frameW;
-        sheetH = bitmapID / frameH; // todo: would always be equal to one -> support multiple rows
+        frameH = 1;
+        sheetW = bitmapData.getWidth() / frameW;
+        sheetH = bitmapData.getHeight() / frameH; // todo: support multiple rows
         numFrames = sheetW * sheetH;
         this.frameSpeed = frameSpeed;
         this.loop = loop;
@@ -109,6 +108,6 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
     }
 
     public int getBitmapID() {
-        return bitmapID;
+        return bitmapData.getId();
     }
 }

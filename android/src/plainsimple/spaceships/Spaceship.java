@@ -110,8 +110,8 @@ public class Spaceship extends Sprite {
         damage = 100;
         controllable = true;
         collides = true;
-        hitBox.setDimensions((int) (width * 0.66), (int) (height * 0.55));
-        hitBox.setOffsets((width - hitBox.getWidth()) / 2, (height - hitBox.getHeight()) / 2);
+        hitBox.setDimensions((int) (getWidth() * 0.66), (int) (getHeight() * 0.55));
+        hitBox.setOffsets((getWidth() - hitBox.getWidth()) / 2, (getHeight() - hitBox.getHeight()) / 2);
     }
 
     public void injectResources(SpriteAnimation movingAnimation, SpriteAnimation fireRocketAnimation, // todo: make part of constructor
@@ -140,7 +140,7 @@ public class Spaceship extends Sprite {
 
     // fires two rockets
     public void fireRockets() {
-        projectiles.add(new Rocket(rocketBitmapData.getId(), (int) (x + getWidth() * 0.80), (int) (y + 0.29 * getHeight()), rocketType));
+        projectiles.add(new Rocket(rocketBitmapData, x + (int) (getWidth() * 0.80), y + (int) (0.29 * getHeight()), rocketType));
         projectiles.add(new Rocket(rocketBitmapData, x + (int) (getWidth() * 0.80), y + (int) (0.65 * getHeight()), rocketType));
     }
 

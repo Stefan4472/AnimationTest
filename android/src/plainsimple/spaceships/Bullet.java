@@ -39,10 +39,9 @@ public class Bullet extends Sprite {
     public static final int PLUTONIUM_DELAY = 18;
     public static final float PLUTONIUM_SPEED_X = 0.013f;
 
-    // todo: when resources can be different defaultImage shouldn't be a parameter
-    public Bullet(int defaultImageID, int spriteWidth, int spriteHeight, float x, float y, int bulletType) {
-        super(defaultImageID, spriteWidth, spriteHeight, x, y);
-        hitBox.setDimensions((int) (width * 1.5f), height);
+    public Bullet(BitmapData bitmapData, float x, float y, int bulletType) { // todo: any way to clean this up?
+        super(bitmapData, x, y);
+        hitBox.setDimensions((int) (getWidth() * 1.5f), getHeight());
         switch(bulletType) {
             case LASER: // todo: figure out how to load resource in each case
                 damage = LASER_DAMAGE;
@@ -120,7 +119,7 @@ public class Bullet extends Sprite {
     @Override
     public ArrayList<int[]> getDrawParams() {
         ArrayList<int[]> params = new ArrayList<>();
-        params.add(new int[] {bitmapData, (int) x, (int) y, 0, 0, getWidth(), getHeight()});
+        params.add(new int[] {bitmapData.getId(), (int) x, (int) y, 0, 0, getWidth(), getHeight()});
         return params;
     }
 }
