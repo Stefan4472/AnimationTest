@@ -3,6 +3,8 @@ package plainsimple.spaceships;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import java.util.ArrayList;
+
 /**
  * Created by Stefan on 8/17/2015.
  */
@@ -41,8 +43,8 @@ public class Bullet extends Sprite {
     public static final float PLUTONIUM_SPEED_X = 0.013f;
 
     // todo: when resources can be different defaultImage shouldn't be a parameter
-    public Bullet(Bitmap defaultImage, float x, float y, int bulletType) {
-        super(defaultImage, x, y);
+    public Bullet(int defaultImageID, int spriteWidth, int spriteHeight, float x, float y, int bulletType) {
+        super(defaultImageID, spriteWidth, spriteHeight, x, y);
         hitBox.setDimensions((int) (width * 1.5f), height);
         switch(bulletType) {
             case LASER: // todo: figure out how to load resource in each case
@@ -119,7 +121,9 @@ public class Bullet extends Sprite {
     }
 
     @Override
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(defaultImage, x, y, null);
+    public ArrayList<float[]> getDrawParams() {
+        ArrayList<float[]> params = new ArrayList<>();
+        params.add(new float[] {defaultImageID, x, y, 0, 0, getWidth(), getHeight()});
+        return params;
     }
 }

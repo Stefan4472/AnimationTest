@@ -3,6 +3,8 @@ package plainsimple.spaceships;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import java.util.ArrayList;
+
 /**
  * Created by Stefan on 9/26/2015.
  */
@@ -14,13 +16,16 @@ public class Alien1 extends Alien {
     private int vShift;
     private int hShift;
 
+    // R.id of Bitmap used for exploding spritesheet
+    private static int explodeBitmapID;
+
     private Bitmap bulletBitmap;
     private SpriteAnimation explodeAnimation;
     private Spaceship spaceship;
     private double difficulty;
 
-    public Alien1(Bitmap defaultImage, float x, float y, double difficulty, Spaceship spaceship) {
-        super(defaultImage, x, y);
+    public Alien1(int defaultImageID, int spriteWidth, int spriteHeight, float x, float y, double difficulty, Spaceship spaceship) {
+        super(defaultImageID, spriteWidth, spriteHeight, x, y);
         this.spaceship = spaceship;
         this.difficulty = difficulty;
         initAlien();
@@ -95,11 +100,15 @@ public class Alien1 extends Alien {
     }
 
     @Override
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(defaultImage, x, y, null);
+    public ArrayList<float[]> getDrawParams() {
+        ArrayList<float[]> params = new ArrayList<>();
+        float[] default_img_params = {defaultImageID, x, y, 0, 0, getWidth(), getHeight()};
+        params.add(default_img_params);
         if(explodeAnimation.isPlaying()) {
-            canvas.drawBitmap(explodeAnimation.currentFrame(), x, y, null);
+            float[] explode_params = {explodeBitmapID, x, y, explodeAnimation.getStartX(), explodeAnimation.getStartY(), explodeAnimation.getEndX(), explodeAnimation.getEndY()};
+            params.add(explode_params);
         }
+        return params;
     }
 
     // fires bullet at sprite based on current trajectories

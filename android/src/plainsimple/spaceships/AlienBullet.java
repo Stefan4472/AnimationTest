@@ -3,13 +3,15 @@ package plainsimple.spaceships;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import java.util.ArrayList;
+
 /**
  * Created by Stefan on 8/29/2015.
  */
 public class AlienBullet extends Sprite {
 
-    public AlienBullet(Bitmap defaultImage, float x, float y) {
-        super(defaultImage, x, y);
+    public AlienBullet(int defaultImageID, int spriteWidth, int spriteHeight, float x, float y) {
+        super(defaultImageID, spriteWidth, spriteHeight, x, y);
         initAlienBullet();
     }
 
@@ -42,7 +44,9 @@ public class AlienBullet extends Sprite {
     }
 
     @Override
-    void draw(Canvas canvas) {
-        canvas.drawBitmap(defaultImage, x, y, null);
+    public ArrayList<float[]> getDrawParams() {
+        ArrayList<float[]> params = new ArrayList<>();
+        params.add(new float[] {defaultImageID, x, y, 0, 0, getWidth(), getHeight()});
+        return params;
     }
 }

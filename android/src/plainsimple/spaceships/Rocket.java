@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 /**
  * Created by Stefan on 8/13/2015.
  */
@@ -22,8 +24,8 @@ public class Rocket extends Sprite {
     public static final int ROCKET_DELAY = 40;
     public static final float ROCKET_SPEED_X = 0.0067f;
 
-    public Rocket(Bitmap defaultImage, float x, float y, int rocketType) {
-        super(defaultImage, x, y);
+    public Rocket(int defaultImageID, int spriteWidth, int spriteHeight, float x, float y, int rocketType) {
+        super(defaultImageID, spriteWidth, spriteHeight, x, y);
         hitBox.setDimensions((int) (width * 1.5f), height);
         switch(rocketType) {
             case ROCKET:
@@ -76,7 +78,9 @@ public class Rocket extends Sprite {
     }
 
     @Override
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(defaultImage, x, y, null);
+    public ArrayList<float[]> getDrawParams() {
+        ArrayList<float[]> params = new ArrayList<>();
+        params.add(new float[] {defaultImageID, x, y, 0, 0, getWidth(), getHeight()});
+        return params;
     }
 }

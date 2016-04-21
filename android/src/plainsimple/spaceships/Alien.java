@@ -3,6 +3,7 @@ package plainsimple.spaceships;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,8 +39,8 @@ public abstract class Alien extends Sprite {
         return copy;
     }
 
-    public Alien(Bitmap defaultImage, float x, float y) {
-        super(defaultImage, x, y);
+    public Alien(int defaultImageID, int spriteWidth, int spriteHeight, float x, float y) {
+        super(defaultImageID, spriteWidth, spriteHeight, x, y);
     }
 
     private void initLevel3Alien() { // todo: move to Alien3 class
@@ -69,7 +70,7 @@ public abstract class Alien extends Sprite {
     abstract void handleCollision(Sprite s);
 
     @Override
-    abstract void draw(Canvas canvas);
+    abstract ArrayList<float[]> getDrawParams();
 
     // fires bullet/projectile at specified sprite
     abstract void fireBullet(Sprite s); // todo: unnecessary

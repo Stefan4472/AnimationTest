@@ -264,13 +264,17 @@ public class Spaceship extends Sprite {
         float[] defaultImgParams = {defaultImageID, x, y, 0, 0, getWidth(), getHeight()};
         params.add(defaultImgParams);
         if (moving) {
-            canvas.drawBitmap(movingAnimation.currentFrame(), x, y, null);
+            float[] movingImgParams = {movingBitmapID, x, y, movingAnimation.getStartX(), movingAnimation.getStartY(), movingAnimation.getEndX(), movingAnimation.getEndY()};
+            params.add(movingImgParams);
         }
         if (fireRocketAnimation.isPlaying()) {
-            canvas.drawBitmap(fireRocketAnimation.currentFrame(), x, y, null);
+            float[] fireRocketImgParams = {fireRocketBitmapID, x, y, fireRocketAnimation.getStartX(), fireRocketAnimation.getStartY(), fireRocketAnimation.getEndX(), fireRocketAnimation.getEndY()};
+            params.add(fireRocketImgParams);
         }
         if (explodeAnimation.isPlaying()) {
-            canvas.drawBitmap(explodeAnimation.currentFrame(), x, y, null);
+            float[] explodeImgParams = {fireRocketBitmapID, x, y, explodeAnimation.getStartX(), explodeAnimation.getStartY(), explodeAnimation.getEndX(), explodeAnimation.getEndY()};
+            params.add(explodeImgParams);
         }
+        return params;
     }
 }

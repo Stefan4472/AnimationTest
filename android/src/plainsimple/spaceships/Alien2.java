@@ -3,13 +3,15 @@ package plainsimple.spaceships;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import java.util.ArrayList;
+
 /**
  * Created by Stefan on 9/26/2015.
  */
 public class Alien2 extends Alien { // todo: not implemented
 
-    public Alien2(Bitmap defaultImage, float x, float y) {
-        super(defaultImage, x, y);
+    public Alien2(int defaultImageID, int spriteWidth, int spriteHeight, float x, float y) {
+        super(defaultImageID,spriteWidth, spriteHeight, x, y);
         initAlien();
     }
 
@@ -45,8 +47,8 @@ public class Alien2 extends Alien { // todo: not implemented
     }
 
     @Override
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(defaultImage, x, y, null);
+    public ArrayList<float[]> getDrawParams() {
+        return new ArrayList<float[]> ();
     }
 
     @Override

@@ -3,13 +3,15 @@ package plainsimple.spaceships;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import java.util.ArrayList;
+
 /**
  * Created by Stefan on 8/20/2015.
  */
 public class Obstacle extends Sprite {
 
-    public Obstacle(Bitmap defaultImage, float x, float y) {
-        super(defaultImage, x, y);
+    public Obstacle(int defaultImageID, int spriteWidth, int spriteHeight, float x, float y) {
+        super(defaultImageID, spriteWidth, spriteHeight, x, y);
         initObstacle();
     }
 
@@ -39,7 +41,9 @@ public class Obstacle extends Sprite {
     }
 
     @Override
-    void draw(Canvas canvas) {
-        canvas.drawBitmap(defaultImage, x, y, null);
+    public ArrayList<float[]> getDrawParams() {
+        ArrayList<float[]> params = new ArrayList<>();
+        params.add(new float[] {defaultImageID, x, y, 0, 0, getWidth(), getHeight()});
+        return params;
     }
 }
