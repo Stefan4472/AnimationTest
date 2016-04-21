@@ -95,6 +95,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public boolean getMuted() { return muted; }
     public void setPaused(boolean paused) { this.paused = paused; }
     public boolean getPaused() { return paused; }
+    public void setFiringMode(int firingMode) {
+        spaceship.setFiringMode(firingMode);
+    }
 
     public GameView(Context context, AttributeSet attributes) {
         super(context, attributes);
@@ -312,8 +315,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     R.drawable.spaceship_move));
             imageCache.put(R.drawable.spaceship_explode, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.spaceship_explode));
-            imageCache.put(R.drawable.spaceship_fireRocket, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.spaceship_fireRocket));
+            imageCache.put(R.drawable.spaceship_fire_rocket, BitmapFactory.decodeResource(myContext.getResources(),
+                    R.drawable.spaceship_fire_rocket));
 
             // get current rocket type equipped and decode corresponding sprite
             int rocket_resource = SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_rocket),
@@ -365,7 +368,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     -bitmapDataIndex.get(R.drawable.spaceship).getWidth(),
                     screenH / 2 - bitmapDataIndex.get(R.drawable.spaceship).getHeight() / 2);
             SpriteAnimation movingAnimation = new SpriteAnimation(bitmapDataIndex.get(R.drawable.spaceship_move), 2, 5, true);
-            SpriteAnimation fireRocketAnimation = new SpriteAnimation(bitmapDataIndex.get(R.drawable.spaceship_fireRocket), 4, 8, false);
+            SpriteAnimation fireRocketAnimation = new SpriteAnimation(bitmapDataIndex.get(R.drawable.spaceship_fire_rocket), 4, 8, false);
             SpriteAnimation explodeAnimation = new SpriteAnimation(bitmapDataIndex.get(R.drawable.spaceship_explode), 8, 5, false);
             int bullet_resource = SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_bullet),
                     R.drawable.laserbullet);

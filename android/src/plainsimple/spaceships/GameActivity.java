@@ -66,14 +66,13 @@ public class GameActivity extends Activity {
     }
 
     public void onToggleBulletPressed(View view) {
-        // todo: performance issues?
-        gameView.getMap().getSpaceship().setFiringMode(Spaceship.BULLET_MODE);
+        gameView.setFiringMode(Spaceship.BULLET_MODE);
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
     }
 
     public void onToggleRocketPressed(View view) {
-        gameView.getMap().getSpaceship().setFiringMode(Spaceship.ROCKET_MODE);
+        gameView.setFiringMode(Spaceship.ROCKET_MODE);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button_pressed);
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button);
     }
