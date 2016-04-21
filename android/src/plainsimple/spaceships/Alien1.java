@@ -1,7 +1,5 @@
 package plainsimple.spaceships;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Rect;
 
 import java.util.ArrayList;
@@ -20,13 +18,11 @@ public class Alien1 extends Alien {
     private Spaceship spaceship;
     private double difficulty;
 
-    private int bulletBitmapID;
-    private int bulletBitmapW;
-    private int bulletBitmapH;
+    private BitmapData bulletBitmapData;
     private SpriteAnimation explodeAnimation;
 
-    public Alien1(int defaultImageID, int spriteWidth, int spriteHeight, float x, float y, double difficulty, Spaceship spaceship) {
-        super(defaultImageID, spriteWidth, spriteHeight, x, y);
+    public Alien1(BitmapData bitmapData, float x, float y, double difficulty, Spaceship spaceship) {
+        super(bitmapData, x, y);
         this.spaceship = spaceship;
         this.difficulty = difficulty;
         initAlien();
@@ -42,16 +38,14 @@ public class Alien1 extends Alien {
         bulletDelay = 30;
         framesSinceLastBullet = bulletDelay;
         bulletSpeed = -0.002f - random.nextInt(5) / 10000.0;
-        hitBox.setDimensions((int) (width * 0.8), (int) (height * 0.8));
-        hitBox.setOffsets(width - hitBox.getWidth(), height - hitBox.getHeight());
+        hitBox.setDimensions((int) (getWidth() * 0.8), (int) (getHeight() * 0.8));
+        hitBox.setOffsets(getWidth() - hitBox.getWidth(), getHeight() - hitBox.getHeight());
         damage = 50;
         speedX = -0.0035f;
     }
 
-    public void injectResources(int bulletBitmapID, int bulletBitmapW, int bulletBitmapH, SpriteAnimation explodeAnimation) {
-        this.bulletBitmapID = bulletBitmapID;
-        this.bulletBitmapW = bulletBitmapW;
-        this.bulletBitmapH = bulletBitmapH;
+    public void injectResources(BitmapData bulletBitmapData, SpriteAnimation explodeAnimation) {
+        this.bulletBitmapData = bulletBitmapData;
         this.explodeAnimation = explodeAnimation;
         //explodeAnimation = new SpriteAnimation(explodeSpriteSheet, width, height, 3, false);
     }
@@ -106,7 +100,7 @@ public class Alien1 extends Alien {
     @Override
     public ArrayList<int[]> getDrawParams() {
         ArrayList<int[]> params = new ArrayList<>();
-        int[] default_img_params = {defaultImageID, (int) x, (int) y, 0, 0, getWidth(), getHeight()};
+        int[] default_img_params = {bitmapData.getId(), (int) x, (int) y, 0, 0, getWidth(), getHeight()};
         params.add(default_img_params);
         if(explodeAnimation.isPlaying()) {
             Rect spritesheet_src = explodeAnimation.getCurrentFrameSrc();
@@ -121,7 +115,7 @@ public class Alien1 extends Alien {
     @Override
     void fireBullet(Sprite s) {
         Point2D target = s.getHitboxCenter();
-        AlienBullet b = new AlienBullet(bulletBitmapID, bulletBitmapW, bulletBitmapH, x, y + (int) (height * 0.4));
+        AlienBullet b = new AlienBullet(bulletBitmapData, x, y + (int) (getHeight() * 0.4));
         b.setSpeedX(bulletSpeed);
         double frames_to_impact = (x - s.getX()) / bulletSpeed;
         b.setSpeedY((y - target.getY()) / frames_to_impact);

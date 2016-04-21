@@ -1,9 +1,5 @@
 package plainsimple.spaceships;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -19,10 +15,6 @@ public abstract class Sprite {
     // intended movement in x and y directions each frame
     protected double speedX;
     protected double speedY;
-
-    // sprite width and height
-    protected int width;
-    protected int height;
 
     // damage sprite can withstand and damage it inflicts on collision
     protected int hp;
@@ -42,74 +34,16 @@ public abstract class Sprite {
     // hitbox for collision detection todo: complex shapes
     protected Hitbox hitBox;
 
-    // R.drawable ID that specifies the sprite's default texture
-    protected int defaultImageID;
+    // data concerning sprite's default Bitmap
+    protected BitmapData bitmapData;
 
     // random number generator
     protected Random random;
 
-    public int getWidth() {
-        return width;
-    }
-    public int getHeight() {
-        return height;
-    }
-    public double getSpeedX() {
-        return speedX;
-    }
-    public double getSpeedY() {
-        return speedY;
-    }
-    public void setSpeedX(double speedX) {
-        this.speedX = speedX;
-    }
-    public void setSpeedY(double speedY) {
-        this.speedY = speedY;
-    }
-    public boolean isVisible() {
-        return vis;
-    }
-    public void setVisible(Boolean visible) {
-        vis = visible;
-    }
-    public boolean isInBounds() { return inBounds; }
-    public boolean getCollides() {
-        return collides;
-    }
-    public void setCollides(boolean collides) {
-        this.collides = collides;
-    }
-    public boolean getCollision() {
-        return collision;
-    }
-    public void setCollision(boolean collision) {
-        this.collision = collision;
-    }
-    public int getDamage() {
-        return damage;
-    }
-    public void setDamage(int damage) {
-        this.damage = damage;
-    }
-    public int getHP() {
-        return hp;
-    }
-    public void setHP(int hp) {
-        this.hp = hp;
-    }
-
-    public Sprite(int defaultImageID, int spriteWidth, int spriteHeight, float x, float y) {
-        this.defaultImageID = defaultImageID;
-        this.width = spriteWidth;
-        this.height = spriteHeight;
+    public Sprite(BitmapData bitmapData, float x, float y) {
+        this.bitmapData = bitmapData;
         this.x = x;
         this.y = y;
-        initSprite();
-    }
-
-    // initializes with sprite at (0,0)
-    public Sprite(int defaultImageID, int spriteWidth, int spriteHeight) {
-        this(defaultImageID, spriteWidth, spriteHeight, 0, 0);
         initSprite();
     }
 
@@ -124,24 +58,6 @@ public abstract class Sprite {
         random = new Random();
         damage = 0;
         hp = 0;
-    }
-
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public void setX(float x) {
-        this.x = x;
-        hitBox.updateCoordinates((int) x, hitBox.getY());
-    }
-
-    public void setY(float y) {
-        this.y = y;
-        hitBox.updateCoordinates(hitBox.getX(), (int) y);
     }
 
     // update/handle any actions sprite takes
@@ -172,9 +88,9 @@ public abstract class Sprite {
         x += GameView.screenW * speedX;
         y += GameView.screenH * speedY;
         // keep in mind sprites are generated past the screen
-        if (x > GameView.screenW + width || x < -width) {
+        if (x > GameView.screenW + bitmapData.getWidth() || x < -bitmapData.getWidth()) {
             inBounds = false;
-        } else if (y > GameView.screenH + height || y < -height) { // todo: bounce off edge of screen
+        } else if (y > GameView.screenH + bitmapData.getHeight() || y < -bitmapData.getHeight()) { // todo: bounce off edge of screen
             inBounds = false;
         } else {
             inBounds = true;
@@ -182,7 +98,7 @@ public abstract class Sprite {
         hitBox.updateCoordinates((int) x, (int) y);
     }
 
-    // returns whether hitbox of this sprite intersects hitbox of specified sprite
+    // returns whether hitbox of this sprite intersects hitbox of specified sprite // todo: some methods could be made static or put in a SpriteUtil or GameEngineUtil class
     public boolean collidesWith(Sprite s) {
         if (!collides || !s.collides)
             return false;
@@ -198,11 +114,99 @@ public abstract class Sprite {
     // returns coordinates of center of sprite's hitbox
     // as a Point2D object
     public Point2D getHitboxCenter() {
-        return new Point2D(hitBox.getX() + hitBox.getOffsetX() + hitBox.getWidth() / 2,
-                hitBox.getY() + hitBox.getOffsetY() + hitBox.getHeight() / 2);
+        return new Point2D(hitBox.getX() + hitBox.getOffsetX() + hitBox.getWidth() / 2, // todo: offset is confusing. Shouldn't there just be on x- and y- coordinate?
+                hitBox.getY() + hitBox.getOffsetY() + hitBox.getHeight() / 2); // todo: improve Hitbox class. No offsets
     }
 
     public boolean getP(double probability) {
-        return random.nextInt(1_000_000) + 1 <= probability * 1_000_000;
+        return random.nextInt(1_000) + 1 <= probability * 1_000;
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    // returns width of bitmap
+    protected int getWidth() {
+        return bitmapData.getWidth();
+    }
+
+    // returns height of bitmap
+    protected int getHeight() {
+        return bitmapData.getWidth();
+    }
+
+    public void setX(float x) {
+        this.x = x;
+        hitBox.updateCoordinates((int) x, hitBox.getY());
+    }
+
+    public void setY(float y) { // todo: see if hitBox change is necessary - shouldn't be or should be in a separate method
+        this.y = y;
+        hitBox.updateCoordinates(hitBox.getX(), (int) y);
+    }
+
+    public BitmapData getBitmapData() {
+        return bitmapData;
+    }
+
+    public void setBitmapData(BitmapData bitmapData) {
+        this.bitmapData = bitmapData;
+    }
+
+    public void setSpeedX(double speedX) {
+        this.speedX = speedX;
+    }
+
+    public void setSpeedY(double speedY) {
+        this.speedY = speedY;
+    }
+
+    public boolean isVisible() {
+        return vis;
+    }
+
+    public void setVisible(Boolean visible) {
+        vis = visible;
+    }
+
+    public boolean isInBounds() {
+        return inBounds;
+    }
+
+    public boolean getCollides() {
+        return collides;
+    }
+
+    public void setCollides(boolean collides) {
+        this.collides = collides;
+    }
+
+    public boolean getCollision() {
+        return collision;
+    }
+
+    public void setCollision(boolean collision) {
+        this.collision = collision;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
+    public int getHP() {
+        return hp;
+    }
+
+    public void setHP(int hp) {
+        this.hp = hp;
     }
 }

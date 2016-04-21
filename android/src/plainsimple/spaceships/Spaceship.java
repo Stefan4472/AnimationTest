@@ -37,16 +37,12 @@ public class Spaceship extends Sprite {
     private boolean firesBullets;
     private int bulletType = Bullet.LASER;
     private int lastFiredBullet;
-    private int bulletBitmapID;
-    private int bulletBitmapW;
-    private int bulletBitmapH;
+    private BitmapData bulletBitmapData;
 
     private boolean firesRockets;
     private int rocketType = Rocket.ROCKET;
     private int lastFiredRocket;
-    private int rocketBitmapID;
-    private int rocketBitmapW;
-    private int rocketBitmapH;
+    private BitmapData rocketBitmapData;
 
     // keeps track of fired bullets and rockets
     private List<Sprite> projectiles;
@@ -102,8 +98,8 @@ public class Spaceship extends Sprite {
     }
 
     // default constructor
-    public Spaceship(int defaultImageID, int spriteWidth, int spriteHeight, int x, int y) {
-        super(defaultImageID, spriteWidth, spriteHeight, x, y);
+    public Spaceship(BitmapData bitmapData, int x, int y) {
+        super(bitmapData, x, y);
         initCraft();
     }
 
@@ -118,18 +114,13 @@ public class Spaceship extends Sprite {
         hitBox.setOffsets((width - hitBox.getWidth()) / 2, (height - hitBox.getHeight()) / 2);
     }
 
-    public void injectResources(SpriteAnimation movingAnimation, SpriteAnimation fireRocketAnimation,
-            SpriteAnimation explodeAnimation, int rocketBitmapID, int rocketBitmapW, int rocketBitmapH,
-                                int bulletBitmapID, int bulletBitmapW, int bulletBitmapH) { // todo: fix so dimensions are right
+    public void injectResources(SpriteAnimation movingAnimation, SpriteAnimation fireRocketAnimation, // todo: make part of constructor
+            SpriteAnimation explodeAnimation, BitmapData bulletBitmapData, BitmapData rocketBitmapData) { // todo: fix so dimensions are right
         this.movingAnimation = movingAnimation;
         this.fireRocketAnimation = fireRocketAnimation;
         this.explodeAnimation = explodeAnimation;
-        this.rocketBitmapID = rocketBitmapID;
-        this.rocketBitmapW = rocketBitmapW;
-        this.rocketBitmapH = rocketBitmapH;
-        this.bulletBitmapID = bulletBitmapID;
-        this.bulletBitmapW = bulletBitmapW;
-        this.bulletBitmapH = bulletBitmapH;
+        this.bulletBitmapData = bulletBitmapData;
+        this.rocketBitmapData = rocketBitmapData;
     }
 
     @Override
@@ -149,14 +140,14 @@ public class Spaceship extends Sprite {
 
     // fires two rockets
     public void fireRockets() {
-        projectiles.add(new Rocket(rocketBitmapID, rocketBitmapW, rocketBitmapH, x + (int) (width * 0.80), y + (int) (0.29 * height), rocketType));
-        projectiles.add(new Rocket(rocketBitmapID, rocketBitmapW, rocketBitmapH, x + (int) (width * 0.80), y + (int) (0.65 * height), rocketType));
+        projectiles.add(new Rocket(rocketBitmapData.getId(), (int) (x + getWidth() * 0.80), (int) (y + 0.29 * getHeight()), rocketType));
+        projectiles.add(new Rocket(rocketBitmapData, x + (int) (getWidth() * 0.80), y + (int) (0.65 * getHeight()), rocketType));
     }
 
     // fires two bullets
     public void fireBullets() {
-        projectiles.add(new Bullet(bulletBitmapID, bulletBitmapW, bulletBitmapH, x + (int) (width * 0.78), y + (int) (0.28 * height), bulletType));
-        projectiles.add(new Bullet(bulletBitmapID, bulletBitmapW, bulletBitmapH, x + (int) (width * 0.78), y + (int) (0.66 * height), bulletType));
+        projectiles.add(new Bullet(bulletBitmapData, x + (int) (getWidth() * 0.78), y + (int) (0.28 * getHeight()), bulletType));
+        projectiles.add(new Bullet(bulletBitmapData, x + (int) (getWidth() * 0.78), y + (int) (0.66 * getHeight()), bulletType));
     }
 
     // sets current tilt of device and determines dy
@@ -241,7 +232,7 @@ public class Spaceship extends Sprite {
     public ArrayList<int[]> getDrawParams() {
         ArrayList<int[]> params = new ArrayList<>();
         // define specifications for defaultImage
-        int[] defaultImgParams = {defaultImageID, (int) x, (int) y, 0, 0, getWidth(), getHeight()};
+        int[] defaultImgParams = {bitmapData.getId(), (int) x, (int) y, 0, 0, getWidth(), getHeight()};
         params.add(defaultImgParams);
         Rect animation_src;
         if (moving) {

@@ -349,11 +349,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 Bitmap to_scale = imageCache.get(key);
                 imageCache.put(key, Bitmap.createScaledBitmap(to_scale,
                         (int) (to_scale.getWidth() * scalingFactor),
-                        (int) (to_scale.getHeight() * scalingFactor), true));
+                        (int) (to_scale.getHeight() * scalingFactor), true)); // todo: use ImageData
             }
         }
 
-        private void initSpaceship() {
+        private void initSpaceship() { // todo: use static ImageData and assertions
             Bitmap spaceship_bitmap = imageCache.get(R.drawable.spaceship_sprite);
             spaceship = new Spaceship(R.drawable.spaceship_sprite, spaceship_bitmap.getWidth(), spaceship_bitmap.getHeight(),
                     -spaceship_bitmap.getWidth(), screenH / 2 - spaceship_bitmap.getHeight() / 2);
@@ -389,7 +389,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         private Sprite getMapTile(int tileID, float x, float y) throws IndexOutOfBoundsException {
             switch (tileID) {
                 case TileGenerator.OBSTACLE:
-                    return new Obstacle(obstacleSpriteID, x, y);
+                    return new Obstacle(obstacleSpriteID, x, y); // todo: use static ImageData
                 case TileGenerator.OBSTACLE_INVIS:
                     Sprite tile = new Obstacle(obstacleSprite, x, y);
                     tile.setCollides(false);

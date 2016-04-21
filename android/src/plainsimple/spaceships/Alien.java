@@ -39,8 +39,8 @@ public abstract class Alien extends Sprite {
         return copy;
     }
 
-    public Alien(int defaultImageID, int spriteWidth, int spriteHeight, float x, float y) {
-        super(defaultImageID, spriteWidth, spriteHeight, x, y);
+    public Alien(BitmapData bitmapData, float x, float y) {
+        super(bitmapData, x, y);
     }
 
     private void initLevel3Alien() { // todo: move to Alien3 class

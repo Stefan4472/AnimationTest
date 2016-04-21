@@ -32,7 +32,7 @@ public class Hitbox {
         return offsetY;
     }
 
-    public void setOffsets(int offsetX, int offsetY) {
+    public void setOffsets(int offsetX, int offsetY) { // todo: don't use offsets - see comments in Sprite.java
         this.offsetX = offsetX;
         this.offsetY = offsetY;
     }
