@@ -44,7 +44,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     // used to play short sounds
     private SoundPool soundPool;
     // stores data used to play sounds, with key being the R.raw ID of the sound to play
-    private HashMap<Integer, int[]> soundIndex;
+    private HashMap<Integer, int[]> sounds;
 
     // whether game is paused currently
     private boolean paused = false;
@@ -121,9 +121,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         });
         // set up SoundPool and load sounds
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-        //soundIDs = new int[1];
-        //soundIDs[0] = soundPool.load(context, R.raw.snap, 1);
-
         setFocusable(true);
     }
 
@@ -294,6 +291,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                             initImgCache();
                             initAnimations();
                             initSpaceship();
+                            initSounds();
                             initScoreDisplay();
                             tileWidth = screenH / ROWS;
                             tileHeight = screenH / ROWS;
@@ -389,6 +387,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             animations.put(R.drawable.spaceship_explode, new SpriteAnimation(bitmapData.get(R.drawable.spaceship_explode), getWidth(R.drawable.spaceship), 5, false));
             animations.put(R.drawable.coin_spin, new SpriteAnimation(bitmapData.get(R.drawable.coin_spin), getWidth(R.drawable.coin_spin), 10, true));
             animations.put(R.drawable.coin_collect, new SpriteAnimation(bitmapData.get(R.drawable.coin_collect), getWidth(R.drawable.coin_collect), 5, false));
+        }
+
+        // loads sounds using SoundPool and stores them in the sounds HashMap
+        private void initSounds() {
+            sounds = new HashMap<>(); // todo: change soundPool load values to get just the right effect
+            sounds.put(R.raw.rocket_fired, new int[] {soundPool.load(myContext, R.raw.rocket_fired, 1), 1, 1, 1, 0, 1});
+            sounds.put(R.raw.explosion_1, new int[] {soundPool.load(myContext, R.raw.explosion_1, 1), 1, 1, 1, 0, 1});
+            sounds.put(R.raw.laser_fired, new int[] {soundPool.load(myContext, R.raw.laser_fired, 1), 1, 1, 1, 0, 1});
         }
 
         private void initScoreDisplay() {
