@@ -116,6 +116,7 @@ public class Spaceship extends Sprite {
     public void injectResources(SpriteAnimation movingAnimation, SpriteAnimation fireRocketAnimation, // todo: make part of constructor
             SpriteAnimation explodeAnimation, BitmapData bulletBitmapData, BitmapData rocketBitmapData) { // todo: fix so dimensions are right
         this.movingAnimation = movingAnimation;
+        this.movingAnimation.start();
         this.fireRocketAnimation = fireRocketAnimation;
         this.explodeAnimation = explodeAnimation;
         this.bulletBitmapData = bulletBitmapData;

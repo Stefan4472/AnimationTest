@@ -1,6 +1,7 @@
 package plainsimple.spaceships;
 
 import android.graphics.Rect;
+import android.util.Log;
 
 /**
  * Created by Stefan on 8/13/2015.
@@ -43,9 +44,9 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
     public SpriteAnimation(BitmapData bitmapData, int frameW, int frameSpeed, boolean loop) { // todo: confusion btwn. frameW and bitmapData.getWidth()
         this.bitmapData = bitmapData;
         this.frameW = frameW;
-        frameH = 1;
+        frameH = bitmapData.getHeight();
         sheetW = bitmapData.getWidth() / frameW;
-        sheetH = bitmapData.getHeight() / frameH; // todo: support multiple rows
+        sheetH = 1; // todo: support multiple rows
         numFrames = sheetW * sheetH;
         this.frameSpeed = frameSpeed;
         this.loop = loop;
@@ -65,6 +66,7 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
 
     public void reset() {
         frameCounter = 0;
+        frameSpeedCounter = 0;
     }
 
     // whether animation has finished or not
@@ -103,7 +105,7 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
         if (!isPlaying) {
             start();
         }
-        return new Rect(frameW * frameCounter, 0, frameW, frameH);
+        return new Rect(frameW * frameCounter, 0, (frameW + 1) * frameCounter, frameH);
         // todo: allow for multi-row spritesheets!
     }
 

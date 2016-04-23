@@ -116,7 +116,7 @@ public class Background {
                 Color.green(from_color) + (int) ((Color.green(to_color) - Color.green(from_color)) / transitionDurations[toElement] * (transitionCounter + 1)),
                 Color.blue(from_color) + (int) ((Color.blue(to_color) - Color.blue(from_color)) / transitionDurations[toElement] * (transitionCounter + 1))
         );
-        Log.d("Background Class", "Left is " + colorToString(left_color) + " counter = " + transitionCounter);
+       // Log.d("Background Class", "Left is " + colorToString(left_color) + " counter = " + transitionCounter);
         drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, left_color, right_color, Shader.TileMode.CLAMP));
         drawSpace.drawSpace(tile);
         Canvas c = new Canvas(tile);

@@ -123,7 +123,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
         soundIDs = new int[1];
         soundIDs[0] = soundPool.load(context, R.raw.snap, 1);
-        // set up graphics HashMap
 
         setFocusable(true);
     }
@@ -297,6 +296,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                             initImgCache();
                             initSpaceship();
                             initScoreDisplay();
+                            tileWidth = screenH / ROWS;
+                            tileHeight = screenH / ROWS;
+                            map = new byte[1][screenW / tileWidth];
+                            tileGenerator = new TileGenerator(ROWS);
                             onTitle = false;
                         } else {
                             shooting = false;
@@ -309,7 +312,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         // loads in sprites, sends ID's to the proper classes, and scales them
         private void initImgCache() {
-            imageCache = new HashMap<Integer, Bitmap>();
+            imageCache = new HashMap<>();
             imageCache.put(R.drawable.spaceship, BitmapFactory.decodeResource(myContext.getResources(), R.drawable.spaceship));
             imageCache.put(R.drawable.spaceship_move, BitmapFactory.decodeResource(myContext.getResources(),
                     R.drawable.spaceship_move));
@@ -365,11 +368,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         private void initSpaceship() { // todo: use static ImageData and assertions
             spaceship = new Spaceship(bitmapDataIndex.get(R.drawable.spaceship),
-                    -bitmapDataIndex.get(R.drawable.spaceship).getWidth(),
-                    screenH / 2 - bitmapDataIndex.get(R.drawable.spaceship).getHeight() / 2);
-            SpriteAnimation movingAnimation = new SpriteAnimation(bitmapDataIndex.get(R.drawable.spaceship_move), 2, 5, true);
-            SpriteAnimation fireRocketAnimation = new SpriteAnimation(bitmapDataIndex.get(R.drawable.spaceship_fire_rocket), 4, 8, false);
-            SpriteAnimation explodeAnimation = new SpriteAnimation(bitmapDataIndex.get(R.drawable.spaceship_explode), 8, 5, false);
+                    -getWidth(R.drawable.spaceship),
+                    screenH / 2 - getHeight(R.drawable.spaceship) / 2);
+            SpriteAnimation movingAnimation = new SpriteAnimation(bitmapDataIndex.get(R.drawable.spaceship_move), getWidth(R.drawable.spaceship), 5, true);
+            SpriteAnimation fireRocketAnimation = new SpriteAnimation(bitmapDataIndex.get(R.drawable.spaceship_fire_rocket), getWidth(R.drawable.spaceship), 8, false);
+            SpriteAnimation explodeAnimation = new SpriteAnimation(bitmapDataIndex.get(R.drawable.spaceship_explode), getWidth(R.drawable.spaceship), 5, false);
             int bullet_resource = SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_bullet),
                     R.drawable.laserbullet);
             int rocket_resource = SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_rocket),
@@ -408,12 +411,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     tile.setCollides(false);
                     return tile;
                 case TileGenerator.COIN: // todo: cache SpriteAnimations
-                    SpriteAnimation coin_spin = new SpriteAnimation(bitmapDataIndex.get(R.drawable.coin_spin), 1, 10, true);
-                    SpriteAnimation coin_disappear = new SpriteAnimation(bitmapDataIndex.get(R.drawable.coin_collect), 4, 5, false);
+                    SpriteAnimation coin_spin = new SpriteAnimation(bitmapDataIndex.get(R.drawable.coin_spin), getWidth(R.drawable.coin_spin), 10, true);
+                    SpriteAnimation coin_disappear = new SpriteAnimation(bitmapDataIndex.get(R.drawable.coin_collect), getWidth(R.drawable.coin_collect), 5, false);
                     return new Coin(bitmapDataIndex.get(R.drawable.coin), coin_spin, coin_disappear, x, y);
                 case TileGenerator.ALIEN_LVL1:
                     Alien1 alien_1 = new Alien1(bitmapDataIndex.get(R.drawable.alien), x, y, difficulty, spaceship);
-                    SpriteAnimation alien_explode = new SpriteAnimation(bitmapDataIndex.get(R.drawable.spaceship_explode), 8, 5, false);
+                    SpriteAnimation alien_explode = new SpriteAnimation(bitmapDataIndex.get(R.drawable.spaceship_explode), getWidth(R.drawable.spaceship_explode), 5, false);
                     alien_1.injectResources(bitmapDataIndex.get(R.drawable.alienbullet), alien_explode);
                     return alien_1;
                 default:
@@ -426,6 +429,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             s.setSpeedX(speedX);
             s.setSpeedY(speedY);
             sprites.add(s);
+        }
+
+        // helper method to get width of bitmap given bitmap ID
+        // precondition: bitmapDataIndex != null
+        private int getWidth(int drawableID) {
+            return bitmapDataIndex.get(drawableID).getWidth();
+        }
+
+        // helper method to get height of bitmap given bitmap ID
+        // precondition: bitmapDataIndex != null
+        private int getHeight(int drawableID) {
+            return bitmapDataIndex.get(drawableID).getHeight();
         }
 
         public void setSurfaceSize(int width, int height) {

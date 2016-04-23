@@ -1,11 +1,11 @@
 package plainsimple.spaceships;
 
-import javax.imageio.ImageIO;
+/*import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
-import java.io.IOException;
+import java.io.IOException;*/
 
 /**
  * Created by Stefan on 8/17/2015.
@@ -14,9 +14,9 @@ public class ImageUtil {
 
     // takes a spriteSheet and the base image (model)
     // for each frame on spriteSheet, compares pixels with base image
-    // returns a BufferedImage of spritesheet containing only different pixels
+    // returns a BufferedImage of spritesheet containing only different pixels (basically a diff)
     // this allows for layering without lost pixels
-    public static BufferedImage getSpriteSheetDiff(BufferedImage model, BufferedImage spriteSheet) {
+    /*public static BufferedImage getSpriteSheetDiff(BufferedImage model, BufferedImage spriteSheet) {
         BufferedImage diff = new BufferedImage(spriteSheet.getWidth(), spriteSheet.getHeight(), BufferedImage.TYPE_INT_ARGB);
         int frames_width = spriteSheet.getWidth() / model.getWidth();
         int frames_height = spriteSheet.getHeight() / model.getHeight();
@@ -50,5 +50,5 @@ public class ImageUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }
