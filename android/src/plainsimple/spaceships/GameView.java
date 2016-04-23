@@ -17,6 +17,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,7 +33,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public static int screenH;
     private boolean running = false;
     private boolean onTitle = true;
-    private boolean shooting = false;
     private GameViewThread thread;
 
     // stores graphics with R.drawable ID as key and cached Bitmap as object
@@ -95,9 +95,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public boolean getMuted() { return muted; }
     public void setPaused(boolean paused) { this.paused = paused; }
     public boolean getPaused() { return paused; }
-    public void setFiringMode(int firingMode) {
-        spaceship.setFiringMode(firingMode);
-    }
+    public void setFiringMode(int firingMode) { spaceship.setFiringMode(firingMode);}
 
     public GameView(Context context, AttributeSet attributes) {
         super(context, attributes);
@@ -183,11 +181,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         // and imageCache
         private void drawSprite(Sprite sprite, Canvas canvas) {
             ArrayList<int[]> draw_params = sprite.getDrawParams();
+            if (sprite instanceof Spaceship) {
+                Log.d("GameView Class", "Spaceship has " + draw_params.size() + " layers");
+            }
             for (int[] img_params : draw_params) {
+                if (sprite instanceof Spaceship) {
+                    Log.d("GameView Class", Arrays.toString(img_params));
+                }
                 Bitmap image = imageCache.get(img_params[0]);
                 Rect src = new Rect(img_params[3], img_params[4], img_params[5], img_params[6]);
                 Rect dst = new Rect((int) sprite.getX(), (int) sprite.getY(),
-                        (int) (sprite.getX() + image.getWidth()), (int) (sprite.getY() + image.getHeight()));
+                        (int) (sprite.getX() + src.width()), (int) (sprite.getY() + src.height()));
                 canvas.drawBitmap(image, src, dst, null);
             }
         }
@@ -283,8 +287,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 switch (event_action) {
                     case MotionEvent.ACTION_DOWN:
                         if (!onTitle) {
-                            shooting = true;
-                            soundPool.play(soundIDs[0], 1, 1, 1, 0, 1.0f);
+                            spaceship.setShooting(true);
                         }
                         break;
                     case MotionEvent.ACTION_MOVE:
@@ -302,7 +305,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                             tileGenerator = new TileGenerator(ROWS);
                             onTitle = false;
                         } else {
-                            shooting = false;
+                            spaceship.setShooting(false);
                         }
                         break;
                 }

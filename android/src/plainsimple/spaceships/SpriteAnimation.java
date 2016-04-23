@@ -105,7 +105,7 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
         if (!isPlaying) {
             start();
         }
-        return new Rect(frameW * frameCounter, 0, (frameW + 1) * frameCounter, frameH);
+        return new Rect(frameW * frameCounter, 0, frameW * (frameCounter + 1), frameH);
         // todo: allow for multi-row spritesheets!
     }
 
