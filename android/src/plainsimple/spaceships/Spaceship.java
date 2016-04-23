@@ -232,22 +232,22 @@ public class Spaceship extends Sprite {
     public ArrayList<int[]> getDrawParams() {
         ArrayList<int[]> params = new ArrayList<>();
         // define specifications for defaultImage
-        int[] defaultImgParams = {bitmapData.getId(), (int) x, (int) y, 0, 0, getWidth(), getHeight()};
+        int[] defaultImgParams = {bitmapData.getId(), 0, 0, getWidth(), getHeight()};
         params.add(defaultImgParams);
         Rect animation_src;
         if (moving) {
             animation_src = movingAnimation.getCurrentFrameSrc();
-            int[] movingImgParams = {movingAnimation.getBitmapID(), (int) x, (int) y, animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
+            int[] movingImgParams = {movingAnimation.getBitmapID(), animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
             params.add(movingImgParams);
         }
         if (fireRocketAnimation.isPlaying()) {
             animation_src = fireRocketAnimation.getCurrentFrameSrc();
-            int[] fireRocketImgParams = {fireRocketAnimation.getBitmapID(), (int) x, (int) y, animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
+            int[] fireRocketImgParams = {fireRocketAnimation.getBitmapID(), animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
             params.add(fireRocketImgParams);
         }
         if (explodeAnimation.isPlaying()) {
             animation_src = explodeAnimation.getCurrentFrameSrc();
-            int[] explodeImgParams = {explodeAnimation.getBitmapID(), (int) x, (int) y, animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
+            int[] explodeImgParams = {explodeAnimation.getBitmapID(), animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
             params.add(explodeImgParams);
         }
         return params;

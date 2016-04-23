@@ -181,18 +181,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         // and imageCache
         private void drawSprite(Sprite sprite, Canvas canvas) {
             ArrayList<int[]> draw_params = sprite.getDrawParams();
-            if (sprite instanceof Spaceship) {
-                Log.d("GameView Class", "Spaceship has " + draw_params.size() + " layers");
-            }
             for (int[] img_params : draw_params) {
-                if (sprite instanceof Spaceship) {
-                    Log.d("GameView Class", Arrays.toString(img_params));
-                }
-                Bitmap image = imageCache.get(img_params[0]);
-                Rect src = new Rect(img_params[3], img_params[4], img_params[5], img_params[6]);
+                Rect src = new Rect(img_params[1], img_params[2], img_params[3], img_params[4]);
                 Rect dst = new Rect((int) sprite.getX(), (int) sprite.getY(),
                         (int) (sprite.getX() + src.width()), (int) (sprite.getY() + src.height()));
-                canvas.drawBitmap(image, src, dst, null);
+                canvas.drawBitmap(imageCache.get(img_params[0]), src, dst, null);
             }
         }
 

@@ -1,5 +1,7 @@
 package plainsimple.spaceships;
 
+import android.util.Log;
+
 import java.util.Random;
 
 /**

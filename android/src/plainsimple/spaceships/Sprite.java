@@ -70,16 +70,14 @@ public abstract class Sprite {
     // handles collision with s
     abstract void handleCollision(Sprite s);
 
-    // returns an int[][] specifying what Bitmaps to draw for the sprite
+    // returns an ArrayList<int[]> specifying what Bitmaps to draw for the sprite
     // each row defines the properties of a single Bitmap to be drawn for the sprite // todo: explain better
     // columns are organized in the following way:
     // element 0: Bitmap ID
-    // element 1: x-coordinate to draw Bitmap onto screen
-    // element 2: y-coordinate to draw Bitmap onto screen
-    // element 3: starting x-coordinate of the Bitmap to start drawing
-    // element 4: starting y-coordinate of the Bitmap to start drawing
-    // element 5: ending x-coordinate of the Bitmap
-    // element 6: ending y-coordinate of the Bitmap
+    // element 1: starting x-coordinate of the Bitmap to start drawing
+    // element 2: starting y-coordinate of the Bitmap to start drawing
+    // element 3: ending x-coordinate of the Bitmap
+    // element 4: ending y-coordinate of the Bitmap
     abstract ArrayList<int[]> getDrawParams();
 
     // moves sprite using speedX and speedY, updates hitbox,
@@ -120,7 +118,7 @@ public abstract class Sprite {
 
     public boolean getP(double probability) {
         return random.nextInt(1_000) + 1 <= probability * 1_000;
-    }
+    } //todo: make static
 
     public float getX() {
         return x;

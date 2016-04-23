@@ -74,10 +74,10 @@ public class Coin extends Sprite {
         ArrayList<int[]> params = new ArrayList<>();
         if (disappear.isPlaying()) {
             Rect spritesheet_src = disappear.getCurrentFrameSrc();
-            params.add(new int[]{disappear.getBitmapID(), (int) x, (int) y, spritesheet_src.left, spritesheet_src.top, spritesheet_src.bottom, spritesheet_src.right});
+            params.add(new int[]{disappear.getBitmapID(), spritesheet_src.left, spritesheet_src.top, spritesheet_src.bottom, spritesheet_src.right});
         } else {
             Rect spritesheet_src = spin.getCurrentFrameSrc();
-            params.add(new int[]{spin.getBitmapID(), (int) x, (int) y, spritesheet_src.left, spritesheet_src.top, spritesheet_src.bottom, spritesheet_src.right});
+            params.add(new int[]{spin.getBitmapID(), spritesheet_src.left, spritesheet_src.top, spritesheet_src.bottom, spritesheet_src.right});
         }
         return params;
     }

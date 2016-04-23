@@ -76,7 +76,7 @@ public class Rocket extends Sprite {
     @Override
     public ArrayList<int[]> getDrawParams() {
         ArrayList<int[]> params = new ArrayList<>();
-        params.add(new int[] {bitmapData.getId(), (int) x, (int) y, 0, 0, getWidth(), getHeight()});
+        params.add(new int[] {bitmapData.getId(), 0, 0, getWidth(), getHeight()});
         return params;
     }
 }

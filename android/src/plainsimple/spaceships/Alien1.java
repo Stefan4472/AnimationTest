@@ -100,11 +100,11 @@ public class Alien1 extends Alien {
     @Override
     public ArrayList<int[]> getDrawParams() {
         ArrayList<int[]> params = new ArrayList<>();
-        int[] default_img_params = {bitmapData.getId(), (int) x, (int) y, 0, 0, getWidth(), getHeight()};
+        int[] default_img_params = {bitmapData.getId(), 0, 0, getWidth(), getHeight()};
         params.add(default_img_params);
         if(explodeAnimation.isPlaying()) {
             Rect spritesheet_src = explodeAnimation.getCurrentFrameSrc();
-            int[] explode_params = {explodeAnimation.getBitmapID(), (int) x, (int) y, spritesheet_src.left, spritesheet_src.top, spritesheet_src.right, spritesheet_src.bottom};
+            int[] explode_params = {explodeAnimation.getBitmapID(), spritesheet_src.left, spritesheet_src.top, spritesheet_src.right, spritesheet_src.bottom};
             params.add(explode_params);
         }
         return params;
