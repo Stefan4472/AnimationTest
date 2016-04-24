@@ -1,7 +1,6 @@
 package plainsimple.spaceships;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by Stefan on 8/12/2015.
@@ -37,6 +36,9 @@ public abstract class Sprite {
     // data concerning sprite's default Bitmap
     protected BitmapData bitmapData;
 
+    // list of sound ID's to play
+    protected List<Integer> soundEffects;
+
     // random number generator
     protected Random random;
 
@@ -55,6 +57,7 @@ public abstract class Sprite {
         speedX = 0.0f;
         speedY = 0.0f;
         hitBox = new Hitbox();
+        soundEffects = new ArrayList<>();
         random = new Random();
         damage = 0;
         hp = 0;
@@ -94,6 +97,16 @@ public abstract class Sprite {
             inBounds = true;
         }
         hitBox.updateCoordinates((int) x, (int) y);
+    }
+
+    // returns copy of soundEffects and clears the soundEffects field
+    public List<Integer> getAndClearSounds() {
+        List<Integer> copy = new ArrayList<>();
+        for (Integer i : soundEffects) {
+            copy.add(i);
+        }
+        soundEffects.clear();
+        return copy;
     }
 
     // returns whether hitbox of this sprite intersects hitbox of specified sprite // todo: some methods could be made static or put in a SpriteUtil or GameEngineUtil class

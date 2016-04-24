@@ -269,6 +269,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             spaceship.updateSpeeds();
         }
 
+        // plays any sound effects from sprites in list
+        public void playSounds(List<Sprite> sprites) {
+            List<Integer> soundIDs = new ArrayList<>();
+            for (Sprite s : sprites) {
+                soundIDs.addAll(s.getAndClearSounds());
+            }
+            int[] sound_params;
+            for (Integer id : soundIDs) {
+                sound_params = sounds.get(id);
+                soundPool.play(sound_params[0], sound_params[1], sound_params[2], sound_params[3], sound_params[4], sound_params[4]);
+            }
+        }
+
         // handle user touching screen
         boolean doTouchEvent(MotionEvent motionEvent) {
             synchronized (mySurfaceHolder) {
