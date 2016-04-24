@@ -142,12 +142,14 @@ public class Spaceship extends Sprite {
     public void fireRockets() {
         projectiles.add(new Rocket(rocketBitmapData, x + (int) (getWidth() * 0.80), y + (int) (0.29 * getHeight()), rocketType));
         projectiles.add(new Rocket(rocketBitmapData, x + (int) (getWidth() * 0.80), y + (int) (0.65 * getHeight()), rocketType));
+        soundEffects.add(R.raw.rocket_fired);
     }
 
     // fires two bullets
     public void fireBullets() {
         projectiles.add(new Bullet(bulletBitmapData, x + (int) (getWidth() * 0.78), y + (int) (0.28 * getHeight()), bulletType));
         projectiles.add(new Bullet(bulletBitmapData, x + (int) (getWidth() * 0.78), y + (int) (0.66 * getHeight()), bulletType));
+        soundEffects.add(R.raw.laser_fired);
     }
 
     // sets current tilt of device and determines dy
@@ -220,6 +222,7 @@ public class Spaceship extends Sprite {
         hp -= s.getDamage();
         if (hp < 0 && !explodeAnimation.isPlaying()) { // todo: check when explodeAnimation has played and use for end game logic
             explodeAnimation.start();
+            soundEffects.add(R.raw.explosion_1);
             hp = 0;
             collision = true;
         }

@@ -1,6 +1,7 @@
 package plainsimple.spaceships;
 
 import android.app.Activity;
+import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.View;
@@ -63,6 +64,8 @@ public class GameActivity extends Activity {
             muteButton.setBackgroundResource(R.drawable.mute_button_muted);
             gameView.setMuted(true);
         }
+        AudioManager a_manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        a_manager.setStreamMute(AudioManager.STREAM_MUSIC, gameView.getMuted());
     }
 
     public void onToggleBulletPressed(View view) {

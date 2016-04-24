@@ -44,7 +44,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     // used to play short sounds
     private SoundPool soundPool;
     // stores data used to play sounds, with key being the R.raw ID of the sound to play
-    private HashMap<Integer, int[]> sounds;
+    private HashMap<Integer, float[]> sounds;
 
     // whether game is paused currently
     private boolean paused = false;
@@ -93,9 +93,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private long lastSample = 0;
     private final static int sampleRateMS = 20;
 
-    public void setMuted(boolean muted) { this.muted = muted; }
+    public void setMuted(boolean muted) {
+        this.muted = muted;
+    }
     public boolean getMuted() { return muted; }
-    public void setPaused(boolean paused) { this.paused = paused; }
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+        if (paused) {
+            soundPool.autoPause();
+        } else {
+            soundPool.autoResume();
+        }
+    }
     public boolean getPaused() { return paused; }
     public void setFiringMode(int firingMode) { spaceship.setFiringMode(firingMode);}
 
@@ -207,6 +216,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             GameEngineUtil.updateSprites(ssProjectiles);
             GameEngineUtil.updateSprites(alienProjectiles);
             spaceship.updateAnimations();
+            if (!muted) {
+                List<Sprite> sp_list = new ArrayList<>();
+                sp_list.add(spaceship);
+                playSounds(sp_list);
+            }
         }
 
         private void updateMap() {
@@ -275,10 +289,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             for (Sprite s : sprites) {
                 soundIDs.addAll(s.getAndClearSounds());
             }
-            int[] sound_params;
+            float[] sound_params;
             for (Integer id : soundIDs) {
                 sound_params = sounds.get(id);
-                soundPool.play(sound_params[0], sound_params[1], sound_params[2], sound_params[3], sound_params[4], sound_params[4]);
+                soundPool.play((int) sound_params[0], sound_params[1], sound_params[2], (int) sound_params[3], (int) sound_params[4], sound_params[4]);
             }
         }
 
@@ -405,9 +419,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         // loads sounds using SoundPool and stores them in the sounds HashMap
         private void initSounds() {
             sounds = new HashMap<>(); // todo: change soundPool load values to get just the right effect
-            sounds.put(R.raw.rocket_fired, new int[] {soundPool.load(myContext, R.raw.rocket_fired, 1), 1, 1, 1, 0, 1});
-            sounds.put(R.raw.explosion_1, new int[] {soundPool.load(myContext, R.raw.explosion_1, 1), 1, 1, 1, 0, 1});
-            sounds.put(R.raw.laser_fired, new int[] {soundPool.load(myContext, R.raw.laser_fired, 1), 1, 1, 1, 0, 1});
+            sounds.put(R.raw.rocket_fired, new float[] {soundPool.load(myContext, R.raw.rocket_fired, 1), 1, 1, 1, 0, 1});
+            sounds.put(R.raw.explosion_1, new float[] {soundPool.load(myContext, R.raw.explosion_1, 1), 1, 1, 1, 0, 1});
+            sounds.put(R.raw.laser_fired, new float[] {soundPool.load(myContext, R.raw.laser_fired, 1), 1, 1, 1, 0, 1});
         }
 
         private void initScoreDisplay() {
