@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 
 public class SpaceShipsActivity extends Activity {
 
@@ -27,10 +29,18 @@ public class SpaceShipsActivity extends Activity {
 
     // handle user pressing "Play" button
     public void onPlayPressed(View view) {
+        /*// underline text
+        Button button = (Button) findViewById(R.id.playbutton);
+        button.setPaintFlags(button.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);*/
+        // launch GameActivity
         Intent game_intent = new Intent(this, GameActivity.class);
         this.startActivity(game_intent);
     }
 
+    // handle user releasing "Play" button
+    public void onPlayReleased(View view) {
+
+    }
     // handle user pressing "Store" button
     public void onStorePressed(View view) {
 
