@@ -33,7 +33,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private boolean running = false;
     private boolean onTitle = true;
     private GameViewThread thread;
-
+    // todo: create separate helper classes?
     // stores graphics with R.drawable ID as key and cached Bitmap as object
     private HashMap<Integer, Bitmap> imageCache;
     // stores BitmapData with R.drawable ID as key and data as object

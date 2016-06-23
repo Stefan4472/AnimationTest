@@ -7,4 +7,8 @@
         <item name="android:gravity">center_horizontal</item>
         <item name="android:layout_centerHorizontal">true</item>
     </style>
+    <!-- Style used to give a custom font todo: specific style for each font -->
+    <style name="Cyanotype" parent="@android:style/Widget.Button">
+        <item name="font">fonts/Cyanotype.ttf</item>
+    </style>
 </resources>
