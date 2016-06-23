@@ -11,11 +11,8 @@ import android.widget.TextView;
  */
 public class FontUtil {
 
-    /**
-     * Sets a font on a textview based on the custom com.my.package:font attribute
-     * If the custom font attribute isn't found in the attributes nothing happens
-     *
-     */
+    // Sets a font on a textview based on the custom font attribute
+    // If the custom font attribute isn't found in the attributes nothing happens
     public static void setCustomFont(TextView textview, Context context, AttributeSet attrs) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomFont);
         String font = a.getString(R.styleable.CustomFont_font);

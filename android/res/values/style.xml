@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="MenuStyle" parent="@android:style/TextAppearance" >
-        <item name="android:textColor">#FFFFFF</item>
-        <item name="android:textSize">42dp</item>
+    <!-- Applies the Cyanotype font -->
+    <style name="Cyanotype" parent="@android:style/Widget.Button">
+        <item name="font">fonts/Cyanotype.ttf</item>
+    </style>
+    <!-- Applies the EngineerHand font -->
+    <style name="EngineerHand" parent="@android:style/Widget.Button">
+        <item name="font">fonts/EngineerHand.ttf</item>
+    </style>
+    <!-- Applies Andromeda font -->
+    <style name="Andromeda" parent="@android:style/Widget.Button">
+        <item name="font">fonts/AndromedaTV.TTF</item>
+    </style>
+    <!-- Applies Galaxy Monkey font -->
+    <style name="GalaxyMonkey" parent="@android:style/Widget.Button">
+        <item name="font">fonts/galax___.ttf</item>
+    </style>
+    <!-- Style used for menu buttons -->
+    <style name="Andromeda.MenuStyle">
+        <item name="android:textColor">#FF33B5E5</item>
+        <item name="android:background">@color/black</item>
+        <item name="android:textSize">60dp</item>
         <item name="android:layout_marginTop">10dp</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:layout_centerHorizontal">true</item>
-    </style>
-    <!-- Style used to give a custom font todo: specific style for each font -->
-    <style name="Cyanotype" parent="@android:style/Widget.Button">
-        <item name="font">fonts/Cyanotype.ttf</item>
     </style>
 </resources>
