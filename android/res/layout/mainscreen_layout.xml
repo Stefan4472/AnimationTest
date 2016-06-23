@@ -5,11 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
     <!-- android:background="@drawable/title_graphic" -->
-    <TextView
-
+    <plainsimple.spaceships.FontTextView
+        style="@style/GalaxyMonkey"
         android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:textSize="100dp"
+        android:layout_marginTop="10dp"
+        android:textColor="#FFFFFF"
         android:text="@string/app_name"
         android:gravity="center"
         android:includeFontPadding="false" />

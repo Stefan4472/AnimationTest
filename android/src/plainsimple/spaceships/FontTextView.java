@@ -2,23 +2,23 @@ package plainsimple.spaceships;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.Button;
+import android.widget.TextView;
 
 /**
- * Button that can support a custom font
+ * TextView that can support a custom font.
  */
-public class FontButton extends Button {
+public class FontTextView extends TextView {
 
-    public FontButton(Context context) {
+    public FontTextView(Context context) {
         super(context);
     }
 
-    public FontButton(Context context, AttributeSet attrs) {
+    public FontTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         FontUtil.setCustomFont(this, context, attrs);
     }
 
-    public FontButton(Context context, AttributeSet attrs, int defStyle) {
+    public FontTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         FontUtil.setCustomFont(this, context, attrs);
     }

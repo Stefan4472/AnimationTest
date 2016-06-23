@@ -13,7 +13,7 @@
         <item name="font">fonts/AndromedaTV.TTF</item>
     </style>
     <!-- Applies Galaxy Monkey font -->
-    <style name="GalaxyMonkey" parent="@android:style/Widget.Button">
+    <style name="GalaxyMonkey">
         <item name="font">fonts/galax___.ttf</item>
     </style>
     <!-- Style used for menu buttons -->
