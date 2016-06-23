@@ -11,11 +11,16 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import plainsimple.imagetransition.SlideInTransition;
 
 public class SpaceShipsActivity extends Activity {
 
     // global preferences
     public static SharedPreferences preferences;
+
+    // todo: background animation
+    // animation in background that pushes in galaxy draw
+    private SlideInTransition slideIn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
