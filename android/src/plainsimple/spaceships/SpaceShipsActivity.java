@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import plainsimple.imagetransition.SlideInTransition;
 
@@ -30,6 +32,20 @@ public class SpaceShipsActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.mainscreen_layout);
         preferences = this.getPreferences(Context.MODE_PRIVATE);
+        // fade in view elements
+        FontTextView title = (FontTextView) findViewById(R.id.title);
+        Animation fade_in_animation = AnimationUtils.loadAnimation(this, R.anim.fadein);
+        title.startAnimation(fade_in_animation);
+        // work on offsets
+        fade_in_animation.setStartOffset(300);
+        FontButton button = (FontButton) findViewById(R.id.playbutton);
+        button.startAnimation(fade_in_animation);
+        fade_in_animation.setStartOffset(200);
+        button = (FontButton) findViewById(R.id.storebutton);
+        button.startAnimation(fade_in_animation);
+        fade_in_animation.setStartOffset(400);
+        button = (FontButton) findViewById(R.id.statsbutton);
+        button.startAnimation(fade_in_animation);
     }
 
     // handle user pressing "Play" button

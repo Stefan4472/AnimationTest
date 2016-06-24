@@ -38,7 +38,7 @@
         android:text="@string/button_store"
         android:onClick="onStorePressed"/>
     <!-- Stats Button -->
-    <Button
+    <plainsimple.spaceships.FontButton
         style="@style/Andromeda.MenuStyle"
         android:id="@+id/statsbutton"
         android:layout_width="wrap_content"
