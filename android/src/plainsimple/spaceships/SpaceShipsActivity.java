@@ -66,10 +66,11 @@ public class SpaceShipsActivity extends Activity {
 
     @Override
     public void onPause() {
+        super.onPause();
         mediaPlayer.release();
         mediaPlayer = null;
-        //soundPool.release();
-        //soundPool = null;
+        soundPool.release();
+        soundPool = null;
     }
 
     @Override
