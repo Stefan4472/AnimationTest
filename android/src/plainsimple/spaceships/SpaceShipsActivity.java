@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Paint;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -29,6 +30,8 @@ public class SpaceShipsActivity extends Activity {
     private MediaPlayer mediaPlayer;
     // used to play short sounds i.e. button clicked sound
     private SoundPool soundPool;
+    // soundID created when button clicked sound is loaded
+    private int soundID;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,9 @@ public class SpaceShipsActivity extends Activity {
         mediaPlayer = MediaPlayer.create(this, R.raw.title_theme);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
+        // set up SoundPool for playing buttonclick sound
+        soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
+        soundID = soundPool.load(this, R.raw.button_clicked, 1);
         // fade in view elements
         FontTextView title = (FontTextView) findViewById(R.id.title);
         Animation fade_in_animation = AnimationUtils.loadAnimation(this, R.anim.fadein);
@@ -62,6 +68,8 @@ public class SpaceShipsActivity extends Activity {
     public void onPause() {
         mediaPlayer.release();
         mediaPlayer = null;
+        //soundPool.release();
+        //soundPool = null;
     }
 
     @Override
@@ -79,6 +87,8 @@ public class SpaceShipsActivity extends Activity {
         /*// underline text
         Button button = (Button) findViewById(R.id.playbutton);
         button.setPaintFlags(button.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);*/
+        // play button clicked sound
+        soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);
         // launch GameActivity
         Intent game_intent = new Intent(this, GameActivity.class);
         this.startActivity(game_intent);
@@ -90,11 +100,11 @@ public class SpaceShipsActivity extends Activity {
     }
     // handle user pressing "Store" button
     public void onStorePressed(View view) {
-
+        soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);
     }
 
     // handle user pressing "Stats" button
     public void onStatsPressed(View view) {
-
+        soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);
     }
 }
