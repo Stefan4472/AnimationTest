@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Paint;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +25,10 @@ public class SpaceShipsActivity extends Activity {
     // todo: background animation
     // animation in background that pushes in galaxy draw
     private SlideInTransition slideIn;
+    // used to play background song
+    private MediaPlayer mediaPlayer;
+    // used to play short sounds i.e. button clicked sound
+    private SoundPool soundPool;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,11 +38,15 @@ public class SpaceShipsActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.mainscreen_layout);
         preferences = this.getPreferences(Context.MODE_PRIVATE);
+        // prepare background song todo: use the asynchronous method
+        mediaPlayer = MediaPlayer.create(this, R.raw.title_theme);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
         // fade in view elements
         FontTextView title = (FontTextView) findViewById(R.id.title);
         Animation fade_in_animation = AnimationUtils.loadAnimation(this, R.anim.fadein);
         title.startAnimation(fade_in_animation);
-        // work on offsets
+        // todo: work on offsets
         fade_in_animation.setStartOffset(300);
         FontButton button = (FontButton) findViewById(R.id.playbutton);
         button.startAnimation(fade_in_animation);
@@ -46,6 +56,22 @@ public class SpaceShipsActivity extends Activity {
         fade_in_animation.setStartOffset(400);
         button = (FontButton) findViewById(R.id.statsbutton);
         button.startAnimation(fade_in_animation);
+    }
+
+    @Override
+    public void onPause() {
+        mediaPlayer.release();
+        mediaPlayer = null;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     // handle user pressing "Play" button
