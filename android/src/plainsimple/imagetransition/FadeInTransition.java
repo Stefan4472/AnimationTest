@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import plainsimple.spaceships.Point2D;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,9 +26,10 @@ public class FadeInTransition extends ImageTransition {
 
     public FadeInTransition(Bitmap startImage, Bitmap endImage, int totalFrames) {
         super(startImage, endImage, totalFrames);
+        pixels = new ArrayList<>();
         // create a shuffled list of all pixels in the image
-        for (int i = 0; i < startImage.getWidth(); i++) {
-            for (int j = 0; j < startImage.getHeight(); j++) {
+        for (int i = 0; i < this.startImage.getWidth(); i++) {
+            for (int j = 0; j < this.startImage.getHeight(); j++) {
                 pixels.add(new Point2D(i, j));
             }
         }
@@ -50,6 +52,5 @@ public class FadeInTransition extends ImageTransition {
             paint.setColor(startImage.getPixel(pixel.getX(), pixel.getY()));
             canvas.drawPoint(pixel.getX(), pixel.getY(), paint);
         }
-
     }
 }
