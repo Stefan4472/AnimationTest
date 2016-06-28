@@ -41,13 +41,7 @@ public class SpaceShipsActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.mainscreen_layout);
         preferences = this.getPreferences(Context.MODE_PRIVATE);
-        // prepare background song todo: use the asynchronous method
-        mediaPlayer = MediaPlayer.create(this, R.raw.title_theme);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
-        // set up SoundPool for playing buttonclick sound
-        soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
-        soundID = soundPool.load(this, R.raw.button_clicked, 1);
+        initMedia();
         // fade in view elements
         FontTextView title = (FontTextView) findViewById(R.id.title);
         Animation fade_in_animation = AnimationUtils.loadAnimation(this, R.anim.fadein);
@@ -64,6 +58,17 @@ public class SpaceShipsActivity extends Activity {
         button.startAnimation(fade_in_animation);
     }
 
+    // initializes MediaPlayer and SoundPool
+    private void initMedia() {
+        // prepare background song todo: use the asynchronous method
+        mediaPlayer = MediaPlayer.create(this, R.raw.title_theme);
+        mediaPlayer.setLooping(true);
+        //mediaPlayer.start();
+        // set up SoundPool for playing buttonclick sound
+        soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
+        soundID = soundPool.load(this, R.raw.button_clicked, 1);
+    }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -71,6 +76,12 @@ public class SpaceShipsActivity extends Activity {
         mediaPlayer = null;
         soundPool.release();
         soundPool = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initMedia();
     }
 
     @Override
