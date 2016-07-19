@@ -8,8 +8,8 @@ import java.util.*;
 public abstract class Sprite {
 
     // coordinates of sprite
-    protected float x;
-    protected float y;
+    protected int x;
+    protected int y;
 
     // intended movement in x and y directions each frame
     protected double speedX;
@@ -42,7 +42,7 @@ public abstract class Sprite {
     // random number generator
     protected Random random;
 
-    public Sprite(BitmapData bitmapData, float x, float y) {
+    public Sprite(BitmapData bitmapData, int x, int y) {
         this.bitmapData = bitmapData;
         this.x = x;
         this.y = y;
@@ -144,12 +144,12 @@ public abstract class Sprite {
         return bitmapData.getWidth();
     }
 
-    public void setX(float x) {
+    public void setX(int x) {
         this.x = x;
         hitBox.updateCoordinates((int) x, hitBox.getY());
     }
 
-    public void setY(float y) { // todo: see if hitBox change is necessary - shouldn't be or should be in a separate method
+    public void setY(int y) { // todo: see if hitBox change is necessary - shouldn't be or should be in a separate method
         this.y = y;
         hitBox.updateCoordinates(hitBox.getX(), (int) y);
     }

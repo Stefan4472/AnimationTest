@@ -100,11 +100,10 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
 
     // returns Rect containing coordinates on the spritesheet of the current frame
     // -> all images are treated in reference to their ID
-    // starts animation if it is not playing already
     public Rect getCurrentFrameSrc() {
-        if (!isPlaying) {
-            start();
-        }
+        //if (!isPlaying) {
+        //    start();
+        //}
         return new Rect(frameW * frameCounter, 0, frameW * (frameCounter + 1), frameH);
         // todo: allow for multi-row spritesheets!
     }

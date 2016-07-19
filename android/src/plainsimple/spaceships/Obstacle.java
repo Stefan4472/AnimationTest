@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class Obstacle extends Sprite {
 
-    public Obstacle(BitmapData bitmapData, float x, float y) {
+    public Obstacle(BitmapData bitmapData, int x, int y) {
         super(bitmapData, x, y);
         initObstacle();
     }
@@ -38,9 +38,9 @@ public class Obstacle extends Sprite {
     }
 
     @Override
-    public ArrayList<int[]> getDrawParams() {
-        ArrayList<int[]> params = new ArrayList<>();
-        params.add(new int[] {bitmapData.getId(), 0, 0, getWidth(), getHeight()});
+    public ArrayList<DrawParams> getDrawParams() {
+        ArrayList<DrawParams> params = new ArrayList<>();
+        params.add(new DrawParams(bitmapData.getId(), x, y, 0, 0, getWidth(), getHeight()));
         return params;
     }
 }

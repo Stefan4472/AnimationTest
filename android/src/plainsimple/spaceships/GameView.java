@@ -438,7 +438,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         // returns sprite initialized to coordinates (x,y) given tileID
-        private Sprite getMapTile(int tileID, float x, float y) throws IndexOutOfBoundsException {
+        private Sprite getMapTile(int tileID, int x, int y) throws IndexOutOfBoundsException {
             switch (tileID) {
                 case TileGenerator.OBSTACLE:
                     return new Obstacle(bitmapData.get(R.drawable.obstacle), x, y); // todo: use static ImageData
@@ -447,7 +447,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     tile.setCollides(false);
                     return tile;
                 case TileGenerator.COIN: // todo: cache SpriteAnimations
-
                     return new Coin(bitmapData.get(R.drawable.coin), animations.get(R.drawable.coin_spin), animations.get(R.drawable.coin_collect), x, y);
                 case TileGenerator.ALIEN_LVL1:
                     Alien1 alien_1 = new Alien1(bitmapData.get(R.drawable.alien), x, y, difficulty, spaceship);

@@ -39,11 +39,11 @@ public class Bullet extends Sprite {
     public static final int PLUTONIUM_DELAY = 18;
     public static final float PLUTONIUM_SPEED_X = 0.013f;
 
-    public Bullet(BitmapData bitmapData, float x, float y, int bulletType) { // todo: any way to clean this up?
+    public Bullet(BitmapData bitmapData, int x, int y, int bulletType) { // todo: any way to clean this up?
         super(bitmapData, x, y);
         hitBox.setDimensions((int) (getWidth() * 1.5f), getHeight());
         switch(bulletType) {
-            case LASER: // todo: figure out how to load resource in each case
+            case LASER:
                 damage = LASER_DAMAGE;
                 delay = LASER_DELAY;
                 speedX = LASER_SPEED_X;
@@ -117,9 +117,9 @@ public class Bullet extends Sprite {
     }
 
     @Override
-    public ArrayList<int[]> getDrawParams() {
-        ArrayList<int[]> params = new ArrayList<>();
-        params.add(new int[] {bitmapData.getId(), 0, 0, getWidth(), getHeight()});
+    public ArrayList<DrawParams> getDrawParams() {
+        ArrayList<DrawParams> params = new ArrayList<>();
+        params.add(new DrawParams(bitmapData.getId(), x, y, 0, 0, getWidth(), getHeight()));
         return params;
     }
 }

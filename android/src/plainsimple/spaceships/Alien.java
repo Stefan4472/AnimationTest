@@ -39,7 +39,7 @@ public abstract class Alien extends Sprite {
         return copy;
     }
 
-    public Alien(BitmapData bitmapData, float x, float y) {
+    public Alien(BitmapData bitmapData, int x, int y) {
         super(bitmapData, x, y);
     }
 
@@ -70,7 +70,7 @@ public abstract class Alien extends Sprite {
     abstract void handleCollision(Sprite s);
 
     @Override
-    abstract ArrayList<int[]> getDrawParams();
+    abstract ArrayList<DrawParams> getDrawParams();
 
     // fires bullet/projectile at specified sprite
     abstract void fireBullet(Sprite s); // todo: unnecessary

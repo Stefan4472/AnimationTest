@@ -21,7 +21,7 @@ public class Alien1 extends Alien {
     private BitmapData bulletBitmapData;
     private SpriteAnimation explodeAnimation;
 
-    public Alien1(BitmapData bitmapData, float x, float y, double difficulty, Spaceship spaceship) {
+    public Alien1(BitmapData bitmapData, int x, int y, double difficulty, Spaceship spaceship) {
         super(bitmapData, x, y);
         this.spaceship = spaceship;
         this.difficulty = difficulty;
@@ -98,14 +98,12 @@ public class Alien1 extends Alien {
     }
 
     @Override
-    public ArrayList<int[]> getDrawParams() {
-        ArrayList<int[]> params = new ArrayList<>();
-        int[] default_img_params = {bitmapData.getId(), 0, 0, getWidth(), getHeight()};
-        params.add(default_img_params);
+    public ArrayList<DrawParams> getDrawParams() {
+        ArrayList<DrawParams> params = new ArrayList<>();
+        params.add(new DrawParams(bitmapData.getId(), x, y, 0, 0, getWidth(), getHeight()));
         if(explodeAnimation.isPlaying()) {
-            Rect spritesheet_src = explodeAnimation.getCurrentFrameSrc();
-            int[] explode_params = {explodeAnimation.getBitmapID(), spritesheet_src.left, spritesheet_src.top, spritesheet_src.right, spritesheet_src.bottom};
-            params.add(explode_params);
+            Rect source = explodeAnimation.getCurrentFrameSrc();
+            params.add(new DrawParams(explodeAnimation.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
         }
         return params;
     }

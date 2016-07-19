@@ -20,7 +20,7 @@ public class Rocket extends Sprite {
     public static final int ROCKET_DELAY = 40;
     public static final float ROCKET_SPEED_X = 0.0067f;
 
-    public Rocket(BitmapData bitmapData, float x, float y, int rocketType) {
+    public Rocket(BitmapData bitmapData, int x, int y, int rocketType) {
         super(bitmapData, x, y);
         hitBox.setDimensions((int) (getWidth() * 1.5f), getHeight());
         switch(rocketType) {
@@ -74,9 +74,9 @@ public class Rocket extends Sprite {
     }
 
     @Override
-    public ArrayList<int[]> getDrawParams() {
-        ArrayList<int[]> params = new ArrayList<>();
-        params.add(new int[] {bitmapData.getId(), 0, 0, getWidth(), getHeight()});
+    public ArrayList<DrawParams> getDrawParams() {
+        ArrayList<DrawParams> params = new ArrayList<>();
+        params.add(new DrawParams(bitmapData.getId(), x, y, 0, 0, getWidth(), getHeight()));
         return params;
     }
 }

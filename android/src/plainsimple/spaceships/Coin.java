@@ -15,7 +15,7 @@ public class Coin extends Sprite {
     private SpriteAnimation spin;
     private SpriteAnimation disappear;
 
-    public Coin(BitmapData bitmapData, SpriteAnimation spinAnimation, SpriteAnimation disappearAnimation, float x, float y) {
+    public Coin(BitmapData bitmapData, SpriteAnimation spinAnimation, SpriteAnimation disappearAnimation, int x, int y) {
         super(bitmapData, x, y);
         //spin = new SpriteAnimation(spinAnimation, width, height, 5, true);
         spin = spinAnimation;
@@ -59,14 +59,14 @@ public class Coin extends Sprite {
     }
 
     @Override
-    public ArrayList<int[]> getDrawParams() {
-        ArrayList<int[]> params = new ArrayList<>();
+    public ArrayList<DrawParams> getDrawParams() {
+        ArrayList<DrawParams> params = new ArrayList<>(); // todo: store one list that gets reset?
         if (disappear.isPlaying()) {
-            Rect spritesheet_src = disappear.getCurrentFrameSrc();
-            params.add(new int[]{disappear.getBitmapID(), spritesheet_src.left, spritesheet_src.top, spritesheet_src.bottom, spritesheet_src.right});
+            Rect source = disappear.getCurrentFrameSrc();
+            params.add(new DrawParams(disappear.getBitmapID(), x, y, source.left, source.top, source.bottom, source.right));
         } else {
-            Rect spritesheet_src = spin.getCurrentFrameSrc();
-            params.add(new int[]{spin.getBitmapID(), spritesheet_src.left, spritesheet_src.top, spritesheet_src.bottom, spritesheet_src.right});
+            Rect source = spin.getCurrentFrameSrc();
+            params.add(new DrawParams(spin.getBitmapID(), x, y, source.left, source.top, source.bottom, source.right));
         }
         return params;
     }

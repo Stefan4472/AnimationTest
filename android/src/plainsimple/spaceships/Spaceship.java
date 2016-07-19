@@ -26,9 +26,9 @@ public class Spaceship extends Sprite {
     // current tally of points scored from coins and alien hits
     private int score = 0;
 
-    private SpriteAnimation movingAnimation; // todo: resources static?
-    private SpriteAnimation fireRocketAnimation;
-    private SpriteAnimation explodeAnimation;
+    private SpriteAnimation move; // todo: resources static?
+    private SpriteAnimation fireRocket;
+    private SpriteAnimation explode;
 
     // whether user has control over spaceship
     boolean controllable;
@@ -115,10 +115,10 @@ public class Spaceship extends Sprite {
 
     public void injectResources(SpriteAnimation movingAnimation, SpriteAnimation fireRocketAnimation, // todo: make part of constructor
             SpriteAnimation explodeAnimation, BitmapData bulletBitmapData, BitmapData rocketBitmapData) { // todo: fix so dimensions are right
-        this.movingAnimation = movingAnimation;
-        this.movingAnimation.start();
-        this.fireRocketAnimation = fireRocketAnimation;
-        this.explodeAnimation = explodeAnimation;
+        this.move = movingAnimation;
+        this.move.start();
+        this.fireRocket = fireRocketAnimation;
+        this.explode = explodeAnimation;
         this.bulletBitmapData = bulletBitmapData;
         this.rocketBitmapData = rocketBitmapData;
     }
@@ -134,7 +134,7 @@ public class Spaceship extends Sprite {
         if (shooting && firingMode == ROCKET_MODE && lastFiredRocket >= Rocket.getDelay(rocketType)) {
             fireRockets();
             lastFiredRocket = 0;
-            fireRocketAnimation.start();
+            fireRocket.start();
         }
     }
 
@@ -192,14 +192,14 @@ public class Spaceship extends Sprite {
 
     @Override
     public void updateAnimations() {
-        if (movingAnimation.isPlaying()) {
-            movingAnimation.incrementFrame();
+        if (move.isPlaying()) {
+            move.incrementFrame();
         }
-        if (fireRocketAnimation.isPlaying()) {
-            fireRocketAnimation.incrementFrame();
+        if (fireRocket.isPlaying()) {
+            fireRocket.incrementFrame();
         }
-        if (explodeAnimation.isPlaying()) {
-            explodeAnimation.incrementFrame();
+        if (explode.isPlaying()) {
+            explode.incrementFrame();
         }
     }
 
@@ -220,8 +220,8 @@ public class Spaceship extends Sprite {
     @Override
     public void handleCollision(Sprite s) {
         hp -= s.getDamage();
-        if (hp < 0 && !explodeAnimation.isPlaying()) { // todo: check when explodeAnimation has played and use for end game logic
-            explodeAnimation.start();
+        if (hp < 0 && !explode.isPlaying()) { // todo: check when explode animation has played and use for end game logic
+            explode.start();
             soundEffects.add(R.raw.explosion_1);
             hp = 0;
             collision = true;
@@ -232,26 +232,22 @@ public class Spaceship extends Sprite {
     }
 
     @Override
-    public ArrayList<int[]> getDrawParams() {
-        ArrayList<int[]> params = new ArrayList<>();
+    public ArrayList<DrawParams> getDrawParams() {
+        ArrayList<DrawParams> params = new ArrayList<>();
         // define specifications for defaultImage
-        int[] defaultImgParams = {bitmapData.getId(), 0, 0, getWidth(), getHeight()};
-        params.add(defaultImgParams);
-        Rect animation_src;
+        params.add(new DrawParams(bitmapData.getId(), x, y, 0, 0, getWidth(), getHeight()));
+        Rect source;
         if (moving) {
-            animation_src = movingAnimation.getCurrentFrameSrc();
-            int[] movingImgParams = {movingAnimation.getBitmapID(), animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
-            params.add(movingImgParams);
+            source = move.getCurrentFrameSrc();
+            params.add(new DrawParams(move.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
         }
-        if (fireRocketAnimation.isPlaying()) {
-            animation_src = fireRocketAnimation.getCurrentFrameSrc();
-            int[] fireRocketImgParams = {fireRocketAnimation.getBitmapID(), animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
-            params.add(fireRocketImgParams);
+        if (fireRocket.isPlaying()) {
+            source = fireRocket.getCurrentFrameSrc();
+            params.add(new DrawParams(fireRocket.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
         }
-        if (explodeAnimation.isPlaying()) {
-            animation_src = explodeAnimation.getCurrentFrameSrc();
-            int[] explodeImgParams = {explodeAnimation.getBitmapID(), animation_src.left, animation_src.top, animation_src.right, animation_src.bottom};
-            params.add(explodeImgParams);
+        if (explode.isPlaying()) {
+            source = explode.getCurrentFrameSrc();
+            params.add(new DrawParams(explode.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
         }
         return params;
     }
