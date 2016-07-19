@@ -15,17 +15,6 @@ public class Coin extends Sprite {
     private SpriteAnimation spin;
     private SpriteAnimation disappear;
 
-    private static int spinBitmapID;
-    private static int disappearBitmapID;
-
-    public static void setSpinBitmapID(int spinBitmapID) {
-        Coin.spinBitmapID = spinBitmapID;
-    }
-
-    public static void setDisappearBitmapID(int disappearBitmapID) {
-        Coin.disappearBitmapID = disappearBitmapID;
-    }
-
     public Coin(BitmapData bitmapData, SpriteAnimation spinAnimation, SpriteAnimation disappearAnimation, float x, float y) {
         super(bitmapData, x, y);
         //spin = new SpriteAnimation(spinAnimation, width, height, 5, true);
