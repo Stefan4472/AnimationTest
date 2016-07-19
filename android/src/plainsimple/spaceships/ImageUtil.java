@@ -10,6 +10,7 @@ import java.io.IOException;*/
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 /**
  * Created by Stefan on 8/17/2015.
@@ -20,18 +21,10 @@ public class ImageUtil {
 
     // draws specified Bitmap onto canvas using given drawing parameters
     public static void drawBitmap(Canvas canvas, Bitmap toDraw, DrawParams params) {
-        int x_range = params.getX1() - params.getX0();
-        int y_range = params.getY1() - params.getY1();
-        int canvas_x0 = params.getCanvasX0();
-        int canvas_y0 = params.getCanvasY0();
-        int start_x = params.getX0();
-        int start_y = params.getY0();
-        for (int i = 0; i < x_range; i++) {
-            for (int j = 0; j < y_range; j++) {
-                paint.setColor(toDraw.getPixel(start_x + i, start_y + j));
-                canvas.drawPoint(canvas_x0 + i, canvas_y0 + j, paint);
-            }
-        }
+        Rect source = new Rect(params.getX0(), params.getY0(), params.getX1(), params.getY1());
+        Rect destination = new Rect(params.getCanvasX0(), params.getCanvasY0(),
+                params.getCanvasX0() + source.width(), params.getCanvasY0() + source.height());
+        canvas.drawBitmap(toDraw, source, destination, null);
     }
 
     // takes a spriteSheet and the base image (model)
