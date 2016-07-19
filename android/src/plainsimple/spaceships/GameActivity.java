@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 /**
  * Created by Stefan on 10/17/2015.
@@ -34,9 +33,9 @@ public class GameActivity extends Activity {
         gameView = (GameView) findViewById(R.id.spaceships);
         gameView.setKeepScreenOn(true);
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
-        pauseButton.setBackgroundResource(R.drawable.pausebutton_pause);
+        pauseButton.setBackgroundResource(R.drawable.pause);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
-        muteButton.setBackgroundResource(R.drawable.mute_button);
+        muteButton.setBackgroundResource(R.drawable.sound_on);
         toggleBulletButton = (ImageButton) findViewById(R.id.toggleBulletButton);
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
@@ -48,20 +47,20 @@ public class GameActivity extends Activity {
     // handle user pressing pause button //todo: is this an okay way of handling the event?
     public void onPausePressed(View view) {
         if(gameView.getPaused()) {
-            pauseButton.setBackgroundResource(R.drawable.pausebutton_pause);
+            pauseButton.setBackgroundResource(R.drawable.pause);
             gameView.setPaused(false);
         } else {
-            pauseButton.setBackgroundResource(R.drawable.pausebutton_play);
+            pauseButton.setBackgroundResource(R.drawable.play);
             gameView.setPaused(true);
         }
     }
 
     public void onMutePressed(View view) {
         if(gameView.getMuted()) {
-            muteButton.setBackgroundResource(R.drawable.mute_button);
+            muteButton.setBackgroundResource(R.drawable.sound_on);
             gameView.setMuted(false);
         } else {
-            muteButton.setBackgroundResource(R.drawable.mute_button_muted);
+            muteButton.setBackgroundResource(R.drawable.sound_off);
             gameView.setMuted(true);
         }
         AudioManager a_manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);

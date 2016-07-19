@@ -26,8 +26,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.35"
-     inkscape:cx="-52.142857"
-     inkscape:cy="520"
+     inkscape:cx="-479.28571"
+     inkscape:cy="526.1811"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -44,7 +44,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -55,7 +55,9 @@
     <g
        id="g4220-9"
        transform="matrix(3.5581529,0,0,3.5581529,5331.2479,1955.1251)"
-       style="fill:#ffe680">
+       style="fill:#ffe680"
+       inkscape:export-xdpi="14.557325"
+       inkscape:export-ydpi="14.557325">
       <path
          inkscape:connector-curvature="0"
          id="path4850-4-8-6"
