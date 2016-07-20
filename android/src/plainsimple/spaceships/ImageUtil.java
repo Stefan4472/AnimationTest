@@ -11,19 +11,21 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
 /**
  * Created by Stefan on 8/17/2015.
  */
 public class ImageUtil {
 
-    private static Paint paint = new Paint();
-
     // draws specified Bitmap onto canvas using given drawing parameters
     public static void drawBitmap(Canvas canvas, Bitmap toDraw, DrawParams params) {
         Rect source = new Rect(params.getX0(), params.getY0(), params.getX1(), params.getY1());
         Rect destination = new Rect(params.getCanvasX0(), params.getCanvasY0(),
                 params.getCanvasX0() + source.width(), params.getCanvasY0() + source.height());
+        if (params.getBitmapID().equals(BitmapResource.COIN_SPIN)) {
+            Log.d("ImageUtil Class", "Source = " + source.flattenToString() + " and destination = " + destination.flattenToString());
+        }
         canvas.drawBitmap(toDraw, source, destination, null);
     }
 

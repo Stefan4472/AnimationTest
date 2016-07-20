@@ -101,8 +101,10 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
     // returns Rect containing coordinates on the spritesheet of the current frame
     // -> all images are treated in reference to their ID
     public Rect getCurrentFrameSrc() {
+        if (bitmapData.getId() == BitmapResource.COIN_SPIN) {
+            Log.d("Animation Class", "frameCounter is " + frameCounter + " and frameW is " + frameW + " and end is " + (frameW * (frameCounter + 1)));
+        }
         return new Rect(frameW * frameCounter, 0, frameW * (frameCounter + 1), frameH);
-        // todo: allow for multi-row spritesheets!
     }
 
     public BitmapResource getBitmapID() {

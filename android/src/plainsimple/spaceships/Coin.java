@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -61,13 +62,13 @@ public class Coin extends Sprite {
     @Override
     public ArrayList<DrawParams> getDrawParams() {
         ArrayList<DrawParams> params = new ArrayList<>(); // todo: store one list that gets reset?
-        if (disappear.isPlaying()) {
+        /*if (disappear.isPlaying()) {
             Rect source = disappear.getCurrentFrameSrc();
-            params.add(new DrawParams(disappear.getBitmapID(), x, y, source.left, source.top, source.bottom, source.right));
-        } else {
+            params.add(new DrawParams(disappear.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
+        } else {*/
             Rect source = spin.getCurrentFrameSrc();
-            params.add(new DrawParams(spin.getBitmapID(), x, y, source.left, source.top, source.bottom, source.right));
-        }
+            params.add(new DrawParams(spin.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
+        //}
         return params;
     }
 }

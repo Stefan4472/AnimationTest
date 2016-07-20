@@ -231,7 +231,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
                 // generate more sprites
                 if (mapTileCounter == map[0].length) {
-                    map = tileGenerator.generateTiles(difficulty);
+                    //map = tileGenerator.generateTiles(difficulty);
+                    map = tileGenerator.generateDebugTiles();
                     updateScrollSpeed();
                     mapTileCounter = 0;
                 }

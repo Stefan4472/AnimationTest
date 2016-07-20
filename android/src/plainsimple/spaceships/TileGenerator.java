@@ -9,7 +9,7 @@ import java.util.Random;
  */
 public class TileGenerator {
 
-    // tile id's
+    // tile id's // todo: use enums
     public static final int EMPTY = 0; // no obstacle
     public static final int OBSTACLE = 1; // basic obstacle
     public static final int OBSTACLE_INVIS = 2; // basic obstacle collision = false
@@ -273,5 +273,17 @@ public class TileGenerator {
             result += "\n";
         }
         return result;
+    }
+
+    // generates specific tile set for debugging
+    public static byte[][] generateDebugTiles() {
+        return new byte[][] {
+                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 3, 3, 3, 3, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0}
+        };
     }
 }

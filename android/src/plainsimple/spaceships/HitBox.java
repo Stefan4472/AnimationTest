@@ -51,7 +51,7 @@ public class Hitbox {
     }
 
     // resets hitbox to new coordinates, keeping width and height
-    public void updateCoordinates(int newX, int newY) {
+    public void updateCoordinates(int newX, int newY) { // todo: can use offset method
         this.x = newX;
         this.y = newY;
         rect.top = y + offsetY;
