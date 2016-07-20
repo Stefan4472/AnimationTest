@@ -108,7 +108,7 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
         // todo: allow for multi-row spritesheets!
     }
 
-    public int getBitmapID() {
+    public BitmapResource getBitmapID() {
         return bitmapData.getId();
     }
 }

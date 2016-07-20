@@ -13,6 +13,8 @@ public class EnumUtil {
                 return R.drawable.spaceship_explode;
             case SPACESHIP_FIRE:
                 return R.drawable.spaceship_fire_rocket;
+            case SPACESHIP_MOVE:
+                return R.drawable.spaceship_move;
             case LASER_BULLET:
                 return R.drawable.laserbullet;
             case ION_BULLET:

@@ -6,7 +6,7 @@ package plainsimple.spaceships;
 public class DrawParams {
 
     // ID of bitmap to be drawn
-    private int bitmapID;
+    private BitmapResource bitmapID;
     // x-coordinate where drawing begins on canvas
     private int canvasX0;
     // y-coordinate where drawing begins on canvas
@@ -20,7 +20,7 @@ public class DrawParams {
     // ending y-coordinate
     private int y1;
 
-    public DrawParams(int bitmapID, int canvasX0, int canvasY0, int x0, int y0, int x1, int y1) { // todo: setParams method to set all params at once
+    public DrawParams(BitmapResource bitmapID, int canvasX0, int canvasY0, int x0, int y0, int x1, int y1) { // todo: setParams method to set all params at once
         this.bitmapID = bitmapID;
         this.canvasX0 = canvasX0;
         this.canvasY0 = canvasY0;
@@ -30,11 +30,11 @@ public class DrawParams {
         this.y1 = y1;
     }
 
-    public int getBitmapID() {
+    public BitmapResource getBitmapID() {
         return bitmapID;
     }
 
-    public void setBitmapID(int bitmapID) {
+    public void setBitmapID(BitmapResource bitmapID) {
         this.bitmapID = bitmapID;
     }
 

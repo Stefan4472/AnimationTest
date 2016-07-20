@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener {
 
-    private Context myContext;
+    private Context c;
     private SurfaceHolder mySurfaceHolder;
     // todo: make non-static
     public static int screenW;
@@ -34,15 +34,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private boolean onTitle = true;
     private GameViewThread thread;
     // todo: create separate helper classes?
-    // stores graphics with R.drawable ID as key and cached Bitmap as object
-    private HashMap<Integer, Bitmap> imageCache;
-    // stores BitmapData with R.drawable ID as key and data as object
-    private HashMap<Integer, BitmapData> bitmapData;
     // stores initialized SpriteAnimations with R.drawable ID of spritesheet as key
     private HashMap<Integer, SpriteAnimation> animations;
 
     // used to play short sounds
-    private SoundPool soundPool;
+    private SoundPool soundPool; // todo: should be public static and in GameActivity
     // stores data used to play sounds, with key being the R.raw ID of the sound to play
     private HashMap<Integer, float[]> sounds;
 
@@ -141,21 +137,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         public GameViewThread(SurfaceHolder surfaceHolder, Context context, Handler handler) {
             mySurfaceHolder = surfaceHolder;
-            myContext = context;
+            c = context;
         }
 
         @Override
         public void run() {
             while (running) {
-                Canvas c = null;
+                Canvas canvas = null;
                 try {
-                    c = mySurfaceHolder.lockCanvas(null);
+                    canvas = mySurfaceHolder.lockCanvas(null);
                     synchronized (mySurfaceHolder) {
-                        draw(c);
+                        draw(canvas);
                     }
                 } finally {
-                    if (c != null) {
-                        mySurfaceHolder.unlockCanvasAndPost(c);
+                    if (canvas != null) {
+                        mySurfaceHolder.unlockCanvasAndPost(canvas);
                     }
                 }
             }
@@ -189,7 +185,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         private void drawSprite(Sprite sprite, Canvas canvas) {
             ArrayList<DrawParams> draw_params = sprite.getDrawParams();
             for (DrawParams img_params : draw_params) {
-                ImageUtil.drawBitmap(canvas, imageCache.get(img_params.getBitmapID()), img_params);
+                ImageUtil.drawBitmap(canvas, BitmapCache.getImage(img_params.getBitmapID(), c), img_params);
             }
         }
 
@@ -309,7 +305,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                         break;
                     case MotionEvent.ACTION_UP: // handle user clicking something
                         if (onTitle) { // change to game screen. Load resources
-                            myContext.getResources();
+                            c.getResources();
                             background = new Background(screenW, screenH);
                             initImgCache();
                             initAnimations();
@@ -331,72 +327,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         // loads in sprites, sends ID's to the proper classes, and scales them
-        private void initImgCache() {
-            imageCache = new HashMap<>();
-            imageCache.put(R.drawable.spaceship, BitmapFactory.decodeResource(myContext.getResources(), R.drawable.spaceship));
-            imageCache.put(R.drawable.spaceship_move, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.spaceship_move));
-            imageCache.put(R.drawable.spaceship_explode, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.spaceship_explode));
-            imageCache.put(R.drawable.spaceship_fire_rocket, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.spaceship_fire_rocket));
-
-            // get current rocket type equipped and decode corresponding sprite
-            int rocket_resource = SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_rocket),
-                    R.drawable.rocket);
-            imageCache.put(rocket_resource, BitmapFactory.decodeResource(myContext.getResources(),
-                    rocket_resource));
-
-            SpaceShipsActivity.preferences.edit().putInt(myContext.getString(R.string.equipped_bullet),
-                    R.drawable.laserbullet).commit();
-            // get current bullet type equipped and decode corresponding sprite
-            int bullet_resource = SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_bullet),
-                    R.drawable.laserbullet);
-            imageCache.put(bullet_resource, BitmapFactory.decodeResource(myContext.getResources(),
-                    bullet_resource));
-
-            imageCache.put(R.drawable.obstacle, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.obstacle));
-            imageCache.put(R.drawable.coin, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.coin));
-            imageCache.put(R.drawable.coin_spin, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.coin_spin));
-            imageCache.put(R.drawable.coin_collect, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.coin_collect));
-            imageCache.put(R.drawable.alien, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.alien));
-            imageCache.put(R.drawable.spaceship_explode, BitmapFactory.decodeResource(myContext.getResources(), // todo: use different animation (not Spaceship one)
-                    R.drawable.spaceship_explode));
-            imageCache.put(R.drawable.alienbullet, BitmapFactory.decodeResource(myContext.getResources(),
-                    R.drawable.alienbullet));
-
+        private void initImgCache() { // todo: determine current rocket type equipped
             // calculate scaling factor using spaceship_sprite height as a baseline
-            float scalingFactor = (screenH / 6.0f) / (float) imageCache.get(R.drawable.spaceship).getHeight();
-            // set up bitmapData index
-            bitmapData = new HashMap<>();
-            Bitmap to_scale, scaled;
-            for (int key : imageCache.keySet()) {
-                to_scale = imageCache.get(key);
-                scaled = Bitmap.createScaledBitmap(to_scale,
-                        (int) (to_scale.getWidth() * scalingFactor),
-                        (int) (to_scale.getHeight() * scalingFactor), true);
-                // scale all graphics resources in imageCache. Want textures to remain square. Scale using using height
-                imageCache.put(key, scaled); // todo: use ImageData
-                bitmapData.put(key, new BitmapData(key, scaled.getWidth(), scaled.getHeight()));
-            }
+            Bitmap spaceship = BitmapFactory.decodeResource(c.getResources(), R.drawable.spaceship);
+            float scalingFactor = (screenH / 6.0f) / (float) spaceship.getHeight();
+            BitmapCache.setScalingFactor(scalingFactor);
         }
 
-        private void initSpaceship() { // todo: use static ImageData and assertions
-            spaceship = new Spaceship(bitmapData.get(R.drawable.spaceship),
-                    -getWidth(R.drawable.spaceship),
-                    screenH / 2 - getHeight(R.drawable.spaceship) / 2);
-            int bullet_resource = SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_bullet),
+        private void initSpaceship() { // todo: clean up
+            spaceship = new Spaceship(BitmapCache.getData(BitmapResource.SPACESHIP, c),
+                    -BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(),
+                    screenH / 2 - BitmapCache.getData(BitmapResource.SPACESHIP, c).getHeight() / 2);
+            int bullet_resource = SpaceShipsActivity.preferences.getInt(c.getString(R.string.equipped_bullet),
                     R.drawable.laserbullet);
-            int rocket_resource = SpaceShipsActivity.preferences.getInt(myContext.getString(R.string.equipped_rocket),
+            int rocket_resource = SpaceShipsActivity.preferences.getInt(c.getString(R.string.equipped_rocket),
                     R.drawable.rocket);
             spaceship.injectResources(animations.get(R.drawable.spaceship_move),
                     animations.get(R.drawable.spaceship_fire_rocket), animations.get(R.drawable.spaceship_explode),
-                    bitmapData.get(bullet_resource), bitmapData.get(rocket_resource));
+                    BitmapCache.getData(BitmapResource.LASER_BULLET, c), BitmapCache.getData(BitmapResource.ROCKET, c));
             spaceship.setBullets(true, bullet_resource);
             spaceship.setRockets(true, rocket_resource);
             spaceship.setHP(30);
@@ -405,19 +353,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         // initializes SpriteAnimations and stores them in animations HashMap
         private void initAnimations() {
             animations = new HashMap<>();
-            animations.put(R.drawable.spaceship_move, new SpriteAnimation(bitmapData.get(R.drawable.spaceship_move), getWidth(R.drawable.spaceship), 5, true));
-            animations.put(R.drawable.spaceship_fire_rocket, new SpriteAnimation(bitmapData.get(R.drawable.spaceship_fire_rocket), getWidth(R.drawable.spaceship), 8, false));
-            animations.put(R.drawable.spaceship_explode, new SpriteAnimation(bitmapData.get(R.drawable.spaceship_explode), getWidth(R.drawable.spaceship), 5, false));
-            animations.put(R.drawable.coin_spin, new SpriteAnimation(bitmapData.get(R.drawable.coin_spin), getWidth(R.drawable.coin_spin), 10, true));
-            animations.put(R.drawable.coin_collect, new SpriteAnimation(bitmapData.get(R.drawable.coin_collect), getWidth(R.drawable.coin_collect), 5, false));
+            animations.put(R.drawable.spaceship_move, new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_MOVE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 5, true));
+            animations.put(R.drawable.spaceship_fire_rocket, new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_FIRE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 8, false));
+            animations.put(R.drawable.spaceship_explode, new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 5, false));
+            animations.put(R.drawable.coin_spin, new SpriteAnimation(BitmapCache.getData(BitmapResource.COIN_SPIN, c), BitmapCache.getData(BitmapResource.COIN, c).getWidth(), 10, true));
+            animations.put(R.drawable.coin_collect, new SpriteAnimation(BitmapCache.getData(BitmapResource.COIN_DISAPPEAR, c), BitmapCache.getData(BitmapResource.COIN, c).getWidth(), 5, false));
         }
 
         // loads sounds using SoundPool and stores them in the sounds HashMap
         private void initSounds() {
             sounds = new HashMap<>(); // todo: change soundPool load values to get just the right effect
-            sounds.put(R.raw.rocket_fired, new float[] {soundPool.load(myContext, R.raw.rocket_fired, 1), 1, 1, 1, 0, 1});
-            sounds.put(R.raw.explosion_1, new float[] {soundPool.load(myContext, R.raw.explosion_1, 1), 1, 1, 1, 0, 1});
-            sounds.put(R.raw.laser_fired, new float[] {soundPool.load(myContext, R.raw.laser_fired, 1), 1, 1, 1, 0, 1});
+            sounds.put(R.raw.rocket_fired, new float[] {soundPool.load(c, R.raw.rocket_fired, 1), 1, 1, 1, 0, 1});
+            sounds.put(R.raw.explosion_1, new float[] {soundPool.load(c, R.raw.explosion_1, 1), 1, 1, 1, 0, 1});
+            sounds.put(R.raw.laser_fired, new float[] {soundPool.load(c, R.raw.laser_fired, 1), 1, 1, 1, 0, 1});
         }
 
         private void initScoreDisplay() {
@@ -441,16 +389,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         private Sprite getMapTile(int tileID, int x, int y) throws IndexOutOfBoundsException {
             switch (tileID) {
                 case TileGenerator.OBSTACLE:
-                    return new Obstacle(bitmapData.get(R.drawable.obstacle), x, y); // todo: use static ImageData
+                    return new Obstacle(BitmapCache.getData(BitmapResource.OBSTACLE, c), x, y); // todo: use static ImageData?
                 case TileGenerator.OBSTACLE_INVIS:
-                    Sprite tile = new Obstacle(bitmapData.get(R.drawable.obstacle), x, y);
+                    Sprite tile = new Obstacle(BitmapCache.getData(BitmapResource.OBSTACLE, c), x, y);
                     tile.setCollides(false);
                     return tile;
                 case TileGenerator.COIN: // todo: cache SpriteAnimations
-                    return new Coin(bitmapData.get(R.drawable.coin), animations.get(R.drawable.coin_spin), animations.get(R.drawable.coin_collect), x, y);
+                    return new Coin(BitmapCache.getData(BitmapResource.COIN, c), animations.get(R.drawable.coin_spin), animations.get(R.drawable.coin_collect), x, y);
                 case TileGenerator.ALIEN_LVL1:
-                    Alien1 alien_1 = new Alien1(bitmapData.get(R.drawable.alien), x, y, difficulty, spaceship);
-                    alien_1.injectResources(bitmapData.get(R.drawable.alienbullet), animations.get(R.drawable.spaceship_explode));
+                    Alien1 alien_1 = new Alien1(BitmapCache.getData(BitmapResource.ALIEN, c), x, y, difficulty, spaceship);
+                    alien_1.injectResources(BitmapCache.getData(BitmapResource.ALIEN_BULLET, c), animations.get(R.drawable.spaceship_explode));
                     return alien_1;
                 default:
                     throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
@@ -462,18 +410,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             s.setSpeedX(speedX);
             s.setSpeedY(speedY);
             sprites.add(s);
-        }
-
-        // helper method to get width of bitmap given bitmap ID
-        // precondition: bitmapData != null
-        private int getWidth(int drawableID) {
-            return bitmapData.get(drawableID).getWidth();
-        }
-
-        // helper method to get height of bitmap given bitmap ID
-        // precondition: bitmapData != null
-        private int getHeight(int drawableID) {
-            return bitmapData.get(drawableID).getHeight();
         }
 
         public void setSurfaceSize(int width, int height) {
