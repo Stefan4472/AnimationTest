@@ -46,7 +46,6 @@ public class BitmapCache {
         // attempts to get the data from the Hashtable
         BitmapData data = bmpData.get(key);
         if (data == null) {
-            Log.d("BitmapCache", "Loading in bitmap");
             // loads in the bitmap if it hasn't already been loaded
             try {
                 Bitmap bmp = BitmapFactory.decodeResource(context.getResources(), EnumUtil.getID(key));
