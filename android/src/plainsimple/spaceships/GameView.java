@@ -33,10 +33,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private boolean running = false;
     private boolean onTitle = true;
     private GameViewThread thread;
-    // todo: create separate helper classes?
+    // todo: AnimationCache using BitmapResource enums. Store num frames per animation in r/values/integers
     // stores initialized SpriteAnimations with R.drawable ID of spritesheet as key
     private HashMap<Integer, SpriteAnimation> animations;
-
+    // todo: SoundCache and RawResource
     // used to play short sounds
     private SoundPool soundPool; // todo: should be public static and in GameActivity
     // stores data used to play sounds, with key being the R.raw ID of the sound to play
@@ -69,7 +69,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private long lastTile = 0;
     // coordinates of upper-left of "window" being shown
     private long x = 0;
-    // default speed of sprites scrolling across the map
+    // default speed of sprites scrolling across the map (must be negative!)
     private float scrollSpeed = -0.0025f;
     // active generated non-projectile sprites
     private List<Sprite> sprites = new ArrayList<>();
@@ -164,7 +164,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     update();
                     background.scroll((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST));
                 }
-                for (Sprite s : sprites) {
+                for (Sprite s : sprites) { // todo: list of non-colliding sprites?
                     drawSprite(s, canvas);
                 }
                 for (Sprite s : ssProjectiles) {
@@ -398,6 +398,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 case TileGenerator.COIN: // todo: cache SpriteAnimations
                     return new Coin(BitmapCache.getData(BitmapResource.COIN, c), animations.get(R.drawable.coin_spin), animations.get(R.drawable.coin_collect), x, y);
                 case TileGenerator.ALIEN_LVL1:
+                    Log.d("GameView", "Initializeing Alien at " + x + "," + y);
                     Alien1 alien_1 = new Alien1(BitmapCache.getData(BitmapResource.ALIEN, c), x, y, difficulty, spaceship);
                     alien_1.injectResources(BitmapCache.getData(BitmapResource.ALIEN_BULLET, c), animations.get(R.drawable.spaceship_explode));
                     return alien_1;

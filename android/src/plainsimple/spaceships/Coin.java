@@ -55,7 +55,8 @@ public class Coin extends Sprite {
     @Override
     public void handleCollision(Sprite s) {
         if (s instanceof Spaceship) {
-            disappear.start();
+            //disappear.start();
+            vis = false;
         }
     }
 
