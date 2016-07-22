@@ -5,6 +5,8 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -47,17 +49,24 @@ public class GameActivity extends Activity {
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
         // set volume control to proper stream
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
+    }
+
+    private void initMedia() {
+        Log.d("Activity Class", "Creating SoundPool");
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
         soundIDs = new Hashtable<>();
+        Log.d("Activity Class", "Loading Sounds");
         soundIDs.put(RawResource.LASER, soundPool.load(this, EnumUtil.getID(RawResource.LASER), 1));
         soundIDs.put(RawResource.ROCKET, soundPool.load(this, EnumUtil.getID(RawResource.ROCKET), 1));
         soundIDs.put(RawResource.EXPLOSION, soundPool.load(this, EnumUtil.getID(RawResource.EXPLOSION), 1));
         soundIDs.put(RawResource.BUTTON_CLICKED, soundPool.load(this, EnumUtil.getID(RawResource.BUTTON_CLICKED), 1));
         soundIDs.put(RawResource.TITLE_THEME, soundPool.load(this, EnumUtil.getID(RawResource.TITLE_THEME), 1));
+        Log.d("Activity Class", soundIDs.size() + " sounds loaded");
     }
 
     // plays a sound using the SoundPool given SoundParams
     public static void playSound(SoundParams parameters) {
+        Log.d("Activity Class", "Playing sound");
         soundPool.play(soundIDs.get(parameters.getResourceID()), parameters.getLeftVolume(),
                 parameters.getRightVolume(), parameters.getPriority(), parameters.getLoop(),
                 parameters.getRate());
@@ -103,5 +112,12 @@ public class GameActivity extends Activity {
         super.onPause();
         soundPool.release();
         soundPool = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initMedia();
+        Log.d("Activity Class", "Media Initialized");
     }
 }
