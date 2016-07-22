@@ -37,4 +37,19 @@ public class EnumUtil {
                 return -1;
         }
     }
+
+    public static int getID(RawResource key) {
+        switch (key) {
+            case LASER:
+                return R.raw.laser_fired;
+            case EXPLOSION:
+                return R.raw.explosion_1;
+            case BUTTON_CLICKED:
+                return R.raw.button_clicked;
+            case TITLE_THEME:
+                return R.raw.title_theme;
+            default:
+                return -1;
+        }
+    }
 }

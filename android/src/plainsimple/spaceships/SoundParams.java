@@ -28,4 +28,28 @@ public class SoundParams {
         this.loop = loop;
         this.rate = rate;
     }
+
+    public RawResource getResourceID() {
+        return resourceID;
+    }
+
+    public float getLeftVolume() {
+        return leftVolume;
+    }
+
+    public float getRightVolume() {
+        return rightVolume;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public int getLoop() {
+        return loop;
+    }
+
+    public float getRate() {
+        return rate;
+    }
 }
