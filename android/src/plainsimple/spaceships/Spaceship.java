@@ -52,6 +52,10 @@ public class Spaceship extends Sprite {
     public static final int BULLET_MODE = 1;
     public static final int ROCKET_MODE = 2;
 
+    private SoundParams rocketSound;
+    private SoundParams bulletSound;
+    private SoundParams explodeSound;
+
     public List<Sprite> getAndClearProjectiles() {
         List<Sprite> copy = new ArrayList<>();
         for(Sprite p : projectiles) {
@@ -111,6 +115,9 @@ public class Spaceship extends Sprite {
         collides = true;
         hitBox.setDimensions((int) (getWidth() * 0.66), (int) (getHeight() * 0.55));
         hitBox.setOffsets((getWidth() - hitBox.getWidth()) / 2, (getHeight() - hitBox.getHeight()) / 2);
+        bulletSound = new SoundParams(RawResource.LASER, 1.0f, 1.0f, 1, 0, 1.0f);
+        rocketSound = new SoundParams(RawResource.ROCKET, 1.0f, 1.0f, 1, 0, 1.0f);
+        explodeSound = new SoundParams(RawResource.EXPLOSION, 1.0f, 1.0f, 1, 0, 1.0f);
     }
 
     public void injectResources(SpriteAnimation movingAnimation, SpriteAnimation fireRocketAnimation, // todo: make part of constructor
@@ -142,14 +149,14 @@ public class Spaceship extends Sprite {
     public void fireRockets() {
         projectiles.add(new Rocket(rocketBitmapData, x + (int) (getWidth() * 0.80), y + (int) (0.29 * getHeight()), rocketType));
         projectiles.add(new Rocket(rocketBitmapData, x + (int) (getWidth() * 0.80), y + (int) (0.65 * getHeight()), rocketType));
-        soundEffects.add(R.raw.rocket_fired);
+        GameActivity.playSound(rocketSound);
     }
 
     // fires two bullets
     public void fireBullets() {
         projectiles.add(new Bullet(bulletBitmapData, x + (int) (getWidth() * 0.78), y + (int) (0.28 * getHeight()), bulletType));
         projectiles.add(new Bullet(bulletBitmapData, x + (int) (getWidth() * 0.78), y + (int) (0.66 * getHeight()), bulletType));
-        soundEffects.add(R.raw.laser_fired);
+        GameActivity.playSound(bulletSound);
     }
 
     // sets current tilt of device and determines dy
@@ -222,7 +229,7 @@ public class Spaceship extends Sprite {
         hp -= s.getDamage();
         if (hp < 0 && !explode.isPlaying()) { // todo: check when explode animation has played and use for end game logic
             explode.start();
-            soundEffects.add(R.raw.explosion_1);
+            GameActivity.playSound(explodeSound);
             hp = 0;
             collision = true;
         }

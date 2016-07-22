@@ -42,6 +42,8 @@ public class EnumUtil {
         switch (key) {
             case LASER:
                 return R.raw.laser_fired;
+            case ROCKET:
+                return R.raw.rocket_fired;
             case EXPLOSION:
                 return R.raw.explosion_1;
             case BUTTON_CLICKED:

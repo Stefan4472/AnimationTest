@@ -36,12 +36,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     // todo: AnimationCache using BitmapResource enums. Store num frames per animation in r/values/integers
     // stores initialized SpriteAnimations with R.drawable ID of spritesheet as key
     private HashMap<Integer, SpriteAnimation> animations;
-    // todo: SoundCache and RawResource
-    // used to play short sounds
-    private SoundPool soundPool; // todo: should be public static and in GameActivity
-    // stores data used to play sounds, with key being the R.raw ID of the sound to play
-    private HashMap<Integer, float[]> sounds;
-
+    // todo: paused and muted should be public static GameActivity fields
     // whether game is paused currently
     private boolean paused = false;
     // whether sound on or off
@@ -95,11 +90,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public boolean getMuted() { return muted; }
     public void setPaused(boolean paused) {
         this.paused = paused;
-        if (paused) {
+        /*if (paused) {
             soundPool.autoPause();
         } else {
             soundPool.autoResume();
-        }
+        }*/
     }
     public boolean getPaused() { return paused; }
     public void setFiringMode(int firingMode) { spaceship.setFiringMode(firingMode);}
@@ -124,8 +119,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
             }
         });
-        // set up SoundPool and load sounds
-        soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
         setFocusable(true);
     }
 
@@ -208,11 +201,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             GameEngineUtil.updateSprites(ssProjectiles);
             GameEngineUtil.updateSprites(alienProjectiles);
             spaceship.updateAnimations();
-            if (!muted) {
-                List<Sprite> sp_list = new ArrayList<>();
-                sp_list.add(spaceship);
-                playSounds(sp_list);
-            }
         }
 
         private void updateMap() {
@@ -276,19 +264,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             spaceship.updateSpeeds();
         }
 
-        // plays any sound effects from sprites in list
-        public void playSounds(List<Sprite> sprites) {
-            List<Integer> soundIDs = new ArrayList<>();
-            for (Sprite s : sprites) {
-                soundIDs.addAll(s.getAndClearSounds());
-            }
-            float[] sound_params;
-            for (Integer id : soundIDs) {
-                sound_params = sounds.get(id);
-                soundPool.play((int) sound_params[0], sound_params[1], sound_params[2], (int) sound_params[3], (int) sound_params[4], sound_params[4]);
-            }
-        }
-
         // handle user touching screen
         boolean doTouchEvent(MotionEvent motionEvent) {
             synchronized (mySurfaceHolder) {
@@ -311,7 +286,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                             initImgCache();
                             initAnimations();
                             initSpaceship();
-                            initSounds();
                             initScoreDisplay();
                             tileWidth = screenH / ROWS;
                             tileHeight = screenH / ROWS;
@@ -359,14 +333,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             animations.put(R.drawable.spaceship_explode, new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 5, false));
             animations.put(R.drawable.coin_spin, new SpriteAnimation(BitmapCache.getData(BitmapResource.COIN_SPIN, c), BitmapCache.getData(BitmapResource.COIN, c).getWidth(), 10, true));
             animations.put(R.drawable.coin_collect, new SpriteAnimation(BitmapCache.getData(BitmapResource.COIN_DISAPPEAR, c), BitmapCache.getData(BitmapResource.COIN, c).getWidth(), 5, false));
-        }
-
-        // loads sounds using SoundPool and stores them in the sounds HashMap
-        private void initSounds() {
-            sounds = new HashMap<>(); // todo: change soundPool load values to get just the right effect
-            sounds.put(R.raw.rocket_fired, new float[] {soundPool.load(c, R.raw.rocket_fired, 1), 1, 1, 1, 0, 1});
-            sounds.put(R.raw.explosion_1, new float[] {soundPool.load(c, R.raw.explosion_1, 1), 1, 1, 1, 0, 1});
-            sounds.put(R.raw.laser_fired, new float[] {soundPool.load(c, R.raw.laser_fired, 1), 1, 1, 1, 0, 1});
         }
 
         private void initScoreDisplay() {
@@ -466,6 +432,5 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public void surfaceDestroyed(SurfaceHolder holder) {
         thread.setRunning(false);
         gSensorManager.unregisterListener(this);
-        soundPool.release();
     }
 }

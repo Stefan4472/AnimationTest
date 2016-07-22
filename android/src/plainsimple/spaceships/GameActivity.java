@@ -48,7 +48,9 @@ public class GameActivity extends Activity {
         // set volume control to proper stream
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+        soundIDs = new Hashtable<>();
         soundIDs.put(RawResource.LASER, soundPool.load(this, EnumUtil.getID(RawResource.LASER), 1));
+        soundIDs.put(RawResource.ROCKET, soundPool.load(this, EnumUtil.getID(RawResource.ROCKET), 1));
         soundIDs.put(RawResource.EXPLOSION, soundPool.load(this, EnumUtil.getID(RawResource.EXPLOSION), 1));
         soundIDs.put(RawResource.BUTTON_CLICKED, soundPool.load(this, EnumUtil.getID(RawResource.BUTTON_CLICKED), 1));
         soundIDs.put(RawResource.TITLE_THEME, soundPool.load(this, EnumUtil.getID(RawResource.TITLE_THEME), 1));
@@ -94,5 +96,12 @@ public class GameActivity extends Activity {
         gameView.setFiringMode(Spaceship.ROCKET_MODE);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button_pressed);
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        soundPool.release();
+        soundPool = null;
     }
 }
