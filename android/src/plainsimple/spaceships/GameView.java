@@ -68,8 +68,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private Spaceship spaceship;
     // relative speed of background scrolling to foreground scrolling
     private static final float SCROLL_SPEED_CONST = 0.4f;
-    // points a coin is worth
-    public static final int COIN_VALUE = 100;
 
     private SensorManager gSensorManager;
     private Sensor gyroscope;
@@ -342,7 +340,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 case TileGenerator.COIN: // todo: cache SpriteAnimations
                     return new Coin(BitmapCache.getData(BitmapResource.COIN, c), animations.get(R.drawable.coin_spin), animations.get(R.drawable.coin_collect), x, y);
                 case TileGenerator.ALIEN_LVL1:
-                    Log.d("GameView", "Initializeing Alien at " + x + "," + y);
                     Alien1 alien_1 = new Alien1(BitmapCache.getData(BitmapResource.ALIEN, c), x, y, spaceship);
                     alien_1.injectResources(BitmapCache.getData(BitmapResource.ALIEN_BULLET, c), animations.get(R.drawable.spaceship_explode));
                     return alien_1;

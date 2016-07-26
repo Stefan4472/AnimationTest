@@ -23,9 +23,6 @@ public class Spaceship extends Sprite {
     private final float accelerateConst = 0.002f;
     private final float decelerate = 0.004f;
 
-    // current tally of points scored from coins and alien hits
-    private int score = 0;
-
     private SpriteAnimation move; // todo: resources static?
     private SpriteAnimation fireRocket;
     private SpriteAnimation explode;
@@ -210,20 +207,6 @@ public class Spaceship extends Sprite {
         }
     }
 
-    // calculates score from bullets and rockets that may have hit aliens
-    public int getAndClearScore() {
-        for (Sprite s : projectiles) {
-            if (s instanceof Bullet) {
-                score += ((Bullet) s).getAndClearScore();
-            } else if (s instanceof Rocket) {
-                score += ((Rocket) s).getAndClearScore();
-            }
-        }
-        int score_copy = score;
-        score = 0;
-        return score_copy;
-    }
-
     @Override
     public void handleCollision(Sprite s) {
         hp -= s.getDamage();
@@ -232,9 +215,6 @@ public class Spaceship extends Sprite {
             GameActivity.playSound(explodeSound);
             hp = 0;
             collision = true;
-        }
-        if (s instanceof Coin) {
-            score += GameView.COIN_VALUE;
         }
     }
 

@@ -13,9 +13,6 @@ public class Rocket extends Sprite {
     // number of to delay between firing rockets
     public int delay;
 
-    // points awarded for scoring a hit
-    private int score;
-
     public static final int ROCKET_DAMAGE = 40;
     public static final int ROCKET_DELAY = 40;
     public static final float ROCKET_SPEED_X = 0.0067f;
@@ -41,13 +38,6 @@ public class Rocket extends Sprite {
         }
     }
 
-    // returns score and resets it to zero
-    public int getAndClearScore() {
-        int score_copy = score;
-        score = 0;
-        return score_copy;
-    }
-
     @Override
     public void updateActions() {
 
@@ -62,7 +52,7 @@ public class Rocket extends Sprite {
     public void handleCollision(Sprite s) {
         collision = true;
         if (s instanceof Alien) {
-            score += damage;
+            GameActivity.incrementScore(damage);
         }
         vis = false;
 

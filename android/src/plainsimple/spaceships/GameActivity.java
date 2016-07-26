@@ -30,6 +30,8 @@ public class GameActivity extends Activity {
     private static boolean muted = false;
     private static int score = 0;
     private static float difficulty = 0;
+    // points a coin is worth
+    public static final int COIN_VALUE = 100;
 
     /* Called when activity first created */
     @Override
@@ -95,6 +97,10 @@ public class GameActivity extends Activity {
 
     public static int getScore() {
         return score;
+    }
+
+    public static void incrementScore(int toAdd) {
+        score += toAdd;
     }
 
     public static boolean isMuted() {
