@@ -26,6 +26,10 @@ public class GameActivity extends Activity {
     private ImageButton toggleRocketButton;
     private static SoundPool soundPool;
     private static Hashtable<RawResource, Integer> soundIDs;
+    private static boolean paused = false;
+    private static boolean muted = false;
+    private static int score = 0;
+    private static float difficulty = 0;
 
     /* Called when activity first created */
     @Override
@@ -74,25 +78,48 @@ public class GameActivity extends Activity {
 
     // handle user pressing pause button //todo: is this an okay way of handling the event?
     public void onPausePressed(View view) {
-        if(gameView.getPaused()) {
+        if(paused) {
             pauseButton.setBackgroundResource(R.drawable.pause);
-            gameView.setPaused(false);
+            paused = false;
+            soundPool.autoResume();
         } else {
             pauseButton.setBackgroundResource(R.drawable.play);
-            gameView.setPaused(true);
+            paused = true;
+            soundPool.autoPause();
         }
     }
 
+    public static boolean getPaused() {
+        return paused;
+    }
+
+    public static int getScore() {
+        return score;
+    }
+
+    public static boolean isMuted() {
+        return muted;
+    }
+
+    public static float getDifficulty() {
+        return difficulty;
+    }
+
+    public static void incrementDifficulty(float toAdd) {
+        difficulty += toAdd;
+    }
+
     public void onMutePressed(View view) {
-        if(gameView.getMuted()) {
+        if(muted) {
             muteButton.setBackgroundResource(R.drawable.sound_on);
-            gameView.setMuted(false);
+            muted = false;
         } else {
             muteButton.setBackgroundResource(R.drawable.sound_off);
-            gameView.setMuted(true);
+            muted = true;
         }
         AudioManager a_manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-        a_manager.setStreamMute(AudioManager.STREAM_MUSIC, gameView.getMuted());
+        a_manager.setStreamMute(AudioManager.STREAM_MUSIC, muted);
+
     }
 
     public void onToggleBulletPressed(View view) {

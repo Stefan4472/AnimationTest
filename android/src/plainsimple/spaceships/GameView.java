@@ -37,14 +37,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     // stores initialized SpriteAnimations with R.drawable ID of spritesheet as key
     private HashMap<Integer, SpriteAnimation> animations;
     // todo: paused and muted should be public static GameActivity fields
-    // whether game is paused currently
-    private boolean paused = false;
-    // whether sound on or off
-    private boolean muted = false;
-    // difficulty level, incremented every frame
-    private double difficulty = 0.0f;
-    // score in current run
-    private int score = 0;
     // dimensions of basic mapTiles
     private int tileWidth; // todo: what about bigger/smaller sprites?
     private int tileHeight;
@@ -84,19 +76,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private long lastSample = 0;
     private final static int sampleRateMS = 20;
 
-    public void setMuted(boolean muted) {
-        this.muted = muted;
-    }
-    public boolean getMuted() { return muted; }
-    public void setPaused(boolean paused) {
-        this.paused = paused;
-        /*if (paused) {
-            soundPool.autoPause();
-        } else {
-            soundPool.autoResume();
-        }*/
-    }
-    public boolean getPaused() { return paused; }
     public void setFiringMode(int firingMode) { spaceship.setFiringMode(firingMode);}
 
     public GameView(Context context, AttributeSet attributes) {
@@ -153,7 +132,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         private void draw(Canvas canvas) {
             try {
                 background.draw(canvas);
-                if(!paused) {
+                if(!GameActivity.getPaused()) {
                     update();
                     background.scroll((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST));
                 }
@@ -167,7 +146,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     drawSprite(s, canvas);
                 }
                 drawSprite(spaceship, canvas);
-                scoreDisplay.setScore(score);
+                scoreDisplay.setScore(GameActivity.getScore());
                 scoreDisplay.draw(canvas);
             } catch (Exception e) {
                 System.out.print("Error drawing canvas");
@@ -186,7 +165,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         // adds any new sprites and generates a new set of sprites if needed
         public void update() {
             //score += difficulty / 2; // todo: increment score based on difficulty
-            difficulty += 0.01f;
+            GameActivity.incrementDifficulty(0.01f);
             updateMap();
             updateSpaceship(); // todo: does scoring work properly?
             GameEngineUtil.getAlienBullets(alienProjectiles, sprites);
@@ -196,7 +175,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             }
             GameEngineUtil.checkCollisions(spaceship, sprites);
             GameEngineUtil.checkCollisions(spaceship, alienProjectiles);
-            score += spaceship.getAndClearScore();
             GameEngineUtil.updateSprites(sprites);
             GameEngineUtil.updateSprites(ssProjectiles);
             GameEngineUtil.updateSprites(alienProjectiles);
@@ -232,7 +210,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         // difficulty starts at 0 and increases by 0.01/frame,
         // or 1 per second
         public void updateScrollSpeed() {
-            scrollSpeed = (float) (-0.0025f - difficulty / 2500.0);
+            scrollSpeed = (float) (-0.0025f - GameActivity.getDifficulty() / 2500.0);
             if (scrollSpeed < -0.025) { // scroll speed ceiling
                 scrollSpeed = -0.025f;
             }
@@ -365,7 +343,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     return new Coin(BitmapCache.getData(BitmapResource.COIN, c), animations.get(R.drawable.coin_spin), animations.get(R.drawable.coin_collect), x, y);
                 case TileGenerator.ALIEN_LVL1:
                     Log.d("GameView", "Initializeing Alien at " + x + "," + y);
-                    Alien1 alien_1 = new Alien1(BitmapCache.getData(BitmapResource.ALIEN, c), x, y, difficulty, spaceship);
+                    Alien1 alien_1 = new Alien1(BitmapCache.getData(BitmapResource.ALIEN, c), x, y, spaceship);
                     alien_1.injectResources(BitmapCache.getData(BitmapResource.ALIEN_BULLET, c), animations.get(R.drawable.spaceship_explode));
                     return alien_1;
                 default:

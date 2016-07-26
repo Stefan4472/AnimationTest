@@ -1,6 +1,7 @@
 package plainsimple.spaceships;
 
 import android.graphics.Rect;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -21,10 +22,10 @@ public class Alien1 extends Alien {
     private BitmapData bulletBitmapData;
     private SpriteAnimation explodeAnimation;
 
-    public Alien1(BitmapData bitmapData, int x, int y, double difficulty, Spaceship spaceship) {
+    public Alien1(BitmapData bitmapData, int x, int y, Spaceship spaceship) {
         super(bitmapData, x, y);
         this.spaceship = spaceship;
-        this.difficulty = difficulty;
+        difficulty = GameActivity.getDifficulty();
         initAlien();
     }
 
@@ -90,6 +91,7 @@ public class Alien1 extends Alien {
         if (s instanceof Bullet || s instanceof Rocket || s instanceof Spaceship) {
             hp -= s.damage;
             if (hp < 0 && !explodeAnimation.isPlaying()) {
+                Log.d("Alien Class", "Alien Destroyed");
                 explodeAnimation.start();
                 hp = 0;
                 collision = true;

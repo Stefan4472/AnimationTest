@@ -1,6 +1,7 @@
 package plainsimple.spaceships;
 
 import android.graphics.Canvas;
+import android.util.Log;
 
 import java.util.Iterator;
 import java.util.List;
@@ -42,6 +43,9 @@ public class GameEngineUtil {
             if(sprite.collidesWith(s)) {
                 sprite.handleCollision(s);
                 s.handleCollision(sprite);
+                if (sprite instanceof Alien1) {
+                    Log.d("GameEngine Class", "Alien Collision Detected");
+                }
             }
         }
     }
