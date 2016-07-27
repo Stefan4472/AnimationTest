@@ -13,7 +13,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"> <!-- Set a black background? -->
-        <!-- android:background="@drawable/title_graphic" -->
+        <!-- "Spaceships" Title -->
         <plainsimple.spaceships.view.FontTextView
             style="@style/GalaxyMonkey"
             android:id="@+id/title"

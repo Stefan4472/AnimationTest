@@ -15,6 +15,20 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical">
+            <plainsimple.spaceships.view.FontTextView
+                style="@style/GalaxyMonkey"
+                android:id="@+id/scoreview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30dp"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                />
             <ImageButton
                 android:id="@+id/pausebutton"
                 android:layout_width="wrap_content"

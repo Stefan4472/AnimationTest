@@ -43,8 +43,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     // dimensions of basic mapTiles
     private int tileWidth; // todo: what about bigger/smaller sprites?
     private int tileHeight;
-    // used to render score on screen
-    private ScoreDisplay scoreDisplay;
     // space background (implements parallax scrolling)
     private Background background;
     // grid of tile ID's instructing which sprites to initialize on screen
@@ -147,8 +145,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     drawSprite(s, canvas);
                 }
                 drawSprite(spaceship, canvas);
-                scoreDisplay.setScore(GameActivity.getScore());
-                scoreDisplay.draw(canvas);
             } catch (Exception e) {
                 System.out.print("Error drawing canvas");
             }
@@ -265,7 +261,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                             initImgCache();
                             initAnimations();
                             initSpaceship();
-                            initScoreDisplay();
                             tileWidth = screenH / ROWS;
                             tileHeight = screenH / ROWS;
                             map = new byte[1][screenW / tileWidth];
@@ -312,13 +307,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             animations.put(R.drawable.spaceship_explode, new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 5, false));
             animations.put(R.drawable.coin_spin, new SpriteAnimation(BitmapCache.getData(BitmapResource.COIN_SPIN, c), BitmapCache.getData(BitmapResource.COIN, c).getWidth(), 10, true));
             animations.put(R.drawable.coin_collect, new SpriteAnimation(BitmapCache.getData(BitmapResource.COIN_DISAPPEAR, c), BitmapCache.getData(BitmapResource.COIN, c).getWidth(), 5, false));
-        }
-
-        private void initScoreDisplay() {
-            // todo: calculate pixels based on density-independent pixels
-            // todo: make it look better
-            scoreDisplay = new ScoreDisplay(10, 20);
-            scoreDisplay.setStartXY(10, 10 + (int) scoreDisplay.getPaint().getTextSize());
         }
 
         // current horizontal tile

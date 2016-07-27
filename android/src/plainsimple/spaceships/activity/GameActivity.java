@@ -15,6 +15,7 @@ import plainsimple.spaceships.sprites.Spaceship;
 import plainsimple.spaceships.util.EnumUtil;
 import plainsimple.spaceships.util.RawResource;
 import plainsimple.spaceships.util.SoundParams;
+import plainsimple.spaceships.view.FontTextView;
 import plainsimple.spaceships.view.GameView;
 
 import java.util.Hashtable;
@@ -25,6 +26,7 @@ import java.util.Hashtable;
 public class GameActivity extends Activity {
 
     private GameView gameView;
+    private static FontTextView scoreView;
     private ImageButton pauseButton;
     private ImageButton muteButton;
     private ImageButton toggleBulletButton;
@@ -48,8 +50,10 @@ public class GameActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         // set content view/layout to gameview layout
         setContentView(R.layout.gameview_layout);
-        gameView = (GameView) findViewById(R.id.spaceships);
+        gameView = (GameView) findViewById(R.id.spaceships); // todo: what should go in onResume()?
         gameView.setKeepScreenOn(true);
+        scoreView = (FontTextView) findViewById(R.id.scoreview);
+        scoreView.setText("0");
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pause);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
@@ -105,6 +109,8 @@ public class GameActivity extends Activity {
 
     public static void incrementScore(int toAdd) {
         score += toAdd;
+        Log.d("GameActivity Class", "Incrementing Score by " + toAdd + " to " + score);
+        scoreView.setText("" + score); // todo: not updating
     }
 
     public static boolean isMuted() {
