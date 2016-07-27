@@ -6,7 +6,7 @@
     <!-- Displays game background -->
 
     <!-- Displays game graphics -->
-    <plainsimple.spaceships.GameView
+    <plainsimple.spaceships.view.GameView
         android:id="@+id/spaceships"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />

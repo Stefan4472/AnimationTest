@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!-- Displays background todo: behind relative layout-->
-    <plainsimple.spaceships.MainMenuBackground
+    <plainsimple.spaceships.view.MainMenuBackground
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>
     <!-- Displays foreground of title and buttons -->
@@ -14,7 +14,7 @@
         android:layout_height="fill_parent"
         android:orientation="vertical"> <!-- Set a black background? -->
         <!-- android:background="@drawable/title_graphic" -->
-        <plainsimple.spaceships.FontTextView
+        <plainsimple.spaceships.view.FontTextView
             style="@style/GalaxyMonkey"
             android:id="@+id/title"
             android:layout_width="fill_parent"
@@ -26,7 +26,7 @@
             android:gravity="center"
             android:includeFontPadding="false" />
         <!-- Play Button -->
-        <plainsimple.spaceships.FontButton
+        <plainsimple.spaceships.view.FontButton
             style="@style/Andromeda.MenuStyle"
             android:id="@+id/playbutton"
             android:layout_width="wrap_content"
@@ -37,7 +37,7 @@
             android:onClick="onPlayPressed"/>
         <!-- Store Button -->
         <!-- or style="?android:attr/borderlessButtonStyle" ? -->
-        <plainsimple.spaceships.FontButton
+        <plainsimple.spaceships.view.FontButton
             style="@style/Andromeda.MenuStyle"
             android:id="@+id/storebutton"
             android:layout_width="wrap_content"
@@ -46,7 +46,7 @@
             android:text="@string/button_store"
             android:onClick="onStorePressed"/>
         <!-- Stats Button -->
-        <plainsimple.spaceships.FontButton
+        <plainsimple.spaceships.view.FontButton
             style="@style/Andromeda.MenuStyle"
             android:id="@+id/statsbutton"
             android:layout_width="wrap_content"
