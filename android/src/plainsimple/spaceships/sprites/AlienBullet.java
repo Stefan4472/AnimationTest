@@ -40,6 +40,7 @@ public class AlienBullet extends Sprite {
     public void handleCollision(Sprite s) {
         if(s instanceof Spaceship) {
             vis = false;
+            collides = false;
         }
     }
 

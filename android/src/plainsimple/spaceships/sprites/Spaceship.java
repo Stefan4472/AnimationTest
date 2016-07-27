@@ -217,7 +217,6 @@ public class Spaceship extends Sprite {
             explode.start();
             GameActivity.playSound(explodeSound);
             hp = 0;
-            collision = true;
         }
     }
 

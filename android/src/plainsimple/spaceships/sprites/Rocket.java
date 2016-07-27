@@ -54,12 +54,11 @@ public class Rocket extends Sprite {
 
     @Override
     public void handleCollision(Sprite s) {
-        collision = true;
         if (s instanceof Alien) {
             GameActivity.incrementScore(damage);
         }
         vis = false;
-
+        collides = false;
     }
 
     @Override

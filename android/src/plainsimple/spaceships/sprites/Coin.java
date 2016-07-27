@@ -57,6 +57,7 @@ public class Coin extends Sprite {
         if (s instanceof Spaceship) {
             //disappear.start();
             vis = false;
+            collides = false;
             GameActivity.incrementScore(GameActivity.COIN_VALUE);
         }
     }

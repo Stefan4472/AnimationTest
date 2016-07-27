@@ -164,7 +164,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             //score += difficulty / 2; // todo: increment score based on difficulty
             GameActivity.incrementDifficulty(0.01f);
             updateMap();
-            updateSpaceship(); // todo: does scoring work properly?
+            updateSpaceship();
             GameEngineUtil.getAlienBullets(alienProjectiles, sprites);
             // check collisions between sprites and spaceship projectiles
             for(Sprite sprite : sprites) {

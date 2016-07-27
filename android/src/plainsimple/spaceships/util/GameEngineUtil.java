@@ -48,6 +48,9 @@ public class GameEngineUtil {
                 if (sprite instanceof Alien1) {
                     Log.d("GameEngine Class", "Alien at " + sprite.getX() + "," + sprite.getY() + " collided with sprite at " + s.getX() + "," + s.getY());
                 }
+                if (!sprite.getCollides()) {
+                    return;
+                }
             }
         }
     }

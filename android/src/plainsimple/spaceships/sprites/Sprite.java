@@ -31,8 +31,6 @@ public abstract class Sprite { // todo: figure out public vs. protected
     protected boolean inBounds;
     // whether or not sprite can collide with other sprites
     protected boolean collides; // todo: flags all in one bitwise operator?
-    // whether or not sprite has had a collision
-    protected boolean collision;
     // whether or not sprite is currently moving
     protected boolean moving; // todo: remove?
 
@@ -55,7 +53,6 @@ public abstract class Sprite { // todo: figure out public vs. protected
     private void initSprite() {
         vis = true;
         moving = true;
-        collision = false;
         collides = true;
         speedX = 0.0f;
         speedY = 0.0f;
@@ -91,14 +88,16 @@ public abstract class Sprite { // todo: figure out public vs. protected
         } else {
             inBounds = true;
         }
-        hitBox.updateCoordinates((int) x, (int) y);
+        hitBox.updateCoordinates(x, y);
     }
 
     // returns whether hitbox of this sprite intersects hitbox of specified sprite // todo: some methods could be made static or put in a SpriteUtil or GameEngineUtil class
     public boolean collidesWith(Sprite s) {
-        if (!collides || !s.collides)
+        if (!collides || !s.collides) {
             return false;
-        return hitBox.intersects(s.hitBox);
+        } else {
+            return hitBox.intersects(s.hitBox);
+        }
     }
 
     // returns distance between centers of sprite hitboxes, as portion of screen width
@@ -180,14 +179,6 @@ public abstract class Sprite { // todo: figure out public vs. protected
 
     public void setCollides(boolean collides) {
         this.collides = collides;
-    }
-
-    public boolean getCollision() {
-        return collision;
-    }
-
-    public void setCollision(boolean collision) {
-        this.collision = collision;
     }
 
     public int getDamage() {

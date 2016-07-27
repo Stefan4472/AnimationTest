@@ -52,8 +52,6 @@ public class GameActivity extends Activity {
         setContentView(R.layout.gameview_layout);
         gameView = (GameView) findViewById(R.id.spaceships); // todo: what should go in onResume()?
         gameView.setKeepScreenOn(true);
-        scoreView = (FontTextView) findViewById(R.id.scoreview);
-        scoreView.setText("0");
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pause);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
@@ -163,6 +161,8 @@ public class GameActivity extends Activity {
         super.onResume();
         initMedia();
         Log.d("Activity Class", "Media Initialized");
+        scoreView = (FontTextView) findViewById(R.id.scoreview);
+        scoreView.setText("01000");
         // todo: recreate any persisted data
     }
 }

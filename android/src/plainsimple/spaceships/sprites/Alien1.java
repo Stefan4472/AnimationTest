@@ -96,10 +96,8 @@ public class Alien1 extends Alien {
         if (s instanceof Bullet || s instanceof Rocket || s instanceof Spaceship) {
             hp -= s.damage;
             if (hp < 0 && !explodeAnimation.isPlaying()) {
-                Log.d("Alien Class", "Alien Destroyed");
                 explodeAnimation.start();
-                hp = 0;
-                collision = true;
+                collides = false;
             }
         }
     }
