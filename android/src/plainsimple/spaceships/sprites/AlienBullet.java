@@ -1,5 +1,6 @@
 package plainsimple.spaceships.sprites;
 
+import android.graphics.Rect;
 import plainsimple.spaceships.util.BitmapData;
 import plainsimple.spaceships.util.DrawParams;
 
@@ -17,7 +18,7 @@ public class AlienBullet extends Sprite {
 
     private void initAlienBullet() {
         // todo: change size for better-looking hit detection? (see Issue #13)
-        hitBox.setDimensions(getWidth(), getHeight());
+        hitBox = new Rect(x, y, x + getWidth(), y + getHeight());
         damage = 20;
     }
 

@@ -44,8 +44,7 @@ public class Alien1 extends Alien {
         bulletDelay = 30;
         framesSinceLastBullet = bulletDelay;
         bulletSpeed = -0.002f - random.nextInt(5) / 10000.0;
-        hitBox.setDimensions((int) (getWidth() * 0.8), (int) (getHeight() * 0.8));
-        hitBox.setOffsets(getWidth() - hitBox.getWidth(), getHeight() - hitBox.getHeight());
+        hitBox = new Rect(x + (int) (getWidth() * 0.1), y + (int) (getHeight() * 0.1), x + (int) (getWidth() * 0.9), y + (int) (getHeight() * 0.9));
         damage = 50;
         speedX = -0.0035f;
     }

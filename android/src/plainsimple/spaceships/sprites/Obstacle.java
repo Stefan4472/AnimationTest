@@ -1,5 +1,6 @@
 package plainsimple.spaceships.sprites;
 
+import android.graphics.Rect;
 import plainsimple.spaceships.util.BitmapData;
 import plainsimple.spaceships.util.DrawParams;
 
@@ -16,7 +17,7 @@ public class Obstacle extends Sprite {
     }
 
     private void initObstacle() {
-        hitBox.setDimensions(getWidth(), getHeight());
+        hitBox = new Rect(x, y, x + getWidth(), y + getHeight());
         damage = Integer.MAX_VALUE;
     }
 

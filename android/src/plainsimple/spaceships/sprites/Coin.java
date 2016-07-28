@@ -27,8 +27,7 @@ public class Coin extends Sprite {
     }
 
     private void initObstacle() {
-        hitBox.setDimensions((int) (getWidth() * 0.4), (int) (getHeight() * 0.8));
-        hitBox.setOffsets((getWidth() - hitBox.getWidth()) / 2, (getHeight() - hitBox.getHeight()) / 2);
+        hitBox = new Rect(x + (int) (getWidth() * 0.3), y + (int) (getHeight() * 0.1), x + (int) (getWidth() * 0.7), y + (int) (getHeight() * 0.9));
     }
 
     @Override

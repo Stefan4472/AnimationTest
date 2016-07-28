@@ -1,5 +1,6 @@
 package plainsimple.spaceships.sprites;
 
+import android.graphics.Rect;
 import plainsimple.spaceships.sprites.Sprite;
 import plainsimple.spaceships.util.BitmapData;
 import plainsimple.spaceships.util.DrawParams;
@@ -41,17 +42,6 @@ public abstract class Alien extends Sprite {
 
     public Alien(BitmapData bitmapData, int x, int y) {
         super(bitmapData, x, y);
-    }
-
-    private void initLevel3Alien() { // todo: move to Alien3 class
-        startingY = y;
-        hp = 60;
-        bulletDelay = 500;
-        bulletSpeed = -3.5f;
-        hitBox.setOffsets(5, 5);
-        hitBox.setDimensions(40, 40);
-        damage = 500;
-        speedX = -2.0f;
     }
 
     // update/handle any actions sprite takes
