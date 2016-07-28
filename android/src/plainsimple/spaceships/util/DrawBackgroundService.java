@@ -1,5 +1,7 @@
-package plainsimple.spaceships.view;
+package plainsimple.spaceships.util;
 
+import android.app.IntentService;
+import android.content.Intent;
 import android.graphics.*;
 import android.util.Log;
 import plainsimple.galaxydraw.DrawSpace;
@@ -8,8 +10,12 @@ import plainsimple.galaxydraw.DrawSpace;
  * Draws the background of the game.
  * // todo: explanation
  */
-public class Background {
+public class DrawBackgroundService extends IntentService {
 
+    // Bitmap with background drawn on it
+    private Bitmap renderedBackground;
+    // canvas used to draw on renderedBackground
+    private Canvas canvas;
     // rendered space background tiles
     private Bitmap[] imageTiles;
     // number of pixels scrolled
@@ -33,11 +39,6 @@ public class Background {
     // index of element in backgroundColors being transitioned to
     private int toElement;
 
-
-    public int getPixelsScrolled() {
-        return pixelsScrolled;
-    }
-
     // index of tile that will be left-most on the screen
     private int getStartTile() {
         return (pixelsScrolled / TILE_WIDTH) % imageTiles.length;
@@ -48,8 +49,18 @@ public class Background {
         return -(pixelsScrolled % TILE_WIDTH);
     }
 
-    public Background(int screenW, int screenH) {
-        // todo: this renders an image longer than actual screen, could be optimized
+    @Override
+    // draws the background to the stored canvas
+    protected void onHandleIntent(Intent workIntent) {
+        String instructions = workIntent.getDataString();
+        draw(canvas);
+
+    }
+
+    public DrawBackgroundService(int screenW, int screenH) {
+        super(null); // todo: is this correct?
+        renderedBackground = Bitmap.createBitmap(screenW, screenH, Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(renderedBackground);
         this.tileHeight = screenH;
         imageTiles = new Bitmap[screenW / TILE_WIDTH + 2]; // todo: what if screenW is a multiple of TILE_WIDTH?
         pixelsScrolled = 0;

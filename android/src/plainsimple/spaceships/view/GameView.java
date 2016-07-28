@@ -44,7 +44,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private int tileWidth; // todo: what about bigger/smaller sprites?
     private int tileHeight;
     // space background (implements parallax scrolling)
-    private Background background;
+    private DrawBackgroundService background;
     // grid of tile ID's instructing which sprites to initialize on screen
     private byte[][] map;
     // used to generate tile-based terrain
@@ -132,9 +132,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             try {
                 background.draw(canvas);
                 if(!GameActivity.getPaused()) {
-                    update();
-                    background.scroll((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST));
+                    //update();
+                    background.scroll((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST * 8));
                 }
+                /*
                 for (Sprite s : sprites) { // todo: list of non-colliding sprites?
                     drawSprite(s, canvas);
                 }
@@ -144,7 +145,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 for (Sprite s : alienProjectiles) {
                     drawSprite(s, canvas);
                 }
-                drawSprite(spaceship, canvas);
+                drawSprite(spaceship, canvas);*/
             } catch (Exception e) {
                 System.out.print("Error drawing canvas");
             }
@@ -257,7 +258,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     case MotionEvent.ACTION_UP: // handle user clicking something
                         if (onTitle) { // change to game screen. Load resources
                             c.getResources();
-                            background = new Background(screenW, screenH);
+                            background = new DrawBackgroundService(screenW, screenH);
                             initImgCache();
                             initAnimations();
                             initSpaceship();
