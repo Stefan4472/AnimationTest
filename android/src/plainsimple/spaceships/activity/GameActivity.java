@@ -1,9 +1,13 @@
 package plainsimple.spaceships.activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,20 +16,23 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import plainsimple.spaceships.R;
 import plainsimple.spaceships.sprites.Spaceship;
+import plainsimple.spaceships.util.DrawBackgroundService;
 import plainsimple.spaceships.util.EnumUtil;
 import plainsimple.spaceships.util.RawResource;
 import plainsimple.spaceships.util.SoundParams;
 import plainsimple.spaceships.view.FontTextView;
 import plainsimple.spaceships.view.GameView;
 
+import java.net.URI;
 import java.util.Hashtable;
 
 /**
  * Created by Stefan on 10/17/2015.
  */
-public class GameActivity extends Activity {
+public class GameActivity extends Activity, BroadcastReceiver {
 
     private GameView gameView;
+    private Bitmap background;
     private static FontTextView scoreView;
     private ImageButton pauseButton;
     private ImageButton muteButton;
@@ -62,6 +69,7 @@ public class GameActivity extends Activity {
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
         // set volume control to proper stream
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        DrawBackgroundService drawBackground = new DrawBackgroundService(gameView.getWidth(), gameView.getHeight()); // todo: does this do what I think it does?
     }
 
     private void initMedia() {
@@ -77,6 +85,11 @@ public class GameActivity extends Activity {
         Log.d("Activity Class", soundIDs.size() + " sounds loaded");
     }
 
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        draw
+    }
+
     // plays a sound using the SoundPool given SoundParams
     public static void playSound(SoundParams parameters) {
         soundPool.play(soundIDs.get(parameters.getResourceID()), parameters.getLeftVolume(),
@@ -84,7 +97,18 @@ public class GameActivity extends Activity {
                 parameters.getRate());
     }
 
-    // handle user pressing pause button //todo: is this an okay way of handling the event?
+    // calls DrawBackgroundService to render the background having scrolled
+    public void updateBackground(int toScroll) {
+        Intent serviceIntent = new Intent(this, DrawBackgroundService.class);
+        serviceIntent.setData(Uri.parse(Integer.toString(toScroll)));
+        startService(serviceIntent);
+    }
+
+    public Bitmap getBackground() {
+        return background;
+    }
+
+    // handle user pressing pause button
     public void onPausePressed(View view) {
         if(paused) {
             pauseButton.setBackgroundResource(R.drawable.pause);

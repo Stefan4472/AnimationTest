@@ -18,6 +18,7 @@ import plainsimple.spaceships.R;
 import plainsimple.spaceships.activity.MainActivity;
 import plainsimple.spaceships.sprites.*;
 import plainsimple.spaceships.util.*;
+import android.support.v4.content.LocalBroadcastManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private int tileWidth; // todo: what about bigger/smaller sprites?
     private int tileHeight;
     // space background (implements parallax scrolling)
-    private DrawBackgroundService background;
+    //private DrawBackgroundService background;
     // grid of tile ID's instructing which sprites to initialize on screen
     private byte[][] map;
     // used to generate tile-based terrain
@@ -81,7 +82,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         super(context, attributes);
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
-
         // get sensor manager, check if gyroscope, get gyroscope
         gSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         if (gSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
@@ -130,7 +130,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         private void draw(Canvas canvas) {
             try {
-                background.draw(canvas);
+                //background.draw(canvas);
                 if(!GameActivity.getPaused()) {
                     //update();
                     background.scroll((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST * 8));
@@ -258,7 +258,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     case MotionEvent.ACTION_UP: // handle user clicking something
                         if (onTitle) { // change to game screen. Load resources
                             c.getResources();
-                            background = new DrawBackgroundService(screenW, screenH);
+                            //background = new DrawBackgroundService(screenW, screenH);
                             initImgCache();
                             initAnimations();
                             initSpaceship();

@@ -3,12 +3,13 @@ package plainsimple.spaceships.util;
 import android.app.IntentService;
 import android.content.Intent;
 import android.graphics.*;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import plainsimple.galaxydraw.DrawSpace;
+import plainsimple.spaceships.activity.GameActivity;
 
 /**
- * Draws the background of the game.
- * // todo: explanation
+ * Draws the background of the game on a separate thread.
  */
 public class DrawBackgroundService extends IntentService {
 
@@ -49,14 +50,6 @@ public class DrawBackgroundService extends IntentService {
         return -(pixelsScrolled % TILE_WIDTH);
     }
 
-    @Override
-    // draws the background to the stored canvas
-    protected void onHandleIntent(Intent workIntent) {
-        String instructions = workIntent.getDataString();
-        draw(canvas);
-
-    }
-
     public DrawBackgroundService(int screenW, int screenH) {
         super(null); // todo: is this correct?
         renderedBackground = Bitmap.createBitmap(screenW, screenH, Bitmap.Config.ARGB_8888);
@@ -80,6 +73,20 @@ public class DrawBackgroundService extends IntentService {
             imageTiles[i] = Bitmap.createBitmap(TILE_WIDTH, tileHeight, Bitmap.Config.ARGB_8888);
             drawNextTile(imageTiles[i]);
         }
+    }
+
+    @Override
+    // draws the background to the stored canvas
+    protected void onHandleIntent(Intent workIntent) {
+        String instructions = workIntent.getDataString();
+        Log.d("Service Class", "Instructions are " + instructions);
+        int to_scroll = Integer.parseInt(instructions);
+        scroll(to_scroll);
+        draw(canvas);
+        // notify the activity that the action has been completed
+        Intent localIntent = new Intent("Background Rendered");
+        // broadcast the intent that rendering has been completed
+        LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
     }
 
     // draws imageTiles[] onto canvas in correct locations

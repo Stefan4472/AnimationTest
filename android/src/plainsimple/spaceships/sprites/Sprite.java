@@ -3,7 +3,6 @@ package plainsimple.spaceships.sprites;
 import android.graphics.Rect;
 import plainsimple.spaceships.util.BitmapData;
 import plainsimple.spaceships.util.DrawParams;
-import plainsimple.spaceships.util.Hitbox;
 import plainsimple.spaceships.util.Point2D;
 import plainsimple.spaceships.view.GameView;
 
