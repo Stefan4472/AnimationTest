@@ -13,6 +13,11 @@ import plainsimple.spaceships.activity.GameActivity;
  */
 public class DrawBackgroundService extends IntentService {
 
+    public static final String PARAM_WIDTH = "WIDTH";
+    public static final String PARAM_HEIGHT = "HEIGHT";
+    public static final String PARAM_TO_SCROLL = "TO_SCROLL";
+    // whether fields have been initialized or not
+    private boolean initialized = false;
     // Bitmap with background drawn on it
     private Bitmap renderedBackground;
     // canvas used to draw on renderedBackground
@@ -50,8 +55,11 @@ public class DrawBackgroundService extends IntentService {
         return -(pixelsScrolled % TILE_WIDTH);
     }
 
-    public DrawBackgroundService(int screenW, int screenH) {
-        super(null); // todo: is this correct?
+    public DrawBackgroundService() {
+        super("DrawBackgroundService"); // todo: is this correct?
+    }
+
+    private void initialize(int screenW, int screenH) {
         renderedBackground = Bitmap.createBitmap(screenW, screenH, Bitmap.Config.ARGB_8888);
         canvas = new Canvas(renderedBackground);
         this.tileHeight = screenH;
@@ -78,15 +86,21 @@ public class DrawBackgroundService extends IntentService {
     @Override
     // draws the background to the stored canvas
     protected void onHandleIntent(Intent workIntent) {
-        String instructions = workIntent.getDataString();
-        Log.d("Service Class", "Instructions are " + instructions);
-        int to_scroll = Integer.parseInt(instructions);
+        int to_scroll = Integer.parseInt(workIntent.getStringExtra(DrawBackgroundService.PARAM_TO_SCROLL));
+        Log.d("Service Class", "Scroll " + to_scroll);
+        if (!initialized) {
+            int screenW = Integer.parseInt(workIntent.getStringExtra(DrawBackgroundService.PARAM_WIDTH));
+            int screenH = Integer.parseInt(workIntent.getStringExtra(DrawBackgroundService.PARAM_HEIGHT));
+            initialize(screenW, screenH);
+            initialized = true;
+        }
         scroll(to_scroll);
         draw(canvas);
-        // notify the activity that the action has been completed
-        Intent localIntent = new Intent("Background Rendered");
-        // broadcast the intent that rendering has been completed
-        LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
+        // notify the activity via broadcast that the action has been completed
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(GameActivity.ResponseReceiver.ACTION_RESP);
+        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+        sendBroadcast(broadcastIntent);
     }
 
     // draws imageTiles[] onto canvas in correct locations

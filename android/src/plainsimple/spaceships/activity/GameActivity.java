@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -29,10 +30,11 @@ import java.util.Hashtable;
 /**
  * Created by Stefan on 10/17/2015.
  */
-public class GameActivity extends Activity, BroadcastReceiver {
+public class GameActivity extends Activity {
 
     private GameView gameView;
     private Bitmap background;
+    private ResponseReceiver receiver;
     private static FontTextView scoreView;
     private ImageButton pauseButton;
     private ImageButton muteButton;
@@ -55,10 +57,15 @@ public class GameActivity extends Activity, BroadcastReceiver {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESP);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        receiver = new ResponseReceiver();
+        registerReceiver(receiver, filter);
         // set content view/layout to gameview layout
         setContentView(R.layout.gameview_layout);
         gameView = (GameView) findViewById(R.id.spaceships); // todo: what should go in onResume()?
         gameView.setKeepScreenOn(true);
+        gameView.setGameActivity(this);
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pause);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
@@ -69,7 +76,7 @@ public class GameActivity extends Activity, BroadcastReceiver {
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
         // set volume control to proper stream
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        DrawBackgroundService drawBackground = new DrawBackgroundService(gameView.getWidth(), gameView.getHeight()); // todo: does this do what I think it does?
+        DrawBackgroundService drawBackground = new DrawBackgroundService(); // todo: does this do what I think it does?
     }
 
     private void initMedia() {
@@ -85,9 +92,15 @@ public class GameActivity extends Activity, BroadcastReceiver {
         Log.d("Activity Class", soundIDs.size() + " sounds loaded");
     }
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        draw
+
+    public class ResponseReceiver extends BroadcastReceiver {
+       public static final String ACTION_RESP = "com.plainsimple.intent.action.BACKGROUND_RENDERED";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("GameActivity", "Action is finished");
+
+        }
     }
 
     // plays a sound using the SoundPool given SoundParams
@@ -98,9 +111,12 @@ public class GameActivity extends Activity, BroadcastReceiver {
     }
 
     // calls DrawBackgroundService to render the background having scrolled
-    public void updateBackground(int toScroll) {
+    public void updateBackground(int screenWidth, int screenHeight, int toScroll) { // todo: necessary to send width and height?
+        Log.d("GameActivity Class", "Should Update the Background Now");
         Intent serviceIntent = new Intent(this, DrawBackgroundService.class);
-        serviceIntent.setData(Uri.parse(Integer.toString(toScroll)));
+        serviceIntent.putExtra(DrawBackgroundService.PARAM_WIDTH, screenWidth);
+        serviceIntent.putExtra(DrawBackgroundService.PARAM_HEIGHT, screenHeight);
+        serviceIntent.putExtra(DrawBackgroundService.PARAM_TO_SCROLL, toScroll);
         startService(serviceIntent);
     }
 

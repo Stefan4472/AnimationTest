@@ -31,6 +31,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     private Context c;
     private SurfaceHolder mySurfaceHolder;
+    private GameActivity gameActivity;
     // todo: make non-static
     public static int screenW;
     public static int screenH;
@@ -76,7 +77,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private long lastSample = 0;
     private final static int sampleRateMS = 20;
 
-    public void setFiringMode(int firingMode) { spaceship.setFiringMode(firingMode);}
+    public void setFiringMode(int firingMode) {
+        spaceship.setFiringMode(firingMode);
+    }
+
+    public void setGameActivity(GameActivity gameActivity) {
+        this.gameActivity = gameActivity;
+    }
 
     public GameView(Context context, AttributeSet attributes) {
         super(context, attributes);
@@ -129,13 +136,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         private void draw(Canvas canvas) {
+            Log.d("GameView", "Drawing Canvas");
             try {
-                //background.draw(canvas);
                 if(!GameActivity.getPaused()) {
-                    //update();
-                    background.scroll((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST * 8));
+                    update();
+                    Log.d("GameView", "Updating");
+                    if (gameActivity == null) {
+                        Log.d("GameView Class", "GameActivity Hasn't Been INITIALIZED");
+                    } else {
+                        gameActivity.updateBackground(screenW, screenH, (int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST * 8));
+                    }
+                    //background.scroll((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST * 8));
                 }
-                /*
+
                 for (Sprite s : sprites) { // todo: list of non-colliding sprites?
                     drawSprite(s, canvas);
                 }
@@ -145,7 +158,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 for (Sprite s : alienProjectiles) {
                     drawSprite(s, canvas);
                 }
-                drawSprite(spaceship, canvas);*/
+                drawSprite(spaceship, canvas);
             } catch (Exception e) {
                 System.out.print("Error drawing canvas");
             }
