@@ -1,12 +1,16 @@
 package plainsimple.spaceships.util;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.*;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import plainsimple.galaxydraw.DrawSpace;
 import plainsimple.spaceships.activity.GameActivity;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Draws the background of the game on a separate thread.
@@ -16,6 +20,7 @@ public class DrawBackgroundService extends IntentService {
     public static final String PARAM_WIDTH = "WIDTH";
     public static final String PARAM_HEIGHT = "HEIGHT";
     public static final String PARAM_TO_SCROLL = "TO_SCROLL";
+    public static final String IMAGE_PATH = "RENDERED_BACKGROUND";
     // whether fields have been initialized or not
     private boolean initialized = false;
     // Bitmap with background drawn on it
@@ -56,7 +61,7 @@ public class DrawBackgroundService extends IntentService {
     }
 
     public DrawBackgroundService() {
-        super("DrawBackgroundService"); // todo: is this correct?
+        super(DrawBackgroundService.class.getName()); // todo: is this correct?
     }
 
     private void initialize(int screenW, int screenH) {

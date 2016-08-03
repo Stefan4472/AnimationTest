@@ -138,6 +138,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         private void draw(Canvas canvas) {
             Log.d("GameView", "Drawing Canvas");
             try {
+
                 if(!GameActivity.getPaused()) {
                     update();
                     Log.d("GameView", "Updating");

@@ -4,7 +4,10 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
     <!-- Displays game background -->
-
+    <ImageView
+        android:id="@+id/background"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"/>
     <!-- Displays game graphics -->
     <plainsimple.spaceships.view.GameView
         android:id="@+id/spaceships"
@@ -15,6 +18,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical">
+            <!-- Displays score -->
             <plainsimple.spaceships.view.FontTextView
                 style="@style/GalaxyMonkey"
                 android:id="@+id/scoreview"
@@ -29,6 +33,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 />
+            <!-- pause button -->
             <ImageButton
                 android:id="@+id/pausebutton"
                 android:layout_width="wrap_content"
@@ -39,6 +44,7 @@
                 android:layout_marginTop="10dp"
                 android:onClick="onPausePressed"
                 style="?android:attr/borderlessButtonStyle" />
+            <!-- mute button -->
             <ImageButton
                 android:id="@+id/mutebutton"
                 android:layout_width="wrap_content"
@@ -49,6 +55,7 @@
                 android:layout_marginTop="10dp"
                 android:onClick="onMutePressed"
                 style="?android:attr/borderlessButtonStyle" />
+            <!-- bullet fire selector -->
             <ImageButton
                 android:id="@+id/toggleBulletButton"
                 android:layout_width="wrap_content"
@@ -60,6 +67,7 @@
                 android:layout_marginBottom="10dp"
                 android:onClick="onToggleBulletPressed"
                 style="?android:attr/borderlessButtonStyle" />
+            <!-- rocket fire selector -->
             <ImageButton
                 android:id="@+id/toggleRocketButton"
                 android:layout_width="wrap_content"

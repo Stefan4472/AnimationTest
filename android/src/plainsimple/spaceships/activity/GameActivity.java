@@ -6,15 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import plainsimple.spaceships.R;
 import plainsimple.spaceships.sprites.Spaceship;
 import plainsimple.spaceships.util.DrawBackgroundService;
@@ -24,7 +25,6 @@ import plainsimple.spaceships.util.SoundParams;
 import plainsimple.spaceships.view.FontTextView;
 import plainsimple.spaceships.view.GameView;
 
-import java.net.URI;
 import java.util.Hashtable;
 
 /**
@@ -33,9 +33,10 @@ import java.util.Hashtable;
 public class GameActivity extends Activity {
 
     private GameView gameView;
-    private Bitmap background;
     private ResponseReceiver receiver;
     private static FontTextView scoreView;
+    private Bitmap renderedBackground;
+    private ImageView backgroundView;
     private ImageButton pauseButton;
     private ImageButton muteButton;
     private ImageButton toggleBulletButton;
@@ -57,6 +58,7 @@ public class GameActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        // set up IntentFilter and ResponseReceiver to register local broadcasts from DrawBackgroundService
         IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESP);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         receiver = new ResponseReceiver();
@@ -66,6 +68,7 @@ public class GameActivity extends Activity {
         gameView = (GameView) findViewById(R.id.spaceships); // todo: what should go in onResume()?
         gameView.setKeepScreenOn(true);
         gameView.setGameActivity(this);
+        backgroundView = (ImageView) findViewById(R.id.background);
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pause);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
@@ -99,7 +102,8 @@ public class GameActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d("GameActivity", "Action is finished");
-
+            renderedBackground = BitmapFactory.decodeFile(DrawBackgroundService.IMAGE_PATH);
+            backgroundView.setImageBitmap(renderedBackground);
         }
     }
 
@@ -114,14 +118,10 @@ public class GameActivity extends Activity {
     public void updateBackground(int screenWidth, int screenHeight, int toScroll) { // todo: necessary to send width and height?
         Log.d("GameActivity Class", "Should Update the Background Now");
         Intent serviceIntent = new Intent(this, DrawBackgroundService.class);
-        serviceIntent.putExtra(DrawBackgroundService.PARAM_WIDTH, screenWidth);
-        serviceIntent.putExtra(DrawBackgroundService.PARAM_HEIGHT, screenHeight);
-        serviceIntent.putExtra(DrawBackgroundService.PARAM_TO_SCROLL, toScroll);
+        serviceIntent.putExtra(DrawBackgroundService.PARAM_WIDTH, Integer.toString(screenWidth));
+        serviceIntent.putExtra(DrawBackgroundService.PARAM_HEIGHT, Integer.toString(screenHeight));
+        serviceIntent.putExtra(DrawBackgroundService.PARAM_TO_SCROLL, Integer.toString(toScroll));
         startService(serviceIntent);
-    }
-
-    public Bitmap getBackground() {
-        return background;
     }
 
     // handle user pressing pause button
