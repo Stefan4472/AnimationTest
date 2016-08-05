@@ -1,34 +1,21 @@
 package plainsimple.spaceships.util;
 
-import android.app.IntentService;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.*;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import plainsimple.galaxydraw.DrawSpace;
-import plainsimple.spaceships.activity.GameActivity;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
- * Draws the background of the game on a separate thread.
+ * Draws the background of the game.
+ * // todo: explanation
  */
-public class DrawBackgroundService extends IntentService {
+public class Background {
 
-    public static final String PARAM_WIDTH = "WIDTH";
-    public static final String PARAM_HEIGHT = "HEIGHT";
-    public static final String PARAM_TO_SCROLL = "TO_SCROLL";
-    public static final String IMAGE_PATH = "RENDERED_BACKGROUND";
-    // whether fields have been initialized or not
-    private boolean initialized = false;
-    // Bitmap with background drawn on it
-    private Bitmap renderedBackground;
-    // canvas used to draw on renderedBackground
-    private Canvas canvas;
     // rendered space background tiles
     private Bitmap[] imageTiles;
+    // Bitmap on which background is drawn if no canvas is specified
+    private Bitmap rendered;
+    // canvas used for drawing if none is specified
+    private Canvas canvas;
     // number of pixels scrolled
     private int pixelsScrolled;
     // width of rendered background tiles (px)
@@ -50,6 +37,15 @@ public class DrawBackgroundService extends IntentService {
     // index of element in backgroundColors being transitioned to
     private int toElement;
 
+    // increases scroll counter by x
+    public void scroll(int x) {
+        this.pixelsScrolled += x;
+    }
+
+    public int getPixelsScrolled() {
+        return pixelsScrolled;
+    }
+
     // index of tile that will be left-most on the screen
     private int getStartTile() {
         return (pixelsScrolled / TILE_WIDTH) % imageTiles.length;
@@ -60,13 +56,8 @@ public class DrawBackgroundService extends IntentService {
         return -(pixelsScrolled % TILE_WIDTH);
     }
 
-    public DrawBackgroundService() {
-        super(DrawBackgroundService.class.getName()); // todo: is this correct?
-    }
-
-    private void initialize(int screenW, int screenH) {
-        renderedBackground = Bitmap.createBitmap(screenW, screenH, Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(renderedBackground);
+    public Background(int screenW, int screenH) {
+        // todo: this renders an image longer than actual screen, could be optimized
         this.tileHeight = screenH;
         imageTiles = new Bitmap[screenW / TILE_WIDTH + 2]; // todo: what if screenW is a multiple of TILE_WIDTH?
         pixelsScrolled = 0;
@@ -75,6 +66,9 @@ public class DrawBackgroundService extends IntentService {
         fromElement = 0;
         toElement = 1;
         transitionCounter = 0;
+
+        rendered = Bitmap.createBitmap(screenW, screenH, Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(rendered);
 
         drawSpace = new DrawSpace();
         drawSpace.setAntiAlias(true);
@@ -88,27 +82,8 @@ public class DrawBackgroundService extends IntentService {
         }
     }
 
-    @Override
-    // draws the background to the stored canvas
-    protected void onHandleIntent(Intent workIntent) {
-        int to_scroll = Integer.parseInt(workIntent.getStringExtra(DrawBackgroundService.PARAM_TO_SCROLL));
-        Log.d("Service Class", "Scroll " + to_scroll);
-        if (!initialized) {
-            int screenW = Integer.parseInt(workIntent.getStringExtra(DrawBackgroundService.PARAM_WIDTH));
-            int screenH = Integer.parseInt(workIntent.getStringExtra(DrawBackgroundService.PARAM_HEIGHT));
-            initialize(screenW, screenH);
-            initialized = true;
-        }
-        scroll(to_scroll);
-        draw(canvas);
-        // notify the activity via broadcast that the action has been completed
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(GameActivity.ResponseReceiver.ACTION_RESP);
-        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-        sendBroadcast(broadcastIntent);
-    }
-
-    // draws imageTiles[] onto canvas in correct locations
+    // draws imageTiles[] onto specified canvas in correct locations
+    // used for directly drawing to a given canvas
     public void draw(Canvas canvas) {
         int start_tile = getStartTile();
         int end_tile = (start_tile == 0 ? imageTiles.length - 1 : start_tile - 1);
@@ -119,6 +94,13 @@ public class DrawBackgroundService extends IntentService {
         for (int i = 0; i < imageTiles.length; i++) {
             canvas.drawBitmap(imageTiles[(start_tile + i) % imageTiles.length], getOffset() + i * TILE_WIDTH, 0, null);
         }
+    }
+
+    // draws imageTiles[] onto local canvas in correct locations and returns Bitmap result
+    // used for getting a bitmap instead of directly drawing to a specific canvas
+    public Bitmap draw() {
+        draw(canvas);
+        return rendered;
     }
 
     // draws space on next tile, incrementing values
@@ -153,7 +135,7 @@ public class DrawBackgroundService extends IntentService {
                 Color.green(from_color) + (int) ((Color.green(to_color) - Color.green(from_color)) / transitionDurations[toElement] * (transitionCounter + 1)),
                 Color.blue(from_color) + (int) ((Color.blue(to_color) - Color.blue(from_color)) / transitionDurations[toElement] * (transitionCounter + 1))
         );
-       // Log.d("Background Class", "Left is " + colorToString(left_color) + " counter = " + transitionCounter);
+        // Log.d("Background Class", "Left is " + colorToString(left_color) + " counter = " + transitionCounter);
         drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, left_color, right_color, Shader.TileMode.CLAMP));
         drawSpace.drawSpace(tile);
         Canvas c = new Canvas(tile);
@@ -165,10 +147,5 @@ public class DrawBackgroundService extends IntentService {
 
     private static String colorToString(int color) {
         return "A:" + Color.alpha(color) + " R:" + Color.red(color) + " G:" + Color.green(color) + " B:" + Color.blue(color);
-    }
-
-    // increases scroll counter by x
-    public void scroll(int x) {
-        this.pixelsScrolled += x;
     }
 }

@@ -136,16 +136,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         private void draw(Canvas canvas) {
-            Log.d("GameView", "Drawing Canvas");
             try {
 
                 if(!GameActivity.getPaused()) {
                     update();
-                    Log.d("GameView", "Updating");
                     if (gameActivity == null) {
                         Log.d("GameView Class", "GameActivity Hasn't Been INITIALIZED");
                     } else {
-                        gameActivity.updateBackground(screenW, screenH, (int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST * 8));
+                        gameActivity.updateBackground((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST * 8));
                     }
                     //background.scroll((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST * 8));
                 }

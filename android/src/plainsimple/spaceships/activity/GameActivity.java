@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,10 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import plainsimple.spaceships.R;
 import plainsimple.spaceships.sprites.Spaceship;
-import plainsimple.spaceships.util.DrawBackgroundService;
-import plainsimple.spaceships.util.EnumUtil;
-import plainsimple.spaceships.util.RawResource;
-import plainsimple.spaceships.util.SoundParams;
+import plainsimple.spaceships.util.*;
 import plainsimple.spaceships.view.FontTextView;
 import plainsimple.spaceships.view.GameView;
 
@@ -33,9 +31,12 @@ import java.util.Hashtable;
 public class GameActivity extends Activity {
 
     private GameView gameView;
-    private ResponseReceiver receiver;
+    // used to render game background
+    private Background background;
+    // whether background has been initialized yet
+    private boolean backgroundInitialized = false;
+    //private ResponseReceiver receiver;
     private static FontTextView scoreView;
-    private Bitmap renderedBackground;
     private ImageView backgroundView;
     private ImageButton pauseButton;
     private ImageButton muteButton;
@@ -58,11 +59,11 @@ public class GameActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        // set up IntentFilter and ResponseReceiver to register local broadcasts from DrawBackgroundService
+        /*// set up IntentFilter and ResponseReceiver to register local broadcasts from DrawBackgroundService
         IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESP);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         receiver = new ResponseReceiver();
-        registerReceiver(receiver, filter);
+        registerReceiver(receiver, filter);*/
         // set content view/layout to gameview layout
         setContentView(R.layout.gameview_layout);
         gameView = (GameView) findViewById(R.id.spaceships); // todo: what should go in onResume()?
@@ -79,7 +80,6 @@ public class GameActivity extends Activity {
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
         // set volume control to proper stream
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        DrawBackgroundService drawBackground = new DrawBackgroundService(); // todo: does this do what I think it does?
     }
 
     private void initMedia() {
@@ -96,16 +96,15 @@ public class GameActivity extends Activity {
     }
 
 
-    public class ResponseReceiver extends BroadcastReceiver {
+    /*public class ResponseReceiver extends BroadcastReceiver {
        public static final String ACTION_RESP = "com.plainsimple.intent.action.BACKGROUND_RENDERED";
 
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d("GameActivity", "Action is finished");
-            renderedBackground = BitmapFactory.decodeFile(DrawBackgroundService.IMAGE_PATH);
             backgroundView.setImageBitmap(renderedBackground);
         }
-    }
+    }*/
 
     // plays a sound using the SoundPool given SoundParams
     public static void playSound(SoundParams parameters) {
@@ -115,13 +114,35 @@ public class GameActivity extends Activity {
     }
 
     // calls DrawBackgroundService to render the background having scrolled
-    public void updateBackground(int screenWidth, int screenHeight, int toScroll) { // todo: necessary to send width and height?
-        Log.d("GameActivity Class", "Should Update the Background Now");
+    public void updateBackground(int toScroll) {
+        if (!backgroundInitialized) {
+            background = new Background(gameView.getWidth(), gameView.getHeight()); // todo: proper dimensions?
+            Log.d("GameActivity", "Background Initialized with width " + gameView.getWidth() + " and height " + gameView.getHeight());
+            backgroundInitialized = true;
+        }
+        Log.d("GameActivity", "updateBackground called with parameter " + toScroll);
+        new DrawBackgroundTask().doInBackground(toScroll);
+        /*Log.d("GameActivity Class", "Should Update the Background Now");
         Intent serviceIntent = new Intent(this, DrawBackgroundService.class);
         serviceIntent.putExtra(DrawBackgroundService.PARAM_WIDTH, Integer.toString(screenWidth));
         serviceIntent.putExtra(DrawBackgroundService.PARAM_HEIGHT, Integer.toString(screenHeight));
         serviceIntent.putExtra(DrawBackgroundService.PARAM_TO_SCROLL, Integer.toString(toScroll));
-        startService(serviceIntent);
+        startService(serviceIntent);*/
+    }
+
+    private class DrawBackgroundTask extends AsyncTask<Integer, Void, Bitmap> {
+        // scrolls and renders the background in a worker thread
+        protected Bitmap doInBackground(Integer... scroll) {
+            background.scroll(scroll[0]);
+            Log.d("DrawBackgroundTask", "Rendering");
+            return background.draw();
+        }
+
+        // posts the Bitmap rendered in doInBackground to backgroundView
+        protected void onPostExecute(Bitmap renderedBackground) {
+            Log.d("DrawBackgroundTask", "Setting Background Image");
+            backgroundView.setImageBitmap(renderedBackground);
+        }
     }
 
     // handle user pressing pause button

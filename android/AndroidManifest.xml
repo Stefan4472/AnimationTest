@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="plainsimple.spaceships"
-          android:versionCode="125"
-          android:versionName="2.24">
+          android:versionCode="126"
+          android:versionName="2.25">
     <uses-sdk android:minSdkVersion="15"/>
     <supports-screens
         android:smallScreens="false"
@@ -26,8 +26,5 @@
                   android:screenOrientation="landscape"
                   android:configChanges="orientation|keyboardHidden"
         ></activity>
-        <service
-            android:name=".util.DrawBackgroundService"
-            android:exported="false"/>
     </application>
 </manifest>
