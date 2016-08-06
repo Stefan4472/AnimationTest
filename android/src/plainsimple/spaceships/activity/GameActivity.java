@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.AsyncTask;
@@ -38,6 +39,8 @@ public class GameActivity extends Activity {
     //private ResponseReceiver receiver;
     private static FontTextView scoreView;
     private ImageView backgroundView;
+    private Bitmap gameBackground;
+    private Canvas gameBackgroundCanvas;
     private ImageButton pauseButton;
     private ImageButton muteButton;
     private ImageButton toggleBulletButton;
@@ -78,6 +81,8 @@ public class GameActivity extends Activity {
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
+        gameBackground = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+        gameBackgroundCanvas = new Canvas(gameBackground);
         // set volume control to proper stream
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
@@ -117,11 +122,13 @@ public class GameActivity extends Activity {
     public void updateBackground(int toScroll) {
         if (!backgroundInitialized) {
             background = new Background(gameView.getWidth(), gameView.getHeight()); // todo: proper dimensions?
+            gameBackground = Bitmap.createBitmap(gameView.getWidth(), gameView.getHeight(), Bitmap.Config.ARGB_8888);
+            gameBackgroundCanvas = new Canvas(gameBackground);
             Log.d("GameActivity", "Background Initialized with width " + gameView.getWidth() + " and height " + gameView.getHeight());
             backgroundInitialized = true;
         }
         Log.d("GameActivity", "updateBackground called with parameter " + toScroll);
-        new DrawBackgroundTask().doInBackground(toScroll);
+        new DrawBackgroundTask().execute(toScroll);
         /*Log.d("GameActivity Class", "Should Update the Background Now");
         Intent serviceIntent = new Intent(this, DrawBackgroundService.class);
         serviceIntent.putExtra(DrawBackgroundService.PARAM_WIDTH, Integer.toString(screenWidth));
@@ -132,17 +139,23 @@ public class GameActivity extends Activity {
 
     private class DrawBackgroundTask extends AsyncTask<Integer, Void, Bitmap> {
         // scrolls and renders the background in a worker thread
+        @Override
         protected Bitmap doInBackground(Integer... scroll) {
             background.scroll(scroll[0]);
             Log.d("DrawBackgroundTask", "Rendering");
-            return background.draw();
+            background.draw(gameBackgroundCanvas);
+            return gameBackground;
         }
 
         // posts the Bitmap rendered in doInBackground to backgroundView
+        @Override
         protected void onPostExecute(Bitmap renderedBackground) {
-            Log.d("DrawBackgroundTask", "Setting Background Image");
-            backgroundView.setImageBitmap(renderedBackground);
+            Log.d("DrawBackgroundTask", "Finished Rendering Background");
         }
+    }
+
+    public Bitmap getGameBackground() {
+        return gameBackground;
     }
 
     // handle user pressing pause button
@@ -223,7 +236,7 @@ public class GameActivity extends Activity {
         initMedia();
         Log.d("Activity Class", "Media Initialized");
         scoreView = (FontTextView) findViewById(R.id.scoreview);
-        scoreView.setText("01000");
+        scoreView.setText("0");
         // todo: recreate any persisted data
     }
 }

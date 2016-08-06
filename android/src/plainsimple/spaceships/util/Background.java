@@ -99,7 +99,9 @@ public class Background {
     // draws imageTiles[] onto local canvas in correct locations and returns Bitmap result
     // used for getting a bitmap instead of directly drawing to a specific canvas
     public Bitmap draw() {
+        Log.d("Background Class", "Drawing New Screen");
         draw(canvas);
+        Log.d("Background Class", "Drawing Finished. Returning...");
         return rendered;
     }
 

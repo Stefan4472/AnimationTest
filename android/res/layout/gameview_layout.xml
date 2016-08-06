@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
@@ -7,76 +7,81 @@
     <ImageView
         android:id="@+id/background"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"/>
-    <!-- Displays game graphics -->
-    <plainsimple.spaceships.view.GameView
-        android:id="@+id/spaceships"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
-        <!-- Overlay on game graphics with UI components -->
-        <RelativeLayout
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"/>
+        <!-- Displays game graphics -->
+        <plainsimple.spaceships.view.GameView
+            android:id="@+id/spaceships"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:orientation="vertical">
-            <!-- Displays score -->
-            <plainsimple.spaceships.view.FontTextView
-                style="@style/GalaxyMonkey"
-                android:id="@+id/scoreview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="30dp"
-                android:textColor="#FFFFFF"
-                android:gravity="center"
-                android:includeFontPadding="false"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                />
-            <!-- pause button -->
-            <ImageButton
-                android:id="@+id/pausebutton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:onClick="onPausePressed"
-                style="?android:attr/borderlessButtonStyle" />
-            <!-- mute button -->
-            <ImageButton
-                android:id="@+id/mutebutton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_toLeftOf="@+id/pausebutton"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:onClick="onMutePressed"
-                style="?android:attr/borderlessButtonStyle" />
-            <!-- bullet fire selector -->
-            <ImageButton
-                android:id="@+id/toggleBulletButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp"
-                android:onClick="onToggleBulletPressed"
-                style="?android:attr/borderlessButtonStyle" />
-            <!-- rocket fire selector -->
-            <ImageButton
-                android:id="@+id/toggleRocketButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@id/toggleBulletButton"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp"
-                android:onClick="onToggleRocketPressed"
-                style="?android:attr/borderlessButtonStyle" />
-    </RelativeLayout>
-</FrameLayout>
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/background"/>
+            <!-- Overlay on game graphics with UI components -->
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
+                <!-- Displays score -->
+                <plainsimple.spaceships.view.FontTextView
+                    style="@style/GalaxyMonkey"
+                    android:id="@+id/scoreview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="30dp"
+                    android:textColor="#FFFFFF"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    />
+                <!-- pause button -->
+                <ImageButton
+                    android:id="@+id/pausebutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:onClick="onPausePressed"
+                    style="?android:attr/borderlessButtonStyle" />
+                <!-- mute button -->
+                <ImageButton
+                    android:id="@+id/mutebutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toLeftOf="@+id/pausebutton"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:onClick="onMutePressed"
+                    style="?android:attr/borderlessButtonStyle" />
+                <!-- bullet fire selector -->
+                <ImageButton
+                    android:id="@+id/toggleBulletButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:onClick="onToggleBulletPressed"
+                    style="?android:attr/borderlessButtonStyle" />
+                <!-- rocket fire selector -->
+                <ImageButton
+                    android:id="@+id/toggleRocketButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toRightOf="@id/toggleBulletButton"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:onClick="onToggleRocketPressed"
+                    style="?android:attr/borderlessButtonStyle" />
+        </RelativeLayout>
+</RelativeLayout>

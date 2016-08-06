@@ -137,7 +137,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         private void draw(Canvas canvas) {
             try {
-
+                canvas.drawBitmap(gameActivity.getGameBackground(), 0, 0, null);
                 if(!GameActivity.getPaused()) {
                     update();
                     if (gameActivity == null) {
