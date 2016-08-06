@@ -65,21 +65,23 @@ public abstract class Sprite { // todo: figure out public vs. protected
     // update/handle any actions sprite takes
     public abstract void updateActions();
 
+    // update speedX and speedY
     public abstract void updateSpeeds();
 
+    // start/stop/update any animations the sprite may play
     public abstract void updateAnimations();
 
-    // handles collision with s
+    // handles collision with another sprite
     public abstract void handleCollision(Sprite s);
 
-    // returns an ArrayList specifying Bitmaps to be draw for the sprite
+    // returns an ArrayList specifying Bitmaps to be drawn for the sprite
     public abstract ArrayList<DrawParams> getDrawParams();
 
     // moves sprite using speedX and speedY, updates hitbox,
     // and checks if sprite is still visible
     public void move() {
-        x += GameView.screenW * speedX;
-        y += GameView.screenH * speedY;
+        x += (int) (GameView.screenW * speedX);
+        y += (int) (GameView.screenH * speedY);
         hitBox.offset((int) (GameView.screenW * speedX), (int) (GameView.screenH * speedY));
         // keep in mind sprites are generated past the screen
         if (x > GameView.screenW + bitmapData.getWidth() || x < -bitmapData.getWidth()) {
@@ -162,6 +164,10 @@ public abstract class Sprite { // todo: figure out public vs. protected
 
     public void setSpeedY(double speedY) {
         this.speedY = speedY;
+    }
+
+    public Rect getHitBox() {
+        return hitBox;
     }
 
     public boolean isVisible() {

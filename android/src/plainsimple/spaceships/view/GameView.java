@@ -38,6 +38,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private boolean running = false;
     private boolean onTitle = true;
     private GameViewThread thread;
+    private Background background;
     // todo: AnimationCache using BitmapResource enums. Store num frames per animation in r/values/integers
     // stores initialized SpriteAnimations with R.drawable ID of spritesheet as key
     private HashMap<Integer, SpriteAnimation> animations;
@@ -71,6 +72,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private Spaceship spaceship;
     // relative speed of background scrolling to foreground scrolling
     private static final float SCROLL_SPEED_CONST = 0.4f;
+    private Paint debugPaint = new Paint();
 
     private SensorManager gSensorManager;
     private Sensor gyroscope;
@@ -105,6 +107,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             }
         });
         setFocusable(true);
+        debugPaint.setColor(Color.RED);
     }
 
     public GameViewThread getThread() {
@@ -137,15 +140,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         private void draw(Canvas canvas) {
             try {
-                canvas.drawBitmap(gameActivity.getGameBackground(), 0, 0, null);
+                background.draw(canvas);
                 if(!GameActivity.getPaused()) {
                     update();
-                    if (gameActivity == null) {
-                        Log.d("GameView Class", "GameActivity Hasn't Been INITIALIZED");
-                    } else {
-                        gameActivity.updateBackground((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST * 8));
-                    }
-                    //background.scroll((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST * 8));
+                    background.scroll((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST * 8));
                 }
 
                 for (Sprite s : sprites) { // todo: list of non-colliding sprites?
@@ -169,6 +167,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             for (DrawParams img_params : draw_params) {
                 ImageUtil.drawBitmap(canvas, BitmapCache.getImage(img_params.getBitmapID(), c), img_params);
             }
+            canvas.drawRect(sprite.getHitBox(), debugPaint);
         }
 
         // updates all game logic
@@ -270,7 +269,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     case MotionEvent.ACTION_UP: // handle user clicking something
                         if (onTitle) { // change to game screen. Load resources
                             c.getResources();
-                            //background = new DrawBackgroundService(screenW, screenH);
+                            background = new Background(screenW, screenH);
                             initImgCache();
                             initAnimations();
                             initSpaceship();

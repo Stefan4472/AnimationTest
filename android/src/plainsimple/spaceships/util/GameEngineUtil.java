@@ -17,12 +17,11 @@ public class GameEngineUtil {
         Iterator<Sprite> i = toUpdate.iterator(); // todo: get all sprites together, collisions, etc.
         while(i.hasNext()) {
             Sprite s = i.next();
+            s.updateActions();
+            s.updateSpeeds(); // todo: hit detection
             s.move();
-            if(s.isInBounds() && s.isVisible()) {
-                s.updateActions();
-                s.updateSpeeds(); // todo: hit detection
-                s.updateAnimations();
-            } else {
+            s.updateAnimations();
+            if(!(s.isInBounds() && s.isVisible())) {
                 i.remove();
             }
         }

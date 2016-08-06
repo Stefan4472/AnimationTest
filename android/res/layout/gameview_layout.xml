@@ -3,21 +3,13 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-    <!-- Displays game background -->
-    <ImageView
-        android:id="@+id/background"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"/>
         <!-- Displays game graphics -->
         <plainsimple.spaceships.view.GameView
             android:id="@+id/spaceships"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/background"/>
+            android:layout_alignParentLeft="true"/>
             <!-- Overlay on game graphics with UI components -->
             <RelativeLayout
                 android:layout_width="fill_parent"

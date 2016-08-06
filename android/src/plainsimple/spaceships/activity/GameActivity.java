@@ -72,7 +72,6 @@ public class GameActivity extends Activity {
         gameView = (GameView) findViewById(R.id.spaceships); // todo: what should go in onResume()?
         gameView.setKeepScreenOn(true);
         gameView.setGameActivity(this);
-        backgroundView = (ImageView) findViewById(R.id.background);
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pause);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
