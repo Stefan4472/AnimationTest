@@ -1,6 +1,7 @@
 package plainsimple.spaceships.sprites;
 
 import android.graphics.Rect;
+import android.util.Log;
 import plainsimple.spaceships.util.BitmapData;
 import plainsimple.spaceships.util.DrawParams;
 import plainsimple.spaceships.activity.GameActivity;
@@ -24,7 +25,7 @@ public class Rocket extends Sprite {
 
     public Rocket(BitmapData bitmapData, int x, int y, int rocketType) {
         super(bitmapData, x, y);
-        hitBox = new Rect(x + (int) (getWidth() * 0.7), y, x +(int) (getWidth() * 1.5), y + getHeight());
+        hitBox = new Rect(x + (int) (getWidth() * 0.7), y - (int) (getHeight() * 0.2), x + (int) (getWidth() * 1.5), y + (int) (getHeight() * 1.2));
         switch(rocketType) {
             case ROCKET:
                 delay = ROCKET_DELAY;

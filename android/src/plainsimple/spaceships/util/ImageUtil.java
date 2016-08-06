@@ -22,9 +22,6 @@ public class ImageUtil {
         Rect source = new Rect(params.getX0(), params.getY0(), params.getX1(), params.getY1());
         Rect destination = new Rect(params.getCanvasX0(), params.getCanvasY0(),
                 params.getCanvasX0() + source.width(), params.getCanvasY0() + source.height());
-        if (params.getBitmapID().equals(BitmapResource.COIN_SPIN)) {
-            Log.d("ImageUtil Class", "Source = " + source.flattenToString() + " and destination = " + destination.flattenToString());
-        }
         canvas.drawBitmap(toDraw, source, destination, null);
     }
 

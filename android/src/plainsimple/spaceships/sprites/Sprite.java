@@ -133,7 +133,7 @@ public abstract class Sprite { // todo: figure out public vs. protected
 
     // returns height of bitmap
     public int getHeight() {
-        return bitmapData.getWidth();
+        return bitmapData.getHeight();
     }
 
     // changes x-coordinate and updates hitbox as well

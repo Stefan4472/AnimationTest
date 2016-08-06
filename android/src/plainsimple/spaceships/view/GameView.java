@@ -108,6 +108,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         });
         setFocusable(true);
         debugPaint.setColor(Color.RED);
+        debugPaint.setStyle(Paint.Style.STROKE);
+        debugPaint.setStrokeWidth(3);
     }
 
     public GameViewThread getThread() {

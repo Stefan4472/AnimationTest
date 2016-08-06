@@ -3,6 +3,7 @@ package plainsimple.spaceships.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import java.util.Hashtable;
 
@@ -36,6 +37,7 @@ public class BitmapCache {
                 return null;
             }
             bmpCache.put(key, bmp);
+            Log.d("Bitmap Cache", "Width is " + bmp.getWidth() + " and height is " + bmp.getHeight());
             bmpData.put(key, new BitmapData(key, bmp.getWidth(), bmp.getHeight()));
         }
         return bmp;
@@ -53,6 +55,7 @@ public class BitmapCache {
                         (int) (bmp.getHeight() * scalingFactor), true);
                 data = new BitmapData(key, bmp.getWidth(), bmp.getHeight());
                 bmpData.put(key, data);
+                Log.d("Bitmap Cache", "Width is " + bmp.getWidth() + " and height is " + bmp.getHeight());
                 bmpCache.put(key, bmp);
             } catch (Exception e) {
                 return null;

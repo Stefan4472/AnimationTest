@@ -113,7 +113,7 @@ public class Spaceship extends Sprite {
         damage = 100;
         controllable = true;
         collides = true;
-        hitBox = new Rect(x + (int) (getWidth() * 0.17), y + (int) (getHeight() * 0.22), x + (int) (getWidth() * 0.83), y + (int) (getHeight() * 0.67));
+        hitBox = new Rect(x + (int) (getWidth() * 0.17), y + (int) (getHeight() * 0.22), x + (int) (getWidth() * 0.83), y + (int) (getHeight() * 0.78));
         bulletSound = new SoundParams(RawResource.LASER, 1.0f, 1.0f, 1, 0, 1.0f);
         rocketSound = new SoundParams(RawResource.ROCKET, 1.0f, 1.0f, 1, 0, 1.0f);
         explodeSound = new SoundParams(RawResource.EXPLOSION, 1.0f, 1.0f, 1, 0, 1.0f);
