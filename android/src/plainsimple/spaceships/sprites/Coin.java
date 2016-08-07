@@ -34,6 +34,7 @@ public class Coin extends Sprite {
     public void updateActions() {
         if (disappear.hasPlayed()) {
             vis = false;
+            terminate = true;
         }
     }
 

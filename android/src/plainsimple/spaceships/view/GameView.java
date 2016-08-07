@@ -345,8 +345,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 case TileGenerator.COIN: // todo: cache SpriteAnimations
                     return new Coin(BitmapCache.getData(BitmapResource.COIN, c), animations.get(R.drawable.coin_spin), animations.get(R.drawable.coin_collect), x, y);
                 case TileGenerator.ALIEN_LVL1:
+                    Log.d("GameView Class", "Generating Alien");
                     Alien1 alien_1 = new Alien1(BitmapCache.getData(BitmapResource.ALIEN, c), x, y, spaceship);
-                    alien_1.injectResources(BitmapCache.getData(BitmapResource.ALIEN_BULLET, c), animations.get(R.drawable.spaceship_explode));
+                    alien_1.injectResources(BitmapCache.getData(BitmapResource.ALIEN_BULLET, c), animations.put(R.drawable.spaceship_explode, new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 5, false)));
                     return alien_1;
                 default:
                     throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");

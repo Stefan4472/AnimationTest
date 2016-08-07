@@ -2,7 +2,6 @@ package plainsimple.spaceships.util;
 
 import android.util.Log;
 import plainsimple.spaceships.sprites.Alien;
-import plainsimple.spaceships.sprites.Alien1;
 import plainsimple.spaceships.sprites.Sprite;
 
 import java.util.Iterator;
@@ -21,7 +20,11 @@ public class GameEngineUtil {
             s.updateSpeeds(); // todo: hit detection
             s.move();
             s.updateAnimations();
-            if(!(s.isInBounds() && s.isVisible())) {
+            if(s.terminate()) { // todo: doesn't remove sprites that are out of bounds
+                if (s instanceof Alien) {
+                    Log.d("GameEngine", "Removing Alien");
+                    Log.d("GameEngine", "inBounds = " + s.isInBounds() + " and vis = " + s.isVisible());
+                }
                 i.remove();
             }
         }
@@ -40,15 +43,14 @@ public class GameEngineUtil {
     // checks sprite against each sprite in list
     // calls handleCollision method if a collision is detected
     public static void checkCollisions(Sprite sprite, List<Sprite> toCheck) {
-        for(Sprite s : toCheck) {
-            if(sprite.collidesWith(s)) {
-                sprite.handleCollision(s);
-                s.handleCollision(sprite);
-                if (sprite instanceof Alien1) {
-                    Log.d("GameEngine Class", "Alien at " + sprite.getX() + "," + sprite.getY() + " collided with sprite at " + s.getX() + "," + s.getY());
-                }
-                if (!sprite.getCollides()) {
-                    return;
+        // return immediately if sprite does not collide
+        if (!sprite.collides()) {
+            return;
+        } else {
+            for (Sprite s : toCheck) { // todo: keep checking if sprite.collides() becomes false? What if three objects collide simultaneously?
+                if (sprite.collidesWith(s)) {
+                    sprite.handleCollision(s);
+                    s.handleCollision(sprite);
                 }
             }
         }

@@ -55,7 +55,6 @@ public class BitmapCache {
                         (int) (bmp.getHeight() * scalingFactor), true);
                 data = new BitmapData(key, bmp.getWidth(), bmp.getHeight());
                 bmpData.put(key, data);
-                Log.d("Bitmap Cache", "Width is " + bmp.getWidth() + " and height is " + bmp.getHeight());
                 bmpCache.put(key, bmp);
             } catch (Exception e) {
                 return null;

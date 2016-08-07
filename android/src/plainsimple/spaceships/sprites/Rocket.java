@@ -61,6 +61,7 @@ public class Rocket extends Sprite {
         }
         vis = false;
         collides = false;
+        terminate = true;
     }
 
     @Override

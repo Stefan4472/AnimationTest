@@ -42,6 +42,7 @@ public class AlienBullet extends Sprite {
         if(s instanceof Spaceship) {
             vis = false;
             collides = false;
+            terminate = true;
         }
     }
 

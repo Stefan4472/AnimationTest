@@ -33,6 +33,8 @@ public abstract class Sprite { // todo: figure out public vs. protected
     protected boolean collides; // todo: flags all in one bitwise operator?
     // whether or not sprite is currently moving
     protected boolean moving; // todo: remove?
+    // whether or not sprite should be removed from game
+    protected boolean terminate;
 
     // hitbox for collision detection todo: complex shapes
     protected Rect hitBox;
@@ -52,8 +54,10 @@ public abstract class Sprite { // todo: figure out public vs. protected
 
     private void initSprite() {
         vis = true;
+        //inBounds = true; // todo: shouldn't be set automatically
         moving = true;
         collides = true;
+        terminate = false;
         speedX = 0.0f;
         speedY = 0.0f;
         hitBox = new Rect();
@@ -84,7 +88,7 @@ public abstract class Sprite { // todo: figure out public vs. protected
         y += (int) (GameView.screenH * speedY);
         hitBox.offset((int) (GameView.screenW * speedX), (int) (GameView.screenH * speedY));
         // keep in mind sprites are generated past the screen
-        if (x > GameView.screenW + bitmapData.getWidth() || x < -bitmapData.getWidth()) {
+        if (x > GameView.screenW + bitmapData.getWidth() || x < -bitmapData.getWidth()) { // todo: set terminate? Do this calculation in the sprite's own move() method?
             inBounds = false;
         } else if (y > GameView.screenH + bitmapData.getHeight() || y < -bitmapData.getHeight()) { // todo: bounce off edge of screen
             inBounds = false; // todo: use hitbox to judge if it is in bounds or not?
@@ -182,12 +186,20 @@ public abstract class Sprite { // todo: figure out public vs. protected
         return inBounds;
     }
 
-    public boolean getCollides() {
+    public boolean collides() {
         return collides;
     }
 
     public void setCollides(boolean collides) {
         this.collides = collides;
+    }
+
+    public boolean terminate() {
+        return terminate;
+    }
+
+    public void setTerminate(boolean terminate) {
+        this.terminate = terminate;
     }
 
     public int getDamage() {
