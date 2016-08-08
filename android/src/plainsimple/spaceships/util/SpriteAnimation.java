@@ -106,4 +106,9 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
     public BitmapResource getBitmapID() {
         return bitmapData.getId();
     }
+
+    // returns total number of frames so far this cycle
+    public int getFrameNumber() {
+        return frameSpeedCounter + frameSpeed * frameCounter;
+    }
 }

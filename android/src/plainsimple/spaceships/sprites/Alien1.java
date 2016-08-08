@@ -46,7 +46,7 @@ public class Alien1 extends Alien {
         bulletDelay = 30;
         framesSinceLastBullet = bulletDelay;
         bulletSpeed = -0.002f - random.nextInt(5) / 10000.0;
-        hitBox = new Rect(x + (int) (getWidth() * 0.1), y + (int) (getHeight() * 0.1), x + (int) (getWidth() * 0.9), y + (int) (getHeight() * 0.9));
+        hitBox = new Rect(x + (int) (getWidth() * 0.1), y + (int) (getHeight() * 0.2), x + (int) (getWidth() * 0.9), y + (int) (getHeight() * 0.8));
         damage = 50;
         speedX = -0.0035f;
     }
@@ -59,9 +59,6 @@ public class Alien1 extends Alien {
 
     @Override
     public void updateActions() { // todo: avoid straight vertical shots
-        /*if (x > GameView.screenW + bitmapData.getWidth()) {
-            Log.d("Alien Class", "Alien is Out of Bounds because x = " + x + " and x must be less than " + (GameView.screenW + bitmapData.getWidth()));
-        }*/
         if (!isInBounds()) {
             terminate = true;
             Log.d("Termination", "Removing Alien at x = " + x);
@@ -73,8 +70,13 @@ public class Alien1 extends Alien {
                 framesSinceLastBullet = 0;
             }
         }
+        /*// set collides to false after explodeAnimation has progressed five frames
+        if (explodeAnimation.getFrameNumber() == 10) {
+            collides = false;
+        }*/
         // disappear if alien has exploded
         if(explodeAnimation.hasPlayed()) {
+            collides = false;
             terminate = true;
         }
     }
@@ -105,7 +107,6 @@ public class Alien1 extends Alien {
             hp -= s.damage;
             if (hp < 0 && !explodeAnimation.isPlaying()) {
                 explodeAnimation.start();
-                collides = false; // todo: set collides to false after several frames of animation have played?
             }
         }
     }

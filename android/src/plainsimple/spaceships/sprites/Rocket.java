@@ -62,7 +62,6 @@ public class Rocket extends Sprite {
         if (s instanceof Alien) {
             GameActivity.incrementScore(damage);
         }
-        collides = false; // todo: set collides to false?
         terminate = true;
     }
 

@@ -18,7 +18,6 @@ import plainsimple.spaceships.R;
 import plainsimple.spaceships.activity.MainActivity;
 import plainsimple.spaceships.sprites.*;
 import plainsimple.spaceships.util.*;
-import android.support.v4.content.LocalBroadcastManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,7 +75,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private List<Sprite> alienProjectiles = new ArrayList<>();
     // relative speed of background scrolling to foreground scrolling
     private static final float SCROLL_SPEED_CONST = 0.4f;
-    private Paint debugPaint = new Paint();
+    private Paint debugPaintRed = new Paint();
+    private Paint debugPaintPink = new Paint();
 
     private SensorManager gSensorManager;
     private Sensor gyroscope;
@@ -111,9 +111,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             }
         });
         setFocusable(true);
-        debugPaint.setColor(Color.RED);
-        debugPaint.setStyle(Paint.Style.STROKE);
-        debugPaint.setStrokeWidth(3);
+        debugPaintRed.setColor(Color.RED);
+        debugPaintRed.setStyle(Paint.Style.STROKE);
+        debugPaintRed.setStrokeWidth(3);
+        debugPaintPink.setColor(Color.rgb(255, 105, 180));
+        debugPaintPink.setStyle(Paint.Style.STROKE);
+        debugPaintPink.setStrokeWidth(3);
     }
 
     public GameViewThread getThread() {
@@ -180,7 +183,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             for (DrawParams img_params : draw_params) {
                 ImageUtil.drawBitmap(canvas, BitmapCache.getImage(img_params.getBitmapID(), c), img_params);
             }
-            canvas.drawRect(sprite.getHitBox(), debugPaint);
+            if (sprite.collides()) {
+                canvas.drawRect(sprite.getHitBox(), debugPaintRed);
+            } else {
+                canvas.drawRect(sprite.getHitBox(), debugPaintPink);
+            }
         }
 
         // updates all game logic
@@ -229,9 +236,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
                 // generate more sprites
                 if (mapTileCounter == map[0].length) {
-                    map = tileGenerator.generateTiles(GameActivity.getDifficulty());
-                    //map = tileGenerator.generateDebugTiles();
-                    updateScrollSpeed(); // todo: try disabling this
+                    //map = tileGenerator.generateTiles(GameActivity.getDifficulty());
+                    map = tileGenerator.generateDebugTiles();
+                    //updateScrollSpeed(); // todo: try disabling this
                     mapTileCounter = 0;
                 }
                 lastTile = getWTile();
@@ -257,10 +264,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     Sprite tile = new Obstacle(BitmapCache.getData(BitmapResource.OBSTACLE, c), x, y);
                     tile.setCollides(false);
                     return tile;
-                case TileGenerator.COIN:
+                case TileGenerator.COIN: // todo: more coins = faster animation because they share the same one
                     return new Coin(BitmapCache.getData(BitmapResource.COIN, c), animations.get(R.drawable.coin_spin), animations.get(R.drawable.coin_collect), x, y);
                 case TileGenerator.ALIEN_LVL1:
-                    Log.d("GameView Class", "Generating Alien");
                     Alien1 alien_1 = new Alien1(BitmapCache.getData(BitmapResource.ALIEN, c), x, y, spaceship);
                     alien_1.injectResources(BitmapCache.getData(BitmapResource.ALIEN_BULLET, c), animations.put(R.drawable.spaceship_explode, new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 5, false)));
                     return alien_1;
