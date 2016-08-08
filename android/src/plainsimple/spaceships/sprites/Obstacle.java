@@ -1,8 +1,10 @@
 package plainsimple.spaceships.sprites;
 
 import android.graphics.Rect;
+import android.util.Log;
 import plainsimple.spaceships.util.BitmapData;
 import plainsimple.spaceships.util.DrawParams;
+import plainsimple.spaceships.view.GameView;
 
 import java.util.ArrayList;
 
@@ -23,6 +25,13 @@ public class Obstacle extends Sprite {
 
     @Override
     public void updateActions() {
+        /*if (x > GameView.screenW + bitmapData.getWidth()) {
+            Log.d("Obstacle Class", "Obstacle is Out of Bounds because x = " + x + " and x must be less than " + (GameView.screenW + bitmapData.getWidth()));
+        }*/
+        if (!isInBounds()) {
+            terminate = true;
+            Log.d("Termination", "Removing Obstacle at x = " + x);
+        }
 
     }
 

@@ -159,14 +159,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 for (Sprite c : coins) {
                     drawSprite(c, canvas);
                 }
+                for (Sprite a : aliens) {
+                    drawSprite(a, canvas);
+                }
                 for (Sprite a : alienProjectiles) {
                     drawSprite(a, canvas);
                 }
                 for (Sprite s : ssProjectiles) {
                     drawSprite(s, canvas);
-                }
-                for (Sprite a : aliens) {
-                    drawSprite(a, canvas);
                 }
                 drawSprite(spaceship, canvas);
             } catch (Exception e) {
@@ -208,28 +208,77 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             spaceship.updateAnimations();
         }
 
+        // creates new sprites as specified by the map
+        // generates new map chunks if needed
         private void updateMap() {
+            // update x
             x += screenW * scrollSpeed;
 
-            // take care of map rendering
+            // check if screen has progressed to render a new tile
             if (getWTile() != lastTile) {
+                Sprite to_generate;
+                // add any non-empty tiles in the current column to the edge of the screen
                 for (int i = 0; i < map.length; i++) {
-                    // add any non-empty sprites in the current column at the edge of the screen
                     if (map[i][mapTileCounter] != TileGenerator.EMPTY) {
-                        addTile(getMapTile(map[i][mapTileCounter], screenW + getWOffset(), i * tileHeight), // todo: put speedX and speedY in constructor? -> Make scrollSpeed static and have sprites determine speedX and speedY on initialization?
-                                scrollSpeed, 0);
+                        to_generate = getMapTile(map[i][mapTileCounter], screenW + getWOffset(), i * tileHeight);
+                        //Log.d("GameView", "Sprite initialized at " + to_generate.getX());
+                        addTile(to_generate, scrollSpeed, 0); // todo: put speedX and speedY in constructor? -> Make scrollSpeed static and have sprites determine speedX and speedY on initialization?
                     }
                 }
                 mapTileCounter++;
 
                 // generate more sprites
                 if (mapTileCounter == map[0].length) {
-                    //map = tileGenerator.generateTiles(difficulty);
-                    map = tileGenerator.generateDebugTiles();
-                    updateScrollSpeed();
+                    map = tileGenerator.generateTiles(GameActivity.getDifficulty());
+                    //map = tileGenerator.generateDebugTiles();
+                    updateScrollSpeed(); // todo: try disabling this
                     mapTileCounter = 0;
                 }
                 lastTile = getWTile();
+            }
+        }
+
+        // current horizontal tile
+        private long getWTile() {
+            return x / tileWidth;
+        }
+
+        // number of pixels from start of current tile
+        private int getWOffset() {
+            return (int) x % tileWidth;
+        }
+
+        // returns sprite initialized to coordinates (x,y) given tileID
+        private Sprite getMapTile(int tileID, int x, int y) throws IndexOutOfBoundsException {
+            switch (tileID) {
+                case TileGenerator.OBSTACLE:
+                    return new Obstacle(BitmapCache.getData(BitmapResource.OBSTACLE, c), x, y); // todo: use static ImageData?
+                case TileGenerator.OBSTACLE_INVIS:
+                    Sprite tile = new Obstacle(BitmapCache.getData(BitmapResource.OBSTACLE, c), x, y);
+                    tile.setCollides(false);
+                    return tile;
+                case TileGenerator.COIN:
+                    return new Coin(BitmapCache.getData(BitmapResource.COIN, c), animations.get(R.drawable.coin_spin), animations.get(R.drawable.coin_collect), x, y);
+                case TileGenerator.ALIEN_LVL1:
+                    Log.d("GameView Class", "Generating Alien");
+                    Alien1 alien_1 = new Alien1(BitmapCache.getData(BitmapResource.ALIEN, c), x, y, spaceship);
+                    alien_1.injectResources(BitmapCache.getData(BitmapResource.ALIEN_BULLET, c), animations.put(R.drawable.spaceship_explode, new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 5, false)));
+                    return alien_1;
+                default:
+                    throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
+            }
+        }
+
+        // sets specified fields and adds sprite to arraylist
+        private void addTile(Sprite s, float speedX, float speedY) {
+            s.setSpeedX(speedX);
+            s.setSpeedY(speedY);
+            if (s instanceof Obstacle) {
+                obstacles.add(s);
+            } else if (s instanceof Alien) {
+                aliens.add(s);
+            } else if (s instanceof Coin) {
+                coins.add(s);
             }
         }
 
@@ -330,57 +379,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         // initializes SpriteAnimations and stores them in animations HashMap
-        private void initAnimations() { // todo: create AnimGenerator class. Creates SpriteAnimation objects on demand. This way sprites do not share the same animation
+        private void initAnimations() { // todo: create AnimGenerator class. Creates SpriteAnimation objects on demand (except for COIN_SPIN, which all coins share). This way sprites do not share the same animation
             animations = new HashMap<>();
             animations.put(R.drawable.spaceship_move, new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_MOVE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 5, true));
             animations.put(R.drawable.spaceship_fire_rocket, new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_FIRE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 8, false));
             animations.put(R.drawable.spaceship_explode, new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 5, false));
             animations.put(R.drawable.coin_spin, new SpriteAnimation(BitmapCache.getData(BitmapResource.COIN_SPIN, c), BitmapCache.getData(BitmapResource.COIN, c).getWidth(), 10, true));
             animations.put(R.drawable.coin_collect, new SpriteAnimation(BitmapCache.getData(BitmapResource.COIN_DISAPPEAR, c), BitmapCache.getData(BitmapResource.COIN, c).getWidth(), 5, false));
-        }
-
-        // current horizontal tile
-        private long getWTile() {
-            return x / tileWidth;
-        }
-
-        // number of pixels from start of current tile
-        private int getWOffset() {
-            return (int) x % tileWidth;
-        }
-
-        // returns sprite initialized to coordinates (x,y) given tileID
-        private Sprite getMapTile(int tileID, int x, int y) throws IndexOutOfBoundsException {
-            switch (tileID) {
-                case TileGenerator.OBSTACLE:
-                    return new Obstacle(BitmapCache.getData(BitmapResource.OBSTACLE, c), x, y); // todo: use static ImageData?
-                case TileGenerator.OBSTACLE_INVIS:
-                    Sprite tile = new Obstacle(BitmapCache.getData(BitmapResource.OBSTACLE, c), x, y);
-                    tile.setCollides(false);
-                    return tile;
-                case TileGenerator.COIN:
-                    return new Coin(BitmapCache.getData(BitmapResource.COIN, c), animations.get(R.drawable.coin_spin), animations.get(R.drawable.coin_collect), x, y);
-                case TileGenerator.ALIEN_LVL1:
-                    Log.d("GameView Class", "Generating Alien");
-                    Alien1 alien_1 = new Alien1(BitmapCache.getData(BitmapResource.ALIEN, c), x, y, spaceship);
-                    alien_1.injectResources(BitmapCache.getData(BitmapResource.ALIEN_BULLET, c), animations.put(R.drawable.spaceship_explode, new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 5, false)));
-                    return alien_1;
-                default:
-                    throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
-            }
-        }
-
-        // sets specified fields and adds sprite to arraylist
-        private void addTile(Sprite s, float speedX, float speedY) {
-            s.setSpeedX(speedX);
-            s.setSpeedY(speedY);
-            if (s instanceof Obstacle) {
-                obstacles.add(s);
-            } else if (s instanceof Alien) {
-                aliens.add(s);
-            } else if (s instanceof Coin) {
-                coins.add(s);
-            }
         }
 
         public void setSurfaceSize(int width, int height) {

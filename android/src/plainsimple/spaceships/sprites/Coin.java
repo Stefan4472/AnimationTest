@@ -1,6 +1,7 @@
 package plainsimple.spaceships.sprites;
 
 import android.graphics.Rect;
+import android.util.Log;
 import plainsimple.spaceships.util.BitmapData;
 import plainsimple.spaceships.util.DrawParams;
 import plainsimple.spaceships.activity.GameActivity;
@@ -33,8 +34,11 @@ public class Coin extends Sprite {
     @Override
     public void updateActions() {
         if (disappear.hasPlayed()) {
-            vis = false;
             terminate = true;
+        }
+        if (!isInBounds()) {
+            terminate = true;
+            Log.d("Termination", "Removing Coin at x = " + x);
         }
     }
 
@@ -56,7 +60,6 @@ public class Coin extends Sprite {
     public void handleCollision(Sprite s) {
         if (s instanceof Spaceship) {
             //disappear.start();
-            vis = false;
             collides = false;
             GameActivity.incrementScore(GameActivity.COIN_VALUE);
         }

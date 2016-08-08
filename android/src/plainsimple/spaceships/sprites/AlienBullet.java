@@ -1,6 +1,7 @@
 package plainsimple.spaceships.sprites;
 
 import android.graphics.Rect;
+import android.util.Log;
 import plainsimple.spaceships.util.BitmapData;
 import plainsimple.spaceships.util.DrawParams;
 
@@ -24,7 +25,10 @@ public class AlienBullet extends Sprite {
 
     @Override
     public void updateActions() {
-
+        if (!isInBounds()) {
+            terminate = true;
+            Log.d("Termination", "Removing AlienBullet at x = " + x);
+        }
     }
 
     @Override
@@ -40,7 +44,6 @@ public class AlienBullet extends Sprite {
     @Override
     public void handleCollision(Sprite s) {
         if(s instanceof Spaceship) {
-            vis = false;
             collides = false;
             terminate = true;
         }

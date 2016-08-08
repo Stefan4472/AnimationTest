@@ -46,7 +46,10 @@ public class Rocket extends Sprite {
 
     @Override
     public void updateActions() {
-
+        if (!isInBounds()) {
+            terminate = true;
+            Log.d("Termination", "Removing Rocket at x = " + x);
+        }
     }
 
     @Override
@@ -59,8 +62,7 @@ public class Rocket extends Sprite {
         if (s instanceof Alien) {
             GameActivity.incrementScore(damage);
         }
-        vis = false;
-        collides = false;
+        collides = false; // todo: set collides to false?
         terminate = true;
     }
 

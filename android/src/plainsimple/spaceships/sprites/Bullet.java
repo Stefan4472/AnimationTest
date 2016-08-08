@@ -90,7 +90,10 @@ public class Bullet extends Sprite {
 
     @Override
     public void updateActions() {
-
+        if (!isInBounds()) {
+            terminate = true;
+            Log.d("Termination", "Removing Bullet at x = " + x);
+        }
     }
 
     @Override
@@ -108,7 +111,6 @@ public class Bullet extends Sprite {
         if (s instanceof Alien) {
             GameActivity.incrementScore(damage);
         }
-        vis = false;
         collides = false;
         terminate = true;
     }

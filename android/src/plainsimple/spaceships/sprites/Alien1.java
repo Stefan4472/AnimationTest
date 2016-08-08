@@ -7,6 +7,7 @@ import plainsimple.spaceships.util.BitmapData;
 import plainsimple.spaceships.util.DrawParams;
 import plainsimple.spaceships.util.Point2D;
 import plainsimple.spaceships.util.SpriteAnimation;
+import plainsimple.spaceships.view.GameView;
 
 import java.util.ArrayList;
 
@@ -29,7 +30,7 @@ public class Alien1 extends Alien {
 
     public Alien1(BitmapData bitmapData, int x, int y, Spaceship spaceship) {
         super(bitmapData, x, y);
-        Log.d("Alien Class", "Alien Initialized and inBounds = " + inBounds + " and vis = " + vis);
+        Log.d("Alien Class", "Alien Initialized and inBounds = " + isInBounds());
         this.spaceship = spaceship;
         difficulty = GameActivity.getDifficulty();
         initAlien();
@@ -58,6 +59,13 @@ public class Alien1 extends Alien {
 
     @Override
     public void updateActions() { // todo: avoid straight vertical shots
+        /*if (x > GameView.screenW + bitmapData.getWidth()) {
+            Log.d("Alien Class", "Alien is Out of Bounds because x = " + x + " and x must be less than " + (GameView.screenW + bitmapData.getWidth()));
+        }*/
+        if (!isInBounds()) {
+            terminate = true;
+            Log.d("Termination", "Removing Alien at x = " + x);
+        }
         framesSinceLastBullet++;
         if (distanceTo(spaceship) < 0.8 && framesSinceLastBullet >= bulletDelay) {
             if (getP(0.2f)) {
@@ -67,7 +75,6 @@ public class Alien1 extends Alien {
         }
         // disappear if alien has exploded
         if(explodeAnimation.hasPlayed()) {
-            vis = false;
             terminate = true;
         }
     }
@@ -95,11 +102,10 @@ public class Alien1 extends Alien {
     @Override
     public void handleCollision(Sprite s) {
         if (s instanceof Bullet || s instanceof Rocket || s instanceof Spaceship) {
-            Log.d("Alien Class", "Collision");
             hp -= s.damage;
             if (hp < 0 && !explodeAnimation.isPlaying()) {
                 explodeAnimation.start();
-                collides = false; // todo: set collides to false later?
+                collides = false; // todo: set collides to false after several frames of animation have played?
             }
         }
     }

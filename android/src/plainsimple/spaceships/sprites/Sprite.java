@@ -1,6 +1,7 @@
 package plainsimple.spaceships.sprites;
 
 import android.graphics.Rect;
+import android.util.Log;
 import plainsimple.spaceships.util.BitmapData;
 import plainsimple.spaceships.util.DrawParams;
 import plainsimple.spaceships.util.Point2D;
@@ -9,7 +10,7 @@ import plainsimple.spaceships.view.GameView;
 import java.util.*;
 
 /**
- * Created by Stefan on 8/12/2015.
+ * Sprite parent class.
  */
 public abstract class Sprite { // todo: figure out public vs. protected
 
@@ -21,16 +22,13 @@ public abstract class Sprite { // todo: figure out public vs. protected
     protected double speedX;
     protected double speedY;
 
-    // damage sprite can withstand and damage it inflicts on collision
+    // damage sprite can withstand
     protected int hp;
+    // damage sprite inflicts on contact with another sprite
     protected int damage;
 
-    // whether or not sprite is visible on screen
-    protected boolean vis;
-    // whether or not sprite is in screen bounds
-    protected boolean inBounds;
     // whether or not sprite can collide with other sprites
-    protected boolean collides; // todo: flags all in one bitwise operator?
+    protected boolean collides;
     // whether or not sprite is currently moving
     protected boolean moving; // todo: remove?
     // whether or not sprite should be removed from game
@@ -51,10 +49,8 @@ public abstract class Sprite { // todo: figure out public vs. protected
         this.y = y;
         initSprite();
     }
-
+    // todo: constructor that also takes speedX and speedY as parameters
     private void initSprite() {
-        vis = true;
-        //inBounds = true; // todo: shouldn't be set automatically
         moving = true;
         collides = true;
         terminate = false;
@@ -87,13 +83,17 @@ public abstract class Sprite { // todo: figure out public vs. protected
         x += (int) (GameView.screenW * speedX);
         y += (int) (GameView.screenH * speedY);
         hitBox.offset((int) (GameView.screenW * speedX), (int) (GameView.screenH * speedY));
-        // keep in mind sprites are generated past the screen
-        if (x > GameView.screenW + bitmapData.getWidth() || x < -bitmapData.getWidth()) { // todo: set terminate? Do this calculation in the sprite's own move() method?
-            inBounds = false;
-        } else if (y > GameView.screenH + bitmapData.getHeight() || y < -bitmapData.getHeight()) { // todo: bounce off edge of screen
-            inBounds = false; // todo: use hitbox to judge if it is in bounds or not?
+    }
+
+    // checks whether sprite's image is withing the screen bounds
+    // keep in mind sprites are generated past the screen
+    public boolean isInBounds() {
+        if (x > GameView.screenW + bitmapData.getWidth() || x < -bitmapData.getWidth()) {
+            return false;
+        } else if (y > GameView.screenH || y < -bitmapData.getHeight()) {
+            return false;
         } else {
-            inBounds = true;
+            return true;
         }
     }
 
@@ -172,18 +172,6 @@ public abstract class Sprite { // todo: figure out public vs. protected
 
     public Rect getHitBox() {
         return hitBox;
-    }
-
-    public boolean isVisible() {
-        return vis;
-    }
-
-    public void setVisible(Boolean visible) {
-        vis = visible;
-    }
-
-    public boolean isInBounds() {
-        return inBounds;
     }
 
     public boolean collides() {
