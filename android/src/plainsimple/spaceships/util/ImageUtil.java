@@ -7,9 +7,7 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;*/
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Rect;
+import android.graphics.*;
 import android.util.Log;
 
 /**
@@ -23,6 +21,35 @@ public class ImageUtil {
         Rect destination = new Rect(params.getCanvasX0(), params.getCanvasY0(),
                 params.getCanvasX0() + source.width(), params.getCanvasY0() + source.height());
         canvas.drawBitmap(toDraw, source, destination, null);
+    }
+
+    // creates a linear gradient across the Bitmap from left to right using the specified colors
+    public static void drawGradient(Bitmap b, int leftColor, int rightColor) {
+        int w = b.getWidth();
+        int h = b.getHeight();
+        Canvas c = new Canvas(b);
+        Paint p = new Paint();
+        int start_a = Color.alpha(leftColor);
+        int start_r = Color.red(leftColor); // todo: alpha values necessary?
+        int start_g = Color.green(leftColor);
+        int start_b = Color.blue(leftColor);
+        float da = (Color.alpha(rightColor) - Color.alpha(leftColor)) / (float) w;
+        float dr = (Color.red(rightColor) - Color.red(leftColor)) / (float) w;
+        float dg = (Color.green(rightColor) - Color.green(leftColor)) / (float) w;
+        float db = (Color.blue(rightColor) - Color.blue(leftColor)) / (float) w;
+        int current;
+        p.setDither(true);
+        for (float i = 0; i < w; i++) {
+            current = Color.argb(
+                    start_a + (int) (i * da),
+                    start_r + (int) (i * dr),
+                    start_g + (int) (i * dg),
+                    start_b + (int) (i * db)
+            );
+            p.setColor(current);
+            c.drawLine(i, 0, i, h, p);
+        }
+
     }
 
     // takes a spriteSheet and the base image (model)

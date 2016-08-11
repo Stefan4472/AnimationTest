@@ -12,10 +12,6 @@ public class Background {
 
     // rendered space background tiles
     private Bitmap[] imageTiles;
-    // Bitmap on which background is drawn if no canvas is specified
-    private Bitmap rendered;
-    // canvas used for drawing if none is specified
-    private Canvas canvas;
     // number of pixels scrolled
     private int pixelsScrolled;
     // width of rendered background tiles (px)
@@ -67,14 +63,11 @@ public class Background {
         toElement = 1;
         transitionCounter = 0;
 
-        rendered = Bitmap.createBitmap(screenW, screenH, Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(rendered);
-
         drawSpace = new DrawSpace();
         drawSpace.setAntiAlias(true);
         drawSpace.setVariance(0.2);
-        drawSpace.setDensity(0); // was 3
-        drawSpace.setStarSize(8);
+        drawSpace.setDensity(3); // was 3
+        drawSpace.setStarSize(2);
         drawSpace.setUseGradient(true);
         for (int i = 0; i < imageTiles.length; i++) {
             imageTiles[i] = Bitmap.createBitmap(TILE_WIDTH, tileHeight, Bitmap.Config.ARGB_8888);
@@ -94,15 +87,6 @@ public class Background {
         for (int i = 0; i < imageTiles.length; i++) {
             canvas.drawBitmap(imageTiles[(start_tile + i) % imageTiles.length], getOffset() + i * TILE_WIDTH, 0, null);
         }
-    }
-
-    // draws imageTiles[] onto local canvas in correct locations and returns Bitmap result
-    // used for getting a bitmap instead of directly drawing to a specific canvas
-    public Bitmap draw() {
-        Log.d("Background Class", "Drawing New Screen");
-        draw(canvas);
-        Log.d("Background Class", "Drawing Finished. Returning...");
-        return rendered;
     }
 
     // draws space on next tile, incrementing values
@@ -137,13 +121,17 @@ public class Background {
                 Color.green(from_color) + (int) ((Color.green(to_color) - Color.green(from_color)) / transitionDurations[toElement] * (transitionCounter + 1)),
                 Color.blue(from_color) + (int) ((Color.blue(to_color) - Color.blue(from_color)) / transitionDurations[toElement] * (transitionCounter + 1))
         );
-        // Log.d("Background Class", "Left is " + colorToString(left_color) + " counter = " + transitionCounter);
-        drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, left_color, right_color, Shader.TileMode.CLAMP));
-        drawSpace.drawSpace(tile);
-        Canvas c = new Canvas(tile);
+        //drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, left_color, right_color, Shader.TileMode.CLAMP));
+        //drawSpace.drawSpace(tile);
+        ImageUtil.drawGradient(tile, left_color, right_color);
+        /*Canvas c = new Canvas(tile);
         Paint p = new Paint();
+        p.setColor(left_color);
+        c.drawRect(0, 0, TILE_WIDTH / 2, tileHeight, p);
+        p.setColor(right_color);
+        c.drawRect(TILE_WIDTH / 2, 0, TILE_WIDTH, tileHeight, p);
         p.setColor(Color.RED);
-        c.drawText("" + transitionCounter, 0, 100, p);
+        c.drawText("" + transitionCounter, 0, 100, p);*/
         transitionCounter++;
     }
 

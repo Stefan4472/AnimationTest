@@ -139,6 +139,7 @@ public class DrawSpace {
     private void drawBackground(Canvas canvas, int imgWidth, int imgHeight) {
         if (useGradient) {
             paint.setShader(backgroundGradient);
+            paint.setDither(true);
             canvas.drawRect(0, 0, imgWidth, imgHeight, paint);
         } else {
             paint.setColor(backgroundColor);
@@ -148,7 +149,8 @@ public class DrawSpace {
 
     private void drawStar(Canvas canvas, int x, int y, int brightness, int size) {
         paint.setColor(Color.argb(brightness, Color.red(starColor), Color.green(starColor), Color.blue(starColor)));
-        canvas.drawRect(x, y, x + size, y + size, paint);
+        //canvas.drawRect(x, y, x + size, y + size, paint);
+        canvas.drawCircle(x, y, size, paint);
     }
 
     private int varyBrightness(int value, double variance) {
