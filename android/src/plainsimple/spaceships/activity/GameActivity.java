@@ -24,6 +24,7 @@ import plainsimple.spaceships.sprites.Spaceship;
 import plainsimple.spaceships.util.*;
 import plainsimple.spaceships.view.FontTextView;
 import plainsimple.spaceships.view.GameView;
+import plainsimple.spaceships.view.HealthBarView;
 
 import java.util.Hashtable;
 
@@ -46,6 +47,7 @@ public class GameActivity extends Activity {
     private ImageButton muteButton;
     private ImageButton toggleBulletButton;
     private ImageButton toggleRocketButton;
+    private HealthBarView healthBarView;
     private static SoundPool soundPool;
     private static Hashtable<RawResource, Integer> soundIDs;
     private static boolean paused = false;
@@ -77,6 +79,7 @@ public class GameActivity extends Activity {
         pauseButton.setBackgroundResource(R.drawable.pause);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
         muteButton.setBackgroundResource(R.drawable.sound_on);
+        healthBarView = (HealthBarView) findViewById(R.id.healthbar);
         toggleBulletButton = (ImageButton) findViewById(R.id.toggleBulletButton);
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);

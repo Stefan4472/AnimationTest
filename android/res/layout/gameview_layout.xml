@@ -52,12 +52,19 @@
                     android:layout_marginTop="10dp"
                     android:onClick="onMutePressed"
                     style="?android:attr/borderlessButtonStyle" />
+                <!-- spaceship health bar -->
+                <plainsimple.spaceships.view.HealthBarView
+                    android:id="@+id/healthbar"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"/>
                 <!-- bullet fire selector -->
                 <ImageButton
                     android:id="@+id/toggleBulletButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
+                    android:layout_above="@+id/healthbar"
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
@@ -69,7 +76,7 @@
                     android:id="@+id/toggleRocketButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
+                    android:layout_above="@id/healthbar"
                     android:layout_toRightOf="@id/toggleBulletButton"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"

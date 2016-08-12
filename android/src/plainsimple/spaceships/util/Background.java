@@ -68,7 +68,8 @@ public class Background {
         drawSpace.setVariance(0.2);
         drawSpace.setDensity(3); // was 3
         drawSpace.setStarSize(2);
-        drawSpace.setUseGradient(true);
+        drawSpace.setUseGradient(false);
+        drawSpace.setBackgroundColor(Color.BLACK);
         for (int i = 0; i < imageTiles.length; i++) {
             imageTiles[i] = Bitmap.createBitmap(TILE_WIDTH, tileHeight, Bitmap.Config.ARGB_8888);
             drawNextTile(imageTiles[i]);
@@ -122,14 +123,9 @@ public class Background {
                 Color.blue(from_color) + (int) ((Color.blue(to_color) - Color.blue(from_color)) / transitionDurations[toElement] * (transitionCounter + 1))
         );
         //drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, left_color, right_color, Shader.TileMode.CLAMP));
-        //drawSpace.drawSpace(tile);
-        ImageUtil.drawGradient(tile, left_color, right_color);
-        /*Canvas c = new Canvas(tile);
-        Paint p = new Paint();
-        p.setColor(left_color);
-        c.drawRect(0, 0, TILE_WIDTH / 2, tileHeight, p);
-        p.setColor(right_color);
-        c.drawRect(TILE_WIDTH / 2, 0, TILE_WIDTH, tileHeight, p);
+        drawSpace.drawSpace(tile);
+        // todo: instead of using a gradient, use a solid color that is changed very very gradually each time more space is generated. This will eliminate the banding
+        /*Paint p = new Paint();
         p.setColor(Color.RED);
         c.drawText("" + transitionCounter, 0, 100, p);*/
         transitionCounter++;
