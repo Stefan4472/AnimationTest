@@ -16,6 +16,8 @@ public class HealthBarView extends View {
     int currentHealth = 0;
     // full health level
     int fullHealth = 0;
+    // health level the bar is transitioning to
+    int movingToHealth;
     // width of health bar on screen
     int width;
     // height of health bar on screen
@@ -41,6 +43,7 @@ public class HealthBarView extends View {
 
     public void setCurrentHealth(int currentHealth) { // todo: animated change
         this.currentHealth = currentHealth;
+        movingToHealth = currentHealth;
     }
 
     public void setFullHealth(int fullHealth) {
@@ -82,6 +85,12 @@ public class HealthBarView extends View {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(height * 0.1f);
         canvas.drawRect(0, 0, width, height, paint);
+        // check to see if the health bar should be transitioning to a new value
+        if (currentHealth != movingToHealth) {
+            // transition down 20% of the remaining distance between currentHealth and movingToHealth
+            currentHealth -= (double) (currentHealth - movingToHealth) * 0.2;
+            invalidate();
+        }
         // draw the filling of the health bar
         paint.setColor(getHealthBarColor());
         paint.setStyle(Paint.Style.FILL);
