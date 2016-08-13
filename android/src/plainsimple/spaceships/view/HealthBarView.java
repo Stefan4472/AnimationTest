@@ -46,7 +46,7 @@ public class HealthBarView extends View {
         int preferred_width = MeasureSpec.getSize(widthMeasureSpec);
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         // preferred height is one tenth of screen height
-        int preferred_height = (int) (metrics.heightPixels * 0.1);
+        int preferred_height = (int) (metrics.heightPixels * 0.03);
         setMeasuredDimension(preferred_width, decideMeasurement(heightMeasureSpec, preferred_height));
     }
 
@@ -79,7 +79,12 @@ public class HealthBarView extends View {
         // draw the filling of the health bar
         paint.setColor(getHealthBarColor());
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(height * 0.1f, height * 0.1f, height * 0.9f, height * 0.9f, paint);
+        canvas.drawRect(height * 0.1f, height * 0.1f, width - height * 0.1f, height * 0.9f, paint);
+        // draw label on hitbar showing current health vs. full health
+        paint.setColor(Color.GRAY);
+        paint.setTextSize(height * 0.8f);
+        // todo: better calculate where to position text
+        canvas.drawText(currentHealth + "/" + fullHealth, width * 0.9f, height * 0.85f, paint);
     }
 
     // calculates what color the health bar should be using the ratio of
