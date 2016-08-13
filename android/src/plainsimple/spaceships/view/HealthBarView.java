@@ -13,9 +13,9 @@ import plainsimple.spaceships.R;
 public class HealthBarView extends View {
 
     // current health level
-    int currentHealth;
+    int currentHealth = 0;
     // full health level
-    int fullHealth;
+    int fullHealth = 0;
     // width of health bar on screen
     int width;
     // height of health bar on screen
@@ -23,22 +23,22 @@ public class HealthBarView extends View {
     // used to draw the health bar
     Paint paint;
 
-    public HealthBarView(Context context, int fullHealth, int currentHealth) {
+    public HealthBarView(Context context) {
         super(context);
-        this.fullHealth = fullHealth;
-        this.currentHealth = currentHealth;
         paint = new Paint();
     }
 
-    public HealthBarView(Context context, AttributeSet attrs, int fullHealth, int currentHealth) { // todo: use xml attributes
+    public HealthBarView(Context context, AttributeSet attrs) { // todo: use xml attributes
         super(context, attrs);
-        this.fullHealth = fullHealth;
-        this.currentHealth = currentHealth;
         paint = new Paint();
     }
 
     public void setCurrentHealth(int currentHealth) { // todo: animated change
         this.currentHealth = currentHealth;
+    }
+
+    public void setFullHealth(int fullHealth) {
+        this.fullHealth = fullHealth;
     }
 
     @Override

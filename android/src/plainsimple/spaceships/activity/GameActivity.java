@@ -80,6 +80,8 @@ public class GameActivity extends Activity {
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
         muteButton.setBackgroundResource(R.drawable.sound_on);
         healthBarView = (HealthBarView) findViewById(R.id.healthbar);
+        healthBarView.setFullHealth(100);
+        healthBarView.setCurrentHealth(100);
         toggleBulletButton = (ImageButton) findViewById(R.id.toggleBulletButton);
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);

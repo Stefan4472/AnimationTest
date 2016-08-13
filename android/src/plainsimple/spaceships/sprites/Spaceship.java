@@ -111,6 +111,7 @@ public class Spaceship extends Sprite {
         lastFiredBullet = 0;
         lastFiredRocket = 0;
         damage = 100;
+        hp = 100;
         controllable = true;
         collides = true;
         hitBox = new Rect(x + (int) (getWidth() * 0.17), y + (int) (getHeight() * 0.22), x + (int) (getWidth() * 0.83), y + (int) (getHeight() * 0.78));
