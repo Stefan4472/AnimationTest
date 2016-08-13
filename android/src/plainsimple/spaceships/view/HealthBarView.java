@@ -22,6 +22,12 @@ public class HealthBarView extends View {
     int height;
     // used to draw the health bar
     Paint paint;
+    // used to determine lower and upper bounds of rgb values
+    private int blue = 0;
+    private int lowerGreen = 0;
+    private int upperGreen = 255;
+    private int lowerRed = 0;
+    private int upperRed = 255;
 
     public HealthBarView(Context context) {
         super(context);
@@ -79,7 +85,7 @@ public class HealthBarView extends View {
         // draw the filling of the health bar
         paint.setColor(getHealthBarColor());
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(height * 0.1f, height * 0.1f, width - height * 0.1f, height * 0.9f, paint);
+        canvas.drawRect(height * 0.1f, height * 0.1f, height * 0.1f + (currentHealth / (float) fullHealth) * (width - height * 0.1f), height * 0.9f, paint);
         // draw label on hitbar showing current health vs. full health
         paint.setColor(Color.GRAY);
         paint.setTextSize(height * 0.8f);
@@ -90,13 +96,12 @@ public class HealthBarView extends View {
     // calculates what color the health bar should be using the ratio of
     // currentHealth to fullHealth
     private int getHealthBarColor() {
-        double ratio = currentHealth / fullHealth;
-        if (ratio > 0.7) {
-            return Color.GREEN;
-        } else if (ratio > 0.3) {
-            return Color.YELLOW;
-        } else {
-            return Color.RED;
-        }
+        double ratio = currentHealth / (double) fullHealth;
+        // green: 0, 255, blue (or lowerRed, upperGreen, blue)
+        // yellow: 255, 255, blue (or upperRed, upperGreen, blue)
+        // red: 255, 0, blue (or upperRed, lowerGreen, blue)
+        double red = (upperRed - lowerRed) / 2.0 - (ratio - 0.5) * (upperRed - lowerRed);
+        double green = (upperGreen - lowerGreen) / 2.0 + (ratio - 0.5) * (upperGreen - lowerGreen);
+        return Color.rgb((int) red, (int) green, blue);
     }
 }
