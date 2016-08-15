@@ -83,6 +83,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private long lastSample = 0;
     private final static int sampleRateMS = 20;
 
+    // sets spaceship's firing mode
     public void setFiringMode(int firingMode) {
         spaceship.setFiringMode(firingMode);
     }
@@ -149,6 +150,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         private void draw(Canvas canvas) {
             try {
+                //((GameActivity) c).incrementScore(1);
                 background.draw(canvas);
                 if(!GameActivity.getPaused()) {
                     update();
@@ -371,7 +373,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         private void initSpaceship() { // todo: clean up
             spaceship = new Spaceship(BitmapCache.getData(BitmapResource.SPACESHIP, c),
                     -BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(),
-                    screenH / 2 - BitmapCache.getData(BitmapResource.SPACESHIP, c).getHeight() / 2);
+                    screenH / 2 - BitmapCache.getData(BitmapResource.SPACESHIP, c).getHeight() / 2, c);
             int bullet_resource = MainActivity.preferences.getInt(c.getString(R.string.equipped_bullet),
                     R.drawable.laserbullet);
             int rocket_resource = MainActivity.preferences.getInt(c.getString(R.string.equipped_rocket),

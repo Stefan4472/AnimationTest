@@ -34,20 +34,12 @@ import java.util.Hashtable;
 public class GameActivity extends Activity {
 
     private GameView gameView;
-    // used to render game background
-    private Background background;
-    // whether background has been initialized yet
-    private boolean backgroundInitialized = false;
-    //private ResponseReceiver receiver;
     private static FontTextView scoreView;
-    private ImageView backgroundView;
-    private Bitmap gameBackground;
-    private Canvas gameBackgroundCanvas;
     private ImageButton pauseButton;
     private ImageButton muteButton;
     private ImageButton toggleBulletButton;
     private ImageButton toggleRocketButton;
-    private HealthBarView healthBarView;
+    private static HealthBarView healthBarView;
     private static SoundPool soundPool;
     private static Hashtable<RawResource, Integer> soundIDs;
     private static boolean paused = false;
@@ -80,14 +72,12 @@ public class GameActivity extends Activity {
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
         muteButton.setBackgroundResource(R.drawable.sound_on);
         healthBarView = (HealthBarView) findViewById(R.id.healthbar);
-        healthBarView.setFullHealth(100);
-        healthBarView.setCurrentHealth(100);
+        healthBarView.setFullHealth(30);
+        healthBarView.setCurrentHealth(30);
         toggleBulletButton = (ImageButton) findViewById(R.id.toggleBulletButton);
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
-        gameBackground = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-        gameBackgroundCanvas = new Canvas(gameBackground);
         // set volume control to proper stream
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
@@ -105,62 +95,11 @@ public class GameActivity extends Activity {
         Log.d("Activity Class", soundIDs.size() + " sounds loaded");
     }
 
-
-    /*public class ResponseReceiver extends BroadcastReceiver {
-       public static final String ACTION_RESP = "com.plainsimple.intent.action.BACKGROUND_RENDERED";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d("GameActivity", "Action is finished");
-            backgroundView.setImageBitmap(renderedBackground);
-        }
-    }*/
-
     // plays a sound using the SoundPool given SoundParams
     public static void playSound(SoundParams parameters) {
         soundPool.play(soundIDs.get(parameters.getResourceID()), parameters.getLeftVolume(),
                 parameters.getRightVolume(), parameters.getPriority(), parameters.getLoop(),
                 parameters.getRate());
-    }
-
-    // calls DrawBackgroundService to render the background having scrolled
-    public void updateBackground(int toScroll) {
-        if (!backgroundInitialized) {
-            background = new Background(gameView.getWidth(), gameView.getHeight()); // todo: proper dimensions?
-            gameBackground = Bitmap.createBitmap(gameView.getWidth(), gameView.getHeight(), Bitmap.Config.ARGB_8888);
-            gameBackgroundCanvas = new Canvas(gameBackground);
-            Log.d("GameActivity", "Background Initialized with width " + gameView.getWidth() + " and height " + gameView.getHeight());
-            backgroundInitialized = true;
-        }
-        Log.d("GameActivity", "updateBackground called with parameter " + toScroll);
-        new DrawBackgroundTask().execute(toScroll);
-        /*Log.d("GameActivity Class", "Should Update the Background Now");
-        Intent serviceIntent = new Intent(this, DrawBackgroundService.class);
-        serviceIntent.putExtra(DrawBackgroundService.PARAM_WIDTH, Integer.toString(screenWidth));
-        serviceIntent.putExtra(DrawBackgroundService.PARAM_HEIGHT, Integer.toString(screenHeight));
-        serviceIntent.putExtra(DrawBackgroundService.PARAM_TO_SCROLL, Integer.toString(toScroll));
-        startService(serviceIntent);*/
-    }
-
-    private class DrawBackgroundTask extends AsyncTask<Integer, Void, Bitmap> {
-        // scrolls and renders the background in a worker thread
-        @Override
-        protected Bitmap doInBackground(Integer... scroll) {
-            background.scroll(scroll[0]);
-            Log.d("DrawBackgroundTask", "Rendering");
-            background.draw(gameBackgroundCanvas);
-            return gameBackground;
-        }
-
-        // posts the Bitmap rendered in doInBackground to backgroundView
-        @Override
-        protected void onPostExecute(Bitmap renderedBackground) {
-            Log.d("DrawBackgroundTask", "Finished Rendering Background");
-        }
-    }
-
-    public Bitmap getGameBackground() {
-        return gameBackground;
     }
 
     // handle user pressing pause button
@@ -184,10 +123,14 @@ public class GameActivity extends Activity {
         return score;
     }
 
-    public static void incrementScore(int toAdd) {
+    public void incrementScore(int toAdd) {
         score += toAdd;
         Log.d("GameActivity Class", "Incrementing Score by " + toAdd + " to " + score);
-        scoreView.setText("" + score); // todo: not updating
+        runOnUiThread(new Runnable() {
+            public void run() {
+                scoreView.setText("" + score);
+            }
+        });
     }
 
     public static boolean isMuted() {
@@ -212,7 +155,6 @@ public class GameActivity extends Activity {
         }
         AudioManager a_manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         a_manager.setStreamMute(AudioManager.STREAM_MUSIC, muted);
-
     }
 
     public void onToggleBulletPressed(View view) {
@@ -225,6 +167,12 @@ public class GameActivity extends Activity {
         gameView.setFiringMode(Spaceship.ROCKET_MODE);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button_pressed);
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button);
+    }
+
+    // update healthBarView
+    public static void onSpaceshipHPChange(int newHP) {
+        Log.d("GameActivity", "Call to change HP to " + newHP);
+        healthBarView.setMovingToHealth(newHP);
     }
 
     @Override

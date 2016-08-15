@@ -1,5 +1,6 @@
 package plainsimple.spaceships.sprites;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.util.Log;
 import plainsimple.spaceships.util.BitmapData;
@@ -109,7 +110,8 @@ public class Bullet extends Sprite {
     @Override
     public void handleCollision(Sprite s) {
         if (s instanceof Alien) {
-            GameActivity.incrementScore(damage);
+            
+            //GameActivity.incrementScore(damage);
         }
         collides = false;
         terminate = true;

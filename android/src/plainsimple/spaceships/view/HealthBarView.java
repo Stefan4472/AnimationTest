@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.*;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import plainsimple.spaceships.R;
 
@@ -41,13 +42,32 @@ public class HealthBarView extends View {
         paint = new Paint();
     }
 
+    // no animated change
     public void setCurrentHealth(int currentHealth) { // todo: animated change
+        if (currentHealth < 0) {
+            currentHealth = 0;
+        }
         this.currentHealth = currentHealth;
         movingToHealth = currentHealth;
+        invalidate();
+    }
+
+    // animates change
+    public void setMovingToHealth(int movingToHealth) {
+        if (movingToHealth < 0) {
+            movingToHealth = 0;
+        }
+        this.movingToHealth = movingToHealth;
+        invalidate();
+        Log.d("HealthBarView", "Calling invalidate()");
     }
 
     public void setFullHealth(int fullHealth) {
+        if (fullHealth < 0) {
+            fullHealth = 0;
+        }
         this.fullHealth = fullHealth;
+        invalidate();
     }
 
     @Override
@@ -85,10 +105,12 @@ public class HealthBarView extends View {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(height * 0.1f);
         canvas.drawRect(0, 0, width, height, paint);
+        // make sure movingToHealth > 0
         // check to see if the health bar should be transitioning to a new value
         if (currentHealth != movingToHealth) {
             // transition down 20% of the remaining distance between currentHealth and movingToHealth
             currentHealth -= (double) (currentHealth - movingToHealth) * 0.2;
+            Log.d("HealthBarView", "Currenthealth now at " + currentHealth + " and moving to " + movingToHealth);
             invalidate();
         }
         // draw the filling of the health bar

@@ -2,6 +2,7 @@ package plainsimple.spaceships.sprites;
 
 import android.graphics.Rect;
 import android.util.Log;
+import android.widget.Space;
 import plainsimple.spaceships.activity.GameActivity;
 import plainsimple.spaceships.util.BitmapData;
 import plainsimple.spaceships.util.DrawParams;
@@ -107,6 +108,10 @@ public class Alien1 extends Alien {
             hp -= s.damage;
             if (hp < 0 && !explodeAnimation.isPlaying()) {
                 explodeAnimation.start();
+            }
+            // on spaceship collision set damage to zero so it only applies damage once
+            if (s instanceof Spaceship) {
+                damage = 0;
             }
         }
     }

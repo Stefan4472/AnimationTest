@@ -1,6 +1,8 @@
 package plainsimple.spaceships.sprites;
 
+import android.content.Context;
 import android.graphics.Rect;
+import android.util.Log;
 import plainsimple.spaceships.*;
 import plainsimple.spaceships.activity.GameActivity;
 import plainsimple.spaceships.util.*;
@@ -99,10 +101,11 @@ public class Spaceship extends Sprite {
                 break;
         }
     }
-
+    private Context c;
     // default constructor
-    public Spaceship(BitmapData bitmapData, int x, int y) {
+    public Spaceship(BitmapData bitmapData, int x, int y, Context c) {
         super(bitmapData, x, y);
+        this.c = c;
         initCraft();
     }
 
@@ -154,6 +157,7 @@ public class Spaceship extends Sprite {
 
     // fires two bullets
     public void fireBullets() {
+        ((GameActivity) c).incrementScore(1);
         projectiles.add(new Bullet(bulletBitmapData, x + (int) (getWidth() * 0.78), y + (int) (0.28 * getHeight()), bulletType));
         projectiles.add(new Bullet(bulletBitmapData, x + (int) (getWidth() * 0.78), y + (int) (0.66 * getHeight()), bulletType));
         GameActivity.playSound(bulletSound);
@@ -213,10 +217,10 @@ public class Spaceship extends Sprite {
     @Override
     public void handleCollision(Sprite s) {
         hp -= s.getDamage();
+        Log.d("Spaceship class", "Collided, took " + s.getDamage() + " damage");
         if (hp < 0 && !explode.isPlaying()) { // todo: check when explode animation has played and use for end game logic
             explode.start();
             GameActivity.playSound(explodeSound);
-            hp = 0;
         }
     }
 

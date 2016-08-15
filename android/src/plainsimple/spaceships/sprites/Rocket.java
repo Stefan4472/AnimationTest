@@ -60,7 +60,7 @@ public class Rocket extends Sprite {
     @Override
     public void handleCollision(Sprite s) {
         if (s instanceof Alien) {
-            GameActivity.incrementScore(damage);
+            //GameActivity.incrementScore(damage);
         }
         terminate = true;
     }

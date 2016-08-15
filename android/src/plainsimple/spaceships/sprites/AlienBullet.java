@@ -20,7 +20,7 @@ public class AlienBullet extends Sprite {
     private void initAlienBullet() {
         // todo: change size for better-looking hit detection? (see Issue #13)
         hitBox = new Rect(x, y, x + getWidth(), y + getHeight());
-        damage = 20;
+        damage = 10; // todo: change back to 20
     }
 
     @Override
