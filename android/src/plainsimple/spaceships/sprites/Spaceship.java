@@ -41,7 +41,7 @@ public class Spaceship extends Sprite {
     private BitmapData bulletBitmapData;
 
     private boolean firesRockets;
-    private int rocketType = Rocket.ROCKET;
+    private RocketType rocketType = RocketType.ROCKET;
     private int lastFiredRocket;
     private BitmapData rocketBitmapData;
 
@@ -78,17 +78,9 @@ public class Spaceship extends Sprite {
         this.bulletType = bulletType;
     }
 
-    // convert drawable id of rocket sprite to a constant
-    public void setRockets(boolean firesRockets, int drawableID) {
+    public void setRockets(boolean firesRockets, RocketType rocketType) {
         this.firesRockets = firesRockets;
-        switch (drawableID) {
-            case R.drawable.rocket:
-                this.rocketType = Rocket.ROCKET;
-                break;
-            default:
-                this.rocketType = Rocket.ROCKET;
-                break;
-        }
+        this.rocketType = rocketType;
     }
 
     // default constructor
@@ -129,7 +121,7 @@ public class Spaceship extends Sprite {
             lastFiredBullet = 0;
         }
         lastFiredRocket++;
-        if (shooting && firingMode == ROCKET_MODE && lastFiredRocket >= Rocket.getDelay(rocketType)) {
+        if (shooting && firingMode == ROCKET_MODE && lastFiredRocket >= rocketType.getDelay()) {
             fireRockets();
             lastFiredRocket = 0;
             fireRocket.start();
