@@ -373,7 +373,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         private void initSpaceship() { // todo: clean up
             spaceship = new Spaceship(BitmapCache.getData(BitmapResource.SPACESHIP, c),
                     -BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(),
-                    screenH / 2 - BitmapCache.getData(BitmapResource.SPACESHIP, c).getHeight() / 2, c);
+                    screenH / 2 - BitmapCache.getData(BitmapResource.SPACESHIP, c).getHeight() / 2);
             int bullet_resource = MainActivity.preferences.getInt(c.getString(R.string.equipped_bullet),
                     R.drawable.laserbullet);
             int rocket_resource = MainActivity.preferences.getInt(c.getString(R.string.equipped_rocket),
@@ -381,7 +381,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             spaceship.injectResources(animations.get(R.drawable.spaceship_move),
                     animations.get(R.drawable.spaceship_fire_rocket), new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 5, false),
                     BitmapCache.getData(BitmapResource.LASER_BULLET, c), BitmapCache.getData(BitmapResource.ROCKET, c));
-            spaceship.setBullets(true, bullet_resource);
+            spaceship.setBullets(true, BulletType.LASER);
             spaceship.setRockets(true, rocket_resource);
             spaceship.setHP(30);
         }

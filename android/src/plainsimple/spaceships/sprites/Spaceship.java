@@ -36,7 +36,7 @@ public class Spaceship extends Sprite {
     boolean controllable;
 
     private boolean firesBullets;
-    private int bulletType = Bullet.LASER;
+    private BulletType bulletType = BulletType.LASER;
     private int lastFiredBullet;
     private BitmapData bulletBitmapData;
 
@@ -73,20 +73,9 @@ public class Spaceship extends Sprite {
     public void setShooting(boolean shooting) { this.shooting = shooting; }
     public void setFiringMode(int firingMode) { this.firingMode = firingMode; }
 
-    // convert drawable id of bullet sprite to a constant
-    public void setBullets(boolean firesBullets, int drawableID) { // todo: this is confusing. Use R.drawable constants
+    public void setBullets(boolean firesBullets, BulletType bulletType) {
         this.firesBullets = firesBullets;
-        switch (drawableID) {
-            case R.drawable.laserbullet:
-                this.bulletType = Bullet.LASER;
-                break;
-            case R.drawable.ionbullet:
-                this.bulletType = Bullet.ION;
-                break;
-            default:
-                this.bulletType = Bullet.LASER;
-                break;
-        }
+        this.bulletType = bulletType;
     }
 
     // convert drawable id of rocket sprite to a constant
@@ -101,11 +90,10 @@ public class Spaceship extends Sprite {
                 break;
         }
     }
-    private Context c;
+
     // default constructor
-    public Spaceship(BitmapData bitmapData, int x, int y, Context c) {
+    public Spaceship(BitmapData bitmapData, int x, int y) {
         super(bitmapData, x, y);
-        this.c = c;
         initCraft();
     }
 
@@ -136,7 +124,7 @@ public class Spaceship extends Sprite {
     @Override
     public void updateActions() {
         lastFiredBullet++;
-        if (shooting && firingMode == BULLET_MODE && lastFiredBullet >= Bullet.getDelay(bulletType)) {
+        if (shooting && firingMode == BULLET_MODE && lastFiredBullet >= bulletType.getDelay()) {
             fireBullets();
             lastFiredBullet = 0;
         }
@@ -157,7 +145,6 @@ public class Spaceship extends Sprite {
 
     // fires two bullets
     public void fireBullets() {
-        ((GameActivity) c).incrementScore(1);
         projectiles.add(new Bullet(bulletBitmapData, x + (int) (getWidth() * 0.78), y + (int) (0.28 * getHeight()), bulletType));
         projectiles.add(new Bullet(bulletBitmapData, x + (int) (getWidth() * 0.78), y + (int) (0.66 * getHeight()), bulletType));
         GameActivity.playSound(bulletSound);

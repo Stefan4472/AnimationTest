@@ -21,7 +21,7 @@ public class Rocket extends Sprite {
 
     public static final int ROCKET_DAMAGE = 40;
     public static final int ROCKET_DELAY = 40;
-    public static final float ROCKET_SPEED_X = 0.0067f;
+    public static final float ROCKET_SPEED_X = 0.0067f; // todo: acceleration class?
 
     public Rocket(BitmapData bitmapData, int x, int y, int rocketType) {
         super(bitmapData, x, y);
