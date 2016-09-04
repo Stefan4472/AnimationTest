@@ -1,6 +1,7 @@
 package plainsimple.spaceships.view;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.*;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -30,7 +31,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     private Context c;
     private SurfaceHolder mySurfaceHolder;
-    private GameActivity gameActivity;
     // todo: make non-static
     public static int screenW;
     public static int screenH;
@@ -41,7 +41,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     // todo: AnimationCache using BitmapResource enums. Store num frames per animation in r/values/integers
     // stores initialized SpriteAnimations with R.drawable ID of spritesheet as key
     private HashMap<Integer, SpriteAnimation> animations;
-    // todo: paused and muted should be public static GameActivity fields
     // dimensions of basic mapTiles
     private int tileWidth; // todo: what about bigger/smaller sprites?
     private int tileHeight;
@@ -86,10 +85,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     // sets spaceship's firing mode
     public void setFiringMode(int firingMode) {
         spaceship.setFiringMode(firingMode);
-    }
-
-    public void setGameActivity(GameActivity gameActivity) {
-        this.gameActivity = gameActivity;
     }
 
     public GameView(Context context, AttributeSet attributes) {
@@ -424,6 +419,32 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             }
         }
         lastSample = System.currentTimeMillis();*/
+    }
+
+    // key to SharedPreference file containing lifetime game statistics
+    private String GAME_STATS_FILE_KEY = "GAME_STATS_FILE_KEY";
+    // keys to data-values in the lifetime game statistics SharedPreference file
+    private String ALIENS_KILLED = "ALIENS_KILLED";
+    private String GAMES_PLAYED = "GAMES_PLAYED";
+    private String TIME_PLAYED = "TIME_PLAYED"; // todo: add this function
+    private String DISTANCE_TRAVELED = "DISTANCE_TRAVELED"; // todo: coming soon
+    private String HIGH_SCORE = "HIGH_SCORE";
+    private String COINS_COLLECTED = "COINS_COLLECTED";
+    private String POINTS_EARNED = "POINTS_EARNED";
+
+    // updates stored lifetime game statistics with values from the current run
+    // these statistics are stored using SharedPreferences
+    public void onGameFinished() {
+        SharedPreferences sharedPref = c.getSharedPreferences(GAME_STATS_FILE_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        //editor.putInt(ALIENS_KILLED, sharedPref.getInt(ALIENS_KILLED, 0) + aliensKilled);
+        editor.putInt(GAMES_PLAYED, sharedPref.getInt(GAMES_PLAYED, 0) + 1);
+        if (GameActivity.getScore() > sharedPref.getInt(HIGH_SCORE, 0)) {
+            editor.putInt(HIGH_SCORE, GameActivity.getScore());
+        }
+        //editor.putInt(COINS_COLLECTED, sharedPref.getInt(COINS_COLLECTED, 0) + coinsCollected);
+        editor.putInt(POINTS_EARNED, sharedPref.getInt(POINTS_EARNED, 0) + GameActivity.getScore());
+        editor.commit();
     }
 
     @Override
