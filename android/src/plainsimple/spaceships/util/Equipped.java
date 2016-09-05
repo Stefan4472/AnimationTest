@@ -1,6 +1,7 @@
 package plainsimple.spaceships.util;
 
 import android.content.Context;
+import plainsimple.spaceships.R;
 
 import java.util.HashMap;
 
@@ -36,17 +37,39 @@ public class Equipped {
         String saved_info = FileUtil.readFile(context, FILE_PATH);
         // file hasn't been initialized yet - set default values
         if (saved_info.equals("")) {
+            saved_info = context.getString(R.string.default_equipped_states);
+            FileUtil.writeFile(context, FILE_PATH, saved_info);
+        }
+        readStates(saved_info);
+    }
 
-        } else {
-
+    // todo: what if an error occurs?
+    // populate the states hashmap with data read from the given String
+    private void readStates(String toRead) {
+        String equipment = "", value = "";
+        boolean value_reached = false;
+        for (int i = 0; i < toRead.length(); i++) {
+            if (!value_reached && toRead.charAt(i) != ':') { // build the equipment string
+                equipment += toRead.charAt(i);
+            } else if (toRead.charAt(i) == ':') { // equipment string is finished
+                value_reached = true;
+            } else if (value_reached && toRead.charAt(i) != '\n') { // build the values string
+                value += toRead.charAt(i);
+            } else if (value_reached && toRead.charAt(i) == '\n') { // values string is finished; reset
+                states.put(equipment, value);
+                equipment = "";
+                value = "";
+                value_reached = false;
+            }
         }
     }
 
-    private void readValues() {
-
-    }
-
-    private void writeValues() {
-
+    // formats the states hashmap and writes it to the file
+    private void writeStates() {
+        String formatted = "";
+        for (String key : states.keySet()) {
+            formatted += key + ":" + states.get(key) + "\n";
+        }
+        FileUtil.writeFile(context, FILE_PATH, formatted);
     }
 }

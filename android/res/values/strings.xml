@@ -7,11 +7,11 @@
     <string name="equipped_bullet">EQUIPPED_BULLET</string>
     <string name="equipped_rocket">EQUIPPED_ROCKET</string>
     <string name="default_equipped_states">
-        LASER_BULLET=EQUIPPED\n
-        ION_BULLET=LOCKED\n
-        PLASMA_BULLET=LOCKED\n
-        PLUTONIUM_BULLET=LOCKED\n
-        ROCKET_DEFAULT=EQUIPPED\n
-        ARMOR_DEFAULT=EQUIPPED\n
+        LASER_BULLET:EQUIPPED\n
+        ION_BULLET:LOCKED\n
+        PLASMA_BULLET:LOCKED\n
+        PLUTONIUM_BULLET:LOCKED\n
+        ROCKET_DEFAULT:EQUIPPED\n
+        ARMOR_DEFAULT:EQUIPPED\n
     </string>
 </resources>
