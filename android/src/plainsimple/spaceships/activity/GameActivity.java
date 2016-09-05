@@ -57,15 +57,12 @@ public class GameActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        /*// set up IntentFilter and ResponseReceiver to register local broadcasts from DrawBackgroundService
-        IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESP);
-        filter.addCategory(Intent.CATEGORY_DEFAULT);
-        receiver = new ResponseReceiver();
-        registerReceiver(receiver, filter);*/
         // set content view/layout to gameview layout
         setContentView(R.layout.gameview_layout);
         gameView = (GameView) findViewById(R.id.spaceships); // todo: what should go in onResume()?
         gameView.setKeepScreenOn(true);
+        // read in current equipment and stuff
+
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pause);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
