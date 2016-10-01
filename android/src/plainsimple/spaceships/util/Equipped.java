@@ -1,6 +1,7 @@
 package plainsimple.spaceships.util;
 
 import android.content.Context;
+import android.util.Log;
 import plainsimple.spaceships.R;
 
 import java.util.HashMap;
@@ -33,7 +34,11 @@ public class Equipped {
     // path where equipment data is stored
     public static final String FILE_PATH = "EQUIPMENT_STATES";
 
+    // context used for reading/writing files
+    public Context context;
+
     public Equipped(Context context) { // todo: private constructor? only one instance? static?
+        this.context = context;
         String saved_info = FileUtil.readFile(context, FILE_PATH);
         // file hasn't been initialized yet - set default values
         if (saved_info.equals("")) {
@@ -46,21 +51,19 @@ public class Equipped {
     // todo: what if an error occurs?
     // populate the states hashmap with data read from the given String
     private void readStates(String toRead) {
-        String equipment = "", value = "";
-        boolean value_reached = false;
-        for (int i = 0; i < toRead.length(); i++) {
-            if (!value_reached && toRead.charAt(i) != ':') { // build the equipment string
-                equipment += toRead.charAt(i);
-            } else if (toRead.charAt(i) == ':') { // equipment string is finished
-                value_reached = true;
-            } else if (value_reached && toRead.charAt(i) != '\n') { // build the values string
-                value += toRead.charAt(i);
-            } else if (value_reached && toRead.charAt(i) == '\n') { // values string is finished; reset
-                states.put(equipment, value);
-                equipment = "";
-                value = "";
-                value_reached = false;
+        String[] lines = toRead.split("//n"); // split toRead into an array of lines
+        String equipment, val;
+        int separator_index;
+        try {
+            for (int i = 0; i < lines.length; i++) {
+                separator_index = lines[i].indexOf(':');
+                equipment = lines[i].substring(0, separator_index);
+                val = lines[i].substring(separator_index + 1);
+                states.put(equipment, val);
             }
+        } catch (Exception e) {
+            Log.d("Equipped Class", "Error occurred reading values in from file. Resetting states");
+            readStates(context.getString(R.string.default_equipped_states));
         }
     }
 
