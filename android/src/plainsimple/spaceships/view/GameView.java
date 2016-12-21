@@ -152,7 +152,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     background.scroll((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST * 8));
                     //background.scroll(-10);
                 }
-
                 for (Sprite o : obstacles) {
                     drawSprite(o, canvas);
                 }
@@ -369,15 +368,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             spaceship = new Spaceship(BitmapCache.getData(BitmapResource.SPACESHIP, c),
                     -BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(),
                     screenH / 2 - BitmapCache.getData(BitmapResource.SPACESHIP, c).getHeight() / 2);
-            int bullet_resource = MainActivity.preferences.getInt(c.getString(R.string.equipped_bullet),
-                    R.drawable.laserbullet);
-            int rocket_resource = MainActivity.preferences.getInt(c.getString(R.string.equipped_rocket),
-                    R.drawable.rocket);
             spaceship.injectResources(animations.get(R.drawable.spaceship_move),
                     animations.get(R.drawable.spaceship_fire_rocket), new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 5, false),
                     BitmapCache.getData(BitmapResource.LASER_BULLET, c), BitmapCache.getData(BitmapResource.ROCKET, c));
-            spaceship.setBullets(true, BulletType.LASER);
-            spaceship.setRockets(true, RocketType.ROCKET);
+            spaceship.setBullets(true, GameActivity.equipment.getEquippedBulletType());
+            spaceship.setRockets(true, GameActivity.equipment.getEquippedRocketType());
             spaceship.setHP(30);
         }
 
@@ -421,6 +416,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         lastSample = System.currentTimeMillis();*/
     }
 
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    private static final String SAVE_FILE_NAME = "GAME_SAVE_FILE";
+
+    // writes all necessary data to re-create the GameView to a file
+    private void createSaveFile() {
+
+    }
     // key to SharedPreference file containing lifetime game statistics
     private String GAME_STATS_FILE_KEY = "GAME_STATS_FILE_KEY";
     // keys to data-values in the lifetime game statistics SharedPreference file
@@ -445,11 +451,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         //editor.putInt(COINS_COLLECTED, sharedPref.getInt(COINS_COLLECTED, 0) + coinsCollected);
         editor.putInt(POINTS_EARNED, sharedPref.getInt(POINTS_EARNED, 0) + GameActivity.getScore());
         editor.commit();
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 
     @Override

@@ -1,11 +1,8 @@
-package plainsimple.spaceships.util;
+package plainsimple.spaceships.util.fileio;
 
 import android.content.Context;
 
-import java.io.BufferedReader;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * File I/O methods
@@ -42,6 +39,34 @@ public class FileUtil {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    // writes serialized object to the specified file
+    public static boolean writeObject(Context context, String fileName, Object toWrite) {
+        try {
+            FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+            ObjectOutputStream os = new ObjectOutputStream(fos);
+            os.writeObject(toWrite);
+            os.close();
+            fos.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    // reads serialized object from specified file
+    public static Object readObject(Context context, String fileName) {
+        try {
+            FileInputStream fis = context.openFileInput(fileName);
+            ObjectInputStream is = new ObjectInputStream(fis);
+            Object o = is.readObject();
+            is.close();
+            fis.close();
+            return o;
+        } catch (IOException|ClassNotFoundException e) {
+            return null;
         }
     }
 }

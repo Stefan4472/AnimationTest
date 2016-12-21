@@ -15,6 +15,7 @@ import android.util.Log;
  */
 public class ImageUtil {
 
+
     // draws specified Bitmap onto canvas using given drawing parameters
     public static void drawBitmap(Canvas canvas, Bitmap toDraw, DrawParams params) {
         Rect source = new Rect(params.getX0(), params.getY0(), params.getX1(), params.getY1());

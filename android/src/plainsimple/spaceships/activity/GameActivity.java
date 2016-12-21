@@ -46,6 +46,7 @@ public class GameActivity extends Activity {
     private static boolean muted = false;
     private static int score = 0;
     private static float difficulty = 0;
+    public static Equipped equipment;
     // points a coin is worth
     public static final int COIN_VALUE = 100;
 
@@ -53,6 +54,7 @@ public class GameActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("GameActivity", "onCreate called");
         // go full screen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -61,8 +63,9 @@ public class GameActivity extends Activity {
         setContentView(R.layout.gameview_layout);
         gameView = (GameView) findViewById(R.id.spaceships); // todo: what should go in onResume()?
         gameView.setKeepScreenOn(true);
-        // read in current equipment and stuff
-
+        // read in current equipment
+        equipment = new Equipped(this);
+        // set up view elements
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pause);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
@@ -174,6 +177,7 @@ public class GameActivity extends Activity {
     @Override
     public void onPause() {
         super.onPause();
+        Log.d("GameActivity", "onPause called");
         soundPool.release();
         soundPool = null;
         // todo: persist any data
@@ -182,6 +186,7 @@ public class GameActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("GameActivity", "onResume called");
         initMedia();
         Log.d("Activity Class", "Media Initialized");
         scoreView = (FontTextView) findViewById(R.id.scoreview);
