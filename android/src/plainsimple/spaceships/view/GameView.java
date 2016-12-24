@@ -77,6 +77,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private Paint debugPaintRed = new Paint();
     private Paint debugPaintPink = new Paint();
 
+    // health bar along bottom of screen
+    private HealthBar healthBar;
+
     private SensorManager gSensorManager;
     private Sensor gyroscope;
     private long lastSample = 0;
@@ -113,6 +116,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         debugPaintPink.setColor(Color.rgb(255, 105, 180));
         debugPaintPink.setStyle(Paint.Style.STROKE);
         debugPaintPink.setStrokeWidth(3);
+
+        healthBar = new HealthBar(c, screenW, screenH, 30, 30);
     }
 
     public GameViewThread getThread() {
@@ -168,6 +173,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     drawSprite(s, canvas);
                 }
                 drawSprite(spaceship, canvas);
+                healthBar.draw(canvas);
             } catch (Exception e) {
                 System.out.print("Error drawing canvas");
             }
@@ -209,6 +215,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             GameEngineUtil.updateSprites(ssProjectiles);
             GameEngineUtil.updateSprites(alienProjectiles);
             spaceship.updateAnimations();
+            healthBar.setMovingToHealth(spaceship.getHP());
         }
 
         // creates new sprites as specified by the map
@@ -470,5 +477,28 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public void surfaceDestroyed(SurfaceHolder holder) {
         thread.setRunning(false);
         gSensorManager.unregisterListener(this);
+    }
+
+    public void saveGameState() {
+        Log.d("GameView.java", "Saving game state");
+        GameSave save = new GameSave();
+        save.saveAliens(c, aliens);
+        save.saveSpaceship(c, spaceship);
+        save.saveBullets(c, ssProjectiles);
+        save.saveAlienBullets(c, alienProjectiles);
+        save.saveCoins(c, coins);
+        save.saveObstacles(c, obstacles);
+    }
+
+    public void resumeGameState() {
+        Log.d("GameView.java", "Restoring game state");
+        GameSave load = new GameSave();
+        aliens = load.loadAliens(c);
+        spaceship = load.loadSpaceship(c);
+        obstacles = load.loadObstacles(c);
+        coins = load.loadCoins(c);
+        aliens = load.loadAliens(c);
+        ssProjectiles = load.loadBullets(c);
+        alienProjectiles = load.loadAlienBullets(c);
     }
 }

@@ -8,6 +8,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -36,6 +37,7 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("MainActivity", "onCreate Called");
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -72,6 +74,7 @@ public class MainActivity extends Activity {
     @Override
     public void onPause() {
         super.onPause();
+        Log.d("MainActivity", "onPause Called");
         mediaPlayer.release();
         mediaPlayer = null;
         soundPool.release();
@@ -81,17 +84,20 @@ public class MainActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("MainActivity", "onResume Called");
         initMedia();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        Log.d("MainActivity", "onStop Called");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d("MainActivity", "onDestroy Called");
     }
 
     // handle user pressing "Play" button

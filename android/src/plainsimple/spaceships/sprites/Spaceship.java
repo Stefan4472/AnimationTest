@@ -196,7 +196,7 @@ public class Spaceship extends Sprite {
     @Override
     public void handleCollision(Sprite s) {
         hp -= s.getDamage();
-        Log.d("Spaceship class", "Collided, took " + s.getDamage() + " damage");
+        Log.d("Spaceship class", "Collided with " + (s instanceof Alien ? "alien" : "sprite") + " at " + s.getX());
         if (hp < 0 && !explode.isPlaying()) { // todo: check when explode animation has played and use for end game logic
             explode.start();
             GameActivity.playSound(explodeSound);
