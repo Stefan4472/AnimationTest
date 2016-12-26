@@ -1,3 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Spaceships</string>
+    <string name="button_play">Play</string>
+    <string name="button_store">Store</string>
+    <string name="button_stats">Stats</string>
+    <string name="equipped_bullet">EQUIPPED_BULLET</string>
+    <string name="equipped_rocket">EQUIPPED_ROCKET</string>
+    <string name="default_equipped_states">
+        LASER_BULLET:EQUIPPED,ION_BULLET:LOCKED,PLASMA_BULLET:LOCKED,PLUTONIUM_BULLET:LOCKED,ROCKET_DEFAULT:EQUIPPED,ARMOR_DEFAULT:EQUIPPED
+    </string>
 </resources>
