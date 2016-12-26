@@ -85,7 +85,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private Paint debugPaintPink = new Paint();
 
     // health bar along bottom of screen
-    //private HealthBar healthBar;
+    private HealthBar healthBar;
 
     private SensorManager gSensorManager;
     private Sensor gyroscope;
@@ -123,8 +123,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         debugPaintPink.setColor(Color.rgb(255, 105, 180));
         debugPaintPink.setStyle(Paint.Style.STROKE);
         debugPaintPink.setStrokeWidth(3);
-
-        //healthBar = new HealthBar(c, screenW, screenH, 30, 30);
     }
 
     public GameViewThread getThread() {
@@ -180,7 +178,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     drawSprite(s, canvas);
                 }
                 drawSprite(spaceship, canvas);
-                //healthBar.draw(canvas);
+                healthBar.draw(canvas);
             } catch (Exception e) {
                 System.out.print("Error drawing canvas");
             }
@@ -222,7 +220,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             GameEngineUtil.updateSprites(ssProjectiles);
             GameEngineUtil.updateSprites(alienProjectiles);
             spaceship.updateAnimations();
-            //healthBar.setMovingToHealth(spaceship.getHP());
+            healthBar.setMovingToHealth(spaceship.getHP());
         }
 
         // creates new sprites as specified by the map
@@ -361,6 +359,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                             map = new byte[1][screenW / tileWidth];
                             tileGenerator = new TileGenerator(ROWS);
                             onTitle = false;
+                            healthBar = new HealthBar(c, screenW, screenH, 30, 30);
                         } else {
                             spaceship.setShooting(false);
                         }
