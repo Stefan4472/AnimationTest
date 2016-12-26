@@ -1,54 +1,50 @@
 package com.plainsimple.spaceships.view;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.util.DisplayMetrics;
 
 /**
- * Created by Stefan on 1/23/2016.
+ * Draws score in the top left of GameView
  */
 public class ScoreDisplay {
 
     // score to display
-    private int score = 0;
+    private int score;
     // Paint used for drawText on canvas
     private Paint paint;
-    // coordinates on canvas to start drawing score
-    private int startX;
-    private int startY;
+    // x-coordinates to start drawing score
+    private float startX;
+    // y-coordinate to start drawing score
+    private float startY;
+    // left and top padding (dp)
+    private static final int PADDING = 10;
+    // path to font file to use
+    private static final String FONT = "fonts/galax___.ttf";
+    // text size
+    private static final int TEXT_SIZE = 50;
 
-    public void setPaint(Paint paint) {
-        this.paint = paint;
-    }
-
-    public Paint getPaint() {
-        return paint;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public void setStartXY(int startX, int startY) {
-        this.startX = startX;
-        this.startY = startY;
-    }
-
-    public ScoreDisplay(int startX, int startY) {
-        this.startX = startX;
-        this.startY = startY;
+    public ScoreDisplay(Context context, int startScore) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        float padding = PADDING * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        startX = padding;
+        startY = padding + TEXT_SIZE;
+        Typeface tf = Typeface.createFromAsset(context.getAssets(),FONT);
         paint = new Paint();
         paint.setColor(Color.WHITE);
-        paint.setTextSize(44);
-        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+        paint.setTextSize(TEXT_SIZE);
+        paint.setTypeface(tf); // todo: bold?
     }
 
-    public void draw(Canvas canvas) {
-        canvas.drawText(formatNumber(score), startX, startY, paint);
+    // adds to the current score
+    public void update(int newScore) {
+        score = newScore;
     }
 
-    public String formatNumber(int toFormat) {
-        return Integer.toString(toFormat);
+    public void draw(Canvas canvas) { // todo: animations
+        canvas.drawText(Integer.toString(score), startX, startY, paint);
     }
 }

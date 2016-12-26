@@ -30,8 +30,7 @@ import plainsimple.spaceships.R;
 public class GameActivity extends Activity {
 
     private GameView gameView;
-    private static FontTextView scoreView;
-    private ImageButton pauseButton;
+     private ImageButton pauseButton;
     private ImageButton muteButton;
     private ImageButton toggleBulletButton;
     private ImageButton toggleRocketButton;
@@ -118,11 +117,6 @@ public class GameActivity extends Activity {
     public void incrementScore(int toAdd) {
         score += toAdd;
         Log.d("GameActivity Class", "Incrementing Score by " + toAdd + " to " + score);
-        runOnUiThread(new Runnable() {
-            public void run() {
-                scoreView.setText("" + score);
-            }
-        });
     }
 
     public static boolean isMuted() {
@@ -179,8 +173,6 @@ public class GameActivity extends Activity {
         gameView.resumeGameState();
         initMedia();
         Log.d("Activity Class", "Media Initialized");
-        scoreView = (FontTextView) findViewById(R.id.scoreview);
-        scoreView.setText("0");
         // todo: recreate any persisted data
     }
 

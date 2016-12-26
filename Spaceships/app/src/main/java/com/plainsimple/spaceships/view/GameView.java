@@ -87,6 +87,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     // health bar along bottom of screen
     private HealthBar healthBar;
 
+    // score display in top left of screen
+    private ScoreDisplay scoreDisplay;
+
     private SensorManager gSensorManager;
     private Sensor gyroscope;
     private long lastSample = 0;
@@ -179,6 +182,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 }
                 drawSprite(spaceship, canvas);
                 healthBar.draw(canvas);
+                scoreDisplay.draw(canvas);
             } catch (Exception e) {
                 System.out.print("Error drawing canvas");
             }
@@ -221,6 +225,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             GameEngineUtil.updateSprites(alienProjectiles);
             spaceship.updateAnimations();
             healthBar.setMovingToHealth(spaceship.getHP());
+            scoreDisplay.update(GameActivity.getScore()); // todo: clumsy
         }
 
         // creates new sprites as specified by the map
@@ -360,6 +365,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                             tileGenerator = new TileGenerator(ROWS);
                             onTitle = false;
                             healthBar = new HealthBar(c, screenW, screenH, 30, 30);
+                            scoreDisplay = new ScoreDisplay(c, 0);
                         } else {
                             spaceship.setShooting(false);
                         }
