@@ -20,18 +20,12 @@ import java.util.List;
  */
 public class Spaceship extends Sprite {
 
-    // arrowkey direction in y
-    private int dy = 0;
-    private int lastdy = 0;
-
-    // tilt of screen
-    private float tiltChange;
-    private float tiltThreshold = 0.01f;
-
+    // tilt of screen as reported by gyroscope (y-axis)
+    private float tilt;
+    private float lastTilt;
+    // minimum change to register
+    private final static float MIN_TILT_CHANGE = 0.001f;
     private float maxSpeedY = 0.01f;
-    // values to add to speed when accelerating and "decelerating"
-    private final float accelerateConst = 0.002f;
-    private final float decelerate = 0.004f;
 
     private SpriteAnimation move; // todo: resources static?
     private SpriteAnimation fireRocket;
@@ -148,41 +142,19 @@ public class Spaceship extends Sprite {
     }
 
     // sets current tilt of device and determines dy
-    public void setTiltChange(float tiltChange) {
-        this.tiltChange = tiltChange;
+    public void setTilt(float newTilt) {
+        if (newTilt - tilt >= MIN_TILT_CHANGE) {
+            lastTilt = tilt;
+            tilt = newTilt;
+        }
     }
 
     @Override
     public void updateSpeeds() {
-        // filter noise
-        if(Math.abs(tiltChange) > tiltThreshold) {
-            // negative is tilting away from player -> move up
-            // positive is tilting toward player -> move down
-            if(tiltChange > 0) {
-                dy = +1;
-            } else {
-                dy = -1;
-            }
-        } else {
-            dy = 0;
-        }
-        if (dy == 0) { // slow down
-            if (speedY < 0 && speedY > -decelerate || speedY > 0 && speedY < decelerate) {
-                speedY = 0;
-            } else if (speedY < 0) {
-                speedY += decelerate;
-            } else if (speedY > 0) {
-                speedY -= decelerate;
-            }
-        } else {
-            speedY = Math.abs(speedY);
-            if (speedY < maxSpeedY) {
-                speedY += accelerateConst * Math.abs(tiltChange); // todo: speed a factor of tilt change
-            } else if (speedY > maxSpeedY) {
-                speedY = maxSpeedY;
-            }
-            speedY *= dy;
-        }
+        // negative is tilting away from player -> move up
+        // positive is tilting toward player -> move down
+        float tiltChange = tilt - lastTilt;
+        Log.d("Spaceship.java", "Tilt is " + tilt + " and change is " + tiltChange);
     }
 
     @Override
@@ -202,7 +174,8 @@ public class Spaceship extends Sprite {
     public void handleCollision(Sprite s) {
         hp -= s.getDamage();
         Log.d("Spaceship class", "Collided with " + (s instanceof Alien ? "alien" : "sprite") + " at " + s.getX());
-        if (hp < 0 && !explode.isPlaying()) { // todo: check when explode animation has played and use for end game logic
+        if (hp < 0 && !explode.isPlaying()) { // todo: set hp <= 0 (currently < 0 for debug)
+            // todo: check when explode animation has played and use for end game logic
             explode.start();
             GameActivity.playSound(explodeSound);
         }

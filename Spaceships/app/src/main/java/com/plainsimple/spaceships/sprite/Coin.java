@@ -3,6 +3,7 @@ package com.plainsimple.spaceships.sprite;
 import android.graphics.Rect;
 import android.util.Log;
 
+import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
@@ -60,8 +61,8 @@ public class Coin extends Sprite {
     public void handleCollision(Sprite s) {
         if (s instanceof Spaceship) {
             //disappear.start();
+            GameActivity.incrementScore(GameActivity.COIN_VALUE);
             collides = false;
-            //GameActivity.incrementScore(GameActivity.COIN_VALUE);
         }
     }
 

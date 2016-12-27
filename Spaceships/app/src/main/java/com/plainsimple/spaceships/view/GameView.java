@@ -90,10 +90,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     // score display in top left of screen
     private ScoreDisplay scoreDisplay;
 
-    private SensorManager gSensorManager;
-    private Sensor gyroscope;
-    private long lastSample = 0;
-    private final static int sampleRateMS = 20;
+    //private long lastSample;
+    private float screenTilt;
 
     // sets spaceship's firing mode
     public void setFiringMode(int firingMode) {
@@ -104,14 +102,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         super(context, attributes);
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
-        // get sensor manager, check if gyroscope, get gyroscope
-        gSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        if (gSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
-            gyroscope = gSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-            gSensorManager.registerListener(this, gyroscope, 1_000_000); // todo: test with SENSOR_DELAY_NORMAL? // todo: works with Level 9 API +
-        } else {
-            Log.d("GameView Class", "No Accelerometer");
-        }
         // set up thread
         thread = new GameViewThread(holder, context, new Handler() {
             @Override
@@ -312,6 +302,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         private void updateSpaceship() {
+            spaceship.setTilt(screenTilt);
+            spaceship.updateSpeeds();
             spaceship.move();
             spaceship.updateActions();
             ssProjectiles.addAll(spaceship.getAndClearProjectiles());
@@ -330,11 +322,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             } else if (spaceship.getY() > screenH - spaceship.getHeight()) {
                 spaceship.setY(screenH - spaceship.getHeight());
             }
-        }
-
-        public void updateGyro(float yValue) {
-            spaceship.setTiltChange(yValue);
-            spaceship.updateSpeeds();
         }
 
         // handle user touching screen
@@ -422,8 +409,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         return thread.doTouchEvent(motionEvent);
     }
 
+    public void updateTilt(float newTilt) {
+        screenTilt = newTilt;
+    }
+
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) { // todo: tilt depends on default device orientation (landscape/portrait)
+        if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            screenTilt = sensorEvent.values[1]; // todo: this should be registered in GameActivity
+        }
         // restrict sample rate // todo: currently disabled (see Issue #10)
         /*if(lastSample + sampleRateMS <= System.currentTimeMillis()) {
             System.out.println(sensorEvent.values[1]);
@@ -488,7 +482,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         thread.setRunning(false);
-        gSensorManager.unregisterListener(this);
     }
 
     public void saveGameState() {

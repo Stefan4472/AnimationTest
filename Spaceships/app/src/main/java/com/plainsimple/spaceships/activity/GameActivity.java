@@ -3,6 +3,10 @@ package com.plainsimple.spaceships.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -27,10 +31,10 @@ import plainsimple.spaceships.R;
 /**
  * Created by Stefan on 10/17/2015.
  */
-public class GameActivity extends Activity {
+public class GameActivity extends Activity implements SensorEventListener {
 
     private GameView gameView;
-     private ImageButton pauseButton;
+    private ImageButton pauseButton;
     private ImageButton muteButton;
     private ImageButton toggleBulletButton;
     private ImageButton toggleRocketButton;
@@ -44,6 +48,8 @@ public class GameActivity extends Activity {
     // points a coin is worth
     public static final int COIN_VALUE = 100;
 
+    // sensor manager for gyroscope
+    private SensorManager sensorManager;
     /* Called when activity first created */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,6 +77,9 @@ public class GameActivity extends Activity {
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
         // set volume control to proper stream
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+        // get sensor manager
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
     }
 
     private void initMedia() {
@@ -114,7 +123,7 @@ public class GameActivity extends Activity {
         return score;
     }
 
-    public void incrementScore(int toAdd) {
+    public static void incrementScore(int toAdd) {
         score += toAdd;
         Log.d("GameActivity Class", "Incrementing Score by " + toAdd + " to " + score);
     }
@@ -157,12 +166,13 @@ public class GameActivity extends Activity {
 
     @Override
     public void onPause() {
-        super.onPause();
+        super.onPause(); // todo: this in last line of method?
         Log.d("GameActivity", "onPause called");
         onPausePressed(null);
         gameView.saveGameState();
         soundPool.release();
         soundPool = null;
+        sensorManager.unregisterListener(this);
         // todo: persist any data
     }
 
@@ -173,6 +183,12 @@ public class GameActivity extends Activity {
         gameView.resumeGameState();
         initMedia();
         Log.d("Activity Class", "Media Initialized");
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
+            sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
+                    SensorManager.SENSOR_DELAY_GAME); // todo: test sample rates // todo: works with Level 9 API +
+        } else {
+            Log.d("GameView Class", "No Accelerometer");
+        }
         // todo: recreate any persisted data
     }
 
@@ -181,5 +197,17 @@ public class GameActivity extends Activity {
         super.onAttachedToWindow();
         Window window = getWindow();
         window.setFormat(PixelFormat.RGBA_8888);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            gameView.updateTilt(event.values[1]); // update gameView with current screen pitch // todo: this should be registered in GameActivity
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }
