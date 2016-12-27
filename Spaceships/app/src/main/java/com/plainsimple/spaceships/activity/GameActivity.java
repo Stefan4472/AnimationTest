@@ -185,7 +185,7 @@ public class GameActivity extends Activity implements SensorEventListener {
         Log.d("Activity Class", "Media Initialized");
         if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
             sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
-                    SensorManager.SENSOR_DELAY_GAME); // todo: test sample rates // todo: works with Level 9 API +
+                    SensorManager.SENSOR_DELAY_NORMAL); // todo: test sample rates // todo: works with Level 9 API +
         } else {
             Log.d("GameView Class", "No Accelerometer");
         }
@@ -201,7 +201,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+        if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
             gameView.updateTilt(event.values[1]); // update gameView with current screen pitch // todo: this should be registered in GameActivity
         }
     }

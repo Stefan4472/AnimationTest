@@ -24,7 +24,7 @@ public class Spaceship extends Sprite {
     private float tilt;
     private float lastTilt;
     // minimum change to register
-    private final static float MIN_TILT_CHANGE = 0.001f;
+    private final static float MIN_TILT_CHANGE = 0.005f;
     private float maxSpeedY = 0.01f;
 
     private SpriteAnimation move; // todo: resources static?
@@ -143,9 +143,10 @@ public class Spaceship extends Sprite {
 
     // sets current tilt of device and determines dy
     public void setTilt(float newTilt) {
-        if (newTilt - tilt >= MIN_TILT_CHANGE) {
+        if (Math.abs(newTilt - tilt) >= MIN_TILT_CHANGE) {
             lastTilt = tilt;
             tilt = newTilt;
+            //Log.d("Spaceship", "Registered Tilt Change of " + (tilt - lastTilt));
         }
     }
 
@@ -154,7 +155,7 @@ public class Spaceship extends Sprite {
         // negative is tilting away from player -> move up
         // positive is tilting toward player -> move down
         float tiltChange = tilt - lastTilt;
-        Log.d("Spaceship.java", "Tilt is " + tilt + " and change is " + tiltChange);
+        //Log.d("Spaceship.java", "Tilt is " + tilt + " and change is " + tiltChange);
     }
 
     @Override
