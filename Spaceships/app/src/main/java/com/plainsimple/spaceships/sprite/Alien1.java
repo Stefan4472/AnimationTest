@@ -10,6 +10,8 @@ import com.plainsimple.spaceships.helper.Point2D;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Stefan on 9/26/2015.
@@ -28,7 +30,7 @@ public class Alien1 extends Alien {
     private BitmapData bulletBitmapData;
     private SpriteAnimation explodeAnimation;
 
-    public Alien1(BitmapData bitmapData, int x, int y, Spaceship spaceship) {
+    public Alien1(BitmapData bitmapData, float x, float y, Spaceship spaceship) {
         super(bitmapData, x, y);
         Log.d("Alien Class", "Alien Initialized and inBounds = " + isInBounds());
         this.spaceship = spaceship;
@@ -45,8 +47,9 @@ public class Alien1 extends Alien {
         hp = 20 + (int) (difficulty / 3);
         bulletDelay = 30;
         framesSinceLastBullet = bulletDelay;
-        bulletSpeed = -0.002f - random.nextInt(5) / 10000.0;
-        hitBox = new Rect(x + (int) (getWidth() * 0.1), y + (int) (getHeight() * 0.2), x + (int) (getWidth() * 0.9), y + (int) (getHeight() * 0.8));
+        bulletSpeed = -0.002f - random.nextInt(5) / 10000.0f;
+        hitBox = new Rect((int) (x + getWidth() * 0.1f), (int) (y + getHeight() * 0.2f),
+                (int) (x + getWidth() * 0.9f), (int) (y + getHeight() * 0.8f));
         damage = 50;
         speedX = -0.0035f;
     }
@@ -62,12 +65,13 @@ public class Alien1 extends Alien {
         if (!isInBounds()) {
             terminate = true;
             Log.d("Termination", "Removing Alien at x = " + x);
-        }
-        framesSinceLastBullet++;
-        if (distanceTo(spaceship) < 0.8 && framesSinceLastBullet >= bulletDelay) {
-            if (getP(0.2f)) {
-                fireBullet(spaceship);
-                framesSinceLastBullet = 0;
+        } else {
+            framesSinceLastBullet++;
+            if (distanceTo(spaceship) < 0.8 && framesSinceLastBullet >= bulletDelay) {
+                if (getP(0.2f)) {
+                    fireBullet(spaceship);
+                    framesSinceLastBullet = 0;
+                }
             }
         }
         /*// set collides to false after explodeAnimation has progressed five frames
@@ -83,14 +87,14 @@ public class Alien1 extends Alien {
 
     @Override
     public void updateSpeeds() {
-        double projected_y;
+        float projected_y;
         // if sprite in top half of screen, start flying down. Else start flying up
         if (startingY <= 150) {
-            projected_y = amplitude * Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
+            projected_y = amplitude * (float) Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
         } else { // todo: flying up
-            projected_y = amplitude * Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
+            projected_y = amplitude * (float) Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
         }
-        speedY = (projected_y - y) / 600; // todo: more elegant
+        speedY = (projected_y - y) / 600.0f; // todo: more elegant
         elapsedFrames++;
     }
 
@@ -116,8 +120,8 @@ public class Alien1 extends Alien {
     }
 
     @Override
-    public ArrayList<DrawParams> getDrawParams() {
-        ArrayList<DrawParams> params = new ArrayList<>();
+    public List<DrawParams> getDrawParams() {
+        List<DrawParams> params = new LinkedList<>();
         params.add(new DrawParams(bitmapData.getId(), x, y, 0, 0, getWidth(), getHeight()));
         if(explodeAnimation.isPlaying()) {
             Rect source = explodeAnimation.getCurrentFrameSrc();
@@ -130,11 +134,13 @@ public class Alien1 extends Alien {
     // that are slightly randomized
     @Override
     public void fireBullet(Sprite s) {
+        Log.d("Alien1 Class", "Firing on target at " + s.getHitboxCenter().getX() + "," + s.getHitboxCenter().getY());
         Point2D target = s.getHitboxCenter();
         AlienBullet b = new AlienBullet(bulletBitmapData, x, y + (int) (getHeight() * 0.1));
         b.setSpeedX(bulletSpeed);
-        double frames_to_impact = (x - s.getX()) / bulletSpeed;
+        float frames_to_impact = (x - target.getX()) / bulletSpeed;
         b.setSpeedY((y - target.getY()) / frames_to_impact);
+        Log.d("Alien1 Class", "Setting speedY to " + ((y - target.getY()) / frames_to_impact));
         projectiles.add(b);
     }
 }

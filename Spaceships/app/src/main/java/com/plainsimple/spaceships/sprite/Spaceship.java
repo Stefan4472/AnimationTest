@@ -83,7 +83,7 @@ public class Spaceship extends Sprite {
     }
 
     // default constructor
-    public Spaceship(BitmapData bitmapData, int x, int y) {
+    public Spaceship(BitmapData bitmapData, float x, float y) {
         super(bitmapData, x, y);
         initCraft();
     }
@@ -96,7 +96,8 @@ public class Spaceship extends Sprite {
         hp = 100;
         controllable = true;
         collides = true;
-        hitBox = new Rect(x + (int) (getWidth() * 0.17), y + (int) (getHeight() * 0.22), x + (int) (getWidth() * 0.83), y + (int) (getHeight() * 0.78));
+
+        hitBox = new Rect((int) (x + getWidth() * 0.17f), (int) (y + getHeight() * 0.22f), (int) (x + getWidth() * 0.83f), (int) (y + getHeight() * 0.78f));
         bulletSound = new SoundParams(RawResource.LASER, 1.0f, 1.0f, 1, 0, 1.0f);
         rocketSound = new SoundParams(RawResource.ROCKET, 1.0f, 1.0f, 1, 0, 1.0f);
         explodeSound = new SoundParams(RawResource.EXPLOSION, 1.0f, 1.0f, 1, 0, 1.0f);
@@ -129,15 +130,15 @@ public class Spaceship extends Sprite {
 
     // fires two rockets
     public void fireRockets() {
-        projectiles.add(new Rocket(rocketBitmapData, x + (int) (getWidth() * 0.80), y + (int) (0.29 * getHeight()), rocketType));
-        projectiles.add(new Rocket(rocketBitmapData, x + (int) (getWidth() * 0.80), y + (int) (0.65 * getHeight()), rocketType));
+        projectiles.add(new Rocket(rocketBitmapData, x + getWidth() * 0.80f, y + 0.29f * getHeight(), rocketType));
+        projectiles.add(new Rocket(rocketBitmapData, x + getWidth() * 0.80f, y + 0.65f * getHeight(), rocketType));
         GameActivity.playSound(rocketSound);
     }
 
     // fires two bullets
     public void fireBullets() {
-        projectiles.add(new Bullet(bulletBitmapData, x + (int) (getWidth() * 0.78), y + (int) (0.28 * getHeight()), bulletType));
-        projectiles.add(new Bullet(bulletBitmapData, x + (int) (getWidth() * 0.78), y + (int) (0.66 * getHeight()), bulletType));
+        projectiles.add(new Bullet(bulletBitmapData, x + getWidth() * 0.78f, y + 0.28f * getHeight(), bulletType));
+        projectiles.add(new Bullet(bulletBitmapData, x + getWidth() * 0.78f, y + 0.66f * getHeight(), bulletType));
         GameActivity.playSound(bulletSound);
     }
 

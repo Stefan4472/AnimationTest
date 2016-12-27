@@ -15,12 +15,12 @@ import java.util.*;
 public abstract class Sprite { // todo: figure out public vs. protected
 
     // coordinates of sprite
-    protected int x;
-    protected int y;
+    protected float x;
+    protected float y;
 
     // intended movement in x and y directions each frame
-    protected double speedX;
-    protected double speedY;
+    protected float speedX;
+    protected float speedY;
 
     // damage sprite can withstand
     protected int hp;
@@ -43,7 +43,7 @@ public abstract class Sprite { // todo: figure out public vs. protected
     // random number generator
     protected Random random;
 
-    public Sprite(BitmapData bitmapData, int x, int y) {
+    public Sprite(BitmapData bitmapData, float x, float y) {
         this.bitmapData = bitmapData;
         this.x = x;
         this.y = y;
@@ -74,15 +74,16 @@ public abstract class Sprite { // todo: figure out public vs. protected
     // handles collision with another sprite
     public abstract void handleCollision(Sprite s);
 
-    // returns an ArrayList specifying Bitmaps to be drawn for the sprite
-    public abstract ArrayList<DrawParams> getDrawParams();
+    // returns a list specifying Bitmaps to be drawn for the sprite
+    public abstract List<DrawParams> getDrawParams();
 
     // moves sprite using speedX and speedY, updates hitbox,
     // and checks if sprite is still visible
     public void move() {
-        x += (int) (GameView.screenW * speedX);
-        y += (int) (GameView.screenH * speedY);
-        hitBox.offset((int) (GameView.screenW * speedX), (int) (GameView.screenH * speedY));
+        x += GameView.screenW * speedX;
+        y += GameView.screenH * speedY;
+        hitBox.set((int) x, (int) y, (int) (x + hitBox.width()), (int) (y + hitBox.height()));
+        //hitBox.offset(GameView.screenW * speedX, GameView.screenH * speedY);
     }
 
     // checks whether sprite's image is withing the screen bounds
@@ -141,17 +142,15 @@ public abstract class Sprite { // todo: figure out public vs. protected
     }
 
     // changes x-coordinate and updates hitbox as well
-    public void setX(int x) {
-        int dx = x - this.x;
+    public void setX(float x) {
         this.x = x;
-        hitBox.offset(dx, 0);
+        hitBox.set((int) x, (int) y, (int) (x + hitBox.width()), (int) (y + hitBox.height()));
     }
 
     // changes y-coordinate and updates hitbox as well
-    public void setY(int y) { // todo: see if hitBox change is necessary - shouldn't be or should be in a separate method
-        int dy = y - this.y;
+    public void setY(float y) { // todo: see if hitBox change is necessary - shouldn't be or should be in a separate method
         this.y = y;
-        hitBox.offset(0, dy);
+        hitBox.set((int) x, (int) y, (int) (x + hitBox.width()), (int) (y + hitBox.height()));
     }
 
     public BitmapData getBitmapData() {
@@ -162,11 +161,11 @@ public abstract class Sprite { // todo: figure out public vs. protected
         this.bitmapData = bitmapData;
     }
 
-    public void setSpeedX(double speedX) {
+    public void setSpeedX(float speedX) {
         this.speedX = speedX;
     }
 
-    public void setSpeedY(double speedY) {
+    public void setSpeedY(float speedY) {
         this.speedY = speedY;
     }
 

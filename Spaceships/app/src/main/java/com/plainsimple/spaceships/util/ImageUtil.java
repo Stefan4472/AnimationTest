@@ -20,9 +20,9 @@ public class ImageUtil {
 
     // draws specified Bitmap onto canvas using given drawing parameters
     public static void drawBitmap(Canvas canvas, Bitmap toDraw, DrawParams params) {
-        Rect source = new Rect(params.getX0(), params.getY0(), params.getX1(), params.getY1());
-        Rect destination = new Rect(params.getCanvasX0(), params.getCanvasY0(),
-                params.getCanvasX0() + source.width(), params.getCanvasY0() + source.height());
+        Rect source = new Rect((int ) params.getX0(), (int) params.getY0(), (int) params.getX1(), (int) params.getY1());
+        Rect destination = new Rect((int) params.getCanvasX0(), (int) params.getCanvasY0(),
+                (int) params.getCanvasX0() + source.width(), (int) params.getCanvasY0() + source.height());
         canvas.drawBitmap(toDraw, source, destination, null);
     }
 

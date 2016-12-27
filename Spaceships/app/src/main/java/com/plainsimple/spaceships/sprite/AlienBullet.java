@@ -13,14 +13,14 @@ import java.util.ArrayList;
  */
 public class AlienBullet extends Sprite {
 
-    public AlienBullet(BitmapData bitmapData, int x, int y) {
+    public AlienBullet(BitmapData bitmapData, float x, float y) {
         super(bitmapData, x, y);
         initAlienBullet();
     }
 
     private void initAlienBullet() {
         // todo: change size for better-looking hit detection? (see Issue #13)
-        hitBox = new Rect(x, y, x + getWidth(), y + getHeight());
+        hitBox = new Rect((int) x, (int) y, (int) (x + getWidth()), (int) (y + getHeight()));
         damage = 10; // todo: change back to 20
     }
 

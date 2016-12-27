@@ -18,7 +18,7 @@ public class Coin extends Sprite {
     private SpriteAnimation spin;
     private SpriteAnimation disappear;
 
-    public Coin(BitmapData bitmapData, SpriteAnimation spinAnimation, SpriteAnimation disappearAnimation, int x, int y) {
+    public Coin(BitmapData bitmapData, SpriteAnimation spinAnimation, SpriteAnimation disappearAnimation, float x, float y) {
         super(bitmapData, x, y);
         //spin = new SpriteAnimation(spinAnimation, width, height, 5, true);
         spin = spinAnimation;
@@ -29,7 +29,7 @@ public class Coin extends Sprite {
     }
 
     private void initObstacle() {
-        hitBox = new Rect(x + (int) (getWidth() * 0.3), y + (int) (getHeight() * 0.1), x + (int) (getWidth() * 0.7), y + (int) (getHeight() * 0.9));
+        hitBox = new Rect((int) (x + getWidth() * 0.3f), (int) (y + getHeight() * 0.1f), (int) (x + getWidth() * 0.7f), (int) (y + getHeight() * 0.9f));
     }
 
     @Override

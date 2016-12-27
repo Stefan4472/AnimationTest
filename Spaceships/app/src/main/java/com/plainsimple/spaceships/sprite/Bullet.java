@@ -14,9 +14,9 @@ import java.util.ArrayList;
  */
 public class Bullet extends Sprite {
 
-    public Bullet(BitmapData bitmapData, int x, int y, BulletType bulletType) {
+    public Bullet(BitmapData bitmapData, float x, float y, BulletType bulletType) {
         super(bitmapData, x, y);
-        hitBox = new Rect(x + (int) (getWidth() * 0.7), y - (int) (getHeight() * 0.2), x + (int) (getWidth() * 1.5), y + (int) (getHeight() * 1.2));
+        hitBox = new Rect((int) (x + getWidth() * 0.7f), (int) (y -getHeight() * 0.2f), (int) (x + getWidth() * 1.5f), (int) (y + getHeight() * 1.2f));
         damage = bulletType.getDamage();
         speedX = bulletType.getSpeedX();
     }

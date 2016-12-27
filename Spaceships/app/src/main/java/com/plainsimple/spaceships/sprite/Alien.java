@@ -1,11 +1,9 @@
 package com.plainsimple.spaceships.sprite;
 
-import android.graphics.Rect;
-
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.DrawParams;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -17,8 +15,8 @@ public abstract class Alien extends Sprite {
     protected int bulletDelay;
     protected int framesSinceLastBullet = 0;
 
-    protected double bulletSpeed;
-    protected List<Sprite> projectiles = new ArrayList<>();
+    protected float bulletSpeed;
+    protected List<Sprite> projectiles = new LinkedList<>();
 
     // frames since alien was constructed
     // used for calculating trajectory
@@ -26,13 +24,13 @@ public abstract class Alien extends Sprite {
 
     // starting y-coordinate
     // used as a reference for calculating trajectory
-    protected double startingY;
+    protected float startingY;
 
     public List<Sprite> getProjectiles() {
         return projectiles;
     }
     public List<Sprite> getAndClearProjectiles() {
-        List<Sprite> copy = new ArrayList<>();
+        List<Sprite> copy = new LinkedList<>();
         for(Sprite p : projectiles) {
             copy.add(p);
         }
@@ -40,7 +38,7 @@ public abstract class Alien extends Sprite {
         return copy;
     }
 
-    public Alien(BitmapData bitmapData, int x, int y) {
+    public Alien(BitmapData bitmapData, float x, float y) {
         super(bitmapData, x, y);
     }
 
@@ -60,7 +58,7 @@ public abstract class Alien extends Sprite {
     public abstract void handleCollision(Sprite s);
 
     @Override
-    public abstract ArrayList<DrawParams> getDrawParams();
+    public abstract List<DrawParams> getDrawParams();
 
     // fires bullet/projectile at specified sprite
     public abstract void fireBullet(Sprite s); // todo: unnecessary

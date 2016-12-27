@@ -13,13 +13,9 @@ import java.util.ArrayList;
  */
 public class Obstacle extends Sprite {
 
-    public Obstacle(BitmapData bitmapData, int x, int y) {
+    public Obstacle(BitmapData bitmapData, float x, float y) {
         super(bitmapData, x, y);
-        initObstacle();
-    }
-
-    private void initObstacle() {
-        hitBox = new Rect(x, y, x + getWidth(), y + getHeight());
+        hitBox = new Rect((int) x, (int) y, (int) x + getWidth(), (int) y + getHeight());
         damage = Integer.MAX_VALUE;
     }
 

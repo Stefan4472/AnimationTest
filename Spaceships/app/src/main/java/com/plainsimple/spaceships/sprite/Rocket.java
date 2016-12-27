@@ -14,9 +14,9 @@ import java.util.ArrayList;
  */
 public class Rocket extends Sprite {
 
-    public Rocket(BitmapData bitmapData, int x, int y, RocketType rocketType) {
+    public Rocket(BitmapData bitmapData, float x, float y, RocketType rocketType) {
         super(bitmapData, x, y);
-        hitBox = new Rect(x + (int) (getWidth() * 0.7), y - (int) (getHeight() * 0.2), x + (int) (getWidth() * 1.5), y + (int) (getHeight() * 1.2));
+        hitBox = new Rect((int) (x + getWidth() * 0.7f), (int) (y - getHeight() * 0.2f), (int) (x + getWidth() * 1.5f), (int) (y + getHeight() * 1.2f));
         speedX = rocketType.getSpeedX();
         damage = rocketType.getDamage();
     }
