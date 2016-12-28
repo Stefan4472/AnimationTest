@@ -6,6 +6,7 @@ import android.util.Log;
 import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.Point2D;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 
@@ -48,8 +49,9 @@ public class Alien1 extends Alien {
         bulletDelay = 30;
         framesSinceLastBullet = bulletDelay;
         bulletSpeed = -0.002f - random.nextInt(5) / 10000.0f;
-        hitBox = new Rect((int) (x + getWidth() * 0.1f), (int) (y + getHeight() * 0.2f),
-                (int) (x + getWidth() * 0.9f), (int) (y + getHeight() * 0.8f));
+        hitBox = new Hitbox(x + getWidth() * 0.2f, y + getHeight() * 0.2f, x + getWidth() * 0.8f, y + getHeight() * 0.8f);
+        //Log.d("Alien1.java", "hitBox initialized to " + hitBox.flattenToString());
+        //Log.d("Alien1.java", "Alien is at " + x + "," + y + " with dimens. " + getWidth() + "," + getHeight());
         damage = 50;
         speedX = -0.0035f;
     }

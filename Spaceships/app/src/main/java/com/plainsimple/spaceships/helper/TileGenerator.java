@@ -81,7 +81,7 @@ public class TileGenerator {
         for (int i = 0; i < size; i++) {
             if (getP(0.2f)) {
                 generated[row][i] = OBSTACLE;
-                // generate another obstacle to the right
+                // generate another obstacle to the x1
                 if (i + 1 < size && getP(0.5)) {
                     generated[row][i + 1] = OBSTACLE;
                 }

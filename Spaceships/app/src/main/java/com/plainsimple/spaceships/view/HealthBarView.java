@@ -23,7 +23,7 @@ public class HealthBarView extends View {
     int width;
     // height of health bar on screen
     int height;
-    // used to draw the health bar
+    // used to getDrawParams the health bar
     Paint paint;
     // used to determine lower and upper bounds of rgb values
     private int blue = 0;
@@ -100,7 +100,7 @@ public class HealthBarView extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
-        // draw bounding rectangle of health bar
+        // getDrawParams bounding rectangle of health bar
         paint.setColor(Color.GRAY);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(height * 0.1f);
@@ -113,11 +113,11 @@ public class HealthBarView extends View {
             Log.d("HealthBarView", "Currenthealth now at " + currentHealth + " and moving to " + movingToHealth);
             invalidate();
         }
-        // draw the filling of the health bar
+        // getDrawParams the filling of the health bar
         paint.setColor(getHealthBarColor());
         paint.setStyle(Paint.Style.FILL);
         canvas.drawRect(height * 0.1f, height * 0.1f, height * 0.1f + (currentHealth / (float) fullHealth) * (width - height * 0.1f), height * 0.9f, paint);
-        // draw label on hitbar showing current health vs. full health
+        // getDrawParams label on hitbar showing current health vs. full health
         paint.setColor(Color.GRAY);
         paint.setTextSize(height * 0.8f);
         // todo: better calculate where to position text

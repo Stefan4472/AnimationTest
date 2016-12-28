@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.RocketType;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class Rocket extends Sprite {
 
     public Rocket(BitmapData bitmapData, float x, float y, RocketType rocketType) {
         super(bitmapData, x, y);
-        hitBox = new Rect((int) (x + getWidth() * 0.7f), (int) (y - getHeight() * 0.2f), (int) (x + getWidth() * 1.5f), (int) (y + getHeight() * 1.2f));
+        hitBox = new Hitbox(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
         speedX = rocketType.getSpeedX();
         damage = rocketType.getDamage();
     }

@@ -45,7 +45,7 @@ public class SlideInTransition extends ImageTransition {
             // count total thresholds on the screen, including in last row
             float total_thresholds = (numRows - 1) + 1.0f / threshold;
             float num_thresholds = total_thresholds * completion;
-            // draw from bottom to top
+            // getDrawParams from bottom to top
             for (int i = 0; i < numRows && i <= num_thresholds; i++) {
                 // represents section of the row on canvas that is in transition
                 Rect src = new Rect(0, (numRows - i - 1) * row_height,

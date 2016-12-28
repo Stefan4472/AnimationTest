@@ -32,7 +32,7 @@ public class HealthBar {
     float startY;
     // left, right, and bottom padding (dp)
     private static final int PADDING = 10;
-    // used to draw the health bar
+    // used to getDrawParams the health bar
     Paint paint;
     // used to determine lower and upper bounds of rgb values
     private int blue = 0;
@@ -109,7 +109,7 @@ public class HealthBar {
     }*/
 
     public void draw(Canvas canvas) {
-        // draw bounding rectangle of health bar
+        // getDrawParams bounding rectangle of health bar
         paint.setColor(Color.GRAY);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(height * 0.1f);
@@ -121,14 +121,14 @@ public class HealthBar {
             currentHealth -= (double) (currentHealth - movingToHealth) * 0.2;
             //Log.d("HealthBarView", "Currenthealth now at " + currentHealth + " and moving to " + movingToHealth);
         }
-        // draw the filling of the health bar
+        // getDrawParams the filling of the health bar
         paint.setColor(getHealthBarColor());
         paint.setStyle(Paint.Style.FILL);
         float inner_padding = height * 0.1f;
         canvas.drawRect(startX + inner_padding, startY + inner_padding,
                 startX + inner_padding + (currentHealth / (float) fullHealth) * (width - height * 0.1f),
                 startY + height - inner_padding, paint);
-        // draw label on hitbar showing current health vs. full health
+        // getDrawParams label on hitbar showing current health vs. full health
         paint.setColor(Color.GRAY);
         paint.setTextSize(height * 0.8f);
         // todo: better calculate where to position text

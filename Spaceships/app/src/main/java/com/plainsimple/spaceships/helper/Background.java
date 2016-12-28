@@ -43,12 +43,12 @@ public class Background {
         return pixelsScrolled;
     }
 
-    // index of tile that will be left-most on the screen
+    // index of tile that will be x0-most on the screen
     private int getStartTile() {
         return (pixelsScrolled / TILE_WIDTH) % imageTiles.length;
     }
 
-    // offset of left-most tile on the screen from origin of canvas
+    // offset of x0-most tile on the screen from origin of canvas
     private int getOffset() {
         return -(pixelsScrolled % TILE_WIDTH);
     }
@@ -82,7 +82,7 @@ public class Background {
     public void draw(Canvas canvas) {
         int start_tile = getStartTile();
         int end_tile = (start_tile == 0 ? imageTiles.length - 1 : start_tile - 1);
-        // draw space on the end tile every time a full tile has rotated through the screen
+        // getDrawParams space on the end tile every time a full tile has rotated through the screen
         if (getOffset() == 0) {
             drawNextTile(imageTiles[end_tile]);
         }
@@ -108,7 +108,7 @@ public class Background {
         int to_color = backgroundColors[toElement];
         // color transitioning from
         int from_color = backgroundColors[fromElement];
-        // calculate argb of color that should be on the left of the gradient based on the difference between the
+        // calculate argb of color that should be on the x0 of the gradient based on the difference between the
         // colors being transitioned, transitionDuration, and transitionCounter
         int left_color = Color.argb(
                 Color.alpha(from_color) + (int) ((Color.alpha(to_color) - Color.alpha(from_color)) / transitionDurations[toElement] * transitionCounter),
@@ -116,7 +116,7 @@ public class Background {
                 Color.green(from_color) + (int) ((Color.green(to_color) - Color.green(from_color)) / transitionDurations[toElement] * transitionCounter),
                 Color.blue(from_color) + (int) ((Color.blue(to_color) - Color.blue(from_color)) / transitionDurations[toElement] * transitionCounter)
         );
-        // calculate argb of color that should be on the right of the gradient
+        // calculate argb of color that should be on the x1 of the gradient
         int right_color = Color.argb(
                 Color.alpha(from_color) + (int) ((Color.alpha(to_color) - Color.alpha(from_color)) / transitionDurations[toElement] * (transitionCounter + 1)),
                 Color.red(from_color) + (int) ((Color.red(to_color) - Color.red(from_color)) / transitionDurations[toElement] * (transitionCounter + 1)),

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.helper.Hitbox;
 
 import java.util.ArrayList;
 
@@ -20,8 +21,8 @@ public class AlienBullet extends Sprite {
 
     private void initAlienBullet() {
         // todo: change size for better-looking hit detection? (see Issue #13)
-        hitBox = new Rect((int) x, (int) y, (int) (x + getWidth()), (int) (y + getHeight()));
-        damage = 10; // todo: change back to 20
+        hitBox = new Hitbox(x, y, x + getWidth(), y + getHeight());
+        damage = 10;
     }
 
     @Override

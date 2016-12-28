@@ -4,6 +4,7 @@ import android.graphics.Rect;;
 
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.Point2D;
 import com.plainsimple.spaceships.view.GameView;
 
@@ -35,7 +36,7 @@ public abstract class Sprite { // todo: figure out public vs. protected
     protected boolean terminate;
 
     // hitbox for collision detection todo: complex shapes
-    protected Rect hitBox;
+    protected Hitbox hitBox;
 
     // data concerning sprite's default Bitmap
     protected BitmapData bitmapData;
@@ -56,7 +57,7 @@ public abstract class Sprite { // todo: figure out public vs. protected
         terminate = false;
         speedX = 0.0f;
         speedY = 0.0f;
-        hitBox = new Rect();
+        hitBox = new Hitbox(0, 0, 0, 0);
         random = new Random();
         damage = 0;
         hp = 0;
@@ -74,16 +75,15 @@ public abstract class Sprite { // todo: figure out public vs. protected
     // handles collision with another sprite
     public abstract void handleCollision(Sprite s);
 
-    // returns a list specifying Bitmaps to be drawn for the sprite
+    // draws sprite onto given canvas
     public abstract List<DrawParams> getDrawParams();
 
     // moves sprite using speedX and speedY, updates hitbox,
     // and checks if sprite is still visible
     public void move() {
-        x += GameView.screenW * speedX;
+        x += GameView.screenW * speedX; // todo: find a fix
         y += GameView.screenH * speedY;
-        hitBox.set((int) x, (int) y, (int) (x + hitBox.width()), (int) (y + hitBox.height()));
-        //hitBox.offset(GameView.screenW * speedX, GameView.screenH * speedY);
+        hitBox.offset(GameView.screenW * speedX, GameView.screenH * speedY);
     }
 
     // checks whether sprite's image is withing the screen bounds
@@ -103,7 +103,7 @@ public abstract class Sprite { // todo: figure out public vs. protected
         if (!collides || !s.collides) {
             return false;
         } else {
-            return Rect.intersects(hitBox, s.hitBox);
+            return hitBox.intersects(s.hitBox);
         }
     }
 
@@ -115,8 +115,8 @@ public abstract class Sprite { // todo: figure out public vs. protected
 
     // returns coordinates of center of sprite's hitbox
     // as a Point2D object
-    public Point2D getHitboxCenter() {
-        return new Point2D(hitBox.left + hitBox.width() / 2, hitBox.right + hitBox.height() / 2);
+    public Point2D getHitboxCenter() { // todo: remove?
+        return hitBox.getCenter();
     }
 
     public boolean getP(double probability) {
@@ -143,14 +143,16 @@ public abstract class Sprite { // todo: figure out public vs. protected
 
     // changes x-coordinate and updates hitbox as well
     public void setX(float x) {
+        float dx = x - this.x;
         this.x = x;
-        hitBox.set((int) x, (int) y, (int) (x + hitBox.width()), (int) (y + hitBox.height()));
+        hitBox.offset(dx, 0);
     }
 
     // changes y-coordinate and updates hitbox as well
     public void setY(float y) { // todo: see if hitBox change is necessary - shouldn't be or should be in a separate method
+        float dy = y - this.y;
         this.y = y;
-        hitBox.set((int) x, (int) y, (int) (x + hitBox.width()), (int) (y + hitBox.height()));
+        hitBox.offset(0, dy);
     }
 
     public BitmapData getBitmapData() {
@@ -169,7 +171,7 @@ public abstract class Sprite { // todo: figure out public vs. protected
         this.speedY = speedY;
     }
 
-    public Rect getHitBox() {
+    public Hitbox getHitBox() {
         return hitBox;
     }
 

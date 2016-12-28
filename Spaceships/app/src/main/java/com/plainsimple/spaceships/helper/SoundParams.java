@@ -7,9 +7,9 @@ public class SoundParams {
 
     // ID of raw resource to be played
     private RawResource resourceID;
-    // left volume value (range = 0.0 to 1.0)
+    // x0 volume value (range = 0.0 to 1.0)
     private float leftVolume;
-    // right volume value (range = 0.0 to 1.0)
+    // x1 volume value (range = 0.0 to 1.0)
     private float rightVolume;
     // stream priority (0 = lowest priority)
     private int priority;

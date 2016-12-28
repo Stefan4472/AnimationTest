@@ -27,7 +27,7 @@ public class MainActivity extends Activity {
     public static SharedPreferences preferences;
 
     // todo: background animation
-    // animation in background that pushes in galaxy draw
+    // animation in background that pushes in galaxy getDrawParams
     private SlideInTransition slideIn;
     // used to play background song
     private MediaPlayer mediaPlayer;

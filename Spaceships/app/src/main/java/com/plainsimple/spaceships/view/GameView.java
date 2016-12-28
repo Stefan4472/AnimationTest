@@ -10,7 +10,6 @@ import android.graphics.Paint;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -185,9 +184,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 ImageUtil.drawBitmap(canvas, BitmapCache.getImage(img_params.getBitmapID(), c), img_params);
             }
             if (sprite.collides()) {
-                canvas.drawRect(sprite.getHitBox(), debugPaintRed);
+                canvas.drawRect(sprite.getHitBox().getX(), sprite.getHitBox().getY(),
+                        sprite.getHitBox().getX() + sprite.getHitBox().getWidth(),
+                        sprite.getHitBox().getY() + sprite.getHitBox().getHeight(), debugPaintRed);
             } else {
-                canvas.drawRect(sprite.getHitBox(), debugPaintPink);
+                canvas.drawRect(sprite.getHitBox().getX(), sprite.getHitBox().getY(),
+                        sprite.getHitBox().getX() + sprite.getHitBox().getWidth(),
+                        sprite.getHitBox().getY() + sprite.getHitBox().getHeight(), debugPaintPink);
             }
         }
 

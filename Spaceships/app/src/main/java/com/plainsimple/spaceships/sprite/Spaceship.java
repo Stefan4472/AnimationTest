@@ -7,6 +7,7 @@ import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BulletType;
 import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.RawResource;
 import com.plainsimple.spaceships.helper.RocketType;
 import com.plainsimple.spaceships.helper.SoundParams;
@@ -97,7 +98,7 @@ public class Spaceship extends Sprite {
         controllable = true;
         collides = true;
 
-        hitBox = new Rect((int) (x + getWidth() * 0.17f), (int) (y + getHeight() * 0.22f), (int) (x + getWidth() * 0.83f), (int) (y + getHeight() * 0.78f));
+        hitBox = new Hitbox(x + getWidth() * 0.17f, y + getHeight() * 0.22f, x + getWidth() * 0.83f, y + getHeight() * 0.78f);
         bulletSound = new SoundParams(RawResource.LASER, 1.0f, 1.0f, 1, 0, 1.0f);
         rocketSound = new SoundParams(RawResource.ROCKET, 1.0f, 1.0f, 1, 0, 1.0f);
         explodeSound = new SoundParams(RawResource.EXPLOSION, 1.0f, 1.0f, 1, 0, 1.0f);

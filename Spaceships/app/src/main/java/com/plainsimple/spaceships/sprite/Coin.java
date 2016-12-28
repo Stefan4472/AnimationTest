@@ -6,6 +6,7 @@ import android.util.Log;
 import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class Coin extends Sprite {
     }
 
     private void initObstacle() {
-        hitBox = new Rect((int) (x + getWidth() * 0.3f), (int) (y + getHeight() * 0.1f), (int) (x + getWidth() * 0.7f), (int) (y + getHeight() * 0.9f));
+        hitBox = new Hitbox(x + getWidth() * 0.3f, y + getHeight() * 0.1f, x + getWidth() * 0.7f, y + getHeight() * 0.9f);
     }
 
     @Override

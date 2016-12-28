@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.helper.Hitbox;
 
 import java.util.ArrayList;
 
@@ -15,7 +16,7 @@ public class Obstacle extends Sprite {
 
     public Obstacle(BitmapData bitmapData, float x, float y) {
         super(bitmapData, x, y);
-        hitBox = new Rect((int) x, (int) y, (int) x + getWidth(), (int) y + getHeight());
+        hitBox = new Hitbox(x, y, x + getWidth(), y + getHeight());
         damage = Integer.MAX_VALUE;
     }
 
