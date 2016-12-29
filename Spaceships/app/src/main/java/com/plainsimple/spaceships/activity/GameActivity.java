@@ -1,6 +1,7 @@
 package com.plainsimple.spaceships.activity;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.hardware.Sensor;
@@ -10,6 +11,7 @@ import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -31,7 +33,7 @@ import plainsimple.spaceships.R;
 /**
  * Created by Stefan on 10/17/2015.
  */
-public class GameActivity extends Activity implements SensorEventListener {
+public class GameActivity extends FragmentActivity implements SensorEventListener, PauseDialogFragment.PauseDialogListener {
 
     private GameView gameView;
     private ImageButton pauseButton;
@@ -112,6 +114,10 @@ public class GameActivity extends Activity implements SensorEventListener {
             pauseButton.setBackgroundResource(R.drawable.play);
             paused = true;
             soundPool.autoPause();
+            // display pause dialog
+            DialogFragment dialog = new PauseDialogFragment();
+            dialog.show(getFragmentManager(), "PauseDialogFragment");
+            //dialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
         }
     }
 
@@ -187,7 +193,7 @@ public class GameActivity extends Activity implements SensorEventListener {
             sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
                     SensorManager.SENSOR_DELAY_NORMAL); // todo: test sample rates // todo: works with Level 9 API +
         } else {
-            Log.d("GameView Class", "No Accelerometer");
+            Log.d("GameView Class", "No Gyroscope");
         }
         // todo: recreate any persisted data
     }
@@ -209,5 +215,19 @@ public class GameActivity extends Activity implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    @Override // pause dialog -- clicked resume
+    public void onPausePositiveClick(DialogFragment dialog) {
+        Log.d("GameActivity", "Player Clicked to Resume Game");
+        dialog.dismiss();
+        onPausePressed(null);
+    }
+
+    @Override // pause dialog -- clicked quit
+    public void onPauseNegativeClick(DialogFragment dialog) {
+        Log.d("GameActivity", "Player Clicked to Quit Game");
+        dialog.dismiss();
+        onPausePressed(null);
     }
 }
