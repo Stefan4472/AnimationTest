@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <!-- Title -->
+    <com.plainsimple.spaceships.view.FontTextView
+        style="@style/GalaxyMonkey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="70dp"
+        android:layout_marginTop="10dp"
+        android:textColor="#ffb30f"
+        android:text="@string/paused"
+        android:gravity="center"
+        android:includeFontPadding="false" />
+    <!-- Resume Button -->
+    <!--<com.plainsimple.spaceships.view.FontButton
+        style="@style/Andromeda.MenuStyle"
+        android:id="@+id/resumebutton"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/button_play"
+        android:onClick="onResumePressed"/>-->
+</LinearLayout>

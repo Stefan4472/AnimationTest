@@ -6,6 +6,9 @@
     <string name="button_stats">Stats</string>
     <string name="equipped_bullet">EQUIPPED_BULLET</string>
     <string name="equipped_rocket">EQUIPPED_ROCKET</string>
+    <string name="paused">Paused</string>
+    <string name="resume">Resume</string>
+    <string name="quit">Quit</string>
     <string name="default_equipped_states">
         LASER_BULLET:EQUIPPED,ION_BULLET:LOCKED,PLASMA_BULLET:LOCKED,PLUTONIUM_BULLET:LOCKED,ROCKET_DEFAULT:EQUIPPED,ARMOR_DEFAULT:EQUIPPED
     </string>
