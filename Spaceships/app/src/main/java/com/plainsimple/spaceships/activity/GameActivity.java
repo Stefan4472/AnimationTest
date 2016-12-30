@@ -40,6 +40,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     private ImageButton muteButton;
     private ImageButton toggleBulletButton;
     private ImageButton toggleRocketButton;
+    private FontTextView pausedText;
     private static SoundPool soundPool;
     private static Hashtable<RawResource, Integer> soundIDs;
     private static boolean paused = false;
@@ -77,6 +78,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
+        pausedText = (FontTextView) findViewById(R.id.pausedNotification);
         // set volume control to proper stream
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -106,17 +108,19 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
 
     // handle user pressing pause button
     public void onPausePressed(View view) {
-        if(paused) {
+        if(paused) { // unpause
             pauseButton.setBackgroundResource(R.drawable.pause);
             paused = false;
             soundPool.autoResume();
-        } else {
+            pausedText.setVisibility(View.GONE);
+        } else { // pause
             pauseButton.setBackgroundResource(R.drawable.play);
             paused = true;
             soundPool.autoPause();
-            // display pause dialog
+            pausedText.setVisibility(View.VISIBLE);
+            /*// display pause dialog
             DialogFragment dialog = new PauseDialogFragment();
-            dialog.show(getFragmentManager(), "PauseDialogFragment");
+            dialog.show(getFragmentManager(), "PauseDialogFragment");*/
         }
     }
 

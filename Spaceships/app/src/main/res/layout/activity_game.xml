@@ -60,5 +60,18 @@
                     android:layout_marginBottom="30dp"
                     android:onClick="onToggleRocketPressed"
                     style="?android:attr/borderlessButtonStyle" />
+                <!-- "paused"-displays when game is paused -->
+                <com.plainsimple.spaceships.view.FontTextView
+                    style="@style/GalaxyMonkey"
+                    android:id="@+id/pausedNotification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="55dp"
+                    android:textColor="#ffb30f"
+                    android:text="@string/paused"
+                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="gone"/>
         </RelativeLayout>
+
 </RelativeLayout>
