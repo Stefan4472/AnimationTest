@@ -4,11 +4,13 @@ import android.graphics.Rect;
 import android.util.Log;
 
 import com.plainsimple.spaceships.helper.BitmapData;
+import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.RocketType;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Stefan on 8/13/2015.
@@ -49,9 +51,9 @@ public class Rocket extends Sprite {
     }
 
     @Override
-    public ArrayList<DrawParams> getDrawParams() {
-        ArrayList<DrawParams> params = new ArrayList<>();
-        params.add(new DrawParams(bitmapData.getId(), x, y, 0, 0, getWidth(), getHeight()));
-        return params;
+    public List<DrawParams> getDrawParams() {
+        drawParams.clear();
+        drawParams.add(new DrawImage(bitmapData.getId(), x, y));
+        return drawParams;
     }
 }

@@ -16,6 +16,12 @@ public class DrawImage implements DrawParams {
     // y-coordinate where drawing begins on canvas
     private float canvasY0;
 
+    public DrawImage(BitmapResource bitmapID, float canvasX0, float canvasY0) {
+        this.bitmapID = bitmapID;
+        this.canvasX0 = canvasX0;
+        this.canvasY0 = canvasY0;
+    }
+
     @Override
     public void draw(Canvas canvas, Context context) {
         canvas.drawBitmap(BitmapCache.getImage(bitmapID, context), canvasX0, canvasY0, null);

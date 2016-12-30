@@ -41,8 +41,11 @@ public abstract class Sprite { // todo: figure out public vs. protected
     // data concerning sprite's default Bitmap
     protected BitmapData bitmapData;
 
+    // list of DrawParams (instructions on how to draw the sprite)
+    protected List<DrawParams> drawParams = new LinkedList<>();
+
     // random number generator
-    protected Random random;
+    protected static Random random;
 
     public Sprite(BitmapData bitmapData, float x, float y) {
         this.bitmapData = bitmapData;

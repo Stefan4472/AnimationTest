@@ -18,13 +18,13 @@ import com.plainsimple.spaceships.helper.DrawParams;
 public class ImageUtil {
 
 
-    // draws specified Bitmap onto canvas using given drawing parameters
+    /*// draws specified Bitmap onto canvas using given drawing parameters
     public static void drawBitmap(Canvas canvas, Bitmap toDraw, DrawParams params) {
         Rect source = new Rect((int ) params.getX0(), (int) params.getY0(), (int) params.getX1(), (int) params.getY1());
         Rect destination = new Rect((int) params.getCanvasX0(), (int) params.getCanvasY0(),
                 (int) params.getCanvasX0() + source.width(), (int) params.getCanvasY0() + source.height());
         canvas.drawBitmap(toDraw, source, destination, null);
-    }
+    }*/
 
     // creates a linear gradient across the Bitmap from left to right using the specified colors
     public static void drawGradient(Bitmap b, int leftColor, int rightColor) {

@@ -6,7 +6,9 @@ import android.util.Log;
 import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BulletType;
+import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.RawResource;
 import com.plainsimple.spaceships.helper.RocketType;
@@ -185,23 +187,23 @@ public class Spaceship extends Sprite {
     }
 
     @Override
-    public ArrayList<DrawParams> getDrawParams() {
-        ArrayList<DrawParams> params = new ArrayList<>();
+    public List<DrawParams> getDrawParams() {
+        drawParams.clear();
         // define specifications for defaultImage
-        params.add(new DrawParams(bitmapData.getId(), x, y, 0, 0, getWidth(), getHeight()));
+        drawParams.add(new DrawImage(bitmapData.getId(), x, y));
         Rect source;
         if (moving) {
             source = move.getCurrentFrameSrc();
-            params.add(new DrawParams(move.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
+            drawParams.add(new DrawSubImage(move.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
         }
         if (fireRocket.isPlaying()) {
             source = fireRocket.getCurrentFrameSrc();
-            params.add(new DrawParams(fireRocket.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
+            drawParams.add(new DrawSubImage(fireRocket.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
         }
         if (explode.isPlaying()) {
             source = explode.getCurrentFrameSrc();
-            params.add(new DrawParams(explode.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
+            drawParams.add(new DrawSubImage(explode.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
         }
-        return params;
+        return drawParams;
     }
 }

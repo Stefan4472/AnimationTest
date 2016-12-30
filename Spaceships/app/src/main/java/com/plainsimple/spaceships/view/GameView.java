@@ -177,11 +177,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             }
         }
 
+        List<DrawParams> drawParams;
         // draws sprite onto canvas using sprite drawing params and imageCache
         private void drawSprite(Sprite sprite, Canvas canvas) {
-            List<DrawParams> draw_params = sprite.getDrawParams();
-            for (DrawParams img_params : draw_params) {
-                ImageUtil.drawBitmap(canvas, BitmapCache.getImage(img_params.getBitmapID(), c), img_params);
+            drawParams = sprite.getDrawParams();
+            for (DrawParams p : drawParams) {
+                p.draw(canvas, c);
             }
             if (sprite.collides()) {
                 canvas.drawRect(sprite.getHitBox().getX(), sprite.getHitBox().getY(),

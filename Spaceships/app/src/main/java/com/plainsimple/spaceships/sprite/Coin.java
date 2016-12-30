@@ -6,10 +6,12 @@ import android.util.Log;
 import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Stefan on 8/28/2015.
@@ -68,15 +70,15 @@ public class Coin extends Sprite {
     }
 
     @Override
-    public ArrayList<DrawParams> getDrawParams() {
-        ArrayList<DrawParams> params = new ArrayList<>(); // todo: store one list that gets reset?
+    public List<DrawParams> getDrawParams() {
+        drawParams.clear();
         /*if (disappear.isPlaying()) {
             Rect source = disappear.getCurrentFrameSrc();
             params.add(new DrawParams(disappear.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
         } else {*/
             Rect source = spin.getCurrentFrameSrc();
-            params.add(new DrawParams(spin.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
+            drawParams.add(new DrawSubImage(spin.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
         //}
-        return params;
+        return drawParams;
     }
 }

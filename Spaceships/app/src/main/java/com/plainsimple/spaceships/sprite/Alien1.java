@@ -5,7 +5,9 @@ import android.util.Log;
 
 import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.BitmapData;
+import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.Point2D;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
@@ -123,13 +125,13 @@ public class Alien1 extends Alien {
 
     @Override
     public List<DrawParams> getDrawParams() {
-        List<DrawParams> params = new LinkedList<>();
-        params.add(new DrawParams(bitmapData.getId(), x, y, 0, 0, getWidth(), getHeight()));
+        drawParams.clear();
+        drawParams.add(new DrawImage(bitmapData.getId(), x, y));
         if(explodeAnimation.isPlaying()) {
             Rect source = explodeAnimation.getCurrentFrameSrc();
-            params.add(new DrawParams(explodeAnimation.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
+            drawParams.add(new DrawSubImage(explodeAnimation.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
         }
-        return params;
+        return drawParams;
     }
 
     // fires bullet at sprite based on current trajectories
