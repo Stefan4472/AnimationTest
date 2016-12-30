@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.helper;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
 /**
  * Stores instructions for drawing part of a Bitmap
@@ -15,7 +16,7 @@ public class DrawSubImage implements DrawParams {
     private float canvasX0;
     // y-coordinate where drawing begins on canvas
     private float canvasY0;
-    // starting x-coordinate // todo: x- and y- coordinates to begin drawing on canvas
+    // starting x-coordinate 
     private float x0;
     // starting y-coordinate
     private float y0;
@@ -36,64 +37,9 @@ public class DrawSubImage implements DrawParams {
 
     @Override
     public void draw(Canvas canvas, Context context) {
-
+        Rect source = new Rect((int) x0, (int) y0, (int) x1, (int) y1);
+        Rect destination = new Rect((int) canvasX0, (int) canvasY0,
+                (int) canvasX0 + source.width(), (int) canvasY0 + source.height());
+        canvas.drawBitmap(BitmapCache.getImage(bitmapID, context), source, destination, null);
     }
-
-    public BitmapResource getBitmapID() {
-        return bitmapID;
-    }
-
-    public void setBitmapID(BitmapResource bitmapID) {
-        this.bitmapID = bitmapID;
-    }
-
-    public float getCanvasX0() {
-        return canvasX0;
-    }
-
-    public void setCanvasX0(float canvasX0) {
-        this.canvasX0 = canvasX0;
-    }
-
-    public float getCanvasY0() {
-        return canvasY0;
-    }
-
-    public void setCanvasY0(float canvasY0) {
-        this.canvasY0 = canvasY0;
-    }
-
-    public float getX0() {
-        return x0;
-    }
-
-    public void setX0(float x0) {
-        this.x0 = x0;
-    }
-
-    public float getY0() {
-        return y0;
-    }
-
-    public void setY0(float y0) {
-        this.y0 = y0;
-    }
-
-    public float getX1() {
-        return x1;
-    }
-
-    public void setX1(float x1) {
-        this.x1 = x1;
-    }
-
-    public float getY1() {
-        return y1;
-    }
-
-    public void setY1(float y1) {
-        this.y1 = y1;
-    }
-
-
 }
