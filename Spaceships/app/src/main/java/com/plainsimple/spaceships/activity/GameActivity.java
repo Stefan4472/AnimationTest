@@ -117,7 +117,6 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             // display pause dialog
             DialogFragment dialog = new PauseDialogFragment();
             dialog.show(getFragmentManager(), "PauseDialogFragment");
-            //dialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
         }
     }
 
