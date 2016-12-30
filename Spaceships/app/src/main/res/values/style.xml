@@ -25,6 +25,9 @@
         <item name="android:gravity">center_horizontal</item>
         <item name="android:layout_centerHorizontal">true</item>
     </style>
+    <style name="GalaxyMonkey.MenuStyle">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
     <!-- Style used for pause dialog -->
     <style name="DialogStyle">
         <item name="windowActionBar">false</item>

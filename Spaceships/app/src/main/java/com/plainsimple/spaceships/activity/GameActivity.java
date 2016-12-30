@@ -23,6 +23,7 @@ import com.plainsimple.spaceships.helper.RawResource;
 import com.plainsimple.spaceships.helper.SoundParams;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.util.EnumUtil;
+import com.plainsimple.spaceships.view.FontButton;
 import com.plainsimple.spaceships.view.FontTextView;
 import com.plainsimple.spaceships.view.GameView;
 
@@ -41,6 +42,8 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     private ImageButton toggleBulletButton;
     private ImageButton toggleRocketButton;
     private FontTextView pausedText;
+    private FontButton resumeButton;
+    private FontButton quitButton;
     private static SoundPool soundPool;
     private static Hashtable<RawResource, Integer> soundIDs;
     private static boolean paused = false;
@@ -79,6 +82,8 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
         pausedText = (FontTextView) findViewById(R.id.pausedNotification);
+        resumeButton = (FontButton) findViewById(R.id.resumeButton);
+        quitButton = (FontButton) findViewById(R.id.quitButton);
         // set volume control to proper stream
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -113,11 +118,15 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             paused = false;
             soundPool.autoResume();
             pausedText.setVisibility(View.GONE);
+            resumeButton.setVisibility(View.GONE);
+            quitButton.setVisibility(View.GONE);
         } else { // pause
             pauseButton.setBackgroundResource(R.drawable.play);
             paused = true;
             soundPool.autoPause();
             pausedText.setVisibility(View.VISIBLE);
+            resumeButton.setVisibility(View.VISIBLE);
+            quitButton.setVisibility(View.VISIBLE);
             /*// display pause dialog
             DialogFragment dialog = new PauseDialogFragment();
             dialog.show(getFragmentManager(), "PauseDialogFragment");*/

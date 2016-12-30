@@ -60,7 +60,30 @@
                     android:layout_marginBottom="30dp"
                     android:onClick="onToggleRocketPressed"
                     style="?android:attr/borderlessButtonStyle" />
-                <!-- "paused"-displays when game is paused -->
+                <!-- "resume" button, displays when game is paused -->
+                <com.plainsimple.spaceships.view.FontButton
+                    style="@style/GalaxyMonkey.MenuStyle"
+                    android:id="@+id/resumeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="35dp"
+                    android:textColor="#ffb30f"
+                    android:text="@string/resume"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"/>
+                <!-- "quit" button, displays when game is paused --> <!-- todo: finish these -->
+                <com.plainsimple.spaceships.view.FontButton
+                    style="@style/GalaxyMonkey.MenuStyle"
+                    android:id="@+id/quitButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="35dp"
+                    android:textColor="#ffb30f"
+                    android:text="@string/quit"
+                    android:layout_above="@id/resumeButton"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone"/>
+                <!-- "paused" textview, displays when game is paused -->
                 <com.plainsimple.spaceships.view.FontTextView
                     style="@style/GalaxyMonkey"
                     android:id="@+id/pausedNotification"
@@ -69,7 +92,7 @@
                     android:textSize="55dp"
                     android:textColor="#ffb30f"
                     android:text="@string/paused"
-                    android:layout_centerInParent="true"
+                    android:layout_below="@id/resumeButton"
                     android:layout_marginBottom="10dp"
                     android:visibility="gone"/>
         </RelativeLayout>
