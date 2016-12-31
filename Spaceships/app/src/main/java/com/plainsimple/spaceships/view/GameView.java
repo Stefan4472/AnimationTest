@@ -490,24 +490,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     public void saveGameState() {
         Log.d("GameView.java", "Saving game state");
-        GameSave save = new GameSave();
-        save.saveAliens(c, aliens);
-        save.saveSpaceship(c, spaceship);
-        save.saveBullets(c, ssProjectiles);
-        save.saveAlienBullets(c, alienProjectiles);
-        save.saveCoins(c, coins);
-        save.saveObstacles(c, obstacles);
+        GameSave save = new GameSave(c);
+        save.saveAliens(aliens);
+        save.saveSpaceship(spaceship);
+        save.saveBullets(ssProjectiles);
+        save.saveAlienBullets(alienProjectiles);
+        save.saveCoins(coins);
+        save.saveObstacles(obstacles);
     }
 
     public void resumeGameState() {
         Log.d("GameView.java", "Restoring game state");
-        GameSave load = new GameSave();
-        aliens = load.loadAliens(c);
-        spaceship = load.loadSpaceship(c);
-        obstacles = load.loadObstacles(c);
-        coins = load.loadCoins(c);
-        aliens = load.loadAliens(c);
-        ssProjectiles = load.loadBullets(c);
-        alienProjectiles = load.loadAlienBullets(c);
+        GameSave load = new GameSave(c);
+        aliens = load.loadAliens();
+        spaceship = load.loadSpaceship();
+        obstacles = load.loadObstacles();
+        coins = load.loadCoins();
+        aliens = load.loadAliens();
+        ssProjectiles = load.loadBullets();
+        alienProjectiles = load.loadAlienBullets();
     }
 }

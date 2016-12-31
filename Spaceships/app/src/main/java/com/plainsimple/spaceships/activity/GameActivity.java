@@ -44,6 +44,8 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     private FontTextView pausedText;
     private FontButton resumeButton;
     private FontButton quitButton;
+    // whether the user selected to quit the game
+    private boolean quit = false;
     private static SoundPool soundPool;
     private static Hashtable<RawResource, Integer> soundIDs;
     private static boolean paused = false;
@@ -182,23 +184,36 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button);
     }
 
+    public void onQuitPressed(View view) {
+        Log.d("GameActivity", "Quitting game");
+        quit = true;
+        finish();
+    }
+
     @Override
     public void onPause() {
         super.onPause(); // todo: this in last line of method?
         Log.d("GameActivity", "onPause called");
-        onPausePressed(null);
-        gameView.saveGameState();
+        // pause if game is still playing
+        if (!paused) {
+            onPausePressed(gameView);
+        }
+        // save game state only if user did not quit on purpose
+        if (!quit) {
+            Log.d("GameActivity", "Saving Game State");
+            gameView.saveGameState();
+        }
         soundPool.release();
-        soundPool = null;
+        //soundPool = null;
         sensorManager.unregisterListener(this);
-        // todo: persist any data
+        // todo: destroy gameview resources
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Log.d("GameActivity", "onResume called");
-        gameView.resumeGameState();
+        //gameView.resumeGameState();
         initMedia();
         Log.d("Activity Class", "Media Initialized");
         if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {

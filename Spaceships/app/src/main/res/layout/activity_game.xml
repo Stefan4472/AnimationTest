@@ -70,7 +70,8 @@
                     android:textColor="#ffb30f"
                     android:text="@string/resume"
                     android:layout_centerInParent="true"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    android:onClick="onPausePressed"/>
                 <!-- "quit" button, displays when game is paused --> <!-- todo: finish these -->
                 <com.plainsimple.spaceships.view.FontButton
                     style="@style/GalaxyMonkey.MenuStyle"
@@ -80,9 +81,11 @@
                     android:textSize="35dp"
                     android:textColor="#ffb30f"
                     android:text="@string/quit"
-                    android:layout_above="@id/resumeButton"
+                    android:layout_below="@id/resumeButton"
+                    android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    android:onClick="onQuitPressed"/>
                 <!-- "paused" textview, displays when game is paused -->
                 <com.plainsimple.spaceships.view.FontTextView
                     style="@style/GalaxyMonkey"
@@ -92,9 +95,11 @@
                     android:textSize="55dp"
                     android:textColor="#ffb30f"
                     android:text="@string/paused"
-                    android:layout_below="@id/resumeButton"
+                    android:layout_above="@id/resumeButton"
+                    android:layout_centerHorizontal="true"
                     android:layout_marginBottom="10dp"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    android:onClick="onPausePressed"/>
         </RelativeLayout>
 
 </RelativeLayout>

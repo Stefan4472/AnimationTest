@@ -43,9 +43,9 @@ public class FileUtil {
     }
 
     // writes serialized object to the specified file
-    public static boolean writeObject(Context context, String fileName, Object toWrite) {
+    public static boolean writeObject(File file, Object toWrite) {
         try {
-            FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+            FileOutputStream fos = new FileOutputStream(file);
             ObjectOutputStream os = new ObjectOutputStream(fos);
             os.writeObject(toWrite);
             os.close();
@@ -57,9 +57,9 @@ public class FileUtil {
     }
 
     // reads serialized object from specified file
-    public static Object readObject(Context context, String fileName) {
+    public static Object readObject(File file) {
         try {
-            FileInputStream fis = context.openFileInput(fileName);
+            FileInputStream fis = new FileInputStream(file);
             ObjectInputStream is = new ObjectInputStream(fis);
             Object o = is.readObject();
             is.close();

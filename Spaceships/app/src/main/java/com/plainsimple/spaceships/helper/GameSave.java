@@ -15,10 +15,12 @@ import java.util.List;
  */
 public class GameSave {
 
-    private String fileName; // todo: save file names are appended to this, allowing multiple save file systems
+    // default save name
+    private static final String DEFAULT_SAVE_NAME = "DefaultSave";
 
-    // default prefix
-    private static final String DEFAULT_SAVE_FILE = "DefaultSave";
+    // parent directory of all files in this save
+    // named according to given saveName
+    private File directory;
 
     // stores game state information (volume, currently equipped, etc)
     private static final String GAME_STATE_FILE = "GameStateFile";
@@ -38,23 +40,26 @@ public class GameSave {
     private static final String BACKGROUND = "BackgroundFile";
     // stores tile generator
 
-    public GameSave() {
-        fileName = DEFAULT_SAVE_FILE;
+    public GameSave(Context context) {
+        this(context, DEFAULT_SAVE_NAME);
     }
 
-    public GameSave(String fileName) {
-        this.fileName = fileName;
+    public GameSave(Context context, String saveName) {
+        directory = new File(context.getFilesDir(), saveName);
+        directory.mkdirs();
     }
 
-    public void clearSavedFiles(Context c) { // todo: save them all in a directory of name filename?
-        c.deleteFile(fileName + "." + GAME_STATE_FILE);
-        c.deleteFile(fileName + "." + ALIENS);
-        c.deleteFile(fileName + "." + ALIEN_BULLETS);
-        c.deleteFile(fileName + "." + SPACESHIP);
-        c.deleteFile(fileName + "." + BULLETS);
-        c.deleteFile(fileName + "." + COINS);
-        c.deleteFile(fileName + "." + OBSTACLES);
-        c.deleteFile(fileName + "." + BACKGROUND);
+    // returns whether this save exists in storage on the device
+    public static boolean exists(Context context, String saveName) { // todo: testing
+        return (new File(context.getFilesDir(), saveName)).exists();
+    }
+
+    // deletes all save files associated with this save
+    public void delete() {
+        for (File f : directory.listFiles()) {
+            f.delete();
+        }
+        directory.delete();
     }
 
     // writes currently stored values to file
@@ -67,65 +72,59 @@ public class GameSave {
 
     }
 
-    public boolean saveAliens(Context c, List<Sprite> aliens) {
-        return FileUtil.writeObject(c, fileName + "." + ALIENS, aliens);
+    public boolean saveAliens(List<Sprite> aliens) {
+        return FileUtil.writeObject(new File(directory, ALIENS), aliens);
     }
 
-    public List<Sprite> loadAliens(Context c) {
-        return loadSpriteList(c, fileName + "." + ALIENS);
+    public List<Sprite> loadAliens() {
+        return loadSpriteList(new File(directory, ALIENS));
     }
 
-    public boolean saveAlienBullets(Context c, List<Sprite> alienBullets) {
-        return FileUtil.writeObject(c, fileName + "." + ALIEN_BULLETS, alienBullets);
+    public boolean saveAlienBullets(List<Sprite> alienBullets) {
+        return FileUtil.writeObject(new File(directory, ALIEN_BULLETS), alienBullets);
     }
 
-    public List<Sprite> loadAlienBullets(Context c) {
-        return loadSpriteList(c, fileName + "." + ALIEN_BULLETS);
+    public List<Sprite> loadAlienBullets() {
+        return loadSpriteList(new File(directory, ALIEN_BULLETS));
     }
 
-    public boolean saveSpaceship(Context c, Spaceship spaceship) {
-        return FileUtil.writeObject(c, fileName + "." + SPACESHIP, spaceship);
+    public boolean saveSpaceship(Spaceship spaceship) {
+        return FileUtil.writeObject(new File(directory, SPACESHIP), spaceship);
     }
 
-    public Spaceship loadSpaceship(Context c) {
-        String filePath = fileName + "." + SPACESHIP;
-        File f = new File(filePath);
-        if(f.exists()) {
-            return (Spaceship) FileUtil.readObject(c, filePath);
-        } else {
-            return null;
-        }
+    public Spaceship loadSpaceship() {
+        File f = new File(directory, SPACESHIP);
+        return f.exists() ? (Spaceship) FileUtil.readObject(f) : null;
     }
 
-    public boolean saveBullets(Context c, List<Sprite> bullets) {
-        return FileUtil.writeObject(c, fileName + "." + BULLETS, bullets);
+    public boolean saveBullets( List<Sprite> bullets) {
+        return FileUtil.writeObject(new File(directory, BULLETS), bullets);
     }
 
-    public List<Sprite> loadBullets(Context c) {
-        return loadSpriteList(c, fileName + "." + BULLETS);
+    public List<Sprite> loadBullets() {
+        return loadSpriteList(new File(directory, BULLETS));
     }
 
-    public boolean saveObstacles(Context c, List<Sprite> obstacles) {
-        return FileUtil.writeObject(c, fileName + "." + OBSTACLES, obstacles);
+    public boolean saveObstacles( List<Sprite> obstacles) {
+        return FileUtil.writeObject(new File(directory, OBSTACLES), obstacles);
     }
 
-    public List<Sprite> loadObstacles(Context c) {
-        return loadSpriteList(c, fileName + "." + OBSTACLES);
+    public List<Sprite> loadObstacles() {
+        return loadSpriteList(new File(directory, OBSTACLES));
     }
 
-    public boolean saveCoins(Context c, List<Sprite> coins) {
-        return FileUtil.writeObject(c, fileName + "." + COINS, coins);
+    public boolean saveCoins( List<Sprite> coins) {
+        return FileUtil.writeObject(new File(directory, COINS), coins);
     }
 
-    public List<Sprite> loadCoins(Context c) {
-        return loadSpriteList(c, fileName + "." + COINS);
+    public List<Sprite> loadCoins() {
+        return loadSpriteList(new File(directory, COINS));
     }
 
     // generic helper for loading lists of sprites
-    private List<Sprite> loadSpriteList(Context c, String filePath) {
-        File f = new File(filePath);
-        if(f.exists()) {
-            return (List<Sprite>) FileUtil.readObject(c, filePath);
+    private List<Sprite> loadSpriteList(File file) {
+        if(file.exists()) {
+            return (List<Sprite>) FileUtil.readObject(file);
         } else {
             return new LinkedList<>();
         }
