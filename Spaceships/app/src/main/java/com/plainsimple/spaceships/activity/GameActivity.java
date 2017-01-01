@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 
 import com.plainsimple.spaceships.helper.Equipped;
+import com.plainsimple.spaceships.helper.GameSave;
 import com.plainsimple.spaceships.helper.RawResource;
 import com.plainsimple.spaceships.helper.SoundParams;
 import com.plainsimple.spaceships.sprite.Spaceship;
@@ -191,19 +192,22 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
 
     @Override
     public void onPause() {
-        super.onPause(); // todo: this in last line of method?
+        super.onPause();
         Log.d("GameActivity", "onPause called");
         // pause if game is still playing
         if (!paused) {
+            Log.d("GameActivit", "Pausing the game");
             onPausePressed(gameView);
         }
-        if (quit) { // make sure to remove current saved game state (if one exists)
-            gameView.clearGameState();
-        } else { // save game state only if user did not quit on purpose
+        if (!quit) { // save game state only if user did not quit on purpose // todo: this in onStop??
+            Log.d("GameActivity.java", "Saving game state " + System.currentTimeMillis());
             gameView.saveGameState();
-            Log.d("GameActivity", "Finished Save");
+            Log.d("GameActivity", "Finished Save " + System.currentTimeMillis());
+        } else { // ensure there is no saved game
+            gameView.clearGameState();
         }
         soundPool.release();
+        soundPool = null;
         //BitmapCache.destroyBitmaps();
         sensorManager.unregisterListener(this);
         // todo: destroy gameview resources
@@ -213,12 +217,16 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     public void onResume() {
         super.onResume();
         Log.d("GameActivity", "onResume called");
-        gameView.restoreGameState();
+        if (GameSave.exists(this, GameSave.DEFAULT_SAVE_NAME)) {
+            Log.d("GameActivity", "Found a saved game to restore");
+            gameView.restoreGameState();
+        }
         initMedia();
         Log.d("Activity Class", "Media Initialized");
         if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
             sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
                     SensorManager.SENSOR_DELAY_NORMAL); // todo: test sample rates // todo: works with Level 9 API +
+            Log.d("Activity Class", "Gyroscope Registered");
         } else {
             Log.d("GameView Class", "No Gyroscope");
         }

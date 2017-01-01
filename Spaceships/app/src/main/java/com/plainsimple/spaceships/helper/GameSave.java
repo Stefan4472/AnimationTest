@@ -16,7 +16,7 @@ import java.util.List;
 public class GameSave {
 
     // default save name
-    private static final String DEFAULT_SAVE_NAME = "DefaultSave";
+    public static final String DEFAULT_SAVE_NAME = "DefaultSave";
 
     // parent directory of all files in this save
     // named according to given saveName
