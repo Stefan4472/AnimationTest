@@ -64,4 +64,10 @@ public class BitmapCache {
         }
         return data;
     }
+
+    public static void destroyBitmaps() {
+        for (BitmapResource key : bmpCache.keySet()) {
+            bmpCache.remove(key);
+        }
+    }
 }

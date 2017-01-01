@@ -21,9 +21,11 @@ import android.view.SurfaceView;
 import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.*;
 import com.plainsimple.spaceships.sprite.*;
+import com.plainsimple.spaceships.util.FileUtil;
 import com.plainsimple.spaceships.util.GameEngineUtil;
 import com.plainsimple.spaceships.util.ImageUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -116,6 +118,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         debugPaintPink.setStyle(Paint.Style.STROKE);
         debugPaintPink.setStrokeWidth(3);
     }
+
+    /*private void testFiles() {
+        File directory = new File(c.getFilesDir(), "test");
+        Log.d("GameView", "Directory " + (directory.exists() ? "" : "does not ") + "exist");
+        directory.mkdirs();
+        Log.d("GameView", "Directory " + (directory.exists() ? "" : "does not ") + "exist");
+        File child = new File(directory, "childTest");
+        FileUtil.writeObject(child, "Hello???");
+        Log.d("GameView", "File " + (child.exists() ? "" : "does not ") + "exist");
+        String extracted = (String) FileUtil.readObject(child);
+        Log.d("GameView", "Read String: " + extracted);
+        child.delete();
+        Log.d("GameView", "Child has " + (child.exists() ? "not " : "") + " been deleted");
+        directory.delete();
+        Log.d("GameView", "Directory has " + (child.exists() ? "not " : "") + " been deleted");
+    }*/
 
     public GameViewThread getThread() {
         return thread;
@@ -455,7 +473,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private String COINS_COLLECTED = "COINS_COLLECTED";
     private String POINTS_EARNED = "POINTS_EARNED";
 
-    // updates stored lifetime game statistics with values from the current run
+    // updates stored lifetime game statistics with values from the current run // todo: move to GameActivity
     // these statistics are stored using SharedPreferences
     public void onGameFinished() {
         SharedPreferences sharedPref = c.getSharedPreferences(GAME_STATS_FILE_KEY, Context.MODE_PRIVATE);
@@ -499,8 +517,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         save.saveObstacles(obstacles);
     }
 
-    public void resumeGameState() {
-        Log.d("GameView.java", "Restoring game state");
+    public void restoreGameState() {
+        Log.d("GameView.java", "Restoring game state " + System.currentTimeMillis());
         GameSave load = new GameSave(c);
         aliens = load.loadAliens();
         spaceship = load.loadSpaceship();
@@ -509,5 +527,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         aliens = load.loadAliens();
         ssProjectiles = load.loadBullets();
         alienProjectiles = load.loadAlienBullets();
+        Log.d("GameView.java", "Finished restoring game state " + System.currentTimeMillis());
+    }
+
+    public void clearGameState() {
+        GameSave clear = new GameSave(c);
+        clear.delete();
     }
 }

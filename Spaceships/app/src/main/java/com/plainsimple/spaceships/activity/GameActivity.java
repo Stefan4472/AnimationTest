@@ -1,6 +1,5 @@
 package com.plainsimple.spaceships.activity;
 
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.PixelFormat;
@@ -198,13 +197,14 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         if (!paused) {
             onPausePressed(gameView);
         }
-        // save game state only if user did not quit on purpose
-        if (!quit) {
-            Log.d("GameActivity", "Saving Game State");
+        if (quit) { // make sure to remove current saved game state (if one exists)
+            gameView.clearGameState();
+        } else { // save game state only if user did not quit on purpose
             gameView.saveGameState();
+            Log.d("GameActivity", "Finished Save");
         }
         soundPool.release();
-        //soundPool = null;
+        //BitmapCache.destroyBitmaps();
         sensorManager.unregisterListener(this);
         // todo: destroy gameview resources
     }
@@ -213,7 +213,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     public void onResume() {
         super.onResume();
         Log.d("GameActivity", "onResume called");
-        //gameView.resumeGameState();
+        gameView.restoreGameState();
         initMedia();
         Log.d("Activity Class", "Media Initialized");
         if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
