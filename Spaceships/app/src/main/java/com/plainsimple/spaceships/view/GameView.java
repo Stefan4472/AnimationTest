@@ -35,7 +35,7 @@ import plainsimple.spaceships.R;
 /**
  * Created by Stefan on 10/17/2015.
  */
-public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener {
+public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private Context c;
     private SurfaceHolder mySurfaceHolder;
@@ -44,6 +44,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public static int screenH;
     private boolean running = false;
     private boolean onTitle = true;
+    // whether resources have been initialized
+    private boolean initialized = false;
+    // name of game save to restore (null if none)
+    private String restoreGameState = null;
     private GameViewThread thread;
     private Background background;
     // todo: AnimationCache using BitmapResource enums. Store num frames per animation in r/values/integers
@@ -117,26 +121,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         debugPaintPink.setColor(Color.rgb(255, 105, 180));
         debugPaintPink.setStyle(Paint.Style.STROKE);
         debugPaintPink.setStrokeWidth(3);
-    }
-
-    /*private void testFiles() {
-        File directory = new File(c.getFilesDir(), "test");
-        Log.d("GameView", "Directory " + (directory.exists() ? "" : "does not ") + "exist");
-        directory.mkdirs();
-        Log.d("GameView", "Directory " + (directory.exists() ? "" : "does not ") + "exist");
-        File child = new File(directory, "childTest");
-        FileUtil.writeObject(child, "Hello???");
-        Log.d("GameView", "File " + (child.exists() ? "" : "does not ") + "exist");
-        String extracted = (String) FileUtil.readObject(child);
-        Log.d("GameView", "Read String: " + extracted);
-        child.delete();
-        Log.d("GameView", "Child has " + (child.exists() ? "not " : "") + " been deleted");
-        directory.delete();
-        Log.d("GameView", "Directory has " + (child.exists() ? "not " : "") + " been deleted");
-    }*/
-
-    public GameViewThread getThread() {
-        return thread;
     }
 
     class GameViewThread extends Thread {
@@ -329,21 +313,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             spaceship.move();
             spaceship.updateActions();
             ssProjectiles.addAll(spaceship.getAndClearProjectiles());
-            // for when spaceship first comes on to screen
-            if (spaceship.getX() < screenW / 4) {
-                spaceship.setControllable(false);
-                spaceship.setSpeedX(0.003f);
-            } else {
-                spaceship.setX(screenW / 4);
-                spaceship.setSpeedX(0.0f);
-                spaceship.setControllable(true);
-            }
-            // prevent spaceship from going off-screen
-            if (spaceship.getY() < 0) {
-                spaceship.setY(0);
-            } else if (spaceship.getY() > screenH - spaceship.getHeight()) {
-                spaceship.setY(screenH - spaceship.getHeight());
-            }
+            
         }
 
         // handle user touching screen
@@ -399,8 +369,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             spaceship.injectResources(animations.get(R.drawable.spaceship_move),
                     animations.get(R.drawable.spaceship_fire_rocket), new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 5, false),
                     BitmapCache.getData(BitmapResource.LASER_BULLET, c), BitmapCache.getData(BitmapResource.ROCKET, c));
-            spaceship.setBullets(true, GameActivity.equipment.getEquippedBulletType());
-            spaceship.setRockets(true, GameActivity.equipment.getEquippedRocketType());
+            spaceship.setBullets(true, BulletType.LASER);//GameActivity.equipment.getEquippedBulletType()); // todo: get equipment
+            spaceship.setRockets(true, RocketType.ROCKET);//GameActivity.equipment.getEquippedRocketType());
             spaceship.setHP(30);
         }
 
@@ -433,59 +403,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     public void updateTilt(float newTilt) {
         screenTilt = newTilt;
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) { // todo: tilt depends on default device orientation (landscape/portrait)
-        if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            screenTilt = sensorEvent.values[1]; // todo: this should be registered in GameActivity
-        }
-        // restrict sample rate // todo: currently disabled (see Issue #10)
-        /*if(lastSample + sampleRateMS <= System.currentTimeMillis()) {
-            System.out.println(sensorEvent.values[1]);
-            if(map != null) {
-                // send y-value of gyro to map
-                map.updateGyro(sensorEvent.values[1]);
-            }
-        }
-        lastSample = System.currentTimeMillis();*/
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-
-    private static final String SAVE_FILE_NAME = "GAME_SAVE_FILE";
-
-    // writes all necessary data to re-create the GameView to a file
-    private void createSaveFile() {
-
-    }
-    // key to SharedPreference file containing lifetime game statistics
-    private String GAME_STATS_FILE_KEY = "GAME_STATS_FILE_KEY";
-    // keys to data-values in the lifetime game statistics SharedPreference file
-    private String ALIENS_KILLED = "ALIENS_KILLED";
-    private String GAMES_PLAYED = "GAMES_PLAYED";
-    private String TIME_PLAYED = "TIME_PLAYED"; // todo: add this function
-    private String DISTANCE_TRAVELED = "DISTANCE_TRAVELED"; // todo: coming soon
-    private String HIGH_SCORE = "HIGH_SCORE";
-    private String COINS_COLLECTED = "COINS_COLLECTED";
-    private String POINTS_EARNED = "POINTS_EARNED";
-
-    // updates stored lifetime game statistics with values from the current run // todo: move to GameActivity
-    // these statistics are stored using SharedPreferences
-    public void onGameFinished() {
-        SharedPreferences sharedPref = c.getSharedPreferences(GAME_STATS_FILE_KEY, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        //editor.putInt(ALIENS_KILLED, sharedPref.getInt(ALIENS_KILLED, 0) + aliensKilled);
-        editor.putInt(GAMES_PLAYED, sharedPref.getInt(GAMES_PLAYED, 0) + 1);
-        if (GameActivity.getScore() > sharedPref.getInt(HIGH_SCORE, 0)) {
-            editor.putInt(HIGH_SCORE, GameActivity.getScore());
-        }
-        //editor.putInt(COINS_COLLECTED, sharedPref.getInt(COINS_COLLECTED, 0) + coinsCollected);
-        editor.putInt(POINTS_EARNED, sharedPref.getInt(POINTS_EARNED, 0) + GameActivity.getScore());
-        editor.commit();
     }
 
     @Override

@@ -52,7 +52,6 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     private static boolean muted = false;
     private static int score = 0;
     private static float difficulty = 0;
-    public static Equipped equipment;
     // points a coin is worth
     public static final int COIN_VALUE = 100;
 
@@ -71,10 +70,8 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         setContentView(R.layout.activity_game);
         gameView = (GameView) findViewById(R.id.spaceships); // todo: what should go in onResume()?
         gameView.setKeepScreenOn(true);
-        // read in current equipment
-        equipment = new Equipped(this);
-        // set up view elements
 
+        // set up view elements
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pause);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
@@ -95,7 +92,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         // retrieve game state if one is found in memory
         if (GameSave.exists(this, GameSave.DEFAULT_SAVE_NAME)) {
             Log.d("GameActivity", "Found a saved game to restore");
-            gameView.restoreGameState();
+            //gameView.restoreGameState();
         }
     }
 
@@ -204,7 +201,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         Log.d("Activity Class", "Media Initialized");
         if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
             sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
-                    SensorManager.SENSOR_DELAY_NORMAL); // todo: test sample rates // todo: works with Level 9 API +
+                    SensorManager.SENSOR_DELAY_NORMAL); // todo: test sample rates. Manually restrict rate? // todo: works with Level 9 API +
             Log.d("Activity Class", "Gyroscope Registered");
         } else {
             Log.d("GameView Class", "No Gyroscope");
@@ -229,6 +226,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
 
     @Override
     public void onStop() {
+        super.onStop();
         if (!quit) { // save game state only if user did not quit on purpose // todo: this in onStop??
             Log.d("GameActivity.java", "Saving game state " + System.currentTimeMillis());
             gameView.saveGameState();

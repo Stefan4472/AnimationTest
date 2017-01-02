@@ -18,6 +18,9 @@ import com.plainsimple.spaceships.helper.SpriteAnimation;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.plainsimple.spaceships.view.GameView.screenH;
+import static com.plainsimple.spaceships.view.GameView.screenW;
+
 /**
  * Created by Stefan on 8/13/2015.
  */
@@ -160,6 +163,26 @@ public class Spaceship extends Sprite {
         // positive is tilting toward player -> move down
         float tiltChange = tilt - lastTilt;
         //Log.d("Spaceship.java", "Tilt is " + tilt + " and change is " + tiltChange);
+    }
+
+    @Override
+    public void move() {
+        super.move();
+        // for when spaceship first comes on to screen
+        if (x < screenW / 4) { // todo: local variable
+            setControllable(false);
+            setSpeedX(0.003f);
+        } else {
+            setX(screenW / 4);
+            setSpeedX(0.0f);
+            setControllable(true);
+        }
+        // prevent spaceship from going off-screen
+        if (y < 0) {
+            setY(0);
+        } else if (y > screenH - getHeight()) {
+            setY(screenH - getHeight());
+        }
     }
 
     @Override
