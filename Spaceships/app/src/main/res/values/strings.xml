@@ -12,4 +12,13 @@
     <string name="default_equipped_states">
         LASER_BULLET:EQUIPPED,ION_BULLET:LOCKED,PLASMA_BULLET:LOCKED,PLUTONIUM_BULLET:LOCKED,ROCKET_DEFAULT:EQUIPPED,ARMOR_DEFAULT:EQUIPPED
     </string>
+    <string name="default_lifetime_stats">
+        ALIENS_KILLED:INTEGER:0,
+        GAMES_PLAYED:INTEGER:0,
+        TIME_PLAYED:LONG:0,
+        DISTANCE_TRAVELED:LONG:0,
+        HIGH_SCORE:LONG:0,
+        COINS_COLLECTED:LONG:0,
+        POINTS_EARNED:LONG:0
+    </string>
 </resources>

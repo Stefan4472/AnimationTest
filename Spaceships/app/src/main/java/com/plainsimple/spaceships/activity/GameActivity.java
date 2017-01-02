@@ -91,6 +91,12 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
 
         // get sensor manager
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        // retrieve game state if one is found in memory
+        if (GameSave.exists(this, GameSave.DEFAULT_SAVE_NAME)) {
+            Log.d("GameActivity", "Found a saved game to restore");
+            gameView.restoreGameState();
+        }
     }
 
     private void initMedia() {
@@ -191,36 +197,9 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        Log.d("GameActivity", "onPause called");
-        // pause if game is still playing
-        if (!paused) {
-            Log.d("GameActivit", "Pausing the game");
-            onPausePressed(gameView);
-        }
-        if (!quit) { // save game state only if user did not quit on purpose // todo: this in onStop??
-            Log.d("GameActivity.java", "Saving game state " + System.currentTimeMillis());
-            gameView.saveGameState();
-            Log.d("GameActivity", "Finished Save " + System.currentTimeMillis());
-        } else { // ensure there is no saved game
-            gameView.clearGameState();
-        }
-        soundPool.release();
-        soundPool = null;
-        //BitmapCache.destroyBitmaps();
-        sensorManager.unregisterListener(this);
-        // todo: destroy gameview resources
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         Log.d("GameActivity", "onResume called");
-        if (GameSave.exists(this, GameSave.DEFAULT_SAVE_NAME)) {
-            Log.d("GameActivity", "Found a saved game to restore");
-            gameView.restoreGameState();
-        }
         initMedia();
         Log.d("Activity Class", "Media Initialized");
         if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
@@ -230,7 +209,33 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         } else {
             Log.d("GameView Class", "No Gyroscope");
         }
-        // todo: recreate any persisted data
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("GameActivity", "onPause called");
+        // pause if game is still playing
+        if (!paused) {
+            Log.d("GameActivity", "Pausing the game");
+            onPausePressed(gameView);
+        }
+        soundPool.release();
+        soundPool = null;
+        //BitmapCache.destroyBitmaps();
+        sensorManager.unregisterListener(this);
+        // todo: destroy gameview resources
+    }
+
+    @Override
+    public void onStop() {
+        if (!quit) { // save game state only if user did not quit on purpose // todo: this in onStop??
+            Log.d("GameActivity.java", "Saving game state " + System.currentTimeMillis());
+            gameView.saveGameState();
+            Log.d("GameActivity", "Finished Save " + System.currentTimeMillis());
+        } else { // ensure there is no saved game
+            gameView.clearGameState();
+        }
     }
 
     @Override
