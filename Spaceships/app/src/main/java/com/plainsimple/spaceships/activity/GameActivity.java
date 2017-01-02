@@ -92,7 +92,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         // retrieve game state if one is found in memory
         if (GameSave.exists(this, GameSave.DEFAULT_SAVE_NAME)) {
             Log.d("GameActivity", "Found a saved game to restore");
-            //gameView.restoreGameState();
+            gameView.flagRestoreGameState(GameSave.DEFAULT_SAVE_NAME);
         }
     }
 

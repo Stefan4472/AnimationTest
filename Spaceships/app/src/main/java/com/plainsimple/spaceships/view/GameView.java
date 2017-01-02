@@ -27,7 +27,9 @@ import com.plainsimple.spaceships.util.ImageUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import plainsimple.spaceships.R;
@@ -75,15 +77,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // spaceship
     private Spaceship spaceship;
     // active generated obstacles
-    private List<Sprite> obstacles = new ArrayList<>();
+    private List<Sprite> obstacles = new LinkedList<>();
     // active generated coins
-    private List<Sprite> coins = new ArrayList<>();
+    private List<Sprite> coins = new LinkedList<>();
     // active generated aliens
-    private List<Sprite> aliens = new ArrayList<>();
+    private List<Sprite> aliens = new LinkedList<>();
     // active projectiles on screen fired by spaceship
-    private List<Sprite> ssProjectiles = new ArrayList<>();
+    private List<Sprite> ssProjectiles = new LinkedList<>();
     // active projectiles on screen fired by aliens
-    private List<Sprite> alienProjectiles = new ArrayList<>();
+    private List<Sprite> alienProjectiles = new LinkedList<>();
     // relative speed of background scrolling to foreground scrolling
     private static final float SCROLL_SPEED_CONST = 0.4f;
     private Paint debugPaintRed = new Paint();
@@ -148,35 +150,50 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         private void draw(Canvas canvas) {
-            try {
-                //((GameActivity) c).incrementScore(1);
-                background.draw(canvas);
-                if(!GameActivity.getPaused()) {
-                    update();
-                    background.scroll((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST * 8));
-                    //background.scroll(-10);
+            // initialize elements if not previously done
+            if (!initialized) {
+                background = new Background(screenW, screenH);
+                initImgCache();
+                initAnimations();
+                initSpaceship();
+                tileWidth = screenH / ROWS;
+                tileHeight = screenH / ROWS;
+                map = new byte[1][screenW / tileWidth];
+                tileGenerator = new TileGenerator(ROWS);
+                onTitle = false;
+                healthBar = new HealthBar(c, screenW, screenH, 30, 30);
+                scoreDisplay = new ScoreDisplay(c, 0);
+                // restore game state if flag is set
+                if (restoreGameState != null) {
+                    restoreGameState(restoreGameState);
+                    restoreGameState = null;
                 }
-                for (Sprite o : obstacles) {
-                    drawSprite(o, canvas);
-                }
-                for (Sprite c : coins) {
-                    drawSprite(c, canvas);
-                }
-                for (Sprite a : aliens) {
-                    drawSprite(a, canvas);
-                }
-                for (Sprite a : alienProjectiles) {
-                    drawSprite(a, canvas);
-                }
-                for (Sprite s : ssProjectiles) {
-                    drawSprite(s, canvas);
-                }
-                drawSprite(spaceship, canvas);
-                healthBar.draw(canvas);
-                scoreDisplay.draw(canvas);
-            } catch (Exception e) {
-                System.out.print("Error drawing canvas");
             }
+            //((GameActivity) c).incrementScore(1);
+            background.draw(canvas);
+            if(!GameActivity.getPaused()) {
+                update();
+                background.scroll((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST * 8));
+                //background.scroll(-10);
+            }
+            for (Sprite o : obstacles) {
+                drawSprite(o, canvas);
+            }
+            for (Sprite c : coins) {
+                drawSprite(c, canvas);
+            }
+            for (Sprite a : aliens) {
+                drawSprite(a, canvas);
+            }
+            for (Sprite a : alienProjectiles) {
+                drawSprite(a, canvas);
+            }
+            for (Sprite s : ssProjectiles) {
+                drawSprite(s, canvas);
+            }
+            drawSprite(spaceship, canvas);
+            healthBar.draw(canvas);
+            scoreDisplay.draw(canvas);
         }
 
         List<DrawParams> drawParams;
@@ -313,7 +330,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             spaceship.move();
             spaceship.updateActions();
             ssProjectiles.addAll(spaceship.getAndClearProjectiles());
-            
         }
 
         // handle user touching screen
@@ -333,7 +349,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         break;
                     case MotionEvent.ACTION_UP: // handle user clicking something
                         if (onTitle) { // change to game screen. Load resources
-                            c.getResources();
+                        /*    c.getResources();
                             background = new Background(screenW, screenH);
                             initImgCache();
                             initAnimations();
@@ -344,7 +360,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                             tileGenerator = new TileGenerator(ROWS);
                             onTitle = false;
                             healthBar = new HealthBar(c, screenW, screenH, 30, 30);
-                            scoreDisplay = new ScoreDisplay(c, 0);
+                            scoreDisplay = new ScoreDisplay(c, 0);*/
                         } else {
                             spaceship.setShooting(false);
                         }
@@ -435,15 +451,28 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 coins.size() + ssProjectiles.size() + alienProjectiles.size()) + " sprites");
     }
 
-    public void restoreGameState() {
+    public void flagRestoreGameState(String saveName) {
+        this.restoreGameState = saveName;
+    }
+
+    private void restoreGameState(String saveName) {
         Log.d("GameView.java", "Restoring game state " + System.currentTimeMillis());
-        GameSave load = new GameSave(c);
-        aliens = load.loadAliens();
-        spaceship = load.loadSpaceship();
+        GameSave load = new GameSave(c, saveName);
+        aliens = load.loadAliens(); // todo: nullpointers
+        Log.d("GameView", Arrays.toString(aliens.toArray()));
         obstacles = load.loadObstacles();
+        Log.d("GameView", Arrays.toString(obstacles.toArray()));
         coins = load.loadCoins();
+        Log.d("GameView", Arrays.toString(coins.toArray()));
         ssProjectiles = load.loadBullets();
+        Log.d("GameView", Arrays.toString(ssProjectiles.toArray()));
         alienProjectiles = load.loadAlienBullets();
+        Log.d("GameView", Arrays.toString(alienProjectiles.toArray()));
+        spaceship = load.loadSpaceship();
+        Log.d("GameView", spaceship.toString());
+        if (obstacles == null) {
+            Log.d("GameView", "Obstacles are null");
+        }
         Log.d("GameView.java", "Finished restoring game state " + System.currentTimeMillis());
         Log.d("GameView.java", "Restored a total of " + (aliens.size() + obstacles.size() +
                 coins.size() + ssProjectiles.size() + alienProjectiles.size()) + " sprites");

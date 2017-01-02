@@ -97,7 +97,7 @@ public class GameSave {
         return f.exists() ? (Spaceship) FileUtil.readObject(f) : null;
     }
 
-    public boolean saveBullets( List<Sprite> bullets) {
+    public boolean saveBullets(List<Sprite> bullets) {
         return FileUtil.writeObject(new File(directory, BULLETS), bullets);
     }
 
@@ -105,7 +105,7 @@ public class GameSave {
         return loadSpriteList(new File(directory, BULLETS));
     }
 
-    public boolean saveObstacles( List<Sprite> obstacles) {
+    public boolean saveObstacles(List<Sprite> obstacles) {
         return FileUtil.writeObject(new File(directory, OBSTACLES), obstacles);
     }
 
@@ -113,7 +113,7 @@ public class GameSave {
         return loadSpriteList(new File(directory, OBSTACLES));
     }
 
-    public boolean saveCoins( List<Sprite> coins) {
+    public boolean saveCoins(List<Sprite> coins) {
         return FileUtil.writeObject(new File(directory, COINS), coins);
     }
 
