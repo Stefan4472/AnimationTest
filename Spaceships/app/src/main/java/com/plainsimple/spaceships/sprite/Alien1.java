@@ -52,8 +52,6 @@ public class Alien1 extends Alien {
         framesSinceLastBullet = bulletDelay;
         bulletSpeed = -0.002f - random.nextInt(5) / 10000.0f;
         hitBox = new Hitbox(x + getWidth() * 0.2f, y + getHeight() * 0.2f, x + getWidth() * 0.8f, y + getHeight() * 0.8f);
-        //Log.d("Alien1.java", "hitBox initialized to " + hitBox.flattenToString());
-        //Log.d("Alien1.java", "Alien is at " + x + "," + y + " with dimens. " + getWidth() + "," + getHeight());
         damage = 50;
         speedX = -0.0035f;
     }
@@ -138,13 +136,11 @@ public class Alien1 extends Alien {
     // that are slightly randomized
     @Override
     public void fireBullet(Sprite s) {
-        Log.d("Alien1 Class", "Firing on target at " + s.getHitboxCenter().getX() + "," + s.getHitboxCenter().getY());
         Point2D target = s.getHitboxCenter();
         AlienBullet b = new AlienBullet(bulletBitmapData, x, y + (int) (getHeight() * 0.1));
         b.setSpeedX(bulletSpeed);
         float frames_to_impact = (x - target.getX()) / bulletSpeed;
         b.setSpeedY((y - target.getY()) / frames_to_impact);
-        Log.d("Alien1 Class", "Setting speedY to " + ((y - target.getY()) / frames_to_impact));
         projectiles.add(b);
     }
 }

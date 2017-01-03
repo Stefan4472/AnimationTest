@@ -46,8 +46,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public static int screenH;
     private boolean running = false;
     private boolean onTitle = true;
-    // whether resources have been initialized
-    private boolean initialized = false;
     // name of game save to restore (null if none)
     private String restoreGameState = null;
     private GameViewThread thread;
@@ -150,25 +148,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         private void draw(Canvas canvas) {
-            // initialize elements if not previously done
-            if (!initialized) {
-                background = new Background(screenW, screenH);
-                initImgCache();
-                initAnimations();
-                initSpaceship();
-                tileWidth = screenH / ROWS;
-                tileHeight = screenH / ROWS;
-                map = new byte[1][screenW / tileWidth];
-                tileGenerator = new TileGenerator(ROWS);
-                onTitle = false;
-                healthBar = new HealthBar(c, screenW, screenH, 30, 30);
-                scoreDisplay = new ScoreDisplay(c, 0);
-                // restore game state if flag is set
-                if (restoreGameState != null) {
-                    restoreGameState(restoreGameState);
-                    restoreGameState = null;
-                }
-            }
             //((GameActivity) c).incrementScore(1);
             background.draw(canvas);
             if(!GameActivity.getPaused()) {
@@ -348,19 +327,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     case MotionEvent.ACTION_MOVE:
                         break;
                     case MotionEvent.ACTION_UP: // handle user clicking something
-                        if (onTitle) { // change to game screen. Load resources
-                        /*    c.getResources();
-                            background = new Background(screenW, screenH);
-                            initImgCache();
-                            initAnimations();
-                            initSpaceship();
-                            tileWidth = screenH / ROWS;
-                            tileHeight = screenH / ROWS;
-                            map = new byte[1][screenW / tileWidth];
-                            tileGenerator = new TileGenerator(ROWS);
-                            onTitle = false;
-                            healthBar = new HealthBar(c, screenW, screenH, 30, 30);
-                            scoreDisplay = new ScoreDisplay(c, 0);*/
+                        if (onTitle) { // todo: tap to start?
                         } else {
                             spaceship.setShooting(false);
                         }
@@ -404,6 +371,23 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             synchronized (mySurfaceHolder) {
                 screenW = width;
                 screenH = height;
+                Log.d("GameView", "Screen Dimensions set to " + screenW + "," + screenH);
+                background = new Background(screenW, screenH);
+                initImgCache();
+                initAnimations();
+                initSpaceship();
+                tileWidth = screenH / ROWS;
+                tileHeight = screenH / ROWS;
+                map = new byte[1][screenW / tileWidth];
+                tileGenerator = new TileGenerator(ROWS);
+                onTitle = false;
+                healthBar = new HealthBar(c, screenW, screenH, 30, 30);
+                scoreDisplay = new ScoreDisplay(c, 0);
+                // restore game state if flag is set
+                if (restoreGameState != null) {
+                    //restoreGameState(restoreGameState);
+                    restoreGameState = null;
+                }
             }
         }
 
