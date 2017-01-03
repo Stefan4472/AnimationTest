@@ -209,12 +209,4 @@ public abstract class Sprite { // todo: figure out public vs. protected
     public void setHP(int hp) {
         this.hp = hp;
     }
-
-    /*@Override
-    public String toString() {
-        String to_string = "";
-        if (this instanceof Alien) {
-            to_string += "Alien";
-        }
-    }*/
 }

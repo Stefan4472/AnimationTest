@@ -216,6 +216,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         if (!paused) {
             Log.d("GameActivity", "Pausing the game");
             onPausePressed(gameView);
+            Log.d("GameActivity", "Finished pausing the game");
         }
         soundPool.release();
         soundPool = null;
@@ -227,6 +228,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     @Override
     public void onStop() {
         super.onStop();
+        Log.d("GameActivity", "onStop called");
         if (!quit) { // save game state only if user did not quit on purpose // todo: this in onStop??
             Log.d("GameActivity.java", "Saving game state " + System.currentTimeMillis());
             gameView.saveGameState();

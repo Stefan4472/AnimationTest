@@ -371,7 +371,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             synchronized (mySurfaceHolder) {
                 screenW = width;
                 screenH = height;
-                Log.d("GameView", "Screen Dimensions set to " + screenW + "," + screenH);
+                Log.d("GameView", "Screen Dimensions set to " + screenW + "," + screenH); // todo: why does this only work the first time?
                 background = new Background(screenW, screenH);
                 initImgCache();
                 initAnimations();
@@ -436,7 +436,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void flagRestoreGameState(String saveName) {
-        this.restoreGameState = saveName;
+        //this.restoreGameState = saveName;
     }
 
     private void restoreGameState(String saveName) {
