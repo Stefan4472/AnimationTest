@@ -20,7 +20,6 @@ import com.plainsimple.spaceships.sprite.*;
 import com.plainsimple.spaceships.util.GameEngineUtil;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,9 +41,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private String restoreGameState = null;
     private GameViewThread thread;
     private Background background;
-    // todo: AnimationCache using BitmapID enums. Store num frames per animation in r/values/integers
-    // stores initialized SpriteAnimations with R.drawable ID of spritesheet as key
-    private HashMap<Integer, SpriteAnimation> animations;
     // dimensions of basic mapTiles
     private int tileWidth; // todo: what about bigger/smaller sprites?
     private int tileHeight;
@@ -256,16 +252,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         private Sprite getMapTile(int tileID, int x, int y) throws IndexOutOfBoundsException {
             switch (tileID) {
                 case TileGenerator.OBSTACLE:
-                    return new Obstacle(BitmapCache.getData(BitmapID.OBSTACLE, c), x, y); // todo: use static ImageData?
+                    return new Obstacle(BitmapCache.getData(BitmapID.OBSTACLE, c), x, y);
                 case TileGenerator.OBSTACLE_INVIS:
                     Sprite tile = new Obstacle(BitmapCache.getData(BitmapID.OBSTACLE, c), x, y);
                     tile.setCollides(false);
                     return tile;
-                case TileGenerator.COIN: // todo: more coins = faster animation because they share the same one
-                    return new Coin(BitmapCache.getData(BitmapID.COIN, c), animations.get(R.drawable.coin_spin), animations.get(R.drawable.coin_collect), x, y);
+                case TileGenerator.COIN:
+                    return new Coin(BitmapCache.getData(BitmapID.COIN, c), AnimCache.get(BitmapID.COIN_SPIN, c), x, y);
                 case TileGenerator.ALIEN_LVL1:
                     Alien1 alien_1 = new Alien1(BitmapCache.getData(BitmapID.ALIEN, c), x, y, spaceship);
-                    alien_1.injectResources(BitmapCache.getData(BitmapID.ALIEN_BULLET, c), animations.put(R.drawable.spaceship_explode, new SpriteAnimation(BitmapCache.getData(BitmapID.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapID.SPACESHIP, c).getWidth(), 5, false)));
+                    alien_1.injectResources(BitmapCache.getData(BitmapID.ALIEN_BULLET, c), AnimCache.get(BitmapID.SPACESHIP_EXPLODE, c));
                     return alien_1;
                 default:
                     throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
@@ -341,22 +337,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             spaceship = new Spaceship(BitmapCache.getData(BitmapID.SPACESHIP, c),
                     -BitmapCache.getData(BitmapID.SPACESHIP, c).getWidth(),
                     screenH / 2 - BitmapCache.getData(BitmapID.SPACESHIP, c).getHeight() / 2);
-            spaceship.injectResources(animations.get(R.drawable.spaceship_move),
-                    animations.get(R.drawable.spaceship_fire_rocket), new SpriteAnimation(BitmapCache.getData(BitmapID.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapID.SPACESHIP, c).getWidth(), 5, false),
+            spaceship.injectResources(AnimCache.get(BitmapID.SPACESHIP_MOVE, c),
+                    AnimCache.get(BitmapID.SPACESHIP_FIRE, c), AnimCache.get(BitmapID.SPACESHIP_EXPLODE, c),
                     BitmapCache.getData(BitmapID.LASER_BULLET, c), BitmapCache.getData(BitmapID.ROCKET, c));
             spaceship.setBullets(true, BulletType.LASER);//GameActivity.equipment.getEquippedBulletType()); // todo: get equipment
             spaceship.setRockets(true, RocketType.ROCKET);//GameActivity.equipment.getEquippedRocketType());
             spaceship.setHP(30);
-        }
-
-        // initializes SpriteAnimations and stores them in animations HashMap
-        private void initAnimations() { // todo: create AnimGenerator class. Creates SpriteAnimation objects on demand (except for COIN_SPIN, which all coins share). This way sprites do not share the same animation
-            animations = new HashMap<>();
-            animations.put(R.drawable.spaceship_move, new SpriteAnimation(BitmapCache.getData(BitmapID.SPACESHIP_MOVE, c), BitmapCache.getData(BitmapID.SPACESHIP, c).getWidth(), 5, true));
-            animations.put(R.drawable.spaceship_fire_rocket, new SpriteAnimation(BitmapCache.getData(BitmapID.SPACESHIP_FIRE, c), BitmapCache.getData(BitmapID.SPACESHIP, c).getWidth(), 8, false));
-            animations.put(R.drawable.spaceship_explode, new SpriteAnimation(BitmapCache.getData(BitmapID.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapID.SPACESHIP, c).getWidth(), 5, false));
-            animations.put(R.drawable.coin_spin, new SpriteAnimation(BitmapCache.getData(BitmapID.COIN_SPIN, c), BitmapCache.getData(BitmapID.COIN, c).getWidth(), 10, true));
-            animations.put(R.drawable.coin_collect, new SpriteAnimation(BitmapCache.getData(BitmapID.COIN_DISAPPEAR, c), BitmapCache.getData(BitmapID.COIN, c).getWidth(), 5, false));
         }
 
         public void setSurfaceSize(int width, int height) {
@@ -366,7 +352,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 Log.d("GameView", "Screen Dimensions set to " + screenW + "," + screenH);
                 background = new Background(screenW, screenH);
                 initImgCache();
-                initAnimations();
                 initSpaceship();
                 tileWidth = screenH / ROWS;
                 tileHeight = screenH / ROWS;

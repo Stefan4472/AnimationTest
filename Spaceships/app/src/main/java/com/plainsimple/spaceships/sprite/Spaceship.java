@@ -217,18 +217,14 @@ public class Spaceship extends Sprite {
         drawParams.clear();
         // define specifications for defaultImage
         drawParams.add(new DrawImage(bitmapData.getId(), x, y));
-        Rect source;
         if (moving) {
-            source = move.getCurrentFrameSrc(); // todo: put this in the DrawSubimage constructor
-            drawParams.add(new DrawSubImage(move.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
+            drawParams.add(new DrawSubImage(move.getBitmapID(), x, y, move.getCurrentFrameSrc()));
         }
         if (fireRocket.isPlaying()) {
-            source = fireRocket.getCurrentFrameSrc();
-            drawParams.add(new DrawSubImage(fireRocket.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
+            drawParams.add(new DrawSubImage(fireRocket.getBitmapID(), x, y, fireRocket.getCurrentFrameSrc()));
         }
         if (explode.isPlaying()) {
-            source = explode.getCurrentFrameSrc();
-            drawParams.add(new DrawSubImage(explode.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
+            drawParams.add(new DrawSubImage(explode.getBitmapID(), x, y, explode.getCurrentFrameSrc()));
         }
         return drawParams;
     }

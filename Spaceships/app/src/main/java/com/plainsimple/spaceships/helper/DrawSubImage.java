@@ -35,6 +35,16 @@ public class DrawSubImage implements DrawParams {
         this.y1 = y1;
     }
 
+    public DrawSubImage(BitmapID bitmapID, float canvasX0, float canvasY0, Rect source) {
+        this.bitmapID = bitmapID;
+        this.canvasX0 = canvasX0;
+        this.canvasY0 = canvasY0;
+        x0 = (float) source.left;
+        y0 = (float) source.top;
+        x1 = (float) source.right;
+        y1 = (float) source.bottom;
+    }
+
     @Override
     public void draw(Canvas canvas, Context context) {
         Rect source = new Rect((int) x0, (int) y0, (int) x1, (int) y1);

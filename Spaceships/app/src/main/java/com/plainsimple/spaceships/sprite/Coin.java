@@ -19,28 +19,18 @@ import java.util.List;
 public class Coin extends Sprite {
 
     private SpriteAnimation spin;
-    private SpriteAnimation disappear;
 
-    public Coin(BitmapData bitmapData, SpriteAnimation spinAnimation, SpriteAnimation disappearAnimation, float x, float y) {
+    public Coin(BitmapData bitmapData, SpriteAnimation spinAnimation, float x, float y) {
         super(bitmapData, x, y);
         //spin = new SpriteAnimation(spinAnimation, width, height, 5, true);
         spin = spinAnimation;
         spin.start();
-        //disappear = new SpriteAnimation(disappearAnimation, width, height, 1, false);
-        disappear = disappearAnimation;
-        initObstacle();
-    }
-
-    private void initObstacle() {
         hitBox = new Hitbox(x + getWidth() * 0.3f, y + getHeight() * 0.1f, x + getWidth() * 0.7f, y + getHeight() * 0.9f);
     }
 
     @Override
     public void updateActions() {
-        if (disappear.hasPlayed()) {
-            terminate = true;
-        }
-        if (!isInBounds()) {
+        if (!isInBounds() || terminate) {
             terminate = true;
             Log.d("Termination", "Removing Coin at x = " + x);
         }
@@ -53,11 +43,7 @@ public class Coin extends Sprite {
 
     @Override
     public void updateAnimations() {
-        if (disappear.isPlaying()) {
-            disappear.incrementFrame();
-        } else {
-            spin.incrementFrame();
-        }
+        spin.incrementFrame();
     }
 
     @Override
@@ -65,20 +51,14 @@ public class Coin extends Sprite {
         if (s instanceof Spaceship) {
             //disappear.start();
             GameActivity.incrementScore(GameActivity.COIN_VALUE);
-            collides = false;
+            terminate = true;
         }
     }
 
     @Override
     public List<DrawParams> getDrawParams() {
         drawParams.clear();
-        /*if (disappear.isPlaying()) {
-            Rect source = disappear.getCurrentFrameSrc();
-            params.add(new DrawParams(disappear.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
-        } else {*/
-            Rect source = spin.getCurrentFrameSrc();
-            drawParams.add(new DrawSubImage(spin.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
-        //}
+        drawParams.add(new DrawSubImage(spin.getBitmapID(), x, y, spin.getCurrentFrameSrc()));
         return drawParams;
     }
 }

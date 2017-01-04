@@ -6,10 +6,10 @@ import android.util.Log;
 import plainsimple.spaceships.R;
 
 /**
- * Cache for Sprite Animations. Retrieved using BitmapID // todo: or use AnimationCache enum?
+ * Cache for Sprite Animations. Retrieved using BitmapID // todo: or use AnimCache enum?
  */
 
-public class AnimationCache {
+public class AnimCache {
 
     // Initializes the specified sprite animation using parameters
     // from R.string. Parameters should be in the form
@@ -17,10 +17,10 @@ public class AnimationCache {
     // followed by the boolean that determines whether the animation loops.
     // Parameters are separated by the ':' character
     // @throws IllegalArgumentException if any error is encountered creating the animation
-    public static SpriteAnimation get(Context context, BitmapID key) throws IllegalArgumentException {
+    public static SpriteAnimation get(BitmapID key, Context context) throws IllegalArgumentException {
         try {
             // convert key to string of params
-            String anim_params = keyToString(context, key);
+            String anim_params = keyToString(key, context);
             // parse first argument: number of frames
             int num_frames = Integer.parseInt(anim_params.substring(0, anim_params.indexOf(':')));
             int[] frame_speeds = new int[num_frames];
@@ -33,14 +33,14 @@ public class AnimationCache {
             boolean loop = Boolean.parseBoolean(anim_params.substring(read_index));
             return new SpriteAnimation(BitmapCache.getData(key, context), frame_speeds, loop);
         } catch (Exception e) {
-            Log.d("AnimationCache.java", "There was an error creating a SpriteAnimation");
-            Log.d("AnimationCache.java", "Error: " + e.getMessage());
+            Log.d("AnimCache.java", "There was an error creating a SpriteAnimation");
+            Log.d("AnimCache.java", "Error: " + e.getMessage());
             return null;
         }
     }
 
     // returns R.string associated with key
-    private static String keyToString(Context context, BitmapID key) throws IllegalArgumentException {
+    private static String keyToString(BitmapID key, Context context) throws IllegalArgumentException {
         switch (key) {
             case SPACESHIP_MOVE:
                 return context.getString(R.string.SPACESHIP_MOVE);
