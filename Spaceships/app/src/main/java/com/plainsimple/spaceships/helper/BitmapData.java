@@ -5,21 +5,21 @@ package com.plainsimple.spaceships.helper;
  */
 public class BitmapData {
 
-    private BitmapResource id;
+    private BitmapID id;
     private int width;
     private int height;
 
-    public BitmapData(BitmapResource imageID, int imageWidth, int imageHeight) {
+    public BitmapData(BitmapID imageID, int imageWidth, int imageHeight) {
         this.id = imageID;
         this.width = imageWidth;
         this.height = imageHeight;
     }
 
-    public BitmapResource getId() {
+    public BitmapID getId() {
         return id;
     }
 
-    public void setId(BitmapResource id) {
+    public void setId(BitmapID id) {
         this.id = id;
     }
 

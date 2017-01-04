@@ -11,7 +11,7 @@ import android.graphics.Rect;
 public class DrawSubImage implements DrawParams {
 
     // ID of bitmap to be drawn
-    private BitmapResource bitmapID;
+    private BitmapID bitmapID;
     // x-coordinate where drawing begins on canvas
     private float canvasX0;
     // y-coordinate where drawing begins on canvas
@@ -25,7 +25,7 @@ public class DrawSubImage implements DrawParams {
     // ending y-coordinate
     private float y1;
 
-    public DrawSubImage(BitmapResource bitmapID, float canvasX0, float canvasY0, float x0, float y0, float x1, float y1) { // todo: setParams method to set all params at once
+    public DrawSubImage(BitmapID bitmapID, float canvasX0, float canvasY0, float x0, float y0, float x1, float y1) { // todo: setParams method to set all params at once
         this.bitmapID = bitmapID;
         this.canvasX0 = canvasX0;
         this.canvasY0 = canvasY0;

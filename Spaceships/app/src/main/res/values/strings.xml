@@ -21,4 +21,9 @@
         COINS_COLLECTED:LONG:0,
         POINTS_EARNED:LONG:0
     </string>
+    <!-- Define animations (see AnimationCache.java and SpriteAnimation.java) -->
+    <string name="SPACESHIP_MOVE">2:5:5:true</string>
+    <string name="SPACESHIP_FIRE_ROCKET">4:8:8:8:8:false</string>
+    <string name="SPACESHIP_EXPLODE">8:5:5:5:5:5:5:5:5:false</string>>
+    <string name="COIN_SPIN">6:10:10:10:10:10:10:true</string>
 </resources>

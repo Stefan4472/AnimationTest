@@ -1,6 +1,6 @@
 package com.plainsimple.spaceships.util;
 
-import com.plainsimple.spaceships.helper.BitmapResource;
+import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.RawResource;
 
 import plainsimple.spaceships.R;
@@ -10,7 +10,7 @@ import plainsimple.spaceships.R;
  */
 public class EnumUtil {
 
-    public static int getID(BitmapResource key) {
+    public static int getID(BitmapID key) {
         switch (key) {
             case SPACESHIP:
                 return R.drawable.spaceship;

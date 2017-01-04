@@ -7,18 +7,17 @@ import android.graphics.Rect;
  */
 public class SpriteAnimation { // todo: pause (returns same frame each time) and reverse methods
 
-    private BitmapData bitmapData;
+    private BitmapID bitmapID;
 
     // dimensions of each frame
     private int frameW;
     private int frameH;
 
-    // dimensions of sprite sheet (images)
-    private int sheetW;
-    private int sheetH;
-
     // number of frames in loop
     private int numFrames;
+
+    // frameSpeed of each frame, stored in array
+    private int[] frameSpeeds;
 
     // whether or not to loop animation
     private boolean loop;
@@ -32,22 +31,17 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
     // current position in array of frames
     private int frameCounter = 0;
 
-    // number of frames to display each sprite
-    private int frameSpeed;
-
     // counts number of frames current sprite has been shown
     private int frameSpeedCounter = 0;
 
     // takes R.id of Bitmap representing spritesheet, which consists of one row of sprites
     // initializes all frames now so as to cut down on processing time later
-    public SpriteAnimation(BitmapData bitmapData, int frameW, int frameSpeed, boolean loop) { // todo: confusion btwn. frameW and bitmapData.getWidth()
-        this.bitmapData = bitmapData;
-        this.frameW = frameW;
+    public SpriteAnimation(BitmapData bitmapData, int[] frameSpeeds, boolean loop) { // todo: confusion btwn. frameW and bitmapData.getWidth()
+        bitmapID = bitmapData.getId();
+        this.frameSpeeds = frameSpeeds;
+        numFrames = frameSpeeds.length;
+        frameW = bitmapData.getWidth() / numFrames;
         frameH = bitmapData.getHeight();
-        sheetW = bitmapData.getWidth() / frameW;
-        sheetH = 1; // todo: support multiple rows
-        numFrames = sheetW * sheetH;
-        this.frameSpeed = frameSpeed;
         this.loop = loop;
     }
 
@@ -80,7 +74,7 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
 
     // progresses frame counter by one
     public void incrementFrame() {
-        if (frameSpeedCounter == frameSpeed) {
+        if (frameSpeedCounter == frameSpeeds[frameCounter]) {
             frameCounter++;
             frameSpeedCounter = 0;
         } else {
@@ -103,12 +97,7 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
         return new Rect(frameW * frameCounter, 0, frameW * (frameCounter + 1), frameH);
     }
 
-    public BitmapResource getBitmapID() {
-        return bitmapData.getId();
-    }
-
-    // returns total number of frames so far this cycle
-    public int getFrameNumber() {
-        return frameSpeedCounter + frameSpeed * frameCounter;
+    public BitmapID getBitmapID() {
+        return bitmapID;
     }
 }

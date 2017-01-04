@@ -10,14 +10,14 @@ import com.plainsimple.spaceships.util.EnumUtil;
 import java.util.Hashtable;
 
 /**
- * Bitmap cache for R.drawables. Retrieved using BitmapResource
+ * Bitmap cache for R.drawables. Retrieved using BitmapID
  */
 public class BitmapCache {
 
     // stores bitmaps
-    private static Hashtable<BitmapResource, Bitmap> bmpCache = new Hashtable<>();
+    private static Hashtable<BitmapID, Bitmap> bmpCache = new Hashtable<>();
     // stores bitmap data
-    private static Hashtable<BitmapResource, BitmapData> bmpData = new Hashtable<>();
+    private static Hashtable<BitmapID, BitmapData> bmpData = new Hashtable<>();
 
     private static float scalingFactor = 1.0f;
 
@@ -25,7 +25,7 @@ public class BitmapCache {
         BitmapCache.scalingFactor = scalingFactor;
     }
 
-    public static Bitmap getImage(BitmapResource key, Context context) {
+    public static Bitmap getImage(BitmapID key, Context context) {
         // attempts to get the bitmap from the Hashtable
         Bitmap bmp = bmpCache.get(key);
         if (bmp == null) {
@@ -45,7 +45,7 @@ public class BitmapCache {
         return bmp;
     }
 
-    public static BitmapData getData(BitmapResource key, Context context) {
+    public static BitmapData getData(BitmapID key, Context context) {
         // attempts to get the data from the Hashtable
         BitmapData data = bmpData.get(key);
         if (data == null) {
@@ -66,7 +66,7 @@ public class BitmapCache {
     }
 
     public static void destroyBitmaps() {
-        for (BitmapResource key : bmpCache.keySet()) {
+        for (BitmapID key : bmpCache.keySet()) {
             bmpCache.remove(key);
         }
     }

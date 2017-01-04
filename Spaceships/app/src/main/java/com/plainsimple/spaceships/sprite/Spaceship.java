@@ -163,14 +163,13 @@ public class Spaceship extends Sprite {
     public void updateSpeeds() {
         // negative is tilting away from player -> move up
         // positive is tilting toward player -> move down
-        float tiltChange = tilt - lastTilt;
-        speedY = tiltChange / 10.0f;
+       // float tiltChange = tilt - lastTilt;
+        //speedY = tiltChange / 10.0f;
         //Log.d("Spaceship.java", "Tilt is " + tilt + " and change is " + tiltChange);
     }
 
     @Override
     public void move() {
-        Log.d("Spaceship", "speedY = " + speedY);
         super.move();
         // for when spaceship first comes on to screen
         if (x < screenW / 4) { // todo: local variable
@@ -220,7 +219,7 @@ public class Spaceship extends Sprite {
         drawParams.add(new DrawImage(bitmapData.getId(), x, y));
         Rect source;
         if (moving) {
-            source = move.getCurrentFrameSrc();
+            source = move.getCurrentFrameSrc(); // todo: put this in the DrawSubimage constructor
             drawParams.add(new DrawSubImage(move.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
         }
         if (fireRocket.isPlaying()) {

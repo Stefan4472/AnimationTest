@@ -1,15 +1,11 @@
 package com.plainsimple.spaceships.view;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -21,12 +17,8 @@ import android.view.SurfaceView;
 import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.*;
 import com.plainsimple.spaceships.sprite.*;
-import com.plainsimple.spaceships.util.FileUtil;
 import com.plainsimple.spaceships.util.GameEngineUtil;
-import com.plainsimple.spaceships.util.ImageUtil;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -50,7 +42,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private String restoreGameState = null;
     private GameViewThread thread;
     private Background background;
-    // todo: AnimationCache using BitmapResource enums. Store num frames per animation in r/values/integers
+    // todo: AnimationCache using BitmapID enums. Store num frames per animation in r/values/integers
     // stores initialized SpriteAnimations with R.drawable ID of spritesheet as key
     private HashMap<Integer, SpriteAnimation> animations;
     // dimensions of basic mapTiles
@@ -264,16 +256,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         private Sprite getMapTile(int tileID, int x, int y) throws IndexOutOfBoundsException {
             switch (tileID) {
                 case TileGenerator.OBSTACLE:
-                    return new Obstacle(BitmapCache.getData(BitmapResource.OBSTACLE, c), x, y); // todo: use static ImageData?
+                    return new Obstacle(BitmapCache.getData(BitmapID.OBSTACLE, c), x, y); // todo: use static ImageData?
                 case TileGenerator.OBSTACLE_INVIS:
-                    Sprite tile = new Obstacle(BitmapCache.getData(BitmapResource.OBSTACLE, c), x, y);
+                    Sprite tile = new Obstacle(BitmapCache.getData(BitmapID.OBSTACLE, c), x, y);
                     tile.setCollides(false);
                     return tile;
                 case TileGenerator.COIN: // todo: more coins = faster animation because they share the same one
-                    return new Coin(BitmapCache.getData(BitmapResource.COIN, c), animations.get(R.drawable.coin_spin), animations.get(R.drawable.coin_collect), x, y);
+                    return new Coin(BitmapCache.getData(BitmapID.COIN, c), animations.get(R.drawable.coin_spin), animations.get(R.drawable.coin_collect), x, y);
                 case TileGenerator.ALIEN_LVL1:
-                    Alien1 alien_1 = new Alien1(BitmapCache.getData(BitmapResource.ALIEN, c), x, y, spaceship);
-                    alien_1.injectResources(BitmapCache.getData(BitmapResource.ALIEN_BULLET, c), animations.put(R.drawable.spaceship_explode, new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 5, false)));
+                    Alien1 alien_1 = new Alien1(BitmapCache.getData(BitmapID.ALIEN, c), x, y, spaceship);
+                    alien_1.injectResources(BitmapCache.getData(BitmapID.ALIEN_BULLET, c), animations.put(R.drawable.spaceship_explode, new SpriteAnimation(BitmapCache.getData(BitmapID.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapID.SPACESHIP, c).getWidth(), 5, false)));
                     return alien_1;
                 default:
                     throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
@@ -346,12 +338,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         private void initSpaceship() { // todo: clean up, use persistent data
-            spaceship = new Spaceship(BitmapCache.getData(BitmapResource.SPACESHIP, c),
-                    -BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(),
-                    screenH / 2 - BitmapCache.getData(BitmapResource.SPACESHIP, c).getHeight() / 2);
+            spaceship = new Spaceship(BitmapCache.getData(BitmapID.SPACESHIP, c),
+                    -BitmapCache.getData(BitmapID.SPACESHIP, c).getWidth(),
+                    screenH / 2 - BitmapCache.getData(BitmapID.SPACESHIP, c).getHeight() / 2);
             spaceship.injectResources(animations.get(R.drawable.spaceship_move),
-                    animations.get(R.drawable.spaceship_fire_rocket), new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 5, false),
-                    BitmapCache.getData(BitmapResource.LASER_BULLET, c), BitmapCache.getData(BitmapResource.ROCKET, c));
+                    animations.get(R.drawable.spaceship_fire_rocket), new SpriteAnimation(BitmapCache.getData(BitmapID.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapID.SPACESHIP, c).getWidth(), 5, false),
+                    BitmapCache.getData(BitmapID.LASER_BULLET, c), BitmapCache.getData(BitmapID.ROCKET, c));
             spaceship.setBullets(true, BulletType.LASER);//GameActivity.equipment.getEquippedBulletType()); // todo: get equipment
             spaceship.setRockets(true, RocketType.ROCKET);//GameActivity.equipment.getEquippedRocketType());
             spaceship.setHP(30);
@@ -360,18 +352,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         // initializes SpriteAnimations and stores them in animations HashMap
         private void initAnimations() { // todo: create AnimGenerator class. Creates SpriteAnimation objects on demand (except for COIN_SPIN, which all coins share). This way sprites do not share the same animation
             animations = new HashMap<>();
-            animations.put(R.drawable.spaceship_move, new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_MOVE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 5, true));
-            animations.put(R.drawable.spaceship_fire_rocket, new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_FIRE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 8, false));
-            animations.put(R.drawable.spaceship_explode, new SpriteAnimation(BitmapCache.getData(BitmapResource.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapResource.SPACESHIP, c).getWidth(), 5, false));
-            animations.put(R.drawable.coin_spin, new SpriteAnimation(BitmapCache.getData(BitmapResource.COIN_SPIN, c), BitmapCache.getData(BitmapResource.COIN, c).getWidth(), 10, true));
-            animations.put(R.drawable.coin_collect, new SpriteAnimation(BitmapCache.getData(BitmapResource.COIN_DISAPPEAR, c), BitmapCache.getData(BitmapResource.COIN, c).getWidth(), 5, false));
+            animations.put(R.drawable.spaceship_move, new SpriteAnimation(BitmapCache.getData(BitmapID.SPACESHIP_MOVE, c), BitmapCache.getData(BitmapID.SPACESHIP, c).getWidth(), 5, true));
+            animations.put(R.drawable.spaceship_fire_rocket, new SpriteAnimation(BitmapCache.getData(BitmapID.SPACESHIP_FIRE, c), BitmapCache.getData(BitmapID.SPACESHIP, c).getWidth(), 8, false));
+            animations.put(R.drawable.spaceship_explode, new SpriteAnimation(BitmapCache.getData(BitmapID.SPACESHIP_EXPLODE, c), BitmapCache.getData(BitmapID.SPACESHIP, c).getWidth(), 5, false));
+            animations.put(R.drawable.coin_spin, new SpriteAnimation(BitmapCache.getData(BitmapID.COIN_SPIN, c), BitmapCache.getData(BitmapID.COIN, c).getWidth(), 10, true));
+            animations.put(R.drawable.coin_collect, new SpriteAnimation(BitmapCache.getData(BitmapID.COIN_DISAPPEAR, c), BitmapCache.getData(BitmapID.COIN, c).getWidth(), 5, false));
         }
 
         public void setSurfaceSize(int width, int height) {
             synchronized (mySurfaceHolder) {
                 screenW = width;
                 screenH = height;
-                Log.d("GameView", "Screen Dimensions set to " + screenW + "," + screenH); // todo: why does this only work the first time?
+                Log.d("GameView", "Screen Dimensions set to " + screenW + "," + screenH);
                 background = new Background(screenW, screenH);
                 initImgCache();
                 initAnimations();
