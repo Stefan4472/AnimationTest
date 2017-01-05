@@ -3,6 +3,7 @@ package com.plainsimple.spaceships.helper;
 import android.content.Context;
 import android.graphics.Canvas;
 
+import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.sprite.Alien;
 import com.plainsimple.spaceships.sprite.Alien1;
 import com.plainsimple.spaceships.sprite.Coin;
@@ -83,8 +84,9 @@ public class Map {
 
             // generate more sprites
             if (mapTileCounter == map[0].length) {
+                map = tileGenerator.generateTiles(20);
                 //map = tileGenerator.generateTiles(GameActivity.getDifficulty());
-                map = tileGenerator.generateDebugTiles();
+                //map = tileGenerator.generateDebugTiles();
                 mapTileCounter = 0;
             }
             lastTile = getWTile();
