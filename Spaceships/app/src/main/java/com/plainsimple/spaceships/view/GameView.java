@@ -41,37 +41,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private String restoreGameState = null;
     private GameViewThread thread;
     private Background background;
-    // dimensions of basic mapTiles
-    private int tileWidth; // todo: what about bigger/smaller sprites?
-    private int tileHeight;
+    private Map map;
     // space background (implements parallax scrolling)
     //private DrawBackgroundService background;
-    // grid of tile ID's instructing which sprites to initialize on screen
-    private byte[][] map;
-    // used to generate tile-based terrain
-    private TileGenerator tileGenerator;
-    // number of rows of sprites that fit on screen
-    private static final int ROWS = 6;
-    // number of tiles elapsed since last map was generated
-    private int mapTileCounter = 0;
-    // keeps track of tile spaceship was on last time map was updated
-    private long lastTile = 0;
-    // coordinates of upper-left of "window" being shown
-    private long x = 0;
     // default speed of sprites scrolling across the map (must be negative!)
     private float scrollSpeed = -0.0025f;
     // spaceship
     private Spaceship spaceship;
-    // active generated obstacles
-    private List<Sprite> obstacles = new LinkedList<>();
-    // active generated coins
-    private List<Sprite> coins = new LinkedList<>();
-    // active generated aliens
-    private List<Sprite> aliens = new LinkedList<>();
-    // active projectiles on screen fired by spaceship
-    private List<Sprite> ssProjectiles = new LinkedList<>();
-    // active projectiles on screen fired by aliens
-    private List<Sprite> alienProjectiles = new LinkedList<>();
     // relative speed of background scrolling to foreground scrolling
     private static final float SCROLL_SPEED_CONST = 0.4f;
     private Paint debugPaintRed = new Paint();
@@ -143,42 +119,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 background.scroll((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST * 8));
                 //background.scroll(-10);
             }
-            for (Sprite o : obstacles) {
-                drawSprite(o, canvas);
+            // todo: how to draw bullets and rockets? drawparams in spaceship?
+            for (Sprite s : spaceship.getProjectiles()) {
+                GameEngineUtil.drawSprite(s, canvas, c);
             }
-            for (Sprite c : coins) {
-                drawSprite(c, canvas);
-            }
-            for (Sprite a : aliens) {
-                drawSprite(a, canvas);
-            }
-            for (Sprite a : alienProjectiles) {
-                drawSprite(a, canvas);
-            }
-            for (Sprite s : ssProjectiles) {
-                drawSprite(s, canvas);
-            }
-            drawSprite(spaceship, canvas);
+            map.draw(canvas, c);
+            GameEngineUtil.drawSprite(spaceship, canvas, c);
             healthBar.draw(canvas);
             scoreDisplay.draw(canvas);
-        }
-
-        List<DrawParams> drawParams;
-        // draws sprite onto canvas using sprite drawing params and imageCache
-        private void drawSprite(Sprite sprite, Canvas canvas) {
-            drawParams = sprite.getDrawParams();
-            for (DrawParams p : drawParams) {
-                p.draw(canvas, c);
-            }
-            if (sprite.collides()) {
-                canvas.drawRect(sprite.getHitBox().getX(), sprite.getHitBox().getY(),
-                        sprite.getHitBox().getX() + sprite.getHitBox().getWidth(),
-                        sprite.getHitBox().getY() + sprite.getHitBox().getHeight(), debugPaintRed);
-            } else {
-                canvas.drawRect(sprite.getHitBox().getX(), sprite.getHitBox().getY(),
-                        sprite.getHitBox().getX() + sprite.getHitBox().getWidth(),
-                        sprite.getHitBox().getY() + sprite.getHitBox().getHeight(), debugPaintPink);
-            }
         }
 
         // updates all game logic
@@ -186,99 +134,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         public void update() {
             //score += difficulty / 2; // todo: increment score based on difficulty
             GameActivity.incrementDifficulty(0.01f);
-            updateMap();
+            //updateScrollSpeed();
             updateSpaceship();
-            GameEngineUtil.getAlienBullets(alienProjectiles, aliens);
-            // check collisions between user-fired projectiles and relevant sprites
-            for(Sprite projectile : ssProjectiles) {
-                GameEngineUtil.checkCollisions(projectile, aliens);
-                GameEngineUtil.checkCollisions(projectile, obstacles);
-            }
-            GameEngineUtil.checkCollisions(spaceship, aliens);
-            GameEngineUtil.checkCollisions(spaceship, obstacles);
-            GameEngineUtil.checkCollisions(spaceship, coins);
-            GameEngineUtil.checkCollisions(spaceship, alienProjectiles);
-            GameEngineUtil.updateSprites(obstacles);
-            GameEngineUtil.updateSprites(aliens);
-            GameEngineUtil.updateSprites(coins);
-            GameEngineUtil.updateSprites(ssProjectiles);
-            GameEngineUtil.updateSprites(alienProjectiles);
+            map.update(GameActivity.getDifficulty(), scrollSpeed, spaceship);
             spaceship.updateAnimations();
             healthBar.setMovingToHealth(spaceship.getHP());
             scoreDisplay.update(GameActivity.getScore()); // todo: clumsy
         }
 
-        // creates new sprites as specified by the map
-        // generates new map chunks if needed
-        private void updateMap() {
-            // update x
-            x += screenW * scrollSpeed;
-
-            // check if screen has progressed to render a new tile
-            if (getWTile() != lastTile) {
-                Sprite to_generate;
-                // add any non-empty tiles in the current column to the edge of the screen
-                for (int i = 0; i < map.length; i++) {
-                    if (map[i][mapTileCounter] != TileGenerator.EMPTY) {
-                        to_generate = getMapTile(map[i][mapTileCounter], screenW + getWOffset(), i * tileHeight);
-                        //Log.d("GameView", "Sprite initialized at " + to_generate.getX());
-                        addTile(to_generate, scrollSpeed, 0); // todo: put speedX and speedY in constructor? -> Make scrollSpeed static and have sprites determine speedX and speedY on initialization?
-                    }
-                }
-                mapTileCounter++;
-
-                // generate more sprites
-                if (mapTileCounter == map[0].length) {
-                    //map = tileGenerator.generateTiles(GameActivity.getDifficulty());
-                    map = tileGenerator.generateDebugTiles();
-                    //updateScrollSpeed(); // todo: try disabling this
-                    mapTileCounter = 0;
-                }
-                lastTile = getWTile();
-            }
-        }
-
-        // current horizontal tile
-        private long getWTile() {
-            return x / tileWidth;
-        }
-
-        // number of pixels from start of current tile
-        private int getWOffset() {
-            return (int) x % tileWidth;
-        }
-
-        // returns sprite initialized to coordinates (x,y) given tileID
-        private Sprite getMapTile(int tileID, int x, int y) throws IndexOutOfBoundsException {
-            switch (tileID) {
-                case TileGenerator.OBSTACLE:
-                    return new Obstacle(BitmapCache.getData(BitmapID.OBSTACLE, c), x, y);
-                case TileGenerator.OBSTACLE_INVIS:
-                    Sprite tile = new Obstacle(BitmapCache.getData(BitmapID.OBSTACLE, c), x, y);
-                    tile.setCollides(false);
-                    return tile;
-                case TileGenerator.COIN:
-                    return new Coin(BitmapCache.getData(BitmapID.COIN, c), AnimCache.get(BitmapID.COIN_SPIN, c), x, y);
-                case TileGenerator.ALIEN_LVL1:
-                    Alien1 alien_1 = new Alien1(BitmapCache.getData(BitmapID.ALIEN, c), x, y, spaceship);
-                    alien_1.injectResources(BitmapCache.getData(BitmapID.ALIEN_BULLET, c), AnimCache.get(BitmapID.SPACESHIP_EXPLODE, c));
-                    return alien_1;
-                default:
-                    throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
-            }
-        }
-
-        // sets specified fields and adds sprite to arraylist
-        private void addTile(Sprite s, float speedX, float speedY) {
-            s.setSpeedX(speedX);
-            s.setSpeedY(speedY);
-            if (s instanceof Obstacle) {
-                obstacles.add(s);
-            } else if (s instanceof Alien) {
-                aliens.add(s);
-            } else if (s instanceof Coin) {
-                coins.add(s);
-            }
+        private void updateSpaceship() {
+            spaceship.setTilt(screenTilt);
+            spaceship.updateSpeeds();
+            spaceship.move();
+            spaceship.updateActions();
+            GameEngineUtil.updateSprites(spaceship.getProjectiles());
         }
 
         // calculates scrollspeed based on difficulty
@@ -291,14 +160,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
 
-        private void updateSpaceship() {
-            spaceship.setTilt(screenTilt);
-            spaceship.updateSpeeds();
-            spaceship.move();
-            spaceship.updateActions();
-            ssProjectiles.addAll(spaceship.getAndClearProjectiles());
-        }
-
         // handle user touching screen
         boolean doTouchEvent(MotionEvent motionEvent) {
             synchronized (mySurfaceHolder) {
@@ -308,17 +169,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                 switch (event_action) {
                     case MotionEvent.ACTION_DOWN:
-                        if (!onTitle) {
+                        //if (!onTitle) {
                             spaceship.setShooting(true);
-                        }
+                        //}
                         break;
                     case MotionEvent.ACTION_MOVE:
                         break;
                     case MotionEvent.ACTION_UP: // handle user clicking something
-                        if (onTitle) { // todo: tap to start?
-                        } else {
+                        //if (onTitle) { // todo: tap to start?
+                        //} else {
                             spaceship.setShooting(false);
-                        }
+                        //}
                         break;
                 }
             }
@@ -353,11 +214,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 background = new Background(screenW, screenH);
                 initImgCache();
                 initSpaceship();
-                tileWidth = screenH / ROWS;
-                tileHeight = screenH / ROWS;
-                map = new byte[1][screenW / tileWidth];
-                tileGenerator = new TileGenerator(ROWS);
-                onTitle = false;
+                map = new Map(c, screenW, screenH);
                 healthBar = new HealthBar(c, screenW, screenH, 30, 30);
                 scoreDisplay = new ScoreDisplay(c, 0);
                 // restore game state if flag is set
@@ -401,7 +258,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void saveGameState() {
-        GameSave save = new GameSave(c);
+        /*GameSave save = new GameSave(c);
         save.saveAliens(aliens);
         save.saveSpaceship(spaceship);
         save.saveBullets(ssProjectiles);
@@ -409,7 +266,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         save.saveCoins(coins);
         save.saveObstacles(obstacles);
         Log.d("GameView.java", "Saved a total of " + (aliens.size() + obstacles.size() +
-                coins.size() + ssProjectiles.size() + alienProjectiles.size()) + " sprites");
+                coins.size() + ssProjectiles.size() + alienProjectiles.size()) + " sprites");*/
     }
 
     public void flagRestoreGameState(String saveName) {
@@ -417,7 +274,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void restoreGameState(String saveName) {
-        Log.d("GameView.java", "Restoring game state " + System.currentTimeMillis());
+        /*Log.d("GameView.java", "Restoring game state " + System.currentTimeMillis());
         GameSave load = new GameSave(c, saveName);
         aliens = load.loadAliens(); // todo: nullpointers
         Log.d("GameView", Arrays.toString(aliens.toArray()));
@@ -436,7 +293,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
         Log.d("GameView.java", "Finished restoring game state " + System.currentTimeMillis());
         Log.d("GameView.java", "Restored a total of " + (aliens.size() + obstacles.size() +
-                coins.size() + ssProjectiles.size() + alienProjectiles.size()) + " sprites");
+                coins.size() + ssProjectiles.size() + alienProjectiles.size()) + " sprites");*/
     }
 
     public void clearGameState() {

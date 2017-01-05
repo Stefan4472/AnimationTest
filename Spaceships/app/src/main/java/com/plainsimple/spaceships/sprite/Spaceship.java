@@ -16,6 +16,7 @@ import com.plainsimple.spaceships.helper.SoundParams;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.plainsimple.spaceships.view.GameView.screenH;
@@ -63,13 +64,8 @@ public class Spaceship extends Sprite {
     private SoundParams bulletSound;
     private SoundParams explodeSound;
 
-    public List<Sprite> getAndClearProjectiles() {
-        List<Sprite> copy = new ArrayList<>();
-        for(Sprite p : projectiles) {
-            copy.add(p);
-        }
-        projectiles.clear();
-        return copy;
+    public List<Sprite> getProjectiles() {
+        return projectiles;
     }
 
     public void setControllable(boolean controllable) {
@@ -95,7 +91,7 @@ public class Spaceship extends Sprite {
     }
 
     private void initCraft() {
-        projectiles = new ArrayList<>();
+        projectiles = new LinkedList<>();
         lastFiredBullet = 0;
         lastFiredRocket = 0;
         damage = 100;

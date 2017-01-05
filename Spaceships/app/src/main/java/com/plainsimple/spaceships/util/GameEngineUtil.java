@@ -1,7 +1,10 @@
 package com.plainsimple.spaceships.util;
 
+import android.content.Context;
+import android.graphics.Canvas;
 import android.util.Log;
 
+import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.sprite.Alien;
 import com.plainsimple.spaceships.sprite.Sprite;
 
@@ -30,6 +33,19 @@ public class GameEngineUtil {
         }
     }
 
+    static List<DrawParams> drawParams;
+    // draws sprite onto canvas using sprite drawing params and imageCache
+    public static void drawSprite(Sprite sprite, Canvas canvas, Context context) {
+        drawParams = sprite.getDrawParams();
+        for (DrawParams p : drawParams) {
+            p.draw(canvas, context);
+        }
+        /*if (sprite.collides()) {
+            canvas.drawRect(sprite.getHitBox(), debugPaintRed);
+        } else {
+            canvas.drawRect(sprite.getHitBox(), debugPaintPink);
+        }*/
+    }
     // goes through sprites, and for each alien uses getAndClearProjectiles,
     // adds those projectiles to projectiles list
     public static void getAlienBullets(List<Sprite> projectiles, List<Sprite> sprites) {
