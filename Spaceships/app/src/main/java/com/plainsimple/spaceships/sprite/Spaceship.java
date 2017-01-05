@@ -19,7 +19,6 @@ import com.plainsimple.spaceships.helper.RocketType;
 import com.plainsimple.spaceships.helper.SoundParams;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,26 +30,17 @@ import static com.plainsimple.spaceships.view.GameView.screenW;
  */
 public class Spaceship extends Sprite {
 
-    // tilt of screen as reported by gyroscope (y-axis)
-    private float tilt;
-    private float lastTilt;
-    // minimum change to register
-    private final static float MIN_TILT_CHANGE = 0.01f;
-    private float maxSpeedY = 0.01f;
-
-    private SpriteAnimation move; // todo: resources static?
+    private SpriteAnimation move;
     private SpriteAnimation fireRocket;
     private SpriteAnimation explode;
 
     // whether user has control over spaceship
     boolean controllable;
 
-    private boolean firesBullets;
     private BulletType bulletType = BulletType.LASER;
-    private int lastFiredBullet;
+    private int lastFiredBullet; // todo: just one variable, lastFiredProjectile?
     private BitmapData bulletBitmapData;
 
-    private boolean firesRockets; // todo: this should be established in GameActivity, which should only provide the buttons if this is the case
     private RocketType rocketType = RocketType.ROCKET;
     private int lastFiredRocket;
     private BitmapData rocketBitmapData;
@@ -58,35 +48,34 @@ public class Spaceship extends Sprite {
     // keeps track of fired bullets and rockets
     private List<Sprite> projectiles = new LinkedList<>();
 
-    // current setting: bullets or rockets
-    private int firingMode = BULLET_MODE;
-    private boolean shooting = false;
-    public static final int BULLET_MODE = 1;
-    public static final int ROCKET_MODE = 2;
+    // available modes: shooting bullets, shooting rockets, or not shooting
+    public enum FireMode {
+        BULLET, ROCKET, NONE;
+    }
+
+    // current setting: not shooting
+    private FireMode fireMode = FireMode.NONE;
+
+    // two possible input modes: using gyroscope, or using arrow buttons
+    public enum InputMode {
+        GYRO, BUTTON;
+    }
+
+    // tilt of screen as reported by gyroscope (y-axis)
+    private float tilt;
+    private float lastTilt;
+    // minimum change to register
+    private final static float MIN_TILT_CHANGE = 0.01f;
+    private float maxSpeedY = 0.01f;
+
+    private int direction;
+    public static final int DIRECTION_UP = 1;
+    public static final int DIRECTION_DOWN = -1;
+    public static final int DIRECTION_NONE = 0;
 
     private SoundParams rocketSound;
     private SoundParams bulletSound;
     private SoundParams explodeSound;
-
-    public List<Sprite> getProjectiles() {
-        return projectiles;
-    }
-
-    public void setControllable(boolean controllable) {
-        this.controllable = controllable;
-    }
-    public void setShooting(boolean shooting) { this.shooting = shooting; }
-    public void setFiringMode(int firingMode) { this.firingMode = firingMode; }
-
-    public void setBullets(boolean firesBullets, BulletType bulletType) {
-        this.firesBullets = firesBullets;
-        this.bulletType = bulletType;
-    }
-
-    public void setRockets(boolean firesRockets, RocketType rocketType) {
-        this.firesRockets = firesRockets;
-        this.rocketType = rocketType;
-    }
 
     // default constructor
     public Spaceship(float x, float y, Context context) {
@@ -108,15 +97,15 @@ public class Spaceship extends Sprite {
         explodeSound = new SoundParams(RawResource.EXPLOSION, 1.0f, 1.0f, 1, 0, 1.0f);
     }
 
+
     @Override
     public void updateActions() {
         lastFiredBullet++;
-        if (shooting && firingMode == BULLET_MODE && lastFiredBullet >= bulletType.getDelay()) {
+        lastFiredRocket++;
+        if (fireMode == FireMode.BULLET && lastFiredBullet >= bulletType.getDelay()) {
             fireBullets();
             lastFiredBullet = 0;
-        }
-        lastFiredRocket++;
-        if (shooting && firingMode == ROCKET_MODE && lastFiredRocket >= rocketType.getDelay()) {
+        } else if (fireMode == FireMode.ROCKET && lastFiredRocket >= rocketType.getDelay()) {
             fireRockets();
             lastFiredRocket = 0;
             fireRocket.start();
@@ -137,14 +126,24 @@ public class Spaceship extends Sprite {
         GameActivity.playSound(bulletSound);
     }
 
-    // sets current tilt of device and determines dy
-    public void setTilt(float newTilt) {
-        if (Math.abs(newTilt - tilt) >= MIN_TILT_CHANGE) {
-            lastTilt = tilt;
-            tilt = newTilt;
-            //Log.d("Spaceship", "Registered Tilt Change of " + (tilt - lastTilt));
-        } else {
-            tilt = lastTilt;
+    public void updateInput(InputMode inputType, float value) {
+        //Log.d("Spaceship", "InputReceived: " + (inputType == InputMode.GYRO ? "gyro" : "button") + " with value " + value);
+        if (inputType == InputMode.GYRO) { // handle gyro input // todo: refinement
+            if (Math.abs(value - tilt) >= MIN_TILT_CHANGE) {
+                lastTilt = tilt;
+                tilt = value;
+                //Log.d("Spaceship", "Registered Tilt Change of " + (tilt - lastTilt));
+            } else {
+                tilt = lastTilt;
+            }
+        } else { // handle non-gyro input
+            if ((int) value == 0) {
+                speedY /= 4;
+            } else if (value > 0) {
+                speedY = -0.02f;
+            } else {
+                speedY = 0.02f;
+            }
         }
     }
 
@@ -160,8 +159,8 @@ public class Spaceship extends Sprite {
     @Override
     public void move() {
         super.move();
-        // for when spaceship first comes on to screen
-        if (x < screenW / 4) { // todo: local variable
+        // for when spaceship first comes on to screen // todo: move this block to gameview class
+        if (x < screenW / 4) {
             setControllable(false);
             setSpeedX(0.003f);
         } else {
@@ -222,5 +221,25 @@ public class Spaceship extends Sprite {
             drawParams.add(new DrawSubImage(explode.getBitmapID(), x, y, explode.getCurrentFrameSrc()));
         }
         return drawParams;
+    }
+
+    public List<Sprite> getProjectiles() {
+        return projectiles;
+    }
+
+    public void setControllable(boolean controllable) {
+        this.controllable = controllable;
+    }
+
+    public void setFireMode(FireMode fireMode) {
+        this.fireMode = fireMode;
+    }
+
+    public void setBulletType(BulletType bulletType) {
+        this.bulletType = bulletType;
+    }
+
+    public void setRocketType(RocketType rocketType) {
+        this.rocketType = rocketType;
     }
 }

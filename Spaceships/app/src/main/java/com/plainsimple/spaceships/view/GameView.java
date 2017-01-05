@@ -37,6 +37,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public static int screenH;
     private boolean running = false;
     private boolean onTitle = true;
+    // selected fire mode (bullet or rocket)
+    private Spaceship.FireMode selectedFireMode = Spaceship.FireMode.BULLET;
+    // selected input mode (gyro or button)
+    private Spaceship.InputMode inputMode = Spaceship.InputMode.BUTTON;
     // name of game save to restore (null if none)
     private String restoreGameState = null;
     private GameViewThread thread;
@@ -60,11 +64,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private ScoreDisplay scoreDisplay;
 
     //private long lastSample;
-    private float screenTilt;
+    // button or gyro input
+    private float input;
 
     // sets spaceship's firing mode
-    public void setFiringMode(int firingMode) {
-        spaceship.setFiringMode(firingMode);
+    public void setFiringMode(Spaceship.FireMode fireMode) {
+        selectedFireMode = fireMode;
+    }
+
+    public void setInputMode(Spaceship.InputMode inputMode) {
+        this.inputMode = inputMode;
     }
 
     public GameView(Context context, AttributeSet attributes) {
@@ -143,7 +152,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         private void updateSpaceship() {
-            spaceship.setTilt(screenTilt);
+            spaceship.updateInput(inputMode, input);
             spaceship.updateSpeeds();
             spaceship.move();
             spaceship.updateActions();
@@ -170,7 +179,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 switch (event_action) {
                     case MotionEvent.ACTION_DOWN:
                         //if (!onTitle) {
-                            spaceship.setShooting(true);
+                            spaceship.setFireMode(selectedFireMode);
                         //}
                         break;
                     case MotionEvent.ACTION_MOVE:
@@ -178,7 +187,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     case MotionEvent.ACTION_UP: // handle user clicking something
                         //if (onTitle) { // todo: tap to start?
                         //} else {
-                            spaceship.setShooting(false);
+                            spaceship.setFireMode(Spaceship.FireMode.NONE);
                         //}
                         break;
                 }
@@ -198,8 +207,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             BitmapData ship_data = BitmapCache.getData(BitmapID.SPACESHIP, c);
             // initialize spaceship just off the screen in the middle
             spaceship = new Spaceship(-ship_data.getWidth(), screenH / 2 - ship_data.getHeight() / 2, c);
-            spaceship.setBullets(true, BulletType.LASER);//GameActivity.equipment.getEquippedBulletType()); // todo: get equipment
-            spaceship.setRockets(true, RocketType.ROCKET);//GameActivity.equipment.getEquippedRocketType());
+            spaceship.setBulletType(BulletType.LASER);//GameActivity.equipment.getEquippedBulletType()); // todo: get equipment
+            spaceship.setRocketType(RocketType.ROCKET);//GameActivity.equipment.getEquippedRocketType());
             spaceship.setHP(30);
             spaceship.setDamage(30);
         }
@@ -233,8 +242,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         return thread.doTouchEvent(motionEvent);
     }
 
-    public void updateTilt(float newTilt) {
-        screenTilt = newTilt;
+    public void updateInput(float newInput) {
+        input = newInput;
     }
 
     @Override

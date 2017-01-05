@@ -8,10 +8,12 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
+import android.media.Image;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -44,6 +46,8 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     private FontTextView pausedText;
     private FontButton resumeButton;
     private FontButton quitButton;
+    private ImageButton upArrow;
+    private ImageButton downArrow;
     // whether the user selected to quit the game
     private boolean quit = false;
     private static SoundPool soundPool;
@@ -76,13 +80,42 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         pauseButton.setBackgroundResource(R.drawable.pause);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
         muteButton.setBackgroundResource(R.drawable.sound_on);
-        toggleBulletButton = (ImageButton) findViewById(R.id.toggleBulletButton);
+        toggleBulletButton = (ImageButton) findViewById(R.id.toggleBulletButton); // todo: establish whether rockets have been unlocked, establish firemode
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
         pausedText = (FontTextView) findViewById(R.id.pausedNotification);
         resumeButton = (FontButton) findViewById(R.id.resumeButton);
         quitButton = (FontButton) findViewById(R.id.quitButton);
+
+        upArrow = (ImageButton) findViewById(R.id.up_arrow);
+        upArrow.setVisibility(View.VISIBLE);
+        upArrow.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+               if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                   gameView.updateInput(Spaceship.DIRECTION_UP);
+                   Log.d("GameActivity", "Start");
+               } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                   gameView.updateInput(Spaceship.DIRECTION_NONE);
+                   Log.d("GameActivity", "Stop");
+               }
+                return false; // todo: does return matter?
+            }
+        });
+        downArrow = (ImageButton) findViewById(R.id.down_arrow);
+        downArrow.setVisibility(View.VISIBLE);
+        downArrow.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    gameView.updateInput(Spaceship.DIRECTION_DOWN);
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    gameView.updateInput(Spaceship.DIRECTION_NONE);
+                }
+                return false; // todo: does return matter?
+            }
+        });
         // set volume control to proper stream
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -138,31 +171,6 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         }
     }
 
-    public static boolean getPaused() {
-        return paused;
-    }
-
-    public static int getScore() {
-        return score;
-    }
-
-    public static void incrementScore(int toAdd) {
-        score += toAdd;
-        Log.d("GameActivity Class", "Incrementing Score by " + toAdd + " to " + score);
-    }
-
-    public static boolean isMuted() {
-        return muted;
-    }
-
-    public static float getDifficulty() {
-        return difficulty;
-    }
-
-    public static void incrementDifficulty(float toAdd) {
-        difficulty += toAdd;
-    }
-
     public void onMutePressed(View view) {
         if(muted) {
             muteButton.setBackgroundResource(R.drawable.sound_on);
@@ -176,13 +184,13 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     }
 
     public void onToggleBulletPressed(View view) {
-        gameView.setFiringMode(Spaceship.BULLET_MODE);
+        gameView.setFiringMode(Spaceship.FireMode.BULLET);
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
     }
 
     public void onToggleRocketPressed(View view) {
-        gameView.setFiringMode(Spaceship.ROCKET_MODE);
+        gameView.setFiringMode(Spaceship.FireMode.ROCKET);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button_pressed);
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button);
     }
@@ -199,13 +207,13 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         Log.d("GameActivity", "onResume called");
         initMedia();
         Log.d("Activity Class", "Media Initialized");
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
+        /*if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) { // todo: only register if inputMode = Gyro
             sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
                     SensorManager.SENSOR_DELAY_NORMAL); // todo: test sample rates. Manually restrict rate? // todo: works with Level 9 API +
             Log.d("Activity Class", "Gyroscope Registered");
         } else {
             Log.d("GameView Class", "No Gyroscope");
-        }
+        }*/
     }
 
     @Override
@@ -221,8 +229,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         soundPool.release();
         soundPool = null;
         //BitmapCache.destroyBitmaps();
-        sensorManager.unregisterListener(this);
-        // todo: destroy gameview resources
+        //sensorManager.unregisterListener(this);
     }
 
     @Override
@@ -248,7 +255,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-            gameView.updateTilt(event.values[1]); // update gameView with current screen pitch // todo: this should be registered in GameActivity
+            gameView.updateInput(event.values[1]); // update gameView with current screen pitch // todo: this should be registered in GameActivity
         }
     }
 
@@ -270,4 +277,30 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         dialog.dismiss();
         onPausePressed(null);
     }
+
+    public static boolean getPaused() {
+        return paused;
+    }
+
+    public static int getScore() {
+        return score;
+    }
+
+    public static void incrementScore(int toAdd) {
+        score += toAdd;
+        Log.d("GameActivity Class", "Incrementing Score by " + toAdd + " to " + score);
+    }
+
+    public static boolean isMuted() {
+        return muted;
+    }
+
+    public static float getDifficulty() {
+        return difficulty;
+    }
+
+    public static void incrementDifficulty(float toAdd) {
+        difficulty += toAdd;
+    }
+
 }
