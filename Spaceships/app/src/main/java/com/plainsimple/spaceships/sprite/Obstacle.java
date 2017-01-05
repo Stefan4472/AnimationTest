@@ -1,9 +1,12 @@
 package com.plainsimple.spaceships.sprite;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.util.Log;
 
+import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
+import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.Hitbox;
@@ -16,10 +19,11 @@ import java.util.List;
  */
 public class Obstacle extends Sprite {
 
-    public Obstacle(BitmapData bitmapData, float x, float y) {
-        super(bitmapData, x, y);
+    public Obstacle(float x, float y, boolean collides, Context context) {
+        super(BitmapCache.getData(BitmapID.OBSTACLE, context), x, y);
+        this.collides = collides;
         hitBox = new Hitbox(x, y, x + getWidth(), y + getHeight());
-        damage = Integer.MAX_VALUE;
+        damage = 10_000; // todo: some impossible to reach number?
     }
 
     @Override

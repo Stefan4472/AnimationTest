@@ -280,9 +280,9 @@ public class TileGenerator {
         return new byte[][] {
                 {0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, COIN, COIN, COIN, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {ALIEN_LVL1, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, COIN, COIN, COIN, OBSTACLE_INVIS, 0, 0},
+                {0, 0, 0, 0, 0, 0, OBSTACLE_INVIS, 0, 0},
+                {ALIEN_LVL1, 0, 0, OBSTACLE, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0}
                 /*{0, 0, 1, 1, 0, 1, 1, 0, 0},
                 {3, 3, 1, 0, 0, 0, 1, 0, 0},

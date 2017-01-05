@@ -1,10 +1,14 @@
 package com.plainsimple.spaceships.sprite;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.util.Log;
 
 import com.plainsimple.spaceships.activity.GameActivity;
+import com.plainsimple.spaceships.helper.AnimCache;
+import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
+import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.BulletType;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
@@ -46,13 +50,13 @@ public class Spaceship extends Sprite {
     private int lastFiredBullet;
     private BitmapData bulletBitmapData;
 
-    private boolean firesRockets;
+    private boolean firesRockets; // todo: this should be established in GameActivity, which should only provide the buttons if this is the case
     private RocketType rocketType = RocketType.ROCKET;
     private int lastFiredRocket;
     private BitmapData rocketBitmapData;
 
     // keeps track of fired bullets and rockets
-    private List<Sprite> projectiles;
+    private List<Sprite> projectiles = new LinkedList<>();
 
     // current setting: bullets or rockets
     private int firingMode = BULLET_MODE;
@@ -85,34 +89,23 @@ public class Spaceship extends Sprite {
     }
 
     // default constructor
-    public Spaceship(BitmapData bitmapData, float x, float y) {
-        super(bitmapData, x, y);
-        initCraft();
-    }
+    public Spaceship(float x, float y, Context context) {
+        super(BitmapCache.getData(BitmapID.SPACESHIP, context), x, y);
 
-    private void initCraft() {
-        projectiles = new LinkedList<>();
-        lastFiredBullet = 0;
-        lastFiredRocket = 0;
-        damage = 100;
-        hp = 100;
-        controllable = true;
         collides = true;
 
+        move = AnimCache.get(BitmapID.SPACESHIP_MOVE, context);
+        move.start();
+        fireRocket = AnimCache.get(BitmapID.SPACESHIP_FIRE, context);
+        explode = AnimCache.get(BitmapID.SPACESHIP_EXPLODE, context);
+        bulletBitmapData = BitmapCache.getData(BitmapID.LASER_BULLET, context);
+        rocketBitmapData = BitmapCache.getData(BitmapID.ROCKET, context);
+
         hitBox = new Hitbox(x + getWidth() * 0.17f, y + getHeight() * 0.22f, x + getWidth() * 0.83f, y + getHeight() * 0.78f);
+
         bulletSound = new SoundParams(RawResource.LASER, 1.0f, 1.0f, 1, 0, 1.0f);
         rocketSound = new SoundParams(RawResource.ROCKET, 1.0f, 1.0f, 1, 0, 1.0f);
         explodeSound = new SoundParams(RawResource.EXPLOSION, 1.0f, 1.0f, 1, 0, 1.0f);
-    }
-
-    public void injectResources(SpriteAnimation movingAnimation, SpriteAnimation fireRocketAnimation, // todo: make part of constructor
-            SpriteAnimation explodeAnimation, BitmapData bulletBitmapData, BitmapData rocketBitmapData) { // todo: fix so dimensions are right
-        this.move = movingAnimation;
-        this.move.start();
-        this.fireRocket = fireRocketAnimation;
-        this.explode = explodeAnimation;
-        this.bulletBitmapData = bulletBitmapData;
-        this.rocketBitmapData = rocketBitmapData;
     }
 
     @Override
@@ -199,7 +192,7 @@ public class Spaceship extends Sprite {
 
     @Override
     public void handleCollision(Sprite s) {
-        // handling damage this way prevents errors 
+        // handling damage this way prevents errors
         if (hp < s.getDamage()) {
             hp = -1; // debug purposes: normally would be zero
         } else {

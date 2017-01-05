@@ -1,10 +1,14 @@
 package com.plainsimple.spaceships.sprite;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.util.Log;
 
 import com.plainsimple.spaceships.activity.GameActivity;
+import com.plainsimple.spaceships.helper.AnimCache;
+import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
+import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.helper.Hitbox;
@@ -20,10 +24,9 @@ public class Coin extends Sprite {
 
     private SpriteAnimation spin;
 
-    public Coin(BitmapData bitmapData, SpriteAnimation spinAnimation, float x, float y) {
-        super(bitmapData, x, y);
-        //spin = new SpriteAnimation(spinAnimation, width, height, 5, true);
-        spin = spinAnimation;
+    public Coin(float x, float y, Context context) {
+        super(BitmapCache.getData(BitmapID.COIN, context), x, y);
+        spin = AnimCache.get(BitmapID.COIN_SPIN, context);
         spin.start();
         hitBox = new Hitbox(x + getWidth() * 0.3f, y + getHeight() * 0.1f, x + getWidth() * 0.7f, y + getHeight() * 0.9f);
     }

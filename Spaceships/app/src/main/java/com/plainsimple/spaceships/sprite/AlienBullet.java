@@ -16,12 +16,8 @@ import java.util.List;
  */
 public class AlienBullet extends Sprite {
 
-    public AlienBullet(BitmapData bitmapData, float x, float y) {
+    public AlienBullet(BitmapData bitmapData, float x, float y) { // todo: damage as a parameter?
         super(bitmapData, x, y);
-        initAlienBullet();
-    }
-
-    private void initAlienBullet() {
         // todo: change size for better-looking hit detection? (see Issue #13)
         hitBox = new Hitbox(x, y, x + getWidth(), y + getHeight());
         damage = 10;

@@ -1,10 +1,14 @@
 package com.plainsimple.spaceships.sprite;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.util.Log;
 
 import com.plainsimple.spaceships.activity.GameActivity;
+import com.plainsimple.spaceships.helper.AnimCache;
+import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
+import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawSubImage;
@@ -33,11 +37,15 @@ public class Alien1 extends Alien {
     private BitmapData bulletBitmapData;
     private SpriteAnimation explodeAnimation;
 
-    public Alien1(BitmapData bitmapData, float x, float y, Spaceship spaceship) {
-        super(bitmapData, x, y);
-        Log.d("Alien Class", "Alien Initialized and inBounds = " + isInBounds());
+    public Alien1(float x, float y, Spaceship spaceship, Context context) {
+        super(BitmapCache.getData(BitmapID.ALIEN, context), x, y);
         this.spaceship = spaceship;
+
+        bulletBitmapData = BitmapCache.getData(BitmapID.ALIEN_BULLET, context);
+        explodeAnimation = AnimCache.get(BitmapID.SPACESHIP_EXPLODE, context);
+
         difficulty = GameActivity.getDifficulty();
+
         initAlien();
     }
 
@@ -54,12 +62,6 @@ public class Alien1 extends Alien {
         hitBox = new Hitbox(x + getWidth() * 0.2f, y + getHeight() * 0.2f, x + getWidth() * 0.8f, y + getHeight() * 0.8f);
         damage = 50;
         speedX = -0.0035f;
-    }
-
-    public void injectResources(BitmapData bulletBitmapData, SpriteAnimation explodeAnimation) {
-        this.bulletBitmapData = bulletBitmapData;
-        this.explodeAnimation = explodeAnimation;
-        //explodeAnimation = new SpriteAnimation(explodeSpriteSheet, width, height, 3, false);
     }
 
     @Override

@@ -74,7 +74,7 @@ public class Map {
         if (getWTile() != lastTile) {
             Sprite to_generate;
             // add any non-empty tiles in the current column to the edge of the screen
-            for (int i = 0; i < map.length; i++) {
+            for (int i = 0; i < map.length; i++) { // todo: clean this up
                 if (map[i][mapTileCounter] != TileGenerator.EMPTY) {
                     to_generate = getMapTile(map[i][mapTileCounter], screenW + getWOffset(), i * tileWidth, spaceship);
                     addTile(to_generate, scrollSpeed, 0); // todo: put speedX and speedY in constructor? -> Make scrollSpeed static and have sprites determine speedX and speedY on initialization?
@@ -84,9 +84,9 @@ public class Map {
 
             // generate more sprites
             if (mapTileCounter == map[0].length) {
-                map = tileGenerator.generateTiles(20);
+                //map = tileGenerator.generateTiles(20);
                 //map = tileGenerator.generateTiles(GameActivity.getDifficulty());
-                //map = tileGenerator.generateDebugTiles();
+                map = tileGenerator.generateDebugTiles();
                 mapTileCounter = 0;
             }
             lastTile = getWTile();
@@ -122,17 +122,13 @@ public class Map {
     private Sprite getMapTile(int tileID, int x, int y, Spaceship spaceship) throws IndexOutOfBoundsException {
         switch (tileID) {
             case TileGenerator.OBSTACLE:
-                return new Obstacle(BitmapCache.getData(BitmapID.OBSTACLE, context), x, y);
+                return new Obstacle(x, y, true, context);
             case TileGenerator.OBSTACLE_INVIS:
-                Sprite tile = new Obstacle(BitmapCache.getData(BitmapID.OBSTACLE, context), x, y);
-                tile.setCollides(false);
-                return tile;
+                return new Obstacle(x, y, false, context);
             case TileGenerator.COIN:
-                return new Coin(BitmapCache.getData(BitmapID.COIN, context), AnimCache.get(BitmapID.COIN_SPIN, context), x, y);
+                return new Coin(x, y, context);
             case TileGenerator.ALIEN_LVL1:
-                Alien1 alien_1 = new Alien1(BitmapCache.getData(BitmapID.ALIEN, context), x, y, spaceship);
-                alien_1.injectResources(BitmapCache.getData(BitmapID.ALIEN_BULLET, context), AnimCache.get(BitmapID.SPACESHIP_EXPLODE, context));
-                return alien_1;
+                return new Alien1(x, y, spaceship, context);
             default:
                 throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
         }

@@ -194,16 +194,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             BitmapCache.setScalingFactor(scalingFactor);
         }
 
-        private void initSpaceship() { // todo: clean up, use persistent data
-            spaceship = new Spaceship(BitmapCache.getData(BitmapID.SPACESHIP, c),
-                    -BitmapCache.getData(BitmapID.SPACESHIP, c).getWidth(),
-                    screenH / 2 - BitmapCache.getData(BitmapID.SPACESHIP, c).getHeight() / 2);
-            spaceship.injectResources(AnimCache.get(BitmapID.SPACESHIP_MOVE, c),
-                    AnimCache.get(BitmapID.SPACESHIP_FIRE, c), AnimCache.get(BitmapID.SPACESHIP_EXPLODE, c),
-                    BitmapCache.getData(BitmapID.LASER_BULLET, c), BitmapCache.getData(BitmapID.ROCKET, c));
+        private void initSpaceship() {
+            BitmapData ship_data = BitmapCache.getData(BitmapID.SPACESHIP, c);
+            // initialize spaceship just off the screen in the middle
+            spaceship = new Spaceship(-ship_data.getWidth(), screenH / 2 - ship_data.getHeight() / 2, c);
             spaceship.setBullets(true, BulletType.LASER);//GameActivity.equipment.getEquippedBulletType()); // todo: get equipment
             spaceship.setRockets(true, RocketType.ROCKET);//GameActivity.equipment.getEquippedRocketType());
             spaceship.setHP(30);
+            spaceship.setDamage(30);
         }
 
         public void setSurfaceSize(int width, int height) {
