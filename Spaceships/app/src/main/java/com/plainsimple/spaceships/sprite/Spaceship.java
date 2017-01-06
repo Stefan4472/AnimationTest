@@ -82,6 +82,8 @@ public class Spaceship extends Sprite {
         super(BitmapCache.getData(BitmapID.SPACESHIP, context), x, y);
 
         collides = true;
+        controllable = false;
+        speedX = 0.003f;
 
         move = AnimCache.get(BitmapID.SPACESHIP_MOVE, context);
         move.start();
@@ -138,7 +140,7 @@ public class Spaceship extends Sprite {
             }
         } else { // handle non-gyro input
             if ((int) value == 0) {
-                speedY /= 4;
+                speedY /= 1.7;
             } else if (value > 0) {
                 speedY = -0.02f;
             } else {
@@ -159,15 +161,6 @@ public class Spaceship extends Sprite {
     @Override
     public void move() {
         super.move();
-        // for when spaceship first comes on to screen // todo: move this block to gameview class
-        if (x < screenW / 4) {
-            setControllable(false);
-            setSpeedX(0.003f);
-        } else {
-            setX(screenW / 4);
-            setSpeedX(0.0f);
-            setControllable(true);
-        }
         // prevent spaceship from going off-screen
         if (y < 0) {
             setY(0);

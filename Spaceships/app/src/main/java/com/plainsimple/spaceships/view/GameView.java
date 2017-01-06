@@ -63,17 +63,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // score display in top left of screen
     private ScoreDisplay scoreDisplay;
 
-    //private long lastSample;
+    // listener passed in by GameActivity
+    private GameEventsListener gameEventsListener;
+
     // button or gyro input
     private float input;
 
-    // sets spaceship's firing mode
-    public void setFiringMode(Spaceship.FireMode fireMode) {
-        selectedFireMode = fireMode;
-    }
-
-    public void setInputMode(Spaceship.InputMode inputMode) {
-        this.inputMode = inputMode;
+    // interface for events to fire
+    public interface GameEventsListener {
+        // fired when spaceship has reached starting position
+        void onGameStarted();
+        // fired when spaceship has finished exploding
+        void onGameFinished();
     }
 
     public GameView(Context context, AttributeSet attributes) {
@@ -152,6 +153,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         private void updateSpaceship() {
+            // move spaceship to initial position
+            if (spaceship.getX() > screenW / 4) {
+                spaceship.setX(screenW / 4);
+                spaceship.setSpeedX(0);
+                spaceship.setControllable(true);
+                if (gameEventsListener != null) {
+                    gameEventsListener.onGameStarted();
+                }
+            }
             spaceship.updateInput(inputMode, input);
             spaceship.updateSpeeds();
             spaceship.move();
@@ -306,5 +316,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void clearGameState() {
         GameSave clear = new GameSave(c);
         clear.delete();
+    }
+
+    // sets spaceship's firing mode
+    public void setFiringMode(Spaceship.FireMode fireMode) {
+        selectedFireMode = fireMode;
+    }
+
+    public void setInputMode(Spaceship.InputMode inputMode) {
+        this.inputMode = inputMode;
+    }
+
+    public void setGameEventsListener(GameEventsListener gameEventsListener) {
+        this.gameEventsListener = gameEventsListener;
     }
 }

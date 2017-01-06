@@ -17,6 +17,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 
 import com.plainsimple.spaceships.helper.Equipped;
@@ -89,31 +91,49 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         quitButton = (FontButton) findViewById(R.id.quitButton);
 
         upArrow = (ImageButton) findViewById(R.id.up_arrow);
-        upArrow.setVisibility(View.VISIBLE);
         upArrow.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                   downArrow.setVisibility(View.INVISIBLE);
                    gameView.updateInput(Spaceship.DIRECTION_UP);
-                   Log.d("GameActivity", "Start");
                } else if (event.getAction() == MotionEvent.ACTION_UP) {
                    gameView.updateInput(Spaceship.DIRECTION_NONE);
-                   Log.d("GameActivity", "Stop");
+                   downArrow.setVisibility(View.VISIBLE);
                }
                 return false; // todo: does return matter?
             }
         });
         downArrow = (ImageButton) findViewById(R.id.down_arrow);
-        downArrow.setVisibility(View.VISIBLE);
         downArrow.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    upArrow.setVisibility(View.INVISIBLE);
                     gameView.updateInput(Spaceship.DIRECTION_DOWN);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     gameView.updateInput(Spaceship.DIRECTION_NONE);
+                    upArrow.setVisibility(View.VISIBLE);
                 }
                 return false; // todo: does return matter?
+            }
+        });
+
+        final Animation arrow_fade_in = AnimationUtils.loadAnimation(this, R.anim.arrowbutton_fadein);
+        gameView.setGameEventsListener(new GameView.GameEventsListener() {
+            @Override // fade in direction arrows once spaceship reaches initial position
+            public void onGameStarted() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        upArrow.startAnimation(arrow_fade_in);
+                        downArrow.startAnimation(arrow_fade_in);
+                    }
+                });
+            }
+            @Override // pop-up end game dialog when game is over
+            public void onGameFinished() {
+
             }
         });
         // set volume control to proper stream
