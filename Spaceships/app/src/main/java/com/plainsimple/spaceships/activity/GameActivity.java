@@ -1,6 +1,5 @@
 package com.plainsimple.spaceships.activity;
 
-import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.hardware.Sensor;
@@ -12,6 +11,7 @@ import android.media.Image;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,7 +38,7 @@ import plainsimple.spaceships.R;
 /**
  * Created by Stefan on 10/17/2015.
  */
-public class GameActivity extends FragmentActivity implements SensorEventListener, PauseDialogFragment.PauseDialogListener {
+public class GameActivity extends FragmentActivity implements SensorEventListener {
 
     private GameView gameView;
     private ImageButton pauseButton;
@@ -185,9 +185,10 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             pausedText.setVisibility(View.VISIBLE);
             resumeButton.setVisibility(View.VISIBLE);
             quitButton.setVisibility(View.VISIBLE);
-            /*// display pause dialog
-            DialogFragment dialog = new PauseDialogFragment();
-            dialog.show(getFragmentManager(), "PauseDialogFragment");*/
+            // display pause dialog
+            PauseDialogFragment pauseDialog = PauseDialogFragment.newInstance(1.0f, 1.0f, false); // todo: put in real values
+            pauseDialog.show(getFragmentManager(), "fragment_pause_dialog");
+
         }
     }
 
@@ -282,20 +283,6 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-    }
-
-    @Override // pause dialog -- clicked resume
-    public void onPausePositiveClick(DialogFragment dialog) {
-        Log.d("GameActivity", "Player Clicked to Resume Game");
-        dialog.dismiss();
-        onPausePressed(null);
-    }
-
-    @Override // pause dialog -- clicked quit
-    public void onPauseNegativeClick(DialogFragment dialog) {
-        Log.d("GameActivity", "Player Clicked to Quit Game");
-        dialog.dismiss();
-        onPausePressed(null);
     }
 
     public static boolean getPaused() {

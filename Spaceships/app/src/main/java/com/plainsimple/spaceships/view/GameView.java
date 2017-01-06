@@ -113,6 +113,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     synchronized (mySurfaceHolder) {
                         draw(canvas);
                     }
+                } catch (NullPointerException e) {
+                    Log.d("GameView", "Caught a NullPointer (canvas == null) and not sure what it means");
                 } finally {
                     if (canvas != null) {
                         mySurfaceHolder.unlockCanvasAndPost(canvas);

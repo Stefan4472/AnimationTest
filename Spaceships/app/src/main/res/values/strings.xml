@@ -9,6 +9,8 @@
     <string name="paused">Paused</string>
     <string name="resume">Resume</string>
     <string name="quit">Quit</string>
+    <string name="game_volume">Game Volume</string>
+    <string name="music_volume">Music Volume</string>
     <string name="default_equipped_states">
         LASER_BULLET:EQUIPPED,ION_BULLET:LOCKED,PLASMA_BULLET:LOCKED,PLUTONIUM_BULLET:LOCKED,ROCKET_DEFAULT:EQUIPPED,ARMOR_DEFAULT:EQUIPPED
     </string>

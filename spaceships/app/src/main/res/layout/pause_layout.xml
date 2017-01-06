@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pause_dialog"
     android:orientation="vertical"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
     <!--<item name="android:windowNoTitle">true</item>-->
     <!-- Title -->
     <com.plainsimple.spaceships.view.FontTextView
@@ -11,18 +13,83 @@
         android:layout_height="wrap_content"
         android:textSize="60dp"
         android:layout_marginTop="10dp"
-        android:textColor="#ffb30f"
+        android:textColor="@color/orange"
         android:text="@string/paused"
         android:gravity="center"
         android:includeFontPadding="false" />
-    <!-- Resume Button -->
-    <!--<com.plainsimple.spaceships.view.FontButton
-        style="@style/Andromeda.MenuStyle"
-        android:id="@+id/resumebutton"
-        android:layout_marginTop="20dp"
+    <RelativeLayout
+        android:id="@+id/gamevolume_rlayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <com.plainsimple.spaceships.view.FontTextView
+            android:id="@+id/gamevolume_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:textSize="25dp"
+            android:text="@string/game_volume" >
+        </com.plainsimple.spaceships.view.FontTextView>
+        <SeekBar
+            android:id="@+id/gamevolume_selector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/gamevolume_display"
+            android:max="100">
+        </SeekBar>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/musicvolume_rlayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <com.plainsimple.spaceships.view.FontTextView
+            android:id="@+id/musicvolume_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:textSize="25dp"
+            android:text="@string/music_volume" >
+        </com.plainsimple.spaceships.view.FontTextView>
+        <SeekBar
+            android:id="@+id/musicvolume_selector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/musicvolume_display"
+            android:max="100">
+        </SeekBar>
+    </RelativeLayout>
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="@string/button_play"
-        android:onClick="onResumePressed"/>-->
+        android:layout_height="wrap_content">
+        <!-- Resume Button -->
+        <com.plainsimple.spaceships.view.FontButton
+            style="@style/Andromeda.MenuStyle"
+            android:id="@+id/resumebutton"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25dp"
+            android:textColor="@color/orange"
+            android:text="@string/resume"/>
+        <!-- Quit Button -->
+        <com.plainsimple.spaceships.view.FontButton
+            style="@style/Andromeda.MenuStyle"
+            android:id="@+id/quitbutton"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/resumeButton"
+            android:textSize="25dp"
+            android:textColor="@color/orange"
+            android:text="@string/quit"/>
+    </RelativeLayout>
 </LinearLayout>
