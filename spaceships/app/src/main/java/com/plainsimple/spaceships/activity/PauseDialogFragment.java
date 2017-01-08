@@ -48,8 +48,8 @@ public class PauseDialogFragment extends DialogFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         gameVolumeSelector = (SeekBar) view.findViewById(R.id.gamevolume_selector);
-        gameVolumeSelector.setProgress((int) Float.parseFloat(savedInstanceState.getString("gameVolume")));
+        //gameVolumeSelector.setProgress((int) Float.parseFloat(savedInstanceState.getString("gameVolume")));
         musicVolumeSelector = (SeekBar) view.findViewById(R.id.musicvolume_selector);
-        musicVolumeSelector.setProgress((int) Float.parseFloat(savedInstanceState.getString("musicVolume")));
+        //musicVolumeSelector.setProgress((int) Float.parseFloat(savedInstanceState.getString("musicVolume")));
     }
 }

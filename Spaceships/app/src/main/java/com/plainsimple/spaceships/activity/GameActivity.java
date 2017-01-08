@@ -1,5 +1,6 @@
 package com.plainsimple.spaceships.activity;
 
+import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.hardware.Sensor;
@@ -186,9 +187,10 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             resumeButton.setVisibility(View.VISIBLE);
             quitButton.setVisibility(View.VISIBLE);
             // display pause dialog
-            PauseDialogFragment pauseDialog = PauseDialogFragment.newInstance(1.0f, 1.0f, false); // todo: put in real values
-            pauseDialog.show(getFragmentManager(), "fragment_pause_dialog");
-
+            //PauseDialogFragment pauseDialog = PauseDialogFragment.newInstance(1.0f, 1.0f, false); // todo: put in real values
+            //pauseDialog.show(getFragmentManager(), "fragment_pause_dialog");
+            DialogFragment d = new PauseDialog2();
+            d.show(getFragmentManager(), "Pause");
         }
     }
 

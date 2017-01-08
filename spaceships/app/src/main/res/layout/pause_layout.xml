@@ -23,12 +23,15 @@
         android:layout_height="wrap_content" >
 
         <com.plainsimple.spaceships.view.FontTextView
+            style="@style/GalaxyMonkey"
             android:id="@+id/gamevolume_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:textSize="25dp"
+
+            android:textColor="@color/orange"
             android:text="@string/game_volume" >
         </com.plainsimple.spaceships.view.FontTextView>
         <SeekBar
@@ -47,12 +50,14 @@
         android:layout_height="wrap_content" >
 
         <com.plainsimple.spaceships.view.FontTextView
+            style="@style/GalaxyMonkey"
             android:id="@+id/musicvolume_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:textSize="25dp"
+            android:textColor="@color/orange"
             android:text="@string/music_volume" >
         </com.plainsimple.spaceships.view.FontTextView>
         <SeekBar
@@ -70,25 +75,23 @@
         android:layout_height="wrap_content">
         <!-- Resume Button -->
         <com.plainsimple.spaceships.view.FontButton
-            style="@style/Andromeda.MenuStyle"
+            style="@style/GalaxyMonkey"
             android:id="@+id/resumebutton"
             android:layout_marginTop="10dp"
-            android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="25dp"
+            android:textSize="30dp"
             android:textColor="@color/orange"
             android:text="@string/resume"/>
         <!-- Quit Button -->
         <com.plainsimple.spaceships.view.FontButton
-            style="@style/Andromeda.MenuStyle"
+            style="@style/GalaxyMonkey"
             android:id="@+id/quitbutton"
             android:layout_marginTop="10dp"
-            android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/resumeButton"
-            android:textSize="25dp"
+            android:textSize="30dp"
             android:textColor="@color/orange"
             android:text="@string/quit"/>
     </RelativeLayout>
