@@ -1,5 +1,6 @@
 package com.plainsimple.spaceships.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.Window;
 import android.widget.SeekBar;
 
+import com.plainsimple.spaceships.view.FontButton;
+
 import plainsimple.spaceships.R;
 
 /**
@@ -17,11 +20,21 @@ import plainsimple.spaceships.R;
 
 public class PauseDialog2 extends DialogFragment {
 
-    SeekBar gameVolumeSelector;
-    SeekBar musicVolumeSelector;
+    private SeekBar gameVolumeSelector;
+    private SeekBar musicVolumeSelector;
 
     public final static String GAMEVOLUME_KEY = "gameVolume";
     public final static String MUSICVOLUME_KEY = "musicVolume";
+
+    // interface used to send events to GameActivity
+    // passes the fragment back as well as current settings
+    public interface PauseDialogListener {
+        void onResumePressed(DialogFragment dialog, float gameVolume, float musicVolume);
+        void onQuitPressed(DialogFragment dialog, float gameVolume, float musicVolume);
+    }
+
+    // used to notify GameActivity
+    PauseDialogListener mListener;
 
     // optional static constructor to pass volume args
     public static PauseDialog2 newInstance(float gameVolume, float musicVolume) {
@@ -31,6 +44,16 @@ public class PauseDialog2 extends DialogFragment {
         args.putFloat(MUSICVOLUME_KEY, musicVolume);
         p.setArguments(args);
         return p;
+    }
+
+    @Override // instantiates the listener and makes sure host activity implements the interface
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (PauseDialogListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement PauseDialogListener");
+        }
     }
 
     @Override
@@ -50,11 +73,21 @@ public class PauseDialog2 extends DialogFragment {
         if (bundle.containsKey(MUSICVOLUME_KEY)) {
             musicVolumeSelector.setProgress((int) (bundle.getFloat(MUSICVOLUME_KEY) * 100));
         }
-
+        FontButton resume_button = (FontButton) dialog_layout.findViewById(R.id.resumebutton);
+        resume_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onResumePressed(PauseDialog2.this, gameVolumeSelector.getProgress() / 100.0f, musicVolumeSelector.getProgress() / 100.0f);
+            }
+        });
+        FontButton quit_button = (FontButton) dialog_layout.findViewById(R.id.quitbutton);
+        quit_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onQuitPressed(PauseDialog2.this, gameVolumeSelector.getProgress() / 100.0f, musicVolumeSelector.getProgress() / 100.0f);
+            }
+        });
         builder.setView(dialog_layout);
-        return builder.create();
-        /*Dialog dialog = builder.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        return dialog;*/
+        return builder.create(); // todo: window feature_no_title
     }
 }

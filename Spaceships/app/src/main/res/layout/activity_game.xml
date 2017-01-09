@@ -60,7 +60,7 @@
                     android:layout_marginBottom="30dp"
                     android:onClick="onToggleRocketPressed"
                     style="?android:attr/borderlessButtonStyle" />
-                <!-- "resume" button, displays when game is paused -->
+                <!-- "resume" button, displays when game is paused
                 <com.plainsimple.spaceships.view.FontButton
                     style="@style/GalaxyMonkey.MenuStyle"
                     android:id="@+id/resumeButton"
@@ -72,7 +72,7 @@
                     android:layout_centerInParent="true"
                     android:visibility="gone"
                     android:onClick="onPausePressed"/>
-                <!-- "quit" button, displays when game is paused --> <!-- todo: finish these -->
+                 "quit" button, displays when game is paused --> <!-- todo: finish these
                 <com.plainsimple.spaceships.view.FontButton
                     style="@style/GalaxyMonkey.MenuStyle"
                     android:id="@+id/quitButton"
@@ -86,7 +86,7 @@
                     android:layout_marginTop="10dp"
                     android:visibility="gone"
                     android:onClick="onQuitPressed"/>
-                <!-- "paused" textview, displays when game is paused -->
+                 "paused" textview, displays when game is paused
                 <com.plainsimple.spaceships.view.FontTextView
                     style="@style/GalaxyMonkey"
                     android:id="@+id/pausedNotification"
@@ -99,7 +99,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="10dp"
                     android:visibility="gone"
-                    android:onClick="onPausePressed"/>
+                    android:onClick="onPausePressed"/>-->
                 <!-- place-holder to align up and down arrows -->
                 <TextView
                     android:id="@+id/arrowPlaceHolder"

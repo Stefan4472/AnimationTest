@@ -39,7 +39,7 @@ import plainsimple.spaceships.R;
 /**
  * Created by Stefan on 10/17/2015.
  */
-public class GameActivity extends FragmentActivity implements SensorEventListener {
+public class GameActivity extends FragmentActivity implements SensorEventListener, PauseDialog2.PauseDialogListener {
 
     private GameView gameView;
     private ImageButton pauseButton;
@@ -87,9 +87,6 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
-        pausedText = (FontTextView) findViewById(R.id.pausedNotification);
-        resumeButton = (FontButton) findViewById(R.id.resumeButton);
-        quitButton = (FontButton) findViewById(R.id.quitButton);
 
         upArrow = (ImageButton) findViewById(R.id.up_arrow);
         upArrow.setOnTouchListener(new View.OnTouchListener() {
@@ -176,16 +173,10 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             pauseButton.setBackgroundResource(R.drawable.pause);
             paused = false;
             soundPool.autoResume();
-            pausedText.setVisibility(View.GONE);
-            resumeButton.setVisibility(View.GONE);
-            quitButton.setVisibility(View.GONE);
         } else { // pause
             pauseButton.setBackgroundResource(R.drawable.play);
             paused = true;
             soundPool.autoPause();
-            pausedText.setVisibility(View.VISIBLE);
-            resumeButton.setVisibility(View.VISIBLE);
-            quitButton.setVisibility(View.VISIBLE);
             // display pause dialog
             DialogFragment d = PauseDialog2.newInstance(0.8f, 0.6f);
             d.show(getFragmentManager(), "Pause");
@@ -216,8 +207,19 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button);
     }
 
-    public void onQuitPressed(View view) {
+    @Override
+    public void onResumePressed(DialogFragment dialog, float gameVolume, float musicVolume) {
+        Log.d("GameActivity", "Resuming game");
+        Log.d("GameActivity", "New Game Volume set to " + gameVolume);
+        Log.d("GameActivity", "New Music Volume set to " + musicVolume);
+        dialog.dismiss();
+    }
+
+    @Override
+    public void onQuitPressed(DialogFragment dialog, float gameVolume, float musicVolume) {
         Log.d("GameActivity", "Quitting game");
+        Log.d("GameActivity", "New Game Volume set to " + gameVolume);
+        Log.d("GameActivity", "New Music Volume set to " + musicVolume);
         quit = true;
         finish();
     }
@@ -309,5 +311,4 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     public static void incrementDifficulty(float toAdd) {
         difficulty += toAdd;
     }
-
 }
