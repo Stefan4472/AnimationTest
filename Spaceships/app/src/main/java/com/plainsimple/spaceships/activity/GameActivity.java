@@ -8,11 +8,9 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
-import android.media.Image;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,7 +20,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 
-import com.plainsimple.spaceships.helper.Equipped;
 import com.plainsimple.spaceships.helper.GameSave;
 import com.plainsimple.spaceships.helper.RawResource;
 import com.plainsimple.spaceships.helper.SoundParams;
@@ -39,7 +36,7 @@ import plainsimple.spaceships.R;
 /**
  * Created by Stefan on 10/17/2015.
  */
-public class GameActivity extends FragmentActivity implements SensorEventListener, PauseDialog2.PauseDialogListener {
+public class GameActivity extends FragmentActivity implements SensorEventListener, PauseDialogFragment.PauseDialogListener {
 
     private GameView gameView;
     private ImageButton pauseButton;
@@ -178,7 +175,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             paused = true;
             soundPool.autoPause();
             // display pause dialog
-            DialogFragment d = PauseDialog2.newInstance(0.8f, 0.6f);
+            DialogFragment d = PauseDialogFragment.newInstance(0.8f, 0.6f);
             d.show(getFragmentManager(), "Pause");
         }
     }
