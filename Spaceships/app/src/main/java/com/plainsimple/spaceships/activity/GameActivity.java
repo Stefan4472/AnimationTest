@@ -187,9 +187,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             resumeButton.setVisibility(View.VISIBLE);
             quitButton.setVisibility(View.VISIBLE);
             // display pause dialog
-            //PauseDialogFragment pauseDialog = PauseDialogFragment.newInstance(1.0f, 1.0f, false); // todo: put in real values
-            //pauseDialog.show(getFragmentManager(), "fragment_pause_dialog");
-            DialogFragment d = new PauseDialog2();
+            DialogFragment d = PauseDialog2.newInstance(0.8f, 0.6f);
             d.show(getFragmentManager(), "Pause");
         }
     }
