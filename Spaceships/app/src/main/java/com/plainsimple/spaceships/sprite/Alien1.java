@@ -37,14 +37,15 @@ public class Alien1 extends Alien {
     private BitmapData bulletBitmapData;
     private SpriteAnimation explodeAnimation;
 
-    public Alien1(float x, float y, Spaceship spaceship, Context context) {
+    public Alien1(float x, float y, float scrollSpeed, Spaceship spaceship, int difficulty, Context context) {
         super(BitmapCache.getData(BitmapID.ALIEN, context), x, y);
+        speedX = scrollSpeed / 2;
         this.spaceship = spaceship;
 
         bulletBitmapData = BitmapCache.getData(BitmapID.ALIEN_BULLET, context);
         explodeAnimation = AnimCache.get(BitmapID.SPACESHIP_EXPLODE, context);
 
-        difficulty = GameActivity.getDifficulty();
+        this.difficulty = difficulty;
 
         initAlien();
     }

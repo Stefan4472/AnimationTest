@@ -19,8 +19,9 @@ import java.util.List;
  */
 public class Obstacle extends Sprite {
 
-    public Obstacle(float x, float y, boolean collides, Context context) {
+    public Obstacle(float x, float y, float scrollSpeed, boolean collides, Context context) {
         super(BitmapCache.getData(BitmapID.OBSTACLE, context), x, y);
+        speedX = scrollSpeed;
         this.collides = collides;
         hitBox = new Hitbox(x, y, x + getWidth(), y + getHeight());
         damage = 10_000; // todo: some impossible to reach number?

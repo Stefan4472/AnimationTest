@@ -33,4 +33,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+    <style name="NoTitleDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowActionBar">false</item>
+    </style>
 </resources>

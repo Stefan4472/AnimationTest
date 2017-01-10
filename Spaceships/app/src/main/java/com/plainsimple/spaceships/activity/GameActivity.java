@@ -54,10 +54,6 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     private static Hashtable<RawResource, Integer> soundIDs;
     private static boolean paused = false;
     private static boolean muted = false;
-    private static int score = 0;
-    private static float difficulty = 0;
-    // points a coin is worth
-    public static final int COIN_VALUE = 100;
 
     // sensor manager for gyroscope
     private SensorManager sensorManager;
@@ -288,24 +284,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         return paused;
     }
 
-    public static int getScore() {
-        return score;
-    }
-
-    public static void incrementScore(int toAdd) {
-        score += toAdd;
-        Log.d("GameActivity Class", "Incrementing Score by " + toAdd + " to " + score);
-    }
-
     public static boolean isMuted() {
         return muted;
-    }
-
-    public static float getDifficulty() {
-        return difficulty;
-    }
-
-    public static void incrementDifficulty(float toAdd) {
-        difficulty += toAdd;
     }
 }

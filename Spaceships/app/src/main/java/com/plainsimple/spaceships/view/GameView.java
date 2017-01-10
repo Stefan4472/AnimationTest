@@ -37,6 +37,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public static int screenH;
     private boolean running = false;
     private boolean onTitle = true;
+    private static int score = 0;
+    private int difficulty = 0;
+    // points a coin is worth
+    public static final int COIN_VALUE = 100;
     // selected fire mode (bullet or rocket)
     private Spaceship.FireMode selectedFireMode = Spaceship.FireMode.BULLET;
     // selected input mode (gyro or button)
@@ -44,16 +48,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // name of game save to restore (null if none)
     private String restoreGameState = null;
     private GameViewThread thread;
+    // space background (implements parallax scrolling)
     private Background background;
     private Map map;
-    // space background (implements parallax scrolling)
     //private DrawBackgroundService background;
-    // default speed of sprites scrolling across the map (must be negative!)
-    private float scrollSpeed = -0.0025f;
+    // speed of sprites scrolling across the map (must be negative!)
+    private double scrollSpeed = -0.0025;
     // spaceship
     private Spaceship spaceship;
+    private static final float MAX_SCROLL_SPEED = -0.03f;
     // relative speed of background scrolling to foreground scrolling
     private static final float SCROLL_SPEED_CONST = 0.4f;
+    // number of frames that must pass before score per frame is increased
+    private static final float SCORING_CONST = 800;
     private Paint debugPaintRed = new Paint();
     private Paint debugPaintPink = new Paint();
 
@@ -92,6 +99,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         debugPaintRed.setColor(Color.RED);
         debugPaintRed.setStyle(Paint.Style.STROKE);
         debugPaintRed.setStrokeWidth(3);
+        debugPaintRed.setTextSize(20);
         debugPaintPink.setColor(Color.rgb(255, 105, 180));
         debugPaintPink.setStyle(Paint.Style.STROKE);
         debugPaintPink.setStrokeWidth(3);
@@ -124,12 +132,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         private void draw(Canvas canvas) {
-            //((GameActivity) c).incrementScore(1);
             background.draw(canvas);
             if(!GameActivity.getPaused()) {
                 update();
-                background.scroll((int) (-scrollSpeed * screenW * SCROLL_SPEED_CONST * 8));
-                //background.scroll(-10);
             }
             // todo: how to draw bullets and rockets? drawparams in spaceship?
             for (Sprite s : spaceship.getProjectiles()) {
@@ -139,19 +144,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             GameEngineUtil.drawSprite(spaceship, canvas, c);
             healthBar.draw(canvas);
             scoreDisplay.draw(canvas);
+            canvas.drawText(Double.toString(scrollSpeed), 20, 100, debugPaintRed);
+            canvas.drawText(Integer.toString(difficulty), 20, 150, debugPaintRed);
         }
 
         // updates all game logic
         // adds any new sprites and generates a new set of sprites if needed
         public void update() {
-            //score += difficulty / 2; // todo: increment score based on difficulty
-            GameActivity.incrementDifficulty(0.01f);
-            //updateScrollSpeed();
+            difficulty++;
+            score += 1 + difficulty / SCORING_CONST;
+            updateScrollSpeed();
+            background.scroll(-scrollSpeed * screenW * SCROLL_SPEED_CONST);
             updateSpaceship();
-            map.update(GameActivity.getDifficulty(), scrollSpeed, spaceship);
+            map.update(difficulty, scrollSpeed, spaceship);
             spaceship.updateAnimations();
             healthBar.setMovingToHealth(spaceship.getHP());
-            scoreDisplay.update(GameActivity.getScore()); // todo: clumsy
+            scoreDisplay.update(score); // todo: clumsy
         }
 
         private void updateSpaceship() {
@@ -172,13 +180,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         // calculates scrollspeed based on difficulty
-        // difficulty starts at 0 and increases by 0.01/frame,
-        // or 1 per second
         public void updateScrollSpeed() {
-            scrollSpeed = (float) (-0.0025f - GameActivity.getDifficulty() / 2500.0);
-            if (scrollSpeed < -0.025) { // scroll speed ceiling
-                scrollSpeed = -0.025f;
-            }
+            //scrollSpeed = MAX_SCROLL_SPEED * Math.atan(difficulty / 500.0f) * 2 / Math.PI;
+            scrollSpeed = -Math.log(difficulty + 1) / 600;
         }
 
         // handle user touching screen
@@ -331,5 +335,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void setGameEventsListener(GameEventsListener gameEventsListener) {
         this.gameEventsListener = gameEventsListener;
+    }
+
+    public static void incrementScore(int toAdd) {
+        score += toAdd;
     }
 }

@@ -18,6 +18,7 @@ import com.plainsimple.spaceships.helper.RawResource;
 import com.plainsimple.spaceships.helper.RocketType;
 import com.plainsimple.spaceships.helper.SoundParams;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
+import com.plainsimple.spaceships.view.GameView;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -184,18 +185,22 @@ public class Spaceship extends Sprite {
 
     @Override
     public void handleCollision(Sprite s) {
-        // handling damage this way prevents errors
-        if (hp < s.getDamage()) {
-            hp = -1; // debug purposes: normally would be zero
+        if (s instanceof Coin) {
+            GameView.incrementScore(GameView.COIN_VALUE);
         } else {
-            hp -= s.getDamage();
-        }
-        Log.d("Spaceship class", "Collided with " + (s instanceof Alien ? "alien" : "sprite") + " at " + s.getX());
-        if (hp < 0 && !explode.isPlaying()) { // todo: set hp <= 0 (currently < 0 for debug)
-            // todo: check when explode animation has played and use for end game logic
-            explode.start();
-            GameActivity.playSound(explodeSound);
-            hp = 0; // todo: debug purposes
+            // handling damage this way prevents errors
+            if (hp < s.getDamage()) {
+                hp = -1; // debug purposes: normally would be zero
+            } else {
+                hp -= s.getDamage();
+            }
+            Log.d("Spaceship class", "Collided with " + (s instanceof Alien ? "alien" : "sprite") + " at " + s.getX());
+            if (hp < 0 && !explode.isPlaying()) { // todo: set hp <= 0 (currently < 0 for debug)
+                // todo: check when explode animation has played and use for end game logic
+                explode.start();
+                GameActivity.playSound(explodeSound);
+                hp = 0; // todo: debug purposes
+            }
         }
     }
 

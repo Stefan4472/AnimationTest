@@ -14,10 +14,12 @@ import com.plainsimple.spaceships.view.FontButton;
 import plainsimple.spaceships.R;
 
 /**
- * Created by Kussmaul on 1/8/2017.
+ * Pop-up pause screen. Has controls for music volume and game volume.
+ * Communicates with GameActivity when Resume or Quit button is clicked
  */
 
-public class PauseDialogFragment extends DialogFragment {
+public class PauseDialogFragment extends DialogFragment { // todo: window feature_no_title
+    // todo: change seekbar color
 
     private SeekBar gameVolumeSelector;
     private SeekBar musicVolumeSelector;
@@ -87,6 +89,6 @@ public class PauseDialogFragment extends DialogFragment {
             }
         });
         builder.setView(dialog_layout);
-        return builder.create(); // todo: window feature_no_title
+        return builder.create();
     }
 }

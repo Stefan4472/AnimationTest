@@ -41,11 +41,12 @@ public class TileGenerator {
     // generates a map of sprites based on difficulty and number of rows
     // in screen vertically.
     // difficulty determines probability of certain obstacles, coin
-    // trails, and todo powerups
+    // trails, and todo: powerups
+    // between each generated chunk is a buffer, i.e. empty space
     public byte[][] generateTiles(double difficulty) {
         if (genBuffer) {
             genBuffer = false;
-            return generateBuffer(bufferLength);
+            return new byte[rows][bufferLength];
         } else {
             genBuffer = true;
             byte[][] generated;
@@ -223,17 +224,6 @@ public class TileGenerator {
         }
     }
 
-    // generates an empty tile map with specified number of columns
-    private byte[][] generateBuffer(int bufferLength) {
-        byte[][] generated = new byte[rows][bufferLength];
-        for (byte[] column : generated) { // todo: does this cycle through rows or columns?
-            for (byte tile : column) {
-                tile = EMPTY;
-            }
-        }
-        return generated;
-    }
-
     // given probability of an event occurring
     // uses random numbers and will return if event should
     // occur or not
@@ -284,12 +274,6 @@ public class TileGenerator {
                 {0, 0, 0, 0, 0, 0, OBSTACLE_INVIS, 0, 0},
                 {ALIEN_LVL1, 0, 0, OBSTACLE, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0}
-                /*{0, 0, 1, 1, 0, 1, 1, 0, 0},
-                {3, 3, 1, 0, 0, 0, 1, 0, 0},
-                {0, 0, 4, 4, 4, 4, 0, 0, 0},
-                {0, 0, 4, 0, 0, 0, 0, 0, 0},
-                {0, 0, 1, 0, 0, 0, 1, 0, 0},
-                {0, 0, 1, 0, 0, 1, 1, 1, 0}*/
         };
     }
 }

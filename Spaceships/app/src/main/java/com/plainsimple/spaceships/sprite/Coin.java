@@ -24,8 +24,9 @@ public class Coin extends Sprite {
 
     private SpriteAnimation spin;
 
-    public Coin(float x, float y, Context context) {
+    public Coin(float x, float y, float scrollSpeed, Context context) {
         super(BitmapCache.getData(BitmapID.COIN, context), x, y);
+        speedX = scrollSpeed;
         spin = AnimCache.get(BitmapID.COIN_SPIN, context);
         spin.start();
         hitBox = new Hitbox(x + getWidth() * 0.3f, y + getHeight() * 0.1f, x + getWidth() * 0.7f, y + getHeight() * 0.9f);
@@ -52,8 +53,6 @@ public class Coin extends Sprite {
     @Override
     public void handleCollision(Sprite s) {
         if (s instanceof Spaceship) {
-            //disappear.start();
-            GameActivity.incrementScore(GameActivity.COIN_VALUE);
             terminate = true;
         }
     }

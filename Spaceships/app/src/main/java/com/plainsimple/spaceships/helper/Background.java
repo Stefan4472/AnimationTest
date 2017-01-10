@@ -14,7 +14,7 @@ public class Background {
     // rendered space background tiles
     private Bitmap[] imageTiles;
     // number of pixels scrolled
-    private int pixelsScrolled;
+    private double pixelsScrolled;
     // width of rendered background tiles (px)
     private static final int TILE_WIDTH = 60;
     // height of rendered background tiles (px)
@@ -35,22 +35,22 @@ public class Background {
     private int toElement;
 
     // increases scroll counter by x
-    public void scroll(int x) {
+    public void scroll(double x) {
         this.pixelsScrolled += x;
     }
 
-    public int getPixelsScrolled() {
+    public double getPixelsScrolled() {
         return pixelsScrolled;
     }
 
     // index of tile that will be x0-most on the screen
     private int getStartTile() {
-        return (pixelsScrolled / TILE_WIDTH) % imageTiles.length;
+        return (int) (pixelsScrolled / TILE_WIDTH) % imageTiles.length;
     }
 
     // offset of x0-most tile on the screen from origin of canvas
     private int getOffset() {
-        return -(pixelsScrolled % TILE_WIDTH);
+        return -((int) pixelsScrolled % TILE_WIDTH);
     }
 
     public Background(int screenW, int screenH) {

@@ -37,7 +37,7 @@ public class Map {
     // coordinates of upper-left of "window" being shown
     private long x = 0;
 
-    private float difficulty;
+    private int difficulty;
     private int screenW;
     private int screenH;
 
@@ -64,29 +64,26 @@ public class Map {
 
     // creates new sprites as specified by the map
     // generates new map chunks if needed
-    public void update(float difficulty, float scrollSpeed, Spaceship spaceship) {
+    public void update(int difficulty, double scrollSpeed, Spaceship spaceship) {
         this.difficulty = difficulty;
 
         // update x
-        x += screenW * scrollSpeed;
+        x += screenW * scrollSpeed; // todo: make sure different obstacles aren't going at different speeds if they're in the same chunk
 
         // check if screen has progressed to render a new tile
         if (getWTile() != lastTile) {
-            Sprite to_generate;
             // add any non-empty tiles in the current column to the edge of the screen
-            for (int i = 0; i < map.length; i++) { // todo: clean this up
+            for (int i = 0; i < map.length; i++) { 
                 if (map[i][mapTileCounter] != TileGenerator.EMPTY) {
-                    to_generate = getMapTile(map[i][mapTileCounter], screenW + getWOffset(), i * tileWidth, spaceship);
-                    addTile(to_generate, scrollSpeed, 0); // todo: put speedX and speedY in constructor? -> Make scrollSpeed static and have sprites determine speedX and speedY on initialization?
+                    addMapTile(map[i][mapTileCounter], screenW + getWOffset(), i * tileWidth, (float) scrollSpeed, spaceship);
                 }
             }
             mapTileCounter++;
 
             // generate more sprites
             if (mapTileCounter == map[0].length) {
-                //map = tileGenerator.generateTiles(20);
-                //map = tileGenerator.generateTiles(GameActivity.getDifficulty());
-                map = tileGenerator.generateDebugTiles();
+                map = tileGenerator.generateTiles(difficulty);
+                //map = tileGenerator.generateDebugTiles();
                 mapTileCounter = 0;
             }
             lastTile = getWTile();
@@ -118,32 +115,23 @@ public class Map {
         return (int) x % tileWidth;
     }
 
-    // returns sprite initialized to coordinates (x,y) given tileID
-    private Sprite getMapTile(int tileID, int x, int y, Spaceship spaceship) throws IndexOutOfBoundsException {
+    // initializes sprite and adds to the proper list, given parameters
+    private void addMapTile(int tileID, float x, float y, float scrollSpeed, Spaceship spaceship) throws IndexOutOfBoundsException {
         switch (tileID) {
             case TileGenerator.OBSTACLE:
-                return new Obstacle(x, y, true, context);
+                obstacles.add(new Obstacle(x, y, scrollSpeed, true, context));
+                break;
             case TileGenerator.OBSTACLE_INVIS:
-                return new Obstacle(x, y, false, context);
+                obstacles.add(new Obstacle(x, y, scrollSpeed, false, context));
+                break;
             case TileGenerator.COIN:
-                return new Coin(x, y, context);
+                coins.add(new Coin(x, y, scrollSpeed, context));
+                break;
             case TileGenerator.ALIEN_LVL1:
-                return new Alien1(x, y, spaceship, context);
+                aliens.add(new Alien1(x, y,scrollSpeed, spaceship, difficulty, context));
+                break;
             default:
                 throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
-        }
-    }
-
-    // sets specified fields and adds sprite to arraylist
-    private void addTile(Sprite s, float speedX, float speedY) {
-        s.setSpeedX(speedX);
-        s.setSpeedY(speedY);
-        if (s instanceof Obstacle) {
-            obstacles.add(s);
-        } else if (s instanceof Alien) {
-            aliens.add(s);
-        } else if (s instanceof Coin) {
-            coins.add(s);
         }
     }
 
