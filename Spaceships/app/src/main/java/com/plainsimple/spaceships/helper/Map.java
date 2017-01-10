@@ -43,6 +43,8 @@ public class Map {
 
     // active generated obstacles
     private List<Sprite> obstacles = new LinkedList<>();
+    // active generated non-colliding obstacles
+    private List<Sprite> obstaclesInvis = new LinkedList<>();
     // active generated coins
     private List<Sprite> coins = new LinkedList<>();
     // active generated aliens
@@ -100,6 +102,7 @@ public class Map {
         GameEngineUtil.checkCollisions(spaceship, coins);
         GameEngineUtil.checkCollisions(spaceship, alienProjectiles);
         GameEngineUtil.updateSprites(obstacles);
+        GameEngineUtil.updateSprites(obstaclesInvis);
         GameEngineUtil.updateSprites(aliens);
         GameEngineUtil.updateSprites(coins);
         GameEngineUtil.updateSprites(alienProjectiles);
@@ -122,7 +125,7 @@ public class Map {
                 obstacles.add(new Obstacle(x, y, scrollSpeed, true, context));
                 break;
             case TileGenerator.OBSTACLE_INVIS:
-                obstacles.add(new Obstacle(x, y, scrollSpeed, false, context));
+                obstaclesInvis.add(new Obstacle(x, y, scrollSpeed, false, context));
                 break;
             case TileGenerator.COIN:
                 coins.add(new Coin(x, y, scrollSpeed, context));
@@ -137,6 +140,9 @@ public class Map {
 
     public void draw(Canvas canvas, Context context) {
         for (Sprite o : obstacles) {
+            GameEngineUtil.drawSprite(o, canvas, context);
+        }
+        for (Sprite o : obstaclesInvis) {
             GameEngineUtil.drawSprite(o, canvas, context);
         }
         for (Sprite c : coins) {
