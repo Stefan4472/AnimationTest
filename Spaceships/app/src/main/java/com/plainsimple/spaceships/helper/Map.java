@@ -73,7 +73,7 @@ public class Map {
         // check if screen has progressed to render a new tile
         if (getWTile() != lastTile) {
             // add any non-empty tiles in the current column to the edge of the screen
-            for (int i = 0; i < map.length; i++) { 
+            for (int i = 0; i < map.length; i++) {
                 if (map[i][mapTileCounter] != TileGenerator.EMPTY) {
                     addMapTile(map[i][mapTileCounter], screenW + getWOffset(), i * tileWidth, (float) scrollSpeed, spaceship);
                 }

@@ -27,7 +27,7 @@ public class TileGenerator {
     // whether or not to generate a buffer
     private boolean genBuffer;
     // length of buffer
-    private int bufferLength = 3;
+    private int bufferLength = 5;
 
 
     // used for generating random numbers
@@ -164,9 +164,9 @@ public class TileGenerator {
     }
 
     private byte[][] generateAlien() {
-        int size = 4 + random.nextInt(10);
+        int size = 6 + random.nextInt(10);
         byte[][] generated = new byte[rows][size];
-        generated[1 + random.nextInt(4)][size / 2] = ALIEN_LVL1;
+        generated[1 + random.nextInt(6)][size / 2] = ALIEN_LVL1;
         return generated;
     }
 

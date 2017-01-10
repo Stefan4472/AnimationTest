@@ -32,7 +32,7 @@ public class Alien1 extends Alien {
     private int hShift;
 
     private Spaceship spaceship;
-    private double difficulty;
+    private int difficulty;
 
     private BitmapData bulletBitmapData;
     private SpriteAnimation explodeAnimation;
@@ -56,13 +56,13 @@ public class Alien1 extends Alien {
         period = 250 + random.nextInt(100);
         vShift = random.nextInt(20);
         hShift = -random.nextInt(3);
-        hp = 20 + (int) (difficulty / 3);
-        bulletDelay = 30;
+        hp = 10 + difficulty / 100;
+        bulletDelay = 20;
         framesSinceLastBullet = bulletDelay;
         bulletSpeed = -0.002f - random.nextInt(5) / 10000.0f;
         hitBox = new Hitbox(x + getWidth() * 0.2f, y + getHeight() * 0.2f, x + getWidth() * 0.8f, y + getHeight() * 0.8f);
         damage = 50;
-        speedX = -0.0035f;
+        //speedX = -0.0035f;
     }
 
     @Override
@@ -72,8 +72,8 @@ public class Alien1 extends Alien {
             Log.d("Termination", "Removing Alien at x = " + x);
         } else {
             framesSinceLastBullet++;
-            if (distanceTo(spaceship) < 0.8 && framesSinceLastBullet >= bulletDelay) {
-                if (getP(0.2f)) {
+            if (x > (spaceship.getX() * 1.6) && framesSinceLastBullet >= bulletDelay) {
+                if (getP(0.1f)) {
                     fireBullet(spaceship);
                     framesSinceLastBullet = 0;
                 }

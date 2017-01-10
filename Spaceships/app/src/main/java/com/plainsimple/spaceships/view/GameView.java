@@ -284,7 +284,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         /*GameSave save = new GameSave(c);
         save.saveAliens(aliens);
         save.saveSpaceship(spaceship);
-        save.saveBullets(ssProjectiles);
         save.saveAlienBullets(alienProjectiles);
         save.saveCoins(coins);
         save.saveObstacles(obstacles);
