@@ -50,7 +50,7 @@ public class Alien1 extends Alien {
         initAlien();
     }
 
-    private void initAlien() { // todo: randomized stuff is pretty arbitrary
+    private void initAlien() { // todo: playability improvements. Esp. "wall of bullets"
         startingY = y;
         amplitude = 70 + random.nextInt(60);
         period = 250 + random.nextInt(100);

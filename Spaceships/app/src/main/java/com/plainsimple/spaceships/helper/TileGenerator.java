@@ -1,7 +1,5 @@
 package com.plainsimple.spaceships.helper;
 
-import android.util.Log;
-
 import java.util.Random;
 
 /**
@@ -19,7 +17,7 @@ public class TileGenerator {
     public static final int ALIEN_LVL3 = 6; // level 3 alien
 
     // length of coin trails
-    private static final int coinTrailLength = 15;
+    private static final int COIN_TRAIL_LENGTH = 15;
     // number of coins remaining in current trail
     private int coinsLeft;
     // number of rows of tiles to generate
@@ -28,7 +26,8 @@ public class TileGenerator {
     private boolean genBuffer;
     // length of buffer
     private int bufferLength = 5;
-
+    // current difficulty
+    private int difficulty;
 
     // used for generating random numbers
     private static Random random = new Random();
@@ -43,39 +42,29 @@ public class TileGenerator {
     // difficulty determines probability of certain obstacles, coin
     // trails, and todo: powerups
     // between each generated chunk is a buffer, i.e. empty space
-    public byte[][] generateTiles(double difficulty) {
+    public byte[][] generateTiles(int difficulty) {
+        this.difficulty = difficulty;
         if (genBuffer) {
             genBuffer = false;
             return new byte[rows][bufferLength];
         } else {
             genBuffer = true;
             byte[][] generated;
-            if (getP(getPTile(difficulty))) {
-                if (getP(getPTunnel(difficulty))) {
-                    generated = generateTunnel();
-                } else {
-                    generated = generateObstacles();
-                }
+            if (getPTunnel()) {
+                generated = generateTunnel();
+            } else if (getPAlienSwarm()) {
+                generated = generateAlienSwarm();
             } else {
-                //if(getP(0.5)) {
-                if (getP(getPAlienSwarm(difficulty))) {
-                    generated = generateAlienSwarm();
-                } else {
-                    generated = generateAlien();
-                }
-                //} else {
-                //    map = generateAsteroid();
-                //}
+                generated = generateObstacles();
             }
-            // 15% chance of generating coin trail
-            if (getP(0.15)) { // todo: getPCoinTrail
+            if (getPCoinTrail()) {
                 generateCoins(generated);
             }
-            return generated;
+            return generated; // todo: asteroids???
         }
     }
 
-    // generates map cluster of simple obstacle // todo: generate buffers separately, as empty arrays in between non-empty arrays
+    // generates map cluster of simple obstacle
     private byte[][] generateObstacles() {
         int size = 10 + random.nextInt(5), row = random.nextInt(rows);
         byte[][] generated = new byte[rows][size];
@@ -184,13 +173,13 @@ public class TileGenerator {
     private void generateCoins(byte[][] generated) {
         int col, row, end_col;
         // start coin trail somewhere in chunk making sure there is enough space
-        if (generated[0].length < coinTrailLength) {
+        if (generated[0].length < COIN_TRAIL_LENGTH) {
             col = 0; // todo: can change
         } else {
-            col = random.nextInt(generated[0].length - coinTrailLength);
+            col = random.nextInt(generated[0].length - COIN_TRAIL_LENGTH);
         }
-        end_col = col + coinTrailLength;
-        coinsLeft = coinTrailLength;
+        end_col = col + COIN_TRAIL_LENGTH;
+        coinsLeft = COIN_TRAIL_LENGTH;
         /* establish empty row to place first coin. trail_distance is the
         length a trail can go without having to change direction. Longer
         trail_distance is preferable */
@@ -231,26 +220,48 @@ public class TileGenerator {
         return random.nextInt(100) + 1 <= probability * 100;
     }
 
-    // calculates and returns probability of a tile-based obstacle
-    private static double getPTile(double difficulty) {
-        if (110 - difficulty >= 50) {
-            return (110 - difficulty) / 100;
-        } else {
-            return 0.5;
-        }
+    // starting probability of generating a tunnel
+    private static final float TUNNEL_P0 = 0.15f;
+    // max probability of generating a tunnel
+    private static final float TUNNEL_Pf = 0.3f;
+    // distance before probability of tunnel increases
+    private static final int TUNNEL_INCREASE_THRESHOLD = 1500;
+    // distance that must be traveled to increase tunnel probability by 1%
+    private static final int TUNNEL_INCREASE_RATE = 300;
+    private boolean getPTunnel() {
+        double p = TUNNEL_P0 + (difficulty > TUNNEL_INCREASE_THRESHOLD ? (difficulty - TUNNEL_INCREASE_THRESHOLD) / (100 * TUNNEL_INCREASE_RATE) : 0);
+        return getP(p > TUNNEL_Pf ? TUNNEL_Pf : p);
     }
 
-    private static double getPTunnel(double difficulty) {
-        if (-10 + difficulty < 50) {
-            return (-10 + difficulty) / 100;
-        } else {
-            return 0.5;
-        }
-    }
+    // starting probability of generating an alien swarm // todo: decreasing probabilities?
+    private static final float SWARM_P0 = 0.05f;
+    // max probability of generating an alien swarm
+    private static final float SWARM_Pf = 0.3f;
+    // distance before probability of alien swarm increases
+    private static final int SWARM_INCREASE_THRESHOLD = 500;
+    // distance that must be traveled to increase alien swarm probability by 1%
+    private static final int SWARM_INCREASE_RATE = 200;
 
     // calculates and returns probability of aliens appearing in a swarm
-    private static double getPAlienSwarm(double difficulty) {
-        return (-30 + difficulty) / 100;
+    private boolean getPAlienSwarm() {
+        double p = SWARM_P0 + (difficulty > SWARM_INCREASE_THRESHOLD ? (difficulty - SWARM_INCREASE_THRESHOLD) / (100 * SWARM_INCREASE_RATE) : 0);
+        return getP(p > SWARM_Pf ? SWARM_Pf : p);
+    }
+
+    // starting probability of generating a coin trail
+    private static final float COIN_P0 = 0.15f;
+    // max probability of generating a coin trail
+    private static final float COIN_Pf = 0.7f;
+    // distance before probability of cointrail increases
+    private static final int COIN_INCREASE_THRESHOLD = 1000;
+    // distance that must be traveled to increase coin probability by 1%
+    private static final int COIN_INCREASE_RATE = 100;
+
+    // returns whether a coin trail should be generated
+    // p = p0 + (d - t) / (100 * r)
+    private boolean getPCoinTrail() { // todo: double-check, graph the probabilities out
+        double p = COIN_P0 + (difficulty > COIN_INCREASE_THRESHOLD ? (difficulty - COIN_INCREASE_THRESHOLD) / (100 * COIN_INCREASE_RATE) : 0);
+        return getP((p > COIN_Pf ? COIN_Pf : p));
     }
 
     // prints map in a 2-d array
