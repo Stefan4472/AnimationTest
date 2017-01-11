@@ -3,7 +3,6 @@ package com.plainsimple.spaceships.activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.PixelFormat;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -21,7 +20,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 
+import com.plainsimple.spaceships.helper.BulletType;
+import com.plainsimple.spaceships.helper.Equipped;
 import com.plainsimple.spaceships.helper.GameSave;
+import com.plainsimple.spaceships.helper.RocketType;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.util.EnumUtil;
@@ -43,9 +45,6 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     private ImageButton muteButton;
     private ImageButton toggleBulletButton;
     private ImageButton toggleRocketButton;
-    private FontTextView pausedText;
-    private FontButton resumeButton;
-    private FontButton quitButton;
     private ImageButton upArrow;
     private ImageButton downArrow;
     // whether the user selected to quit the game
@@ -54,14 +53,18 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     private static Hashtable<SoundID, Integer> soundIDs;
     private static boolean paused = false;
     private static boolean muted = false;
+    private static BulletType equippedBulletType;
+    private static RocketType equippedRocketType;
 
     private SharedPreferences preferences;
     private float musicVolume;
     private static float gameVolume;
 
-    // keys for retrieving data from SharedPreferences
+    // keys for retrieving data relevant to GUI from SharedPreferences
     private static final String GAME_VOLUME_KEY = "gameVolume";
     private static final String MUSIC_VOLUME_KEY = "musicVolume";
+    private static final String MUTED_KEY = "MUTED"; // todo
+    private static final String FIRE_MODE_KEY = "SELECTED_FIRE_MODE";
 
     // sensor manager for gyroscope
     private SensorManager sensorManager;
@@ -78,7 +81,10 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         setContentView(R.layout.activity_game);
         // set up view elements
         gameView = (GameView) findViewById(R.id.spaceships); // todo: what should go in onResume()?
-        //gameView.setKeepScreenOn(true);
+
+        // get handle to SharedPreferences
+        preferences = getPreferences(Context.MODE_PRIVATE);
+
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pause);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
@@ -134,13 +140,12 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
 
             }
         });
-        // get handle to SharedPreferences and set game and music volume
-        preferences = getPreferences(Context.MODE_PRIVATE);
-        gameVolume = preferences.getFloat(GAME_VOLUME_KEY, 1.0f);
-        musicVolume = preferences.getFloat(MUSIC_VOLUME_KEY, 1.0f);
-
         // set volume control to proper stream
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+        // retrieve game and music volume from SharedPreferences
+        gameVolume = preferences.getFloat(GAME_VOLUME_KEY, 1.0f);
+        musicVolume = preferences.getFloat(MUSIC_VOLUME_KEY, 1.0f);
 
         // get sensor manager
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -150,6 +155,11 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             Log.d("GameActivity", "Found a saved game to restore");
             gameView.flagRestoreGameState(GameSave.DEFAULT_SAVE_NAME);
         }
+
+        // retrieve equipped bullet and rocket type
+        SharedPreferences equipped_preferences = getSharedPreferences(Equipped.PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
+        equippedBulletType = Equipped.stringToBulletType(equipped_preferences.getString(Equipped.EQUIPPED_BULLET, Equipped.LASER_BULLET));
+        equippedRocketType = Equipped.stringToRocketType(equipped_preferences.getString(Equipped.EQUIPPED_ROCKET, Equipped.ROCKET_DEFAULT));
     }
 
     private void initMedia() {
@@ -261,6 +271,10 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             onPausePressed(gameView);
             Log.d("GameActivity", "Finished pausing the game");
         }
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putFloat(GAME_VOLUME_KEY, gameVolume);
+        editor.putFloat(MUSIC_VOLUME_KEY, musicVolume);
+        editor.commit();
         soundPool.release();
         soundPool = null;
         //BitmapCache.destroyBitmaps();
@@ -280,13 +294,6 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         }
     }
 
-    /*@Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        Window window = getWindow();
-        window.setFormat(PixelFormat.RGBA_8888);
-    }*/
-
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
@@ -305,5 +312,13 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
 
     public static boolean isMuted() {
         return muted;
+    }
+
+    public static BulletType getEquippedBulletType() {
+        return equippedBulletType;
+    }
+
+    public static RocketType getEquippedRocketType() {
+        return equippedRocketType;
     }
 }

@@ -77,7 +77,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private float input;
 
     // interface for events to fire
-    public interface GameEventsListener {
+    public interface GameEventsListener { // todo: GameActivity should implement GameActivity.GameEventsListener
         // fired when spaceship has reached starting position
         void onGameStarted();
         // fired when spaceship has finished exploding
@@ -223,8 +223,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             BitmapData ship_data = BitmapCache.getData(BitmapID.SPACESHIP, c);
             // initialize spaceship just off the screen in the middle
             spaceship = new Spaceship(-ship_data.getWidth(), screenH / 2 - ship_data.getHeight() / 2, c);
-            spaceship.setBulletType(BulletType.LASER);//GameActivity.equipment.getEquippedBulletType()); // todo: get equipment
-            spaceship.setRocketType(RocketType.ROCKET);//GameActivity.equipment.getEquippedRocketType());
+            spaceship.setBulletType(GameActivity.getEquippedBulletType());
+            spaceship.setRocketType(GameActivity.getEquippedRocketType());
             spaceship.setHP(30);
             spaceship.setDamage(30);
         }

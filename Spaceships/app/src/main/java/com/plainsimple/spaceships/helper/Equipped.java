@@ -11,14 +11,18 @@ import java.util.HashMap;
 import plainsimple.spaceships.R;
 
 /**
- * Retrieves/commits unlocks and currently in-use equipment
+ * Stores constants todo: bad practice?
  */
 public class Equipped {
 
-    // possible states // todo: refactoring!!! enums? ints?
-    public static final String EQUIPPED = "EQUIPPED";
-    public static final String LOCKED = "LOCKED";
-    public static final String UNLOCKED = "UNLOCKED";
+    public static final String PREFERENCES_FILE_KEY = "com.plainsimple.spaceships.EQUIPPED_FILE_KEY";
+    public static final String STATE_EQUIPPED = "STATE_EQUIPPED";
+    public static final String STATE_LOCKED = "STATE_LOCKED";
+    public static final String STATE_UNLOCKED = "STATE_UNLOCKED";
+
+    public static final String EQUIPPED_BULLET = "EQUIPPED_BULLET";
+    public static final String EQUIPPED_ROCKET = "EQUIPPED_ROCKET";
+    public static final String EQUIPPED_ARMOR = "EQUIPPED_ARMOR";
 
     // possible bullet types
     public static final String LASER_BULLET = "LASER_BULLET";
@@ -38,73 +42,27 @@ public class Equipped {
     // path where equipment data is stored
     public static final String FILE_PATH = "EQUIPMENT_STATES";
 
-    // context used for reading/writing files
-    public Context context;
-
-    public Equipped(Context context) { // todo: private constructor? make class static?
-        this.context = context;
-        String saved_info = FileUtil.readFile(context, FILE_PATH);
-        // file hasn't been initialized yet - set default values
-        if (saved_info.equals("")) {
-            saved_info = context.getString(R.string.default_equipped_states);
-            FileUtil.writeFile(context, FILE_PATH, saved_info);
-        }
-        readStates(saved_info);
-    }
-
-    // todo: what if an error occurs?
-    // populate the states hashmap with data read from the given String
-    private void readStates(String toRead) {
-        Log.d("Equipped.java", "Reading\n" + toRead);
-        String[] lines = toRead.split(","); // split toRead into an array of lines
-        String equipment, val;
-        int separator_index;
-        try {
-            for (int i = 0; i < lines.length; i++) {
-                separator_index = lines[i].indexOf(':');
-                equipment = lines[i].substring(0, separator_index);
-                val = lines[i].substring(separator_index + 1);
-                states.put(equipment, val);
-            }
-        } catch (IndexOutOfBoundsException|NullPointerException e) {
-            Log.d("Equipped Class", "Error occurred reading values in from file. Resetting states");
-            readStates(context.getString(R.string.default_equipped_states));
+    public static BulletType stringToBulletType(String key) {
+        switch (key) {
+            case LASER_BULLET:
+                return BulletType.LASER;
+            case ION_BULLET:
+                return BulletType.ION;
+            case PLASMA_BULLET:
+                return BulletType.PLASMA;
+            case PLUTONIUM_BULLET:
+                return BulletType.PLUTONIUM;
+            default:
+                throw new IllegalArgumentException("Did not recognize " + key);
         }
     }
 
-    // formats the states hashmap and writes it to the file
-    public void writeStates() {
-        String formatted = "";
-        for (String key : states.keySet()) {
-            formatted += key + ":" + states.get(key) + "\n";
+    public static RocketType stringToRocketType(String key) {
+        switch (key) {
+            case ROCKET_DEFAULT:
+                return RocketType.ROCKET;
+            default:
+                throw new IllegalArgumentException("Did not recognize " + key);
         }
-        FileUtil.writeFile(context, FILE_PATH, formatted);
-        Log.d("Equipped.java", "Writing\n" + formatted);
-    }
-
-    public String getState(String key) {
-        return states.get(key);
-    }
-
-    public void setState(String key, String state) {
-        states.put(key, state);
-    }
-
-    // returns the currently equipped bullet type
-    public BulletType getEquippedBulletType() {
-        if (states.get(LASER_BULLET).equals(EQUIPPED)) {
-            return BulletType.LASER;
-        } else if (states.get(ION_BULLET).equals(EQUIPPED)) {
-            return BulletType.ION;
-        } else if (states.get(PLASMA_BULLET).equals(EQUIPPED)) {
-            return BulletType.PLASMA;
-        } else {
-            return BulletType.PLUTONIUM;
-        }
-    }
-
-    // returns the currently equipped rocket type
-    public RocketType getEquippedRocketType() {
-        return RocketType.ROCKET;
     }
 }

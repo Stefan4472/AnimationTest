@@ -78,9 +78,7 @@ public class TileGenerator {
                 // generate another obstacle below
                 if (row + 1 < rows && getP(0.3)) {
                     generated[row + 1][i] = OBSTACLE;
-                }
-                // generate another obstacle above
-                if (row > 0 && getP(0.2)) {
+                } else if (row > 0 && getP(0.2)) { // else try to generate another obstacle above
                     generated[row - 1][i] = OBSTACLE;
                 }
                 row = random.nextInt(rows);
