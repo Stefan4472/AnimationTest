@@ -1,7 +1,7 @@
 package com.plainsimple.spaceships.util;
 
 import com.plainsimple.spaceships.helper.BitmapID;
-import com.plainsimple.spaceships.helper.RawResource;
+import com.plainsimple.spaceships.helper.SoundID;
 
 import plainsimple.spaceships.R;
 
@@ -43,7 +43,7 @@ public class EnumUtil {
         }
     }
 
-    public static int getID(RawResource key) {
+    public static int getID(SoundID key) {
         switch (key) {
             case LASER:
                 return R.raw.laser_fired;

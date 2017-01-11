@@ -6,7 +6,7 @@ package com.plainsimple.spaceships.helper;
 public class SoundParams {
 
     // ID of raw resource to be played
-    private RawResource resourceID;
+    private SoundID resourceID;
     // x0 volume value (range = 0.0 to 1.0)
     private float leftVolume;
     // x1 volume value (range = 0.0 to 1.0)
@@ -18,7 +18,7 @@ public class SoundParams {
     // playback rate (1.0 = normal playback, range 0.5 to 2.0)
     private float rate;
 
-    public SoundParams(RawResource resourceID, float leftVolume, float rightVolume, int priority, int loop, float rate) {
+    public SoundParams(SoundID resourceID, float leftVolume, float rightVolume, int priority, int loop, float rate) {
         this.resourceID = resourceID;
         this.leftVolume = leftVolume;
         this.rightVolume = rightVolume;
@@ -27,7 +27,7 @@ public class SoundParams {
         this.rate = rate;
     }
 
-    public RawResource getResourceID() {
+    public SoundID getResourceID() {
         return resourceID;
     }
 
@@ -37,6 +37,14 @@ public class SoundParams {
 
     public float getRightVolume() {
         return rightVolume;
+    }
+
+    public void setLeftVolume(float leftVolume) {
+        this.leftVolume = leftVolume;
+    }
+
+    public void setRightVolume(float rightVolume) {
+        this.rightVolume = rightVolume;
     }
 
     public int getPriority() {

@@ -1,7 +1,6 @@
 package com.plainsimple.spaceships.sprite;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.util.Log;
 
 import com.plainsimple.spaceships.activity.GameActivity;
@@ -14,7 +13,7 @@ import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.helper.Hitbox;
-import com.plainsimple.spaceships.helper.RawResource;
+import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.helper.RocketType;
 import com.plainsimple.spaceships.helper.SoundParams;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
@@ -24,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.plainsimple.spaceships.view.GameView.screenH;
-import static com.plainsimple.spaceships.view.GameView.screenW;
 
 /**
  * Created by Stefan on 8/13/2015.
@@ -74,9 +72,9 @@ public class Spaceship extends Sprite {
     public static final int DIRECTION_DOWN = -1;
     public static final int DIRECTION_NONE = 0;
 
-    private SoundParams rocketSound;
-    private SoundParams bulletSound;
-    private SoundParams explodeSound;
+    private static final SoundID ROCKET_SOUND = SoundID.ROCKET;
+    private static final SoundID BULLET_SOUND = SoundID.LASER;
+    private static final SoundID EXPLODE_SOUND = SoundID.EXPLOSION;
 
     // default constructor
     public Spaceship(float x, float y, Context context) {
@@ -94,10 +92,6 @@ public class Spaceship extends Sprite {
         rocketBitmapData = BitmapCache.getData(BitmapID.ROCKET, context);
 
         hitBox = new Hitbox(x + getWidth() * 0.17f, y + getHeight() * 0.22f, x + getWidth() * 0.83f, y + getHeight() * 0.78f);
-
-        bulletSound = new SoundParams(RawResource.LASER, 1.0f, 1.0f, 1, 0, 1.0f);
-        rocketSound = new SoundParams(RawResource.ROCKET, 1.0f, 1.0f, 1, 0, 1.0f);
-        explodeSound = new SoundParams(RawResource.EXPLOSION, 1.0f, 1.0f, 1, 0, 1.0f);
     }
 
 
@@ -119,14 +113,14 @@ public class Spaceship extends Sprite {
     public void fireRockets() {
         projectiles.add(new Rocket(rocketBitmapData, x + getWidth() * 0.80f, y + 0.29f * getHeight(), rocketType));
         projectiles.add(new Rocket(rocketBitmapData, x + getWidth() * 0.80f, y + 0.65f * getHeight(), rocketType));
-        GameActivity.playSound(rocketSound);
+        GameActivity.playSound(ROCKET_SOUND);
     }
 
     // fires two bullets
     public void fireBullets() {
         projectiles.add(new Bullet(bulletBitmapData, x + getWidth() * 0.78f, y + 0.28f * getHeight(), bulletType));
         projectiles.add(new Bullet(bulletBitmapData, x + getWidth() * 0.78f, y + 0.66f * getHeight(), bulletType));
-        GameActivity.playSound(bulletSound);
+        GameActivity.playSound(BULLET_SOUND);
     }
 
     public void updateInput(InputMode inputType, float value) {
@@ -198,7 +192,7 @@ public class Spaceship extends Sprite {
             if (hp < 0 && !explode.isPlaying()) { // todo: set hp <= 0 (currently < 0 for debug)
                 // todo: check when explode animation has played and use for end game logic
                 explode.start();
-                GameActivity.playSound(explodeSound);
+                GameActivity.playSound(EXPLODE_SOUND);
                 hp = 0; // todo: debug purposes
             }
         }

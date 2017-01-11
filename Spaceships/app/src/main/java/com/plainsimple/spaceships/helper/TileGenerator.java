@@ -33,7 +33,6 @@ public class TileGenerator {
     private static Random random = new Random();
 
     public TileGenerator(int rows) {
-        genBuffer = true;
         this.rows = rows;
     }
 
@@ -44,11 +43,10 @@ public class TileGenerator {
     // between each generated chunk is a buffer, i.e. empty space
     public byte[][] generateTiles(int difficulty) {
         this.difficulty = difficulty;
+        genBuffer = !genBuffer;
         if (genBuffer) {
-            genBuffer = false;
             return new byte[rows][bufferLength];
         } else {
-            genBuffer = true;
             byte[][] generated;
             if (getPTunnel()) {
                 generated = generateTunnel();
@@ -64,16 +62,18 @@ public class TileGenerator {
         }
     }
 
-    // generates map cluster of simple obstacle
+    // generates chunk of randomly-placed obstacles
     private byte[][] generateObstacles() {
-        int size = 10 + random.nextInt(5), row = random.nextInt(rows);
+        int size = COIN_TRAIL_LENGTH + random.nextInt(5);
+        int row = random.nextInt(rows);
         byte[][] generated = new byte[rows][size];
         for (int i = 0; i < size; i++) {
-            if (getP(0.2f)) {
+            if (getP(0.4f)) {
                 generated[row][i] = OBSTACLE;
-                // generate another obstacle to the x1
-                if (i + 1 < size && getP(0.5)) {
+                // generate another obstacle to the right
+                if (i + 1 < size && getP(0.3)) {
                     generated[row][i + 1] = OBSTACLE;
+                    i++;
                 }
                 // generate another obstacle below
                 if (row + 1 < rows && getP(0.3)) {
@@ -91,9 +91,10 @@ public class TileGenerator {
 
     // generates tunnel
     private byte[][] generateTunnel() {
-        int tunnel_length = 18 + random.nextInt(10);
+        int tunnel_length = COIN_TRAIL_LENGTH + 3 + random.nextInt(10);
         byte[][] generated = new byte[rows][tunnel_length];
         int row = 1 + random.nextInt(rows - 2);
+        // probability tunnel will move up or down
         float change_path = 0.0f;
         // generate first column
         for (int i = 0; i < rows; i++) {
@@ -173,7 +174,7 @@ public class TileGenerator {
     private void generateCoins(byte[][] generated) {
         int col, row, end_col;
         // start coin trail somewhere in chunk making sure there is enough space
-        if (generated[0].length < COIN_TRAIL_LENGTH) {
+        if (generated[0].length <= COIN_TRAIL_LENGTH) {
             col = 0; // todo: can change
         } else {
             col = random.nextInt(generated[0].length - COIN_TRAIL_LENGTH);
@@ -228,6 +229,7 @@ public class TileGenerator {
     private static final int TUNNEL_INCREASE_THRESHOLD = 1500;
     // distance that must be traveled to increase tunnel probability by 1%
     private static final int TUNNEL_INCREASE_RATE = 300;
+
     private boolean getPTunnel() {
         double p = TUNNEL_P0 + (difficulty > TUNNEL_INCREASE_THRESHOLD ? (difficulty - TUNNEL_INCREASE_THRESHOLD) / (100 * TUNNEL_INCREASE_RATE) : 0);
         return getP(p > TUNNEL_Pf ? TUNNEL_Pf : p);

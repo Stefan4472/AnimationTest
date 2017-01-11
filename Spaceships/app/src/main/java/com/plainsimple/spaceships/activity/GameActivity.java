@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.activity;
 
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -21,8 +22,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 
 import com.plainsimple.spaceships.helper.GameSave;
-import com.plainsimple.spaceships.helper.RawResource;
-import com.plainsimple.spaceships.helper.SoundParams;
+import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.util.EnumUtil;
 import com.plainsimple.spaceships.view.FontButton;
@@ -51,13 +51,21 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     // whether the user selected to quit the game
     private boolean quit = false;
     private static SoundPool soundPool;
-    private static Hashtable<RawResource, Integer> soundIDs;
+    private static Hashtable<SoundID, Integer> soundIDs;
     private static boolean paused = false;
     private static boolean muted = false;
 
+    private SharedPreferences preferences;
+    private float musicVolume;
+    private static float gameVolume;
+
+    // keys for retrieving data from SharedPreferences
+    private static final String GAME_VOLUME_KEY = "gameVolume";
+    private static final String MUSIC_VOLUME_KEY = "musicVolume";
+
     // sensor manager for gyroscope
     private SensorManager sensorManager;
-    /* Called when activity first created */
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,10 +76,9 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         // set content view/layout to gameview layout
         setContentView(R.layout.activity_game);
-        gameView = (GameView) findViewById(R.id.spaceships); // todo: what should go in onResume()?
-        gameView.setKeepScreenOn(true);
-
         // set up view elements
+        gameView = (GameView) findViewById(R.id.spaceships); // todo: what should go in onResume()?
+        //gameView.setKeepScreenOn(true);
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pause);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
@@ -80,7 +87,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
-
+        // initialize listeners
         upArrow = (ImageButton) findViewById(R.id.up_arrow);
         upArrow.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -109,7 +116,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
                 return false; // todo: does return matter?
             }
         });
-
+        // set up GameEventsListener
         final Animation arrow_fade_in = AnimationUtils.loadAnimation(this, R.anim.arrowbutton_fadein);
         gameView.setGameEventsListener(new GameView.GameEventsListener() {
             @Override // fade in direction arrows once spaceship reaches initial position
@@ -127,6 +134,11 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
 
             }
         });
+        // get handle to SharedPreferences and set game and music volume
+        preferences = getPreferences(Context.MODE_PRIVATE);
+        gameVolume = preferences.getFloat(GAME_VOLUME_KEY, 1.0f);
+        musicVolume = preferences.getFloat(MUSIC_VOLUME_KEY, 1.0f);
+
         // set volume control to proper stream
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -144,24 +156,23 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         Log.d("Activity Class", "Creating SoundPool");
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
         soundIDs = new Hashtable<>();
-        Log.d("Activity Class", "Loading Sounds");
-        soundIDs.put(RawResource.LASER, soundPool.load(this, EnumUtil.getID(RawResource.LASER), 1));
-        soundIDs.put(RawResource.ROCKET, soundPool.load(this, EnumUtil.getID(RawResource.ROCKET), 1));
-        soundIDs.put(RawResource.EXPLOSION, soundPool.load(this, EnumUtil.getID(RawResource.EXPLOSION), 1));
-        soundIDs.put(RawResource.BUTTON_CLICKED, soundPool.load(this, EnumUtil.getID(RawResource.BUTTON_CLICKED), 1));
-        soundIDs.put(RawResource.TITLE_THEME, soundPool.load(this, EnumUtil.getID(RawResource.TITLE_THEME), 1));
+        Log.d("Activity Class", "Loading Sounds"); // todo: commit volumes at onPause()
+        soundIDs.put(SoundID.LASER, soundPool.load(this, EnumUtil.getID(SoundID.LASER), 1));
+        soundIDs.put(SoundID.ROCKET, soundPool.load(this, EnumUtil.getID(SoundID.ROCKET), 1));
+        soundIDs.put(SoundID.EXPLOSION, soundPool.load(this, EnumUtil.getID(SoundID.EXPLOSION), 1));
+        soundIDs.put(SoundID.BUTTON_CLICKED, soundPool.load(this, EnumUtil.getID(SoundID.BUTTON_CLICKED), 1));
+        soundIDs.put(SoundID.TITLE_THEME, soundPool.load(this, EnumUtil.getID(SoundID.TITLE_THEME), 1));
         Log.d("Activity Class", soundIDs.size() + " sounds loaded");
     }
 
-    // plays a sound using the SoundPool given SoundParams
-    public static void playSound(SoundParams parameters) {
-        soundPool.play(soundIDs.get(parameters.getResourceID()), parameters.getLeftVolume(),
-                parameters.getRightVolume(), parameters.getPriority(), parameters.getLoop(),
-                parameters.getRate());
+    // plays a sound using the SoundPool at the correct volume
+    public static void playSound(SoundID soundID) {
+        soundPool.play(soundIDs.get(soundID), gameVolume, gameVolume, 1, 0, 1.0f);
     }
 
     // handle user pressing pause button
     public void onPausePressed(View view) {
+        playSound(SoundID.BUTTON_CLICKED);
         if(paused) { // unpause
             pauseButton.setBackgroundResource(R.drawable.pause);
             paused = false;
@@ -171,7 +182,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             paused = true;
             soundPool.autoPause();
             // display pause dialog
-            DialogFragment d = PauseDialogFragment.newInstance(0.8f, 0.6f);
+            DialogFragment d = PauseDialogFragment.newInstance(gameVolume, musicVolume);
             d.show(getFragmentManager(), "Pause");
         }
     }
@@ -189,12 +200,14 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     }
 
     public void onToggleBulletPressed(View view) {
+        playSound(SoundID.BUTTON_CLICKED);
         gameView.setFiringMode(Spaceship.FireMode.BULLET);
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
     }
 
     public void onToggleRocketPressed(View view) {
+        playSound(SoundID.BUTTON_CLICKED);
         gameView.setFiringMode(Spaceship.FireMode.ROCKET);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button_pressed);
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button);
@@ -202,18 +215,24 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
 
     @Override
     public void onResumePressed(DialogFragment dialog, float gameVolume, float musicVolume) {
+        playSound(SoundID.BUTTON_CLICKED);
         Log.d("GameActivity", "Resuming game");
+        GameActivity.gameVolume = gameVolume;
         Log.d("GameActivity", "New Game Volume set to " + gameVolume);
+        this.musicVolume = musicVolume;
         Log.d("GameActivity", "New Music Volume set to " + musicVolume);
         dialog.dismiss();
     }
 
     @Override
     public void onQuitPressed(DialogFragment dialog, float gameVolume, float musicVolume) {
-        Log.d("GameActivity", "Quitting game");
+        playSound(SoundID.BUTTON_CLICKED);
+        GameActivity.gameVolume = gameVolume;
         Log.d("GameActivity", "New Game Volume set to " + gameVolume);
+        this.musicVolume = musicVolume;
         Log.d("GameActivity", "New Music Volume set to " + musicVolume);
         quit = true;
+        Log.d("GameActivity", "Quitting game");
         finish();
     }
 
@@ -261,12 +280,12 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         }
     }
 
-    @Override
+    /*@Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         Window window = getWindow();
         window.setFormat(PixelFormat.RGBA_8888);
-    }
+    }*/
 
     @Override
     public void onSensorChanged(SensorEvent event) {
