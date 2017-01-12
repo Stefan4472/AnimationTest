@@ -29,6 +29,8 @@ import static com.plainsimple.spaceships.view.GameView.screenH;
  */
 public class Spaceship extends Sprite {
 
+    private Context context;
+
     private SpriteAnimation move;
     private SpriteAnimation fireRocket;
     private SpriteAnimation explode;
@@ -92,6 +94,8 @@ public class Spaceship extends Sprite {
         rocketBitmapData = BitmapCache.getData(BitmapID.ROCKET, context);
 
         hitBox = new Hitbox(x + getWidth() * 0.17f, y + getHeight() * 0.22f, x + getWidth() * 0.83f, y + getHeight() * 0.78f);
+
+        this.context = context;
     }
 
 
@@ -111,8 +115,8 @@ public class Spaceship extends Sprite {
 
     // fires two rockets
     public void fireRockets() {
-        projectiles.add(new Rocket(rocketBitmapData, x + getWidth() * 0.80f, y + 0.29f * getHeight(), rocketType));
-        projectiles.add(new Rocket(rocketBitmapData, x + getWidth() * 0.80f, y + 0.65f * getHeight(), rocketType));
+        projectiles.add(new Rocket(context, x + getWidth() * 0.80f, y + 0.29f * getHeight(), rocketType));
+        projectiles.add(new Rocket(context, x + getWidth() * 0.80f, y + 0.65f * getHeight(), rocketType));
         GameActivity.playSound(ROCKET_SOUND);
     }
 

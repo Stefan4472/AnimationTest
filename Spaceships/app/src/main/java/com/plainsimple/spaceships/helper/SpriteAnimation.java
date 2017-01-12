@@ -100,4 +100,12 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
     public BitmapID getBitmapID() {
         return bitmapID;
     }
+
+    public int getFrameW() {
+        return frameW;
+    }
+
+    public int getFrameH() {
+        return frameH;
+    }
 }

@@ -28,4 +28,5 @@
     <string name="SPACESHIP_FIRE_ROCKET">5:8:8:8:8:8:false</string>
     <string name="SPACESHIP_EXPLODE">8:5:5:5:5:5:5:5:5:false</string>>
     <string name="COIN_SPIN">6:10:10:10:10:10:10:true</string>
+    <string name="ROCKET_MOVE">2:3:3:true</string>
 </resources>
