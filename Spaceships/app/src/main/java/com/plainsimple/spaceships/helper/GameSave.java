@@ -25,24 +25,6 @@ public class GameSave {
     // named according to given saveName
     private File directory;
 
-    // stores game state information (volume, currently equipped, etc)
-    private static final String GAME_STATE_FILE = "GameStateFile";
-    // stores serialized aliens
-    private static final String ALIENS = "AliensFile";
-    // stores serialized alien bullets
-    private static final String ALIEN_BULLETS = "AlienBulletsFile";
-    // stores serialized spaceship
-    //private static final String SPACESHIP = "SpaceshipFile";
-    // stores serialized spaceship bullets and rockets
-    private static final String BULLETS = "BulletsFile";
-    // stores serialized coins
-    private static final String COINS = "CoinsFile";
-    // stores serialized obstacles
-    private static final String OBSTACLES = "ObstaclesFile";
-    // stores background
-    //private static final String BACKGROUND = "BackgroundFile";
-    // stores tile generator
-
     public GameSave(Context context) {
         this(context, DEFAULT_SAVE_NAME);
     }
@@ -67,7 +49,7 @@ public class GameSave {
 
     private static final String MAP = "MAPFILE";
     private static final String SPACESHIP = "SPACESHIPFILE";
-    private static final String BACKGROUND = "BACKGROUNDFILE"; // todo
+    private static final String BACKGROUND = "BACKGROUNDFILE";
     private static final String SCOREDISPLAY = "SCOREDISPLAYFILE";
     private static final String HEALTHBAR = "HEALTHBARFILE";
 
@@ -75,8 +57,19 @@ public class GameSave {
         return FileUtil.writeObject(new File(directory, MAP), map);
     }
 
-    public Map loadMap() {
-        return (Map) FileUtil.readObject(new File(directory, MAP));
+    // loads saved data into the given Map object
+    public void loadMap(Map restore) {
+        Map saved = (Map) FileUtil.readObject(new File(directory, MAP));
+        restore.setTiles(saved.getTiles());
+        restore.setTileGenerator(saved.getTileGenerator());
+        restore.setMapTileCounter(saved.getMapTileCounter());
+        restore.setLastTile(saved.getLastTile());
+        restore.setX(saved.getX());
+        restore.setObstacles(saved.getObstacles());
+        restore.setObstaclesInvis(saved.getObstaclesInvis());
+        restore.setCoins(saved.getCoins());
+        restore.setAliens(saved.getAliens());
+        restore.setAlienProjectiles(saved.getAlienProjectiles());
     }
 
     public boolean saveSpaceship(Spaceship spaceship) {

@@ -3,8 +3,6 @@ package com.plainsimple.spaceships.helper;
 import android.content.Context;
 import android.graphics.Canvas;
 
-import com.plainsimple.spaceships.activity.GameActivity;
-import com.plainsimple.spaceships.sprite.Alien;
 import com.plainsimple.spaceships.sprite.Alien1;
 import com.plainsimple.spaceships.sprite.Coin;
 import com.plainsimple.spaceships.sprite.Obstacle;
@@ -15,8 +13,6 @@ import com.plainsimple.spaceships.util.GameEngineUtil;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.plainsimple.spaceships.view.GameView.screenW;
-
 /**
  * Generates sprites, among other things: basically the game driver
  */
@@ -25,14 +21,14 @@ public class Map {
 
     private Context context;
     // grid of tile ID's instructing which sprites to initialize on screen
-    private byte[][] map;
+    private byte[][] tiles;
     // used to generate tile-based terrain
     private TileGenerator tileGenerator;
     // number of rows of sprites that fit on screen
     private static final int ROWS = 6;
-    // number of tiles elapsed since last map was generated
+    // number of tiles elapsed since last tiles was generated
     private int mapTileCounter = 0;
-    // keeps track of tile spaceship was on last time map was updated
+    // keeps track of tile spaceship was on last time tiles was updated
     private long lastTile = 0;
     // coordinates of upper-left of "window" being shown
     private long x = 0;
@@ -60,12 +56,12 @@ public class Map {
         this.screenW = screenW;
         this.screenH = screenH;
         tileWidth = screenH / ROWS;
-        map = new byte[ROWS][screenW / tileWidth];
+        tiles = new byte[ROWS][screenW / tileWidth];
         tileGenerator = new TileGenerator(ROWS);
     }
 
-    // creates new sprites as specified by the map
-    // generates new map chunks if needed
+    // creates new sprites as specified by the tiles
+    // generates new tiles chunks if needed
     public void update(int difficulty, double scrollSpeed, Spaceship spaceship) {
         this.difficulty = difficulty;
 
@@ -75,17 +71,17 @@ public class Map {
         // check if screen has progressed to render a new tile
         if (getWTile() != lastTile) {
             // add any non-empty tiles in the current column to the edge of the screen
-            for (int i = 0; i < map.length; i++) {
-                if (map[i][mapTileCounter] != TileGenerator.EMPTY) {
-                    addMapTile(map[i][mapTileCounter], screenW + getWOffset(), i * tileWidth, (float) scrollSpeed, spaceship);
+            for (int i = 0; i < tiles.length; i++) {
+                if (tiles[i][mapTileCounter] != TileGenerator.EMPTY) {
+                    addMapTile(tiles[i][mapTileCounter], screenW + getWOffset(), i * tileWidth, (float) scrollSpeed, spaceship);
                 }
             }
             mapTileCounter++;
 
             // generate more sprites
-            if (mapTileCounter == map[0].length) {
-                map = tileGenerator.generateTiles(difficulty);
-                //map = tileGenerator.generateDebugTiles();
+            if (mapTileCounter == tiles[0].length) {
+                tiles = tileGenerator.generateTiles(difficulty);
+                //tiles = tileGenerator.generateDebugTiles();
                 mapTileCounter = 0;
             }
             lastTile = getWTile();
@@ -154,5 +150,85 @@ public class Map {
         for (Sprite a : alienProjectiles) {
             GameEngineUtil.drawSprite(a, canvas, context);
         }
+    }
+
+    public byte[][] getTiles() {
+        return tiles;
+    }
+
+    public void setTiles(byte[][] tiles) {
+        this.tiles = tiles;
+    }
+
+    public TileGenerator getTileGenerator() {
+        return tileGenerator;
+    }
+
+    public void setTileGenerator(TileGenerator tileGenerator) {
+        this.tileGenerator = tileGenerator;
+    }
+
+    public int getMapTileCounter() {
+        return mapTileCounter;
+    }
+
+    public void setMapTileCounter(int mapTileCounter) {
+        this.mapTileCounter = mapTileCounter;
+    }
+
+    public long getLastTile() {
+        return lastTile;
+    }
+
+    public void setLastTile(long lastTile) {
+        this.lastTile = lastTile;
+    }
+
+    public long getX() {
+        return x;
+    }
+
+    public void setX(long x) {
+        this.x = x;
+    }
+
+    public List<Sprite> getObstacles() {
+        return obstacles;
+    }
+
+    public void setObstacles(List<Sprite> obstacles) {
+        this.obstacles = obstacles;
+    }
+
+    public List<Sprite> getObstaclesInvis() {
+        return obstaclesInvis;
+    }
+
+    public void setObstaclesInvis(List<Sprite> obstaclesInvis) {
+        this.obstaclesInvis = obstaclesInvis;
+    }
+
+    public List<Sprite> getCoins() {
+        return coins;
+    }
+
+    public void setCoins(List<Sprite> coins) {
+        this.coins = coins;
+    }
+
+    public List<Sprite> getAliens() {
+        return aliens;
+    }
+
+    public void setAliens(List<Sprite> aliens) {
+        this.aliens = aliens;
+    }
+
+    public List<Sprite> getAlienProjectiles() {
+        return alienProjectiles;
+    }
+
+    public void setAlienProjectiles(List<Sprite> alienProjectiles) {
+        this.alienProjectiles = alienProjectiles;
     }
 }

@@ -233,6 +233,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         this.musicVolume = musicVolume;
         Log.d("GameActivity", "New Music Volume set to " + musicVolume);
         dialog.dismiss();
+        onPausePressed(gameView);
     }
 
     @Override

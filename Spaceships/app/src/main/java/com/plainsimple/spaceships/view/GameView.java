@@ -135,12 +135,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         private void draw(Canvas canvas) {
             if (!initialized) { // todo: find a better way (put this in onMeasure? But there were issues with pauseDialog
                 initialized = true;
-                // if flag is set, restore game state
+                initNewGame();
+                // if flag is set, restore game state by populating initialized objects
                 if (restoreGameState) {
                     //restoreGameState();
-                    initNewGame();
-                } else { // creates standard objects
-                    initNewGame();
                 }
             }
             background.draw(canvas);
@@ -303,11 +301,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         GameSave save = new GameSave(c);
         long start_time = System.currentTimeMillis();
         Log.d("GameView.java", "Restoring Game State");
-        map = save.loadMap();
-        healthBar = save.loadHealthBar();
+        save.loadMap(map);
+        /*healthBar = save.loadHealthBar();
         scoreDisplay = save.loadScoreDisplay();
         spaceship = save.loadSpaceship();
-        background = save.loadBackground();
+        background = save.loadBackground();*/
         Log.d("GameView.java", "Finished restoring game state. Took " + (System.currentTimeMillis() - start_time) + "ms");
     }
 
