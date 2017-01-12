@@ -37,6 +37,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public static int screenH;
     private boolean running = false;
     private boolean onTitle = true;
+    private boolean initialized = false;
     private static int score = 0;
     private int difficulty = 0;
     // points a coin is worth
@@ -45,8 +46,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Spaceship.FireMode selectedFireMode = Spaceship.FireMode.BULLET;
     // selected input mode (gyro or button)
     private Spaceship.InputMode inputMode = Spaceship.InputMode.BUTTON;
-    // name of game save to restore (null if none)
-    private String restoreGameState = null;
+    // whether to restore the default save game
+    private boolean restoreGameState;
     private GameViewThread thread;
     // space background (implements parallax scrolling)
     private Background background;
@@ -132,8 +133,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         private void draw(Canvas canvas) {
+            if (!initialized) { // todo: find a better way (put this in onMeasure? But there were issues with pauseDialog
+                initialized = true;
+                // if flag is set, restore game state
+                if (restoreGameState) {
+                    //restoreGameState();
+                    initNewGame();
+                } else { // creates standard objects
+                    initNewGame();
+                }
+            }
             background.draw(canvas);
-            if(!GameActivity.getPaused()) {
+            if (!GameActivity.getPaused()) {
                 update();
             }
             // todo: how to draw bullets and rockets? drawparams in spaceship?
@@ -211,15 +222,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             return true;
         }
 
-        // loads in sprites, sends ID's to the proper classes, and scales them
-        private void initImgCache() { // todo: determine current rocket type equipped
+        // initializes all objects required to start a new game
+        private void initNewGame() {
             // calculate scaling factor using spaceship_sprite height as a baseline
-            Bitmap spaceship = BitmapFactory.decodeResource(c.getResources(), R.drawable.spaceship);
-            float scalingFactor = (screenH / 6.0f) / (float) spaceship.getHeight();
+            Bitmap spaceship_bmp = BitmapFactory.decodeResource(c.getResources(), R.drawable.spaceship);
+            float scalingFactor = (screenH / 6.0f) / (float) spaceship_bmp.getHeight();
             BitmapCache.setScalingFactor(scalingFactor);
-        }
-
-        private void initSpaceship() {
+            // get spaceship image data from cache
             BitmapData ship_data = BitmapCache.getData(BitmapID.SPACESHIP, c);
             // initialize spaceship just off the screen in the middle
             spaceship = new Spaceship(-ship_data.getWidth(), screenH / 2 - ship_data.getHeight() / 2, c);
@@ -227,6 +236,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             spaceship.setRocketType(GameActivity.getEquippedRocketType());
             spaceship.setHP(30);
             spaceship.setDamage(30);
+            background = new Background(screenW, screenH); // todo: re-create background from save
+            map = new Map(c, screenW, screenH);
+            healthBar = new HealthBar(c, screenW, screenH, 30, 30);
+            scoreDisplay = new ScoreDisplay(c, 0);
         }
 
         public void setSurfaceSize(int width, int height) {
@@ -234,17 +247,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 screenW = width;
                 screenH = height;
                 Log.d("GameView", "Screen Dimensions set to " + screenW + "," + screenH);
-                background = new Background(screenW, screenH);
-                initImgCache();
-                initSpaceship();
-                map = new Map(c, screenW, screenH);
-                healthBar = new HealthBar(c, screenW, screenH, 30, 30);
-                scoreDisplay = new ScoreDisplay(c, 0);
-                // restore game state if flag is set
-                if (restoreGameState != null) {
-                    //restoreGameState(restoreGameState);
-                    restoreGameState = null;
-                }
             }
         }
 
@@ -280,47 +282,33 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         thread.setRunning(false);
     }
 
+    public void restartGame() {
+
+    }
+
     public void saveGameState() {
-        /*GameSave save = new GameSave(c);
-        save.saveAliens(aliens);
+        GameSave save = new GameSave(c);
+        save.saveMap(map);
+        save.saveBackground(background);
+        save.saveHealthBar(healthBar);
+        save.saveScoreDisplay(scoreDisplay);
         save.saveSpaceship(spaceship);
-        save.saveAlienBullets(alienProjectiles);
-        save.saveCoins(coins);
-        save.saveObstacles(obstacles);
-        Log.d("GameView.java", "Saved a total of " + (aliens.size() + obstacles.size() +
-                coins.size() + ssProjectiles.size() + alienProjectiles.size()) + " sprites");*/
     }
 
-    public void flagRestoreGameState(String saveName) {
-        //this.restoreGameState = saveName;
+    public void flagRestoreGameState() {
+        this.restoreGameState = true;
     }
 
-    private void restoreGameState(String saveName) {
-        /*Log.d("GameView.java", "Restoring game state " + System.currentTimeMillis());
-        GameSave load = new GameSave(c, saveName);
-        aliens = load.loadAliens(); // todo: nullpointers
-        Log.d("GameView", Arrays.toString(aliens.toArray()));
-        obstacles = load.loadObstacles();
-        Log.d("GameView", Arrays.toString(obstacles.toArray()));
-        coins = load.loadCoins();
-        Log.d("GameView", Arrays.toString(coins.toArray()));
-        ssProjectiles = load.loadBullets();
-        Log.d("GameView", Arrays.toString(ssProjectiles.toArray()));
-        alienProjectiles = load.loadAlienBullets();
-        Log.d("GameView", Arrays.toString(alienProjectiles.toArray()));
-        spaceship = load.loadSpaceship();
-        Log.d("GameView", spaceship.toString());
-        if (obstacles == null) {
-            Log.d("GameView", "Obstacles are null");
-        }
-        Log.d("GameView.java", "Finished restoring game state " + System.currentTimeMillis());
-        Log.d("GameView.java", "Restored a total of " + (aliens.size() + obstacles.size() +
-                coins.size() + ssProjectiles.size() + alienProjectiles.size()) + " sprites");*/
-    }
-
-    public void clearGameState() {
-        GameSave clear = new GameSave(c);
-        clear.delete();
+    private void restoreGameState() {
+        GameSave save = new GameSave(c);
+        long start_time = System.currentTimeMillis();
+        Log.d("GameView.java", "Restoring Game State");
+        map = save.loadMap();
+        healthBar = save.loadHealthBar();
+        scoreDisplay = save.loadScoreDisplay();
+        spaceship = save.loadSpaceship();
+        background = save.loadBackground();
+        Log.d("GameView.java", "Finished restoring game state. Took " + (System.currentTimeMillis() - start_time) + "ms");
     }
 
     // sets spaceship's firing mode
