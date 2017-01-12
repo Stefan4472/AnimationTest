@@ -52,7 +52,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     private static SoundPool soundPool;
     private static Hashtable<SoundID, Integer> soundIDs;
     private static boolean paused = false;
-    private static boolean muted = false;
+    private static boolean muted;
     private static BulletType equippedBulletType;
     private static RocketType equippedRocketType;
 
@@ -65,6 +65,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     private static final String MUSIC_VOLUME_KEY = "musicVolume";
     private static final String MUTED_KEY = "MUTED"; // todo
     private static final String FIRE_MODE_KEY = "SELECTED_FIRE_MODE";
+    private static final String RESTORE_STATE_KEY = "RESTORE_GAME_STATE";
 
     // sensor manager for gyroscope
     private SensorManager sensorManager;
@@ -84,12 +85,13 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
 
         // get handle to SharedPreferences
         preferences = getPreferences(Context.MODE_PRIVATE);
+        muted = preferences.getBoolean(MUTED_KEY, false);
 
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pause);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
-        muteButton.setBackgroundResource(R.drawable.sound_on);
-        toggleBulletButton = (ImageButton) findViewById(R.id.toggleBulletButton); // todo: establish whether rockets have been unlocked, establish firemode
+        muteButton.setBackgroundResource(muted ? R.drawable.sound_off : R.drawable.sound_on);
+        toggleBulletButton = (ImageButton) findViewById(R.id.toggleBulletButton); // todo: establish whether rockets have been unlocked and which fire mode to start with
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
@@ -150,8 +152,8 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         // get sensor manager
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-        // retrieve game state if one is found in memory
-        if (GameSave.exists(this, GameSave.DEFAULT_SAVE_NAME)) {
+        // retrieve game state if instructions in preferences say so
+        if (preferences.getBoolean(RESTORE_STATE_KEY, false)) {
             Log.d("GameActivity", "Found a saved game to restore");
             gameView.flagRestoreGameState(GameSave.DEFAULT_SAVE_NAME);
         }
@@ -198,12 +200,11 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     }
 
     public void onMutePressed(View view) {
+        muted = !muted;
         if(muted) {
-            muteButton.setBackgroundResource(R.drawable.sound_on);
-            muted = false;
-        } else {
             muteButton.setBackgroundResource(R.drawable.sound_off);
-            muted = true;
+        } else {
+            muteButton.setBackgroundResource(R.drawable.sound_on);
         }
         AudioManager a_manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         a_manager.setStreamMute(AudioManager.STREAM_MUSIC, muted);
@@ -246,12 +247,17 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         finish();
     }
 
-    @Override
+    @Override // we do not restore game state here--only in onCreate
     public void onResume() {
         super.onResume();
         Log.d("GameActivity", "onResume called");
         initMedia();
         Log.d("Activity Class", "Media Initialized");
+        if (paused) {
+            // display pause dialog
+            DialogFragment d = PauseDialogFragment.newInstance(gameVolume, musicVolume);
+            d.show(getFragmentManager(), "Pause");
+        }
         /*if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) { // todo: only register if inputMode = Gyro
             sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
                     SensorManager.SENSOR_DELAY_NORMAL); // todo: test sample rates. Manually restrict rate? // todo: works with Level 9 API +
@@ -268,30 +274,29 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         // pause if game is still playing
         if (!paused) {
             Log.d("GameActivity", "Pausing the game");
-            onPausePressed(gameView);
+            paused = true;
             Log.d("GameActivity", "Finished pausing the game");
         }
+        if (!quit) { // save game state if user did not quit on purpose
+            Log.d("GameActivity.java", "Saving game state " + System.currentTimeMillis());
+            gameView.saveGameState();
+            Log.d("GameActivity", "Finished Save " + System.currentTimeMillis());
+        } 
         SharedPreferences.Editor editor = preferences.edit();
         editor.putFloat(GAME_VOLUME_KEY, gameVolume);
         editor.putFloat(MUSIC_VOLUME_KEY, musicVolume);
+        editor.putBoolean(MUTED_KEY, muted);
+        // flag game restore if user did not explicitly press quit
+        editor.putBoolean(RESTORE_STATE_KEY, !quit);
         editor.commit();
         soundPool.release();
         soundPool = null;
-        //BitmapCache.destroyBitmaps();
-        //sensorManager.unregisterListener(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         Log.d("GameActivity", "onStop called");
-        if (!quit) { // save game state only if user did not quit on purpose // todo: this in onStop??
-            Log.d("GameActivity.java", "Saving game state " + System.currentTimeMillis());
-            gameView.saveGameState();
-            Log.d("GameActivity", "Finished Save " + System.currentTimeMillis());
-        } else { // ensure there is no saved game
-            gameView.clearGameState();
-        }
     }
 
     @Override
