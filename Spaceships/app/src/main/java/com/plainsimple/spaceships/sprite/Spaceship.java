@@ -211,7 +211,7 @@ public class Spaceship extends Sprite {
             drawParams.add(new DrawSubImage(move.getBitmapID(), x, y, move.getCurrentFrameSrc()));
         }
         if (fireRocket.isPlaying()) {
-            drawParams.add(new DrawSubImage(fireRocket.getBitmapID(), x, y, fireRocket.getCurrentFrameSrc()));
+            drawParams.add(new DrawSubImage(fireRocket.getBitmapID(), x + getWidth() / 2.0f, y, fireRocket.getCurrentFrameSrc()));
         }
         if (explode.isPlaying()) {
             drawParams.add(new DrawSubImage(explode.getBitmapID(), x, y, explode.getCurrentFrameSrc()));

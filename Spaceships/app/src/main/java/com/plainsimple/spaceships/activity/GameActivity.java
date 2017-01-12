@@ -194,8 +194,8 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             paused = true;
             soundPool.autoPause();
             // display pause dialog
-            DialogFragment d = PauseDialogFragment.newInstance(gameVolume, musicVolume);
-            d.show(getFragmentManager(), "Pause");
+            //DialogFragment d = PauseDialogFragment.newInstance(gameVolume, musicVolume);
+            //d.show(getFragmentManager(), "Pause");
         }
     }
 
