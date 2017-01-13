@@ -69,7 +69,6 @@ public class Rocket extends Sprite {
             move.incrementFrame();
         } else if (explode.isPlaying()) {
             explode.incrementFrame();
-
         }
     }
 

@@ -31,7 +31,7 @@ public class Map {
     // keeps track of tile spaceship was on last time tiles was updated
     private long lastTile = 0;
     // coordinates of upper-left of "window" being shown
-    private long x = 0;
+    private float x = 0;
 
     private int difficulty;
     private int screenW;
@@ -106,7 +106,7 @@ public class Map {
 
     // current horizontal tile
     private long getWTile() {
-        return x / tileWidth;
+        return (int) x / tileWidth;
     }
 
     // number of pixels from start of current tile
@@ -184,11 +184,11 @@ public class Map {
         this.lastTile = lastTile;
     }
 
-    public long getX() {
+    public float getX() {
         return x;
     }
 
-    public void setX(long x) {
+    public void setX(float x) {
         this.x = x;
     }
 
