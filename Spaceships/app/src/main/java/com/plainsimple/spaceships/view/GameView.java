@@ -37,7 +37,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public static int screenH;
     private boolean running = false;
     private boolean onTitle = true;
-    private boolean initialized = false;
+    // wehther game components have been initialized
+    private boolean initialized;
+    // whether to restore the default save game
+    private boolean restoreGameState;
+    // whether game has started (spaceship has reached starting position)
+    private boolean gameStarted;
     private static int score = 0;
     private int difficulty = 0;
     // points a coin is worth
@@ -46,8 +51,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Spaceship.FireMode selectedFireMode = Spaceship.FireMode.BULLET;
     // selected input mode (gyro or button)
     private Spaceship.InputMode inputMode = Spaceship.InputMode.BUTTON;
-    // whether to restore the default save game
-    private boolean restoreGameState;
     private GameViewThread thread;
     // space background (implements parallax scrolling)
     private Background background;
@@ -160,10 +163,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         // updates all game logic
         // adds any new sprites and generates a new set of sprites if needed
         public void update() {
-            difficulty++;
-            score += 1 + difficulty / SCORING_CONST;
-            updateScrollSpeed();
-            background.scroll(-scrollSpeed * screenW * SCROLL_SPEED_CONST);
+            if (gameStarted) {
+                difficulty++;
+                score += 1 + difficulty / SCORING_CONST;
+                updateScrollSpeed();
+                background.scroll(-scrollSpeed * screenW * SCROLL_SPEED_CONST);
+            }
             updateSpaceship();
             map.update(difficulty, scrollSpeed, spaceship);
             spaceship.updateAnimations();
@@ -174,6 +179,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         private void updateSpaceship() {
             // move spaceship to initial position
             if (spaceship.getX() > screenW / 4) {
+                gameStarted = true;
                 spaceship.setX(screenW / 4);
                 spaceship.setSpeedX(0);
                 spaceship.setControllable(true);
