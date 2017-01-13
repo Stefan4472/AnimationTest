@@ -52,6 +52,8 @@ public class AnimCache {
                 return context.getString(R.string.COIN_SPIN);
             case ROCKET_MOVE:
                 return context.getString(R.string.ROCKET_MOVE);
+            case PROJECTILE_EXPLODE:
+                return context.getString(R.string.PROJECTILE_EXPLODE);
             default:
                 throw new IllegalArgumentException("No animation corresponds to given key");
         }

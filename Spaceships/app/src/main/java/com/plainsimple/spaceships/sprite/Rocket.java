@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.Log;
 
+import com.plainsimple.spaceships.activity.PauseDialogFragment;
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
@@ -24,10 +25,13 @@ import java.util.List;
 public class Rocket extends Sprite {
 
     private SpriteAnimation move;
+    private SpriteAnimation explode;
 
     public Rocket(Context context, float x, float y, RocketType rocketType) {
         super(BitmapCache.getData(BitmapID.ROCKET, context), x, y);
         move = AnimCache.get(BitmapID.ROCKET_MOVE, context);
+        move.start();
+        explode = AnimCache.get(BitmapID.PROJECTILE_EXPLODE, context);
         speedX = rocketType.getSpeedX();
         damage = rocketType.getDamage();
         hitBox = new Hitbox(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
@@ -35,7 +39,13 @@ public class Rocket extends Sprite {
 
     @Override
     public void updateActions() {
-        if (!isInBounds()) {
+        if (explode.isPlaying()) {
+            Log.d("Rocket.java", "Explode Playing");
+        }
+        if (explode.hasPlayed()) {
+            Log.d("Rocket.java", "Explode has played");
+        }
+        if (!isInBounds() || explode.hasPlayed()) { // todo: potential bug in SpriteAnimation hasPlayed()
             terminate = true;
             Log.d("Termination", "Removing Rocket at x = " + x);
         }
@@ -48,23 +58,33 @@ public class Rocket extends Sprite {
 
     @Override
     public void handleCollision(Sprite s) {
-        if (s instanceof Alien) {
-            //GameActivity.incrementScore(damage);
+        if (!(s instanceof Spaceship)) {
+            move.stop();
+            explode.start();
+            speedX = s.speedX;
         }
-        terminate = true;
     }
 
     @Override
     public void updateAnimations() {
-        move.incrementFrame();
+        if (move.isPlaying()) {
+            move.incrementFrame();
+        } else if (explode.isPlaying()) {
+            explode.incrementFrame();
+        }
     }
 
     @Override
     public List<DrawParams> getDrawParams() {
         drawParams.clear();
-        drawParams.add(new DrawImage(bitmapData.getId(), x, y));
-        // draw moving animation behind the rocket
-        drawParams.add(new DrawSubImage(move.getBitmapID(), x - move.getFrameW(), y, move.getCurrentFrameSrc()));
+        if (explode.isPlaying()) {
+            drawParams.add(new DrawSubImage(explode.getBitmapID(), x + (explode.getFrameW() - getWidth()) / 2, y - (explode.getFrameH() - getHeight()) / 2,
+                    explode.getCurrentFrameSrc())); // todo: refine
+        } else if (!explode.hasPlayed()){
+            drawParams.add(new DrawImage(bitmapData.getId(), x, y));
+            // draw moving animation behind the rocket
+            drawParams.add(new DrawSubImage(move.getBitmapID(), x - move.getFrameW(), y, move.getCurrentFrameSrc()));
+        }
         return drawParams;
     }
 }

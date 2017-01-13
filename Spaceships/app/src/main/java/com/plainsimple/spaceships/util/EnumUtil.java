@@ -28,6 +28,8 @@ public class EnumUtil {
                 return R.drawable.rocket;
             case ROCKET_MOVE:
                 return R.drawable.rocket_move;
+            case PROJECTILE_EXPLODE:
+                return R.drawable.projectile_explode;
             case ALIEN:
                 return R.drawable.alien;
             case ALIEN_BULLET:

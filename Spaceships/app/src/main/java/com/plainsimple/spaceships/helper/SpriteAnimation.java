@@ -82,7 +82,7 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
         }
 
         // reached end of loop
-        if(!loop && frameCounter == numFrames - 1) {
+        if(!loop && frameCounter == numFrames) {
             hasPlayed = true;
             isPlaying = false;
         } else if(loop && frameCounter == numFrames) {
