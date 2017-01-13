@@ -76,7 +76,7 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
     public void incrementFrame() {
         if (frameSpeedCounter == frameSpeeds[frameCounter]) {
             frameCounter++;
-            frameSpeedCounter = 0;
+            frameSpeedCounter = 1;
         } else {
             frameSpeedCounter++;
         }
@@ -107,5 +107,10 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
 
     public int getFrameH() {
         return frameH;
+    }
+
+    public String getDebug() {
+        return ("Frame " + frameCounter + " of " + numFrames + " with current speed at " + frameSpeedCounter + " of " + frameSpeeds[frameCounter] +
+                " " + (isPlaying ? "(playing)" : "(stopped)") + (loop ? " (looping)" : ""));
     }
 }

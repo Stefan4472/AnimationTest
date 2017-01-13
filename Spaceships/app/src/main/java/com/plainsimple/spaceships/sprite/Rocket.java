@@ -39,9 +39,6 @@ public class Rocket extends Sprite {
 
     @Override
     public void updateActions() {
-        if (explode.isPlaying()) {
-            Log.d("Rocket.java", "Explode Playing");
-        }
         if (explode.hasPlayed()) {
             Log.d("Rocket.java", "Explode has played");
         }
@@ -62,6 +59,7 @@ public class Rocket extends Sprite {
             move.stop();
             explode.start();
             speedX = s.speedX;
+            collides = false;
         }
     }
 
@@ -71,6 +69,7 @@ public class Rocket extends Sprite {
             move.incrementFrame();
         } else if (explode.isPlaying()) {
             explode.incrementFrame();
+
         }
     }
 

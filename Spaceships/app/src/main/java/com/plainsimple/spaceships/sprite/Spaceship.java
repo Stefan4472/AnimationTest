@@ -116,7 +116,7 @@ public class Spaceship extends Sprite {
     // fires two rockets
     public void fireRockets() {
         projectiles.add(new Rocket(context, x + getWidth() * 0.80f, y + 0.29f * getHeight(), rocketType));
-        projectiles.add(new Rocket(context, x + getWidth() * 0.80f, y + 0.65f * getHeight(), rocketType));
+        //projectiles.add(new Rocket(context, x + getWidth() * 0.80f, y + 0.65f * getHeight(), rocketType));
         GameActivity.playSound(ROCKET_SOUND);
     }
 
