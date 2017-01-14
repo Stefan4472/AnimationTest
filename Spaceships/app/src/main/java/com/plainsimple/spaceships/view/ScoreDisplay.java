@@ -47,4 +47,8 @@ public class ScoreDisplay {
     public void draw(Canvas canvas) { // todo: animations
         canvas.drawText(Integer.toString(score), startX, startY, paint);
     }
+
+    public void reset() {
+        score = 0;
+    }
 }

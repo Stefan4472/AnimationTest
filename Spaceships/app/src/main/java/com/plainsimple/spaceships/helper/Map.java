@@ -152,83 +152,17 @@ public class Map {
         }
     }
 
-    public byte[][] getTiles() {
-        return tiles;
-    }
-
-    public void setTiles(byte[][] tiles) {
-        this.tiles = tiles;
-    }
-
-    public TileGenerator getTileGenerator() {
-        return tileGenerator;
-    }
-
-    public void setTileGenerator(TileGenerator tileGenerator) {
-        this.tileGenerator = tileGenerator;
-    }
-
-    public int getMapTileCounter() {
-        return mapTileCounter;
-    }
-
-    public void setMapTileCounter(int mapTileCounter) {
-        this.mapTileCounter = mapTileCounter;
-    }
-
-    public long getLastTile() {
-        return lastTile;
-    }
-
-    public void setLastTile(long lastTile) {
-        this.lastTile = lastTile;
-    }
-
-    public float getX() {
-        return x;
-    }
-
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public List<Sprite> getObstacles() {
-        return obstacles;
-    }
-
-    public void setObstacles(List<Sprite> obstacles) {
-        this.obstacles = obstacles;
-    }
-
-    public List<Sprite> getObstaclesInvis() {
-        return obstaclesInvis;
-    }
-
-    public void setObstaclesInvis(List<Sprite> obstaclesInvis) {
-        this.obstaclesInvis = obstaclesInvis;
-    }
-
-    public List<Sprite> getCoins() {
-        return coins;
-    }
-
-    public void setCoins(List<Sprite> coins) {
-        this.coins = coins;
-    }
-
-    public List<Sprite> getAliens() {
-        return aliens;
-    }
-
-    public void setAliens(List<Sprite> aliens) {
-        this.aliens = aliens;
-    }
-
-    public List<Sprite> getAlienProjectiles() {
-        return alienProjectiles;
-    }
-
-    public void setAlienProjectiles(List<Sprite> alienProjectiles) {
-        this.alienProjectiles = alienProjectiles;
+    // resets the map
+    public void reset() {
+        obstacles.clear();
+        obstaclesInvis.clear();
+        coins.clear();
+        aliens.clear();
+        alienProjectiles.clear();
+        tiles = new byte[ROWS][screenW / tileWidth];
+        tileGenerator = new TileGenerator(ROWS);
+        mapTileCounter = 0;
+        x = 0;
+        lastTile = 0;
     }
 }

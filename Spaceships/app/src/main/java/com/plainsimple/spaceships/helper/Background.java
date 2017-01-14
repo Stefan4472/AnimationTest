@@ -39,6 +39,11 @@ public class Background {
         this.pixelsScrolled += x;
     }
 
+    // resets Background // todo: refinement?
+    public void reset() {
+        pixelsScrolled = 0;
+    }
+
     public double getPixelsScrolled() {
         return pixelsScrolled;
     }
