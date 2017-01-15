@@ -30,9 +30,11 @@ public class PauseDialogFragment extends DialogFragment { // todo: window featur
 
     // interface used to send events to GameActivity
     // passes the fragment back as well as current settings
-    public interface PauseDialogListener { // todo: re-organize? onGameVolumeChanged, onMusicVolumeChanged, onResumePressed, onQuitPressed, onRestartPressed?
-        void onResumePressed(DialogFragment dialog, float gameVolume, float musicVolume);
-        void onQuitPressed(DialogFragment dialog, float gameVolume, float musicVolume);
+    public interface PauseDialogListener {
+        void onGameVolumeChanged(DialogFragment dialog, float gameVolume);
+        void onMusicVolumeChanged(DialogFragment dialog, float musicVolume);
+        void onResumePressed(DialogFragment dialog);
+        void onQuitPressed(DialogFragment dialog);
         void onRestartPressed(DialogFragment dialog);
     }
 
@@ -72,22 +74,58 @@ public class PauseDialogFragment extends DialogFragment { // todo: window featur
         if (bundle.containsKey(GAMEVOLUME_KEY)) {
             gameVolumeSelector.setProgress((int) (bundle.getFloat(GAMEVOLUME_KEY) * 100));
         }
+        gameVolumeSelector.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    mListener.onGameVolumeChanged(PauseDialogFragment.this, gameVolumeSelector.getProgress() / 100.0f);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                mListener.onGameVolumeChanged(PauseDialogFragment.this, gameVolumeSelector.getProgress() / 100.0f);
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         musicVolumeSelector = (SeekBar) dialog_layout.findViewById(R.id.musicvolume_selector);
         if (bundle.containsKey(MUSICVOLUME_KEY)) {
             musicVolumeSelector.setProgress((int) (bundle.getFloat(MUSICVOLUME_KEY) * 100));
         }
+        musicVolumeSelector.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    mListener.onMusicVolumeChanged(PauseDialogFragment.this, musicVolumeSelector.getProgress() / 100.0f);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                mListener.onMusicVolumeChanged(PauseDialogFragment.this, musicVolumeSelector.getProgress() / 100.0f);
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         FontButton resume_button = (FontButton) dialog_layout.findViewById(R.id.resumebutton);
         resume_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onResumePressed(PauseDialogFragment.this, gameVolumeSelector.getProgress() / 100.0f, musicVolumeSelector.getProgress() / 100.0f);
+                mListener.onResumePressed(PauseDialogFragment.this);
             }
         });
         FontButton quit_button = (FontButton) dialog_layout.findViewById(R.id.quitbutton);
         quit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onQuitPressed(PauseDialogFragment.this, gameVolumeSelector.getProgress() / 100.0f, musicVolumeSelector.getProgress() / 100.0f);
+                mListener.onQuitPressed(PauseDialogFragment.this);
             }
         });
         FontButton restart_button = (FontButton) dialog_layout.findViewById(R.id.restartbutton);

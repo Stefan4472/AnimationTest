@@ -232,24 +232,16 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     }
 
     @Override
-    public void onResumePressed(DialogFragment dialog, float gameVolume, float musicVolume) {
+    public void onResumePressed(DialogFragment dialog) {
         playSound(SoundID.BUTTON_CLICKED);
         Log.d("GameActivity", "Resuming game");
-        GameActivity.gameVolume = gameVolume;
-        Log.d("GameActivity", "New Game Volume set to " + gameVolume);
-        this.musicVolume = musicVolume;
-        Log.d("GameActivity", "New Music Volume set to " + musicVolume);
         dialog.dismiss();
         onPausePressed(gameView);
     }
 
     @Override
-    public void onQuitPressed(DialogFragment dialog, float gameVolume, float musicVolume) {
+    public void onQuitPressed(DialogFragment dialog) {
         playSound(SoundID.BUTTON_CLICKED);
-        GameActivity.gameVolume = gameVolume;
-        Log.d("GameActivity", "New Game Volume set to " + gameVolume);
-        this.musicVolume = musicVolume;
-        Log.d("GameActivity", "New Music Volume set to " + musicVolume);
         quit = true;
         Log.d("GameActivity", "Quitting game");
         finish();
@@ -323,6 +315,18 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         }
     }
 
+    @Override
+    public void onGameVolumeChanged(DialogFragment dialog, float gameVolume) {
+        GameActivity.gameVolume = gameVolume;
+        Log.d("GameActivity.java", "New Game Volume set to " + gameVolume);
+        playSound(SoundID.BUTTON_CLICKED);
+    }
+
+    @Override
+    public void onMusicVolumeChanged(DialogFragment dialog, float musicVolume) {
+        this.musicVolume = musicVolume;
+        Log.d("GameActivity.java", "New Music Volume set to " + musicVolume);
+    }
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
