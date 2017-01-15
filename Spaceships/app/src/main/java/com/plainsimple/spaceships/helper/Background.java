@@ -11,28 +11,17 @@ import com.plainsimple.spaceships.galaxydraw.DrawSpace;
  */
 public class Background {
 
-    // rendered space background tiles
-    private Bitmap[] imageTiles;
     // number of pixels scrolled
-    private double pixelsScrolled;
-    // width of rendered background tiles (px)
-    private static final int TILE_WIDTH = 60;
-    // height of rendered background tiles (px)
-    private int tileHeight;
+    private int pixelsScrolled;
+    // screen width (px)
+    private int screenW;
+    // screen height (px)
+    private int screenH;
     // used to render space background
     private DrawSpace drawSpace;
-    // set of pre-defined colors to transition between
-    private int[] backgroundColors;
-    // number of tiles it takes to transition from one color to the next
-    // for each element of backgroundColors. Must have same number of
-    // elements as backgroundColors
-    private double[] transitionDurations;
-    // keeps track of how many tiles have been drawn during this transition
-    private int transitionCounter;
-    // index of element in backgroundColors being transitioned from
-    private int fromElement;
-    // index of element in backgroundColors being transitioned to
-    private int toElement;
+    // rendered background that scrolls
+    private Bitmap background;
+
 
     // increases scroll counter by x
     public void scroll(double x) {
@@ -44,31 +33,9 @@ public class Background {
         pixelsScrolled = 0;
     }
 
-    public double getPixelsScrolled() {
-        return pixelsScrolled;
-    }
-
-    // index of tile that will be x0-most on the screen
-    private int getStartTile() {
-        return (int) (pixelsScrolled / TILE_WIDTH) % imageTiles.length;
-    }
-
-    // offset of x0-most tile on the screen from origin of canvas
-    private int getOffset() {
-        return -((int) pixelsScrolled % TILE_WIDTH);
-    }
-
     public Background(int screenW, int screenH) {
-        // todo: this renders an image longer than actual screen, could be optimized
-        this.tileHeight = screenH;
-        imageTiles = new Bitmap[screenW / TILE_WIDTH + 2]; // todo: what if screenW is a multiple of TILE_WIDTH?
-        pixelsScrolled = 0;
-        backgroundColors = new int[] { Color.BLACK, Color.WHITE };
-        transitionDurations = new double[] { 10, 10 };
-        fromElement = 0;
-        toElement = 1;
-        transitionCounter = 0;
-
+        this.screenW = screenW;
+        this.screenH = screenH;
         drawSpace = new DrawSpace();
         drawSpace.setAntiAlias(true);
         drawSpace.setVariance(0.2);
@@ -76,68 +43,18 @@ public class Background {
         drawSpace.setStarSize(2);
         drawSpace.setUseGradient(false);
         drawSpace.setBackgroundColor(Color.BLACK);
-        for (int i = 0; i < imageTiles.length; i++) {
-            imageTiles[i] = Bitmap.createBitmap(TILE_WIDTH, tileHeight, Bitmap.Config.ARGB_8888);
-            drawNextTile(imageTiles[i]);
-        }
+        background = Bitmap.createBitmap(screenW, screenH, Bitmap.Config.ARGB_8888);
+        drawSpace.drawSpace(background);
     }
 
-    // draws imageTiles[] onto specified canvas in correct locations
-    // used for directly drawing to a given canvas
+    // draws background onto canvas
     public void draw(Canvas canvas) {
-        int start_tile = getStartTile();
-        int end_tile = (start_tile == 0 ? imageTiles.length - 1 : start_tile - 1);
-        // getDrawParams space on the end tile every time a full tile has rotated through the screen
-        if (getOffset() == 0) {
-            drawNextTile(imageTiles[end_tile]);
-        }
-        for (int i = 0; i < imageTiles.length; i++) {
-            canvas.drawBitmap(imageTiles[(start_tile + i) % imageTiles.length], getOffset() + i * TILE_WIDTH, 0, null);
-        }
-    }
-
-    // draws space on next tile, incrementing values
-    private void drawNextTile(Bitmap tile) {
-        // transition has finished. Adjust fromElement and toElement and reset transitionCounter
-        if (transitionCounter == transitionDurations[toElement]) {
-            fromElement = toElement;
-            //toElement = (toElement == backgroundColors.length - 1 ? 0 : toElement++);
-            if (toElement == backgroundColors.length - 1) {
-                toElement = 0;
-            } else {
-                toElement++;
-            }
-            transitionCounter = 0;
-        }
-        // color transitioning to
-        int to_color = backgroundColors[toElement];
-        // color transitioning from
-        int from_color = backgroundColors[fromElement];
-        // calculate argb of color that should be on the x0 of the gradient based on the difference between the
-        // colors being transitioned, transitionDuration, and transitionCounter
-        int left_color = Color.argb(
-                Color.alpha(from_color) + (int) ((Color.alpha(to_color) - Color.alpha(from_color)) / transitionDurations[toElement] * transitionCounter),
-                Color.red(from_color) + (int) ((Color.red(to_color) - Color.red(from_color)) / transitionDurations[toElement] * transitionCounter),
-                Color.green(from_color) + (int) ((Color.green(to_color) - Color.green(from_color)) / transitionDurations[toElement] * transitionCounter),
-                Color.blue(from_color) + (int) ((Color.blue(to_color) - Color.blue(from_color)) / transitionDurations[toElement] * transitionCounter)
-        );
-        // calculate argb of color that should be on the x1 of the gradient
-        int right_color = Color.argb(
-                Color.alpha(from_color) + (int) ((Color.alpha(to_color) - Color.alpha(from_color)) / transitionDurations[toElement] * (transitionCounter + 1)),
-                Color.red(from_color) + (int) ((Color.red(to_color) - Color.red(from_color)) / transitionDurations[toElement] * (transitionCounter + 1)),
-                Color.green(from_color) + (int) ((Color.green(to_color) - Color.green(from_color)) / transitionDurations[toElement] * (transitionCounter + 1)),
-                Color.blue(from_color) + (int) ((Color.blue(to_color) - Color.blue(from_color)) / transitionDurations[toElement] * (transitionCounter + 1))
-        );
-        //drawSpace.setBackgroundGradient(new LinearGradient(0, 0, TILE_WIDTH, 0, left_color, right_color, Shader.TileMode.CLAMP));
-        drawSpace.drawSpace(tile);
-        // todo: instead of using a gradient, use a solid color that is changed very very gradually each time more space is generated. This will eliminate the banding
-        /*Paint p = new Paint();
-        p.setColor(Color.RED);
-        c.drawText("" + transitionCounter, 0, 100, p);*/
-        transitionCounter++;
-    }
-
-    private static String colorToString(int color) {
-        return "A:" + Color.alpha(color) + " R:" + Color.red(color) + " G:" + Color.green(color) + " B:" + Color.blue(color);
+        int offset = pixelsScrolled % screenW;
+        Rect src = new Rect(offset, 0, screenW, screenH);
+        Rect dst = new Rect(0, 0, src.width(), screenH);
+        canvas.drawBitmap(background, src, dst, null);
+        src = new Rect(0, 0, offset, screenH);
+        dst = new Rect(screenW - offset, 0, screenW, screenH);
+        canvas.drawBitmap(background, src, dst, null);
     }
 }
