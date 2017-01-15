@@ -164,5 +164,6 @@ public class Map {
         mapTileCounter = 0;
         x = 0;
         lastTile = 0;
+        difficulty = 0;
     }
 }

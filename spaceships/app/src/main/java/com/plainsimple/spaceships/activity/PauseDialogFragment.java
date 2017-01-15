@@ -30,9 +30,10 @@ public class PauseDialogFragment extends DialogFragment { // todo: window featur
 
     // interface used to send events to GameActivity
     // passes the fragment back as well as current settings
-    public interface PauseDialogListener {
+    public interface PauseDialogListener { // todo: re-organize? onGameVolumeChanged, onMusicVolumeChanged, onResumePressed, onQuitPressed, onRestartPressed?
         void onResumePressed(DialogFragment dialog, float gameVolume, float musicVolume);
         void onQuitPressed(DialogFragment dialog, float gameVolume, float musicVolume);
+        void onRestartPressed(DialogFragment dialog);
     }
 
     // used to notify GameActivity
@@ -87,6 +88,13 @@ public class PauseDialogFragment extends DialogFragment { // todo: window featur
             @Override
             public void onClick(View v) {
                 mListener.onQuitPressed(PauseDialogFragment.this, gameVolumeSelector.getProgress() / 100.0f, musicVolumeSelector.getProgress() / 100.0f);
+            }
+        });
+        FontButton restart_button = (FontButton) dialog_layout.findViewById(R.id.restartbutton);
+        restart_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onRestartPressed(PauseDialogFragment.this);
             }
         });
         builder.setView(dialog_layout);

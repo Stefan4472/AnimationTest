@@ -59,7 +59,7 @@ public class GameSave {
 
     // loads saved data into the given Map object
     public void loadMap(Map restore) {
-        Map saved = (Map) FileUtil.readObject(new File(directory, MAP));
+        /*Map saved = (Map) FileUtil.readObject(new File(directory, MAP));
         restore.setTiles(saved.getTiles());
         restore.setTileGenerator(saved.getTileGenerator());
         restore.setMapTileCounter(saved.getMapTileCounter());
@@ -69,7 +69,7 @@ public class GameSave {
         restore.setObstaclesInvis(saved.getObstaclesInvis());
         restore.setCoins(saved.getCoins());
         restore.setAliens(saved.getAliens());
-        restore.setAlienProjectiles(saved.getAlienProjectiles());
+        restore.setAlienProjectiles(saved.getAlienProjectiles());*/
     }
 
     public boolean saveSpaceship(Spaceship spaceship) {

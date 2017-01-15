@@ -8,7 +8,9 @@
     <string name="equipped_rocket">EQUIPPED_ROCKET</string>
     <string name="paused">Paused</string>
     <string name="resume">Resume</string>
+    <string name="tap_to_resume">Tap to Resume</string>
     <string name="quit">Quit</string>
+    <string name="restart">Restart</string>
     <string name="game_volume">Game Volume</string>
     <string name="music_volume">Music Volume</string>
     <string name="default_equipped_states">

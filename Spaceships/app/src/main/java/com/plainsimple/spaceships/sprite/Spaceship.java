@@ -82,12 +82,7 @@ public class Spaceship extends Sprite {
     public Spaceship(float x, float y, Context context) {
         super(BitmapCache.getData(BitmapID.SPACESHIP, context), x, y);
 
-        collides = true;
-        controllable = false;
-        speedX = 0.003f;
-
         move = AnimCache.get(BitmapID.SPACESHIP_MOVE, context);
-        move.start();
         fireRocket = AnimCache.get(BitmapID.SPACESHIP_FIRE, context);
         explode = AnimCache.get(BitmapID.SPACESHIP_EXPLODE, context);
         bulletBitmapData = BitmapCache.getData(BitmapID.LASER_BULLET, context);
@@ -95,9 +90,26 @@ public class Spaceship extends Sprite {
 
         hitBox = new Hitbox(x + getWidth() * 0.17f, y + getHeight() * 0.22f, x + getWidth() * 0.83f, y + getHeight() * 0.78f);
 
+        setInitValues();
+
         this.context = context;
     }
 
+    // sets spaceship fields to initial values
+    // used when spaceship is first constructed and when it is reset
+    public void setInitValues() {
+        collides = true;
+        controllable = false;
+        speedX = 0.003f;
+        speedY = 0;
+        move.reset();
+        fireRocket.reset();
+        explode.reset();
+        move.start();
+        projectiles.clear();
+        lastFiredBullet = bulletType.getDelay();
+        lastFiredRocket = rocketType.getDelay();
+    }
 
     @Override
     public void updateActions() {

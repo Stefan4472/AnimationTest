@@ -32,6 +32,7 @@ import com.plainsimple.spaceships.view.FontTextView;
 import com.plainsimple.spaceships.view.GameView;
 
 import java.util.Hashtable;
+import java.util.concurrent.RunnableFuture;
 
 import plainsimple.spaceships.R;
 
@@ -101,7 +102,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                   downArrow.setVisibility(View.INVISIBLE);
+                   downArrow.setVisibility(View.INVISIBLE); // todo: why did this stop working?
                    gameView.updateInput(Spaceship.DIRECTION_UP);
                } else if (event.getAction() == MotionEvent.ACTION_UP) {
                    gameView.updateInput(Spaceship.DIRECTION_NONE);
@@ -139,7 +140,13 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             }
             @Override // pop-up end game dialog when game is over
             public void onGameFinished() {
-
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        upArrow.setVisibility(View.INVISIBLE);
+                        downArrow.setVisibility(View.INVISIBLE);
+                    }
+                });
             }
         });
         // set volume control to proper stream
@@ -194,8 +201,8 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             paused = true;
             soundPool.autoPause();
             // display pause dialog
-            //DialogFragment d = PauseDialogFragment.newInstance(gameVolume, musicVolume);
-            //d.show(getFragmentManager(), "Pause");
+            DialogFragment d = PauseDialogFragment.newInstance(gameVolume, musicVolume);
+            d.show(getFragmentManager(), "Pause");
         }
     }
 
@@ -246,6 +253,14 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         quit = true;
         Log.d("GameActivity", "Quitting game");
         finish();
+    }
+
+    @Override
+    public void onRestartPressed(DialogFragment dialog) {
+        playSound(SoundID.BUTTON_CLICKED);
+        dialog.dismiss();
+        gameView.restartGame();
+        onPausePressed(gameView);
     }
 
     @Override // we do not restore game state here--only in onCreate

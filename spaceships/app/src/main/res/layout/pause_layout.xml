@@ -67,21 +67,32 @@
             </SeekBar>
         </LinearLayout>
     </LinearLayout>
-    <!-- container for resume and quit buttons -->
+    <!-- restart button -->
+    <!-- Resume Button -->
+    <com.plainsimple.spaceships.view.FontButton
+        style="@style/GalaxyMonkey"
+        android:id="@+id/resumebutton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="30dp"
+        android:textColor="@color/orange"
+        android:text="@string/tap_to_resume"/>
+    <!-- container for restart and quit buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <!-- Resume Button -->
+        <!-- Restart Button -->
         <com.plainsimple.spaceships.view.FontButton
             style="@style/GalaxyMonkey"
-            android:id="@+id/resumebutton"
+            android:id="@+id/restartbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginTop="10dp"
             android:textSize="30dp"
             android:textColor="@color/orange"
-            android:text="@string/resume"/>
+            android:text="@string/restart"/>
         <!-- Quit Button -->
         <com.plainsimple.spaceships.view.FontButton
             style="@style/GalaxyMonkey"
