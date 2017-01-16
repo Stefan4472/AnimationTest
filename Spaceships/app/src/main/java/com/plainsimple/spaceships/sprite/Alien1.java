@@ -1,6 +1,8 @@
 package com.plainsimple.spaceships.sprite;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 
@@ -10,6 +12,7 @@ import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.helper.DrawRect;
 import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.Point2D;
@@ -33,6 +36,7 @@ public class Alien1 extends Alien {
 
     private BitmapData bulletBitmapData;
     private SpriteAnimation explodeAnimation;
+    private HealthBarAnimation healthBarAnimation;
 
     public Alien1(float x, float y, float scrollSpeed, Spaceship spaceship, int difficulty, Context context) {
         super(BitmapCache.getData(BitmapID.ALIEN, context), x, y);
@@ -59,6 +63,7 @@ public class Alien1 extends Alien {
         bulletSpeed = -0.002f - random.nextInt(5) / 10000.0f;
         hitBox = new Hitbox(x + getWidth() * 0.2f, y + getHeight() * 0.2f, x + getWidth() * 0.8f, y + getHeight() * 0.8f);
         damage = 50;
+        healthBarAnimation = new HealthBarAnimation(x, y, getWidth(), getHeight(), hp);
         //speedX = -0.0035f;
     }
 
@@ -105,12 +110,16 @@ public class Alien1 extends Alien {
         if (explodeAnimation.isPlaying()) {
             explodeAnimation.incrementFrame();
         }
+        if (healthBarAnimation.isShowing()) {
+            healthBarAnimation.update(speedX, speedY);
+        }
     }
 
     @Override
     public void handleCollision(Sprite s) {
         if (s instanceof Bullet || s instanceof Rocket || s instanceof Spaceship) {
             hp -= s.damage;
+            healthBarAnimation.show();
             if (hp < 0 && !explodeAnimation.isPlaying()) {
                 explodeAnimation.start();
             }
@@ -128,6 +137,9 @@ public class Alien1 extends Alien {
         if(explodeAnimation.isPlaying()) {
             Rect source = explodeAnimation.getCurrentFrameSrc();
             drawParams.add(new DrawSubImage(explodeAnimation.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
+        }
+        if (healthBarAnimation.isShowing()) {
+            healthBarAnimation.addDrawParams(drawParams);
         }
         return drawParams;
     }
@@ -156,6 +168,7 @@ public class Alien1 extends Alien {
         private float healthBarX;
         // y-coordinate where healthbar starts drawing
         private float healthBarY;
+        private int alienHP;
         private float healthBarWidth;
         private float healthBarHeight;
         private static final float WIDTH_RATIO = 0.9f;
@@ -164,32 +177,68 @@ public class Alien1 extends Alien {
         private static final int FRAMES_FADE = 6;
         private static final int FRAMES_STAY = 15;
         private static final int TOTAL_FRAMES = FRAMES_STAY + 2 * FRAMES_FADE;
+        private static final int OUTLINE_COLOR = Color.GRAY;
 
-        protected HealthBarAnimation(float x, float y, float alienWidth, float alienHeight) {
+        protected HealthBarAnimation(float x, float y, float alienWidth, float alienHeight, int alienHP) {
             healthBarWidth = alienWidth * WIDTH_RATIO;
             healthBarHeight = alienHeight * HEIGHT_RATIO;
             healthBarX = x + alienWidth * (1 - WIDTH_RATIO) / 2;
             healthBarY = y - alienHeight * (HEIGHT_RATIO + ELEVATION_RATIO);
+            this.alienHP = alienHP;
         }
 
         // starts the animation if it hasn't been played and renews it if it is playing
-        protected void play() {
-
+        protected void show() {
+            isShowing = true;
+            if (frameCounter >= 0 && frameCounter < FRAMES_FADE) {
+                // do nothing--keep fading in
+            } else if (frameCounter >= FRAMES_FADE && frameCounter <= FRAMES_FADE + FRAMES_STAY) {
+                // healthbar currently fully faded-in: reset counter to FRAMES_STAY
+                frameCounter = FRAMES_FADE;
+            } else if (frameCounter < TOTAL_FRAMES){ // animation was fading out: fade back in by inverting frame count
+                frameCounter = Math.abs(TOTAL_FRAMES - frameCounter);
+            }
         }
 
         protected void update(float speedX, float speedY) {
             healthBarX += speedX;
             healthBarY += speedY;
+            if (frameCounter == TOTAL_FRAMES) {
+                frameCounter = 0;
+                isShowing = false;
+            }
             if (isShowing) {
                 frameCounter++;
             }
         }
 
+        int outlineR = Color.red(OUTLINE_COLOR);
+        int outlineG = Color.green(OUTLINE_COLOR);
+        int outlineB = Color.blue(OUTLINE_COLOR);
+        float innerPadding = healthBarHeight * 0.2f;
         // adds healthbar draw params to given list
         protected void addDrawParams(List<DrawParams> alienParams) {
-            if (isShowing) {
-                
+            if (isShowing && frameCounter < TOTAL_FRAMES) {
+                int alpha = 255;
+                // fading in: calculate alpha
+                if (frameCounter < FRAMES_STAY) { // todo: double-check
+                    alpha = (int) (frameCounter / (float) FRAMES_STAY * 255);
+                } else if (frameCounter > FRAMES_STAY + FRAMES_FADE) {
+                    alpha = (int) ((TOTAL_FRAMES - frameCounter) * (255.0f / FRAMES_FADE));
+                }
+                int outline_color = Color.argb(alpha, outlineR, outlineG, outlineB);
+                // draw healthbar outline
+                alienParams.add(new DrawRect(healthBarX, healthBarY, healthBarX + healthBarWidth, healthBarY + healthBarHeight,
+                        outline_color, Paint.Style.STROKE, innerPadding));
+                // draw healthbar fill
+                alienParams.add(new DrawRect(healthBarX + innerPadding, healthBarY + innerPadding,
+                        healthBarX + healthBarWidth - innerPadding, healthBarY + healthBarHeight - innerPadding,
+                        Color.GREEN, Paint.Style.FILL, innerPadding));
             }
+        }
+
+        protected boolean isShowing() {
+            return isShowing;
         }
     }
 }

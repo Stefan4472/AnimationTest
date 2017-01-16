@@ -80,7 +80,7 @@ public class ScoreDisplay {
     public void draw(Canvas canvas) {
         paint.setColor(getColor());
         paint.setTextSize(TEXT_SIZE * getMagnification());
-        Log.d("ScoreDisplay.java", "Color set to " + colorToString(paint.getColor()) + " Magnification at " + getMagnification());
+        //Log.d("ScoreDisplay.java", "Color set to " + colorToString(paint.getColor()) + " Magnification at " + getMagnification());
         canvas.drawText(Integer.toString(score), startX, startY + paint.getTextSize(), paint);
     }
 
