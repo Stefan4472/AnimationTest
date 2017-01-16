@@ -92,6 +92,7 @@ public class Map {
         for(Sprite projectile : spaceship.getProjectiles()) {
             GameEngineUtil.checkCollisions(projectile, aliens);
             GameEngineUtil.checkCollisions(projectile, obstacles);
+            //GameEngineUtil.checkCollisions(projectile, alienProjectiles);
         }
         GameEngineUtil.checkCollisions(spaceship, aliens);
         GameEngineUtil.checkCollisions(spaceship, obstacles);

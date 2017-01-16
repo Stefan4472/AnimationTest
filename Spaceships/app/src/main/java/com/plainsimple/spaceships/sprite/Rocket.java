@@ -39,9 +39,6 @@ public class Rocket extends Sprite {
 
     @Override
     public void updateActions() {
-        if (explode.hasPlayed()) {
-            Log.d("Rocket.java", "Explode has played");
-        }
         if (!isInBounds() || explode.hasPlayed()) { // todo: potential bug in SpriteAnimation hasPlayed()
             terminate = true;
             Log.d("Termination", "Removing Rocket at x = " + x);

@@ -43,10 +43,13 @@ public class AlienBullet extends Sprite {
 
     @Override
     public void handleCollision(Sprite s) {
-        if(s instanceof Spaceship) {
+        if (!(s instanceof Alien)) {
             collides = false;
             terminate = true;
         }
+        //if (s instanceof Spaceship) {
+
+        //}
     }
 
     @Override

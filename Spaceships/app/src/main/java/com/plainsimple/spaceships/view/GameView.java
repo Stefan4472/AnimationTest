@@ -203,24 +203,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         // handle user touching screen
         boolean doTouchEvent(MotionEvent motionEvent) {
             synchronized (mySurfaceHolder) {
-                int event_action = motionEvent.getAction();
-                float x = motionEvent.getX();
-                float y = motionEvent.getY();
+                if (gameStarted) {
+                    int event_action = motionEvent.getAction();
+                    float x = motionEvent.getX();
+                    float y = motionEvent.getY();
 
-                switch (event_action) {
-                    case MotionEvent.ACTION_DOWN:
-                        //if (!onTitle) {
+                    switch (event_action) {
+                        case MotionEvent.ACTION_DOWN:
+                            //if (!onTitle) {
                             spaceship.setFireMode(selectedFireMode);
-                        //}
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        break;
-                    case MotionEvent.ACTION_UP: // handle user clicking something
-                        //if (onTitle) { // todo: tap to start?
-                        //} else {
+                            //}
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            break;
+                        case MotionEvent.ACTION_UP: // handle user clicking something
+                            //if (onTitle) { // todo: tap to start?
+                            //} else {
                             spaceship.setFireMode(Spaceship.FireMode.NONE);
-                        //}
-                        break;
+                            //}
+                            break;
+                    }
                 }
             }
             return true;

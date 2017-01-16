@@ -81,10 +81,6 @@ public class Alien1 extends Alien {
                 }
             }
         }
-        /*// set collides to false after explodeAnimation has progressed five frames
-        if (explodeAnimation.getFrameNumber() == 10) {
-            collides = false;
-        }*/
         // disappear if alien has exploded
         if(explodeAnimation.hasPlayed()) {
             collides = false;
@@ -110,9 +106,7 @@ public class Alien1 extends Alien {
         if (explodeAnimation.isPlaying()) {
             explodeAnimation.incrementFrame();
         }
-        if (healthBarAnimation.isShowing()) {
-            healthBarAnimation.update(speedX, speedY);
-        }
+        healthBarAnimation.update(speedX, speedY);
     }
 
     @Override
@@ -133,8 +127,11 @@ public class Alien1 extends Alien {
     @Override
     public List<DrawParams> getDrawParams() {
         drawParams.clear();
-        drawParams.add(new DrawImage(bitmapData.getId(), x, y));
-        if(explodeAnimation.isPlaying()) {
+        // only draw alien if it is not in last frame of explode animation
+        if (explodeAnimation.getFramesLeft() >= 1) { // todo: does this work?
+            drawParams.add(new DrawImage(bitmapData.getId(), x, y));
+        }
+        if (explodeAnimation.isPlaying()) {
             Rect source = explodeAnimation.getCurrentFrameSrc();
             drawParams.add(new DrawSubImage(explodeAnimation.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
         }
