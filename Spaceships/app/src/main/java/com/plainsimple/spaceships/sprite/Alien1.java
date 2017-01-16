@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.Log;
 
-import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
@@ -16,8 +15,6 @@ import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.Point2D;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -145,5 +142,54 @@ public class Alien1 extends Alien {
         float frames_to_impact = (x - target.getX()) / bulletSpeed;
         b.setSpeedY((y - target.getY()) / frames_to_impact);
         projectiles.add(b);
+    }
+
+    // private class used to draw the alien's healthbar
+    // only displays when hp changes: has fade in/out animation
+    private class HealthBarAnimation {
+
+        // whether health bar is currently showing
+        private boolean isShowing;
+        // frame count on animation (0 if not in progress)
+        private int frameCounter;
+        // x-coordinate where healthbar starts
+        private float healthBarX;
+        // y-coordinate where healthbar starts drawing
+        private float healthBarY;
+        private float healthBarWidth;
+        private float healthBarHeight;
+        private static final float WIDTH_RATIO = 0.9f;
+        private static final float HEIGHT_RATIO = 0.2f;
+        private static final float ELEVATION_RATIO = 0.1f;
+        private static final int FRAMES_FADE = 6;
+        private static final int FRAMES_STAY = 15;
+        private static final int TOTAL_FRAMES = FRAMES_STAY + 2 * FRAMES_FADE;
+
+        protected HealthBarAnimation(float x, float y, float alienWidth, float alienHeight) {
+            healthBarWidth = alienWidth * WIDTH_RATIO;
+            healthBarHeight = alienHeight * HEIGHT_RATIO;
+            healthBarX = x + alienWidth * (1 - WIDTH_RATIO) / 2;
+            healthBarY = y - alienHeight * (HEIGHT_RATIO + ELEVATION_RATIO);
+        }
+
+        // starts the animation if it hasn't been played and renews it if it is playing
+        protected void play() {
+
+        }
+
+        protected void update(float speedX, float speedY) {
+            healthBarX += speedX;
+            healthBarY += speedY;
+            if (isShowing) {
+                frameCounter++;
+            }
+        }
+
+        // adds healthbar draw params to given list
+        protected void addDrawParams(List<DrawParams> alienParams) {
+            if (isShowing) {
+                
+            }
+        }
     }
 }
