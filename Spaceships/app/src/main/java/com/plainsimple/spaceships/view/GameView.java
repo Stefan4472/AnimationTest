@@ -173,7 +173,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             map.update(difficulty, scrollSpeed, spaceship);
             spaceship.updateAnimations();
             healthBar.setMovingToHealth(spaceship.getHP());
-            scoreDisplay.update(score); // todo: clumsy
+            scoreDisplay.update(score);
         }
 
         private void updateSpaceship() {

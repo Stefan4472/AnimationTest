@@ -185,7 +185,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     }
 
     // plays a sound using the SoundPool at the correct volume
-    public static void playSound(SoundID soundID) {
+    public static void playSound(SoundID soundID) { // todo: set volume to zero if muted?
         soundPool.play(soundIDs.get(soundID), gameVolume, gameVolume, 1, 0, 1.0f);
     }
 
@@ -212,6 +212,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             muteButton.setBackgroundResource(R.drawable.sound_off);
         } else {
             muteButton.setBackgroundResource(R.drawable.sound_on);
+            playSound(SoundID.BUTTON_CLICKED);
         }
         AudioManager a_manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         a_manager.setStreamMute(AudioManager.STREAM_MUSIC, muted);
