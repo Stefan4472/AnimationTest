@@ -107,8 +107,9 @@ public class Alien1 extends Alien {
     public void handleCollision(Sprite s) {
         if (s instanceof Bullet || s instanceof Rocket || s instanceof Spaceship) {
             hp -= s.damage;
+            hp = hp < 0 ? 0 : hp;
             healthBarAnimation.start();
-            if (hp < 0 && !explodeAnimation.isPlaying()) {
+            if (hp == 0 && !explodeAnimation.isPlaying()) {
                 explodeAnimation.start();
             }
             // on spaceship collision set damage to zero so it only applies damage once
@@ -155,26 +156,31 @@ public class Alien1 extends Alien {
         private boolean isShowing;
         // frame count on animation (0 if not in progress)
         private int frameCounter;
-        // x-coordinate where healthbar starts
+        // x-offset from alien x-coordinate
         private float offsetX;
-        // y-coordinate where healthbar starts drawing
+        // y-offset from alien y-coordinate
         private float offsetY;
         private int maxHP;
         private int currentHP;
+        // calculated healthbar dimensions (px)
         private float healthBarWidth;
         private float healthBarHeight;
+        // width of healthbar outline
         private float innerPadding;
-        private static final float WIDTH_RATIO = 0.9f;
-        private static final float HEIGHT_RATIO = 0.2f;
-        private static final float ELEVATION_RATIO = 0.1f;
+        // define width, height, and elevation of health bar relative to alien demensions
+        private static final float WIDTH_RATIO = 0.8f;
+        private static final float HEIGHT_RATIO = 0.1f;
+        private static final float ELEVATION_RATIO = 0;
+        // number of frames to fade in and stay, respectively
         private static final int FRAMES_FADE = 6;
         private static final int FRAMES_STAY = 15;
         private static final int TOTAL_FRAMES = FRAMES_STAY + 2 * FRAMES_FADE;
+        // color of healthbar outline
         private static final int OUTLINE_COLOR = Color.GRAY;
+        // rgb values of OUTLINE_COLOR broken down
         private final int outlineR = Color.red(OUTLINE_COLOR);
         private final int outlineG = Color.green(OUTLINE_COLOR);
         private final int outlineB = Color.blue(OUTLINE_COLOR);
-
 
         protected HealthBarAnimation(float alienWidth, float alienHeight, int alienMaxHP) {
             healthBarWidth = alienWidth * WIDTH_RATIO;
@@ -219,29 +225,45 @@ public class Alien1 extends Alien {
                 this.currentHP = alienHP;
                 // top-left drawing coordinates of healthbar
                 float x0 = alienX + offsetX;
-                float y0 = alienY + offsetY;
+                float y0 = alienY - offsetY;
                 int alpha = calculateAlpha();
                 int outline_color = Color.argb(alpha, outlineR, outlineG, outlineB);
                 // draw healthbar outline
                 alienParams.add(new DrawRect(x0, y0, x0 + healthBarWidth, y0 + healthBarHeight,
                         outline_color, Paint.Style.STROKE, innerPadding));
                 // draw healthbar fill
-                float width = (healthBarWidth - 2 * innerPadding) * (currentHP / maxHP);
+                float width = (healthBarWidth - 2 * innerPadding) * ((float) currentHP / maxHP);
+                int fill_color = getFillColor(currentHP, maxHP, alpha);
                 alienParams.add(new DrawRect(x0 + innerPadding, y0 + innerPadding,
-                        x0 + healthBarWidth - innerPadding, y0 + healthBarHeight - innerPadding,
-                        Color.GREEN, Paint.Style.FILL, innerPadding)); // todo: determine color (w alpha)
+                        x0 + innerPadding + width, y0 + healthBarHeight - innerPadding,
+                        fill_color, Paint.Style.FILL, innerPadding));
             }
         }
 
+        // calculates alpha of healthbar (for fade-in animation)
         protected int calculateAlpha() {
             // fading in: calculate alpha
-            if (frameCounter < FRAMES_STAY) { // todo: double-check
+            if (frameCounter < FRAMES_STAY) {
                 return (int) (frameCounter / (float) FRAMES_STAY * 255);
             } else if (frameCounter > FRAMES_STAY + FRAMES_FADE) {
                 return (int) ((TOTAL_FRAMES - frameCounter) * (255.0f / FRAMES_FADE));
             } else {
                 return 255;
             }
+        }
+
+        // calculates fill color of healthbar based on hp and pre-calculated alpha
+        protected int getFillColor(int currentHP, int maxHP, int alpha) {
+            float ratio = (float) currentHP / maxHP;
+            int color;
+            if (ratio > 0.7f) {
+                color = Color.GREEN;
+            } else if (ratio > 0.3f) {
+                color = Color.YELLOW;
+            } else {
+                color = Color.RED;
+            }
+            return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color));
         }
 
         protected boolean isShowing() {
