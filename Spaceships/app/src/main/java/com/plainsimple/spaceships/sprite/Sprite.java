@@ -29,9 +29,9 @@ public abstract class Sprite { // todo: figure out public vs. protected
     protected int damage;
 
     // whether or not sprite can collide with other sprites
-    protected boolean collides;
+    protected boolean collides = true;
     // whether or not sprite is currently moving
-    protected boolean moving; // todo: remove?
+    protected boolean moving = true; // todo: remove?
     // whether or not sprite should be removed from game
     protected boolean terminate;
 
@@ -45,25 +45,13 @@ public abstract class Sprite { // todo: figure out public vs. protected
     protected List<DrawParams> drawParams = new LinkedList<>();
 
     // random number generator
-    protected static Random random;
+    protected static final Random random = new Random();
 
     public Sprite(BitmapData bitmapData, float x, float y) {
         this.bitmapData = bitmapData;
         this.x = x;
         this.y = y;
-        initSprite();
-    }
-    // todo: constructor that also takes speedX and speedY as parameters
-    private void initSprite() {
-        moving = true;
-        collides = true;
-        terminate = false;
-        speedX = 0.0f;
-        speedY = 0.0f;
         hitBox = new Hitbox(0, 0, 0, 0);
-        random = new Random();
-        damage = 0;
-        hp = 0;
     }
 
     // update/handle any actions sprite takes

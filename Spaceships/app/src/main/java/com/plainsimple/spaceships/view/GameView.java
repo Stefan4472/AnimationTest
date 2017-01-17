@@ -204,23 +204,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         boolean doTouchEvent(MotionEvent motionEvent) {
             synchronized (mySurfaceHolder) {
                 if (gameStarted) {
-                    int event_action = motionEvent.getAction();
-                    float x = motionEvent.getX();
-                    float y = motionEvent.getY();
-
-                    switch (event_action) {
-                        case MotionEvent.ACTION_DOWN:
-                            //if (!onTitle) {
+                    switch (motionEvent.getAction()) {
+                        case MotionEvent.ACTION_DOWN: // start of touch
                             spaceship.setFireMode(selectedFireMode);
-                            //}
                             break;
                         case MotionEvent.ACTION_MOVE:
                             break;
-                        case MotionEvent.ACTION_UP: // handle user clicking something
-                            //if (onTitle) { // todo: tap to start?
-                            //} else {
+                        case MotionEvent.ACTION_UP: // end of touch
                             spaceship.setFireMode(Spaceship.FireMode.NONE);
-                            //}
                             break;
                     }
                 }
@@ -241,7 +232,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             spaceship.setBulletType(GameActivity.getEquippedBulletType());
             spaceship.setRocketType(GameActivity.getEquippedRocketType());
             spaceship.setHP(30);
-            spaceship.setDamage(30);
             background = new Background(screenW, screenH); // todo: re-create background from save
             map = new Map(c, screenW, screenH);
             healthBar = new HealthBar(c, screenW, screenH, 30, 30);
@@ -295,7 +285,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         spaceship.setX(-spaceship.getWidth());
         spaceship.setY(screenH / 2 - spaceship.getHeight() / 2);
         spaceship.setHP(30);
-        spaceship.setDamage(30);
         background.reset();
         map.reset();
         healthBar.setCurrentHealth(spaceship.getHP());

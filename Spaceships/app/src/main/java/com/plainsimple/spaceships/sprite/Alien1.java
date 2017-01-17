@@ -108,6 +108,7 @@ public class Alien1 extends Alien {
         if (s instanceof Bullet || s instanceof Rocket || s instanceof Spaceship) {
             hp -= s.damage;
             hp = hp < 0 ? 0 : hp;
+            Log.d("Alien1.java", "HP now set to " + hp + " after taking " + s.damage);
             healthBarAnimation.start();
             if (hp == 0 && !explodeAnimation.isPlaying()) {
                 explodeAnimation.start();

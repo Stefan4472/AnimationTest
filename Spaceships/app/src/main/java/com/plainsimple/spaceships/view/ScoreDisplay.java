@@ -113,7 +113,7 @@ public class ScoreDisplay {
 
     // returns magnification factor of ScoreDisplay text
     private float getMagnification() {
-        return (MAX_MAGNIFICATION / MAX_SCORE_CHANGE) * currentScoreChange;
+        return 1 + ((MAX_MAGNIFICATION - 1) / MAX_SCORE_CHANGE) * currentScoreChange;
     }
 
     public void reset() {

@@ -98,7 +98,9 @@ public class Spaceship extends Sprite {
     // sets spaceship fields to initial values
     // used when spaceship is first constructed and when it is reset
     public void setInitValues() {
-        collides = true;
+        //collides = true;
+        collides = false;
+        damage = 50;
         controllable = false;
         speedX = 0.003f;
         speedY = 0;
@@ -198,12 +200,8 @@ public class Spaceship extends Sprite {
         if (s instanceof Coin) {
             GameView.incrementScore(GameView.COIN_VALUE);
         } else {
-            // handling damage this way prevents errors
-            if (hp < s.getDamage()) {
-                hp = -1; // debug purposes: normally would be zero
-            } else {
-                hp -= s.getDamage();
-            }
+            hp -= s.getDamage();
+            hp = hp < 0 ? -1 : hp; // normally would set to 0
             Log.d("Spaceship class", "Collided with " + (s instanceof Alien ? "alien" : "sprite") + " at " + s.getX());
             if (hp < 0 && !explode.isPlaying()) { // todo: set hp <= 0 (currently < 0 for debug)
                 // todo: check when explode animation has played and use for end game logic

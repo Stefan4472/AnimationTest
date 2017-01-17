@@ -75,6 +75,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("GameActivity", "onCreate called");
+        Log.d("GameActivity", "Screen Density is " + getResources().getDisplayMetrics().densityDpi);
         // go full screen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -87,6 +88,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         // get handle to SharedPreferences
         preferences = getPreferences(Context.MODE_PRIVATE);
         muted = preferences.getBoolean(MUTED_KEY, false);
+        paused = false;
 
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pause);
@@ -185,8 +187,10 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     }
 
     // plays a sound using the SoundPool at the correct volume
-    public static void playSound(SoundID soundID) { // todo: set volume to zero if muted?
-        soundPool.play(soundIDs.get(soundID), gameVolume, gameVolume, 1, 0, 1.0f);
+    public static void playSound(SoundID soundID) {
+        if (!muted) {
+            soundPool.play(soundIDs.get(soundID), gameVolume, gameVolume, 1, 0, 1.0f);
+        }
     }
 
     // handle user pressing pause button
@@ -287,10 +291,10 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             Log.d("GameActivity", "Finished pausing the game");
         }
         if (!quit) { // save game state if user did not quit on purpose
-            Log.d("GameActivity.java", "Saving game state");
+            /*Log.d("GameActivity.java", "Saving game state");
             long start_time = System.currentTimeMillis();
             gameView.saveGameState();
-            Log.d("GameActivity", "Finished Save: Took " + (System.currentTimeMillis() - start_time) + "ms");
+            Log.d("GameActivity", "Finished Save: Took " + (System.currentTimeMillis() - start_time) + "ms");*/
         }
         SharedPreferences.Editor editor = preferences.edit();
         editor.putFloat(GAME_VOLUME_KEY, gameVolume);

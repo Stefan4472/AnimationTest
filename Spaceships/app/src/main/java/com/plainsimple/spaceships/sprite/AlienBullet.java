@@ -20,7 +20,7 @@ public class AlienBullet extends Sprite {
         super(bitmapData, x, y);
         // todo: change size for better-looking hit detection? (see Issue #13)
         hitBox = new Hitbox(x, y, x + getWidth(), y + getHeight());
-        damage = 10;
+        hp = 10;
     }
 
     @Override
