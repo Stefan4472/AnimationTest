@@ -12,6 +12,7 @@ import com.plainsimple.spaceships.helper.BulletType;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawSubImage;
+import com.plainsimple.spaceships.helper.GameStats;
 import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.helper.RocketType;
@@ -199,6 +200,7 @@ public class Spaceship extends Sprite {
     public void handleCollision(Sprite s) {
         if (s instanceof Coin) {
             GameView.incrementScore(GameView.COIN_VALUE);
+            GameView.currentStats.addTo(GameStats.COINS_COLLECTED, 1);
         } else {
             hp -= s.getDamage();
             hp = hp < 0 ? -1 : hp; // normally would set to 0

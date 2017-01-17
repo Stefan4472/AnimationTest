@@ -36,11 +36,8 @@ public class Equipped {
     // possible armor types (todo)
     public static final String ARMOR_DEFAULT = "ARMOR_DEFAULT";
 
-    // stores states of all equipment after reading from file
-    public HashMap<String, String> states = new HashMap<>();
-
-    // path where equipment data is stored
-    public static final String FILE_PATH = "EQUIPMENT_STATES";
+    // key to get available coins
+    public static final String COINPURSE_KEY = "COINS_AVAILABLE";
 
     public static BulletType stringToBulletType(String key) {
         switch (key) {

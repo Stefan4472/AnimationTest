@@ -22,7 +22,7 @@ import android.widget.ImageButton;
 
 import com.plainsimple.spaceships.helper.BulletType;
 import com.plainsimple.spaceships.helper.Equipped;
-import com.plainsimple.spaceships.helper.GameSave;
+import com.plainsimple.spaceships.helper.GameStats;
 import com.plainsimple.spaceships.helper.RocketType;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
@@ -64,7 +64,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     // keys for retrieving data relevant to GUI from SharedPreferences
     private static final String GAME_VOLUME_KEY = "gameVolume";
     private static final String MUSIC_VOLUME_KEY = "musicVolume";
-    private static final String MUTED_KEY = "MUTED"; // todo
+    private static final String MUTED_KEY = "MUTED";
     private static final String FIRE_MODE_KEY = "SELECTED_FIRE_MODE";
     private static final String RESTORE_STATE_KEY = "RESTORE_GAME_STATE";
 
@@ -149,6 +149,18 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
                         downArrow.setVisibility(View.INVISIBLE);
                     }
                 });
+                // update lifetime stats with this game's collected stats
+                SharedPreferences l_stats = getSharedPreferences(GameStats.PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
+                SharedPreferences.Editor l_stats_e = l_stats.edit();
+                for (String key : GameView.currentStats.getKeySet()) {
+                    l_stats_e.putInt(key, l_stats.getInt(key, 0) + GameView.currentStats.get(key));
+                }
+                l_stats_e.commit();
+                // add coins collected in game to current available coins (stored in Equipped)
+                SharedPreferences equipped_prefs = getSharedPreferences(Equipped.PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
+                SharedPreferences.Editor equipped_prefs_e = equipped_prefs.edit();
+                equipped_prefs_e.putInt(Equipped.COINPURSE_KEY, equipped_prefs.getInt(Equipped.COINPURSE_KEY, 0) + GameView.currentStats.get(GameStats.COINS_COLLECTED));
+                equipped_prefs_e.commit();
             }
         });
         // set volume control to proper stream

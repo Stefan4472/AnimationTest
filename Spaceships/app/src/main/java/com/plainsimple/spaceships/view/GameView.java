@@ -43,8 +43,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean restoreGameState;
     // whether game has started (spaceship has reached starting position)
     private boolean gameStarted;
+    // current game score
     private static int score = 0;
+    // current level of difficulty (used to determine some game mechanics)
     private int difficulty = 0;
+    // used to store this run's stats
+    public static GameStats currentStats;
     // points a coin is worth
     public static final int COIN_VALUE = 100;
     // selected fire mode (bullet or rocket)
@@ -60,7 +64,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private double scrollSpeed = -0.0025;
     // spaceship
     private Spaceship spaceship;
-    private static final float MAX_SCROLL_SPEED = -0.03f;
     // relative speed of background scrolling to foreground scrolling
     private static final float SCROLL_SPEED_CONST = 0.4f;
     // number of frames that must pass before score per frame is increased
@@ -236,6 +239,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             map = new Map(c, screenW, screenH);
             healthBar = new HealthBar(c, screenW, screenH, 30, 30);
             scoreDisplay = new ScoreDisplay(c, 0);
+            currentStats = new GameStats();
         }
 
         public void setSurfaceSize(int width, int height) {

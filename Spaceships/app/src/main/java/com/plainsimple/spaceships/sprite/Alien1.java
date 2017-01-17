@@ -14,9 +14,11 @@ import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRect;
 import com.plainsimple.spaceships.helper.DrawSubImage;
+import com.plainsimple.spaceships.helper.GameStats;
 import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.Point2D;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
+import com.plainsimple.spaceships.view.GameView;
 
 import java.util.List;
 
@@ -72,6 +74,7 @@ public class Alien1 extends Alien {
         if (explodeAnimation.hasPlayed() || !isInBounds()) {
             terminate = true;
             Log.d("Termination", "Removing Alien at x = " + x);
+            GameView.currentStats.addTo(GameStats.ALIENS_KILLED, 1);
         } else {
             framesSinceLastBullet++;
             if (x > (spaceship.getX() * 1.6) && framesSinceLastBullet >= bulletDelay) {
