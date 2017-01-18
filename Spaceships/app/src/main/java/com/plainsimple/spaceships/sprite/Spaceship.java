@@ -37,7 +37,7 @@ public class Spaceship extends Sprite {
     private SpriteAnimation explode;
 
     // whether user has control over spaceship
-    boolean controllable;
+    private boolean controllable;
 
     private BulletType bulletType = BulletType.LASER;
     private int lastFiredBullet; // todo: just one variable, lastFiredProjectile?
@@ -99,8 +99,7 @@ public class Spaceship extends Sprite {
     // sets spaceship fields to initial values
     // used when spaceship is first constructed and when it is reset
     public void setInitValues() {
-        //collides = true;
-        collides = false;
+        collides = true;
         damage = 50;
         controllable = false;
         speedX = 0.003f;
@@ -118,13 +117,16 @@ public class Spaceship extends Sprite {
     public void updateActions() {
         lastFiredBullet++;
         lastFiredRocket++;
-        if (fireMode == FireMode.BULLET && lastFiredBullet >= bulletType.getDelay()) {
+        if (fireMode == FireMode.BULLET && lastFiredBullet >= bulletType.getDelay() && hp != 0) {
             fireBullets();
             lastFiredBullet = 0;
-        } else if (fireMode == FireMode.ROCKET && lastFiredRocket >= rocketType.getDelay()) {
+        } else if (fireMode == FireMode.ROCKET && lastFiredRocket >= rocketType.getDelay() && hp != 0) {
             fireRockets();
             lastFiredRocket = 0;
             fireRocket.start();
+        }
+        if (explode.hasPlayed()) {
+            terminate = true;
         }
     }
 
@@ -203,13 +205,12 @@ public class Spaceship extends Sprite {
             GameView.currentStats.addTo(GameStats.COINS_COLLECTED, 1);
         } else {
             hp -= s.getDamage();
-            hp = hp < 0 ? -1 : hp; // normally would set to 0
+            hp = hp < 0 ? 0 : hp;
             Log.d("Spaceship class", "Collided with " + (s instanceof Alien ? "alien" : "sprite") + " at " + s.getX());
-            if (hp < 0 && !explode.isPlaying()) { // todo: set hp <= 0 (currently < 0 for debug)
-                // todo: check when explode animation has played and use for end game logic
-                explode.start();
+            if (hp == 0) {
                 GameActivity.playSound(EXPLODE_SOUND);
-                hp = 0; // todo: debug purposes
+                explode.start();
+                collides = false;
             }
         }
     }
@@ -217,16 +218,18 @@ public class Spaceship extends Sprite {
     @Override
     public List<DrawParams> getDrawParams() {
         drawParams.clear();
-        // define specifications for defaultImage
-        drawParams.add(new DrawImage(bitmapData.getId(), x, y));
-        if (moving) {
-            drawParams.add(new DrawSubImage(move.getBitmapID(), x, y, move.getCurrentFrameSrc()));
-        }
-        if (fireRocket.isPlaying()) {
-            drawParams.add(new DrawSubImage(fireRocket.getBitmapID(), x + getWidth() / 2.0f, y, fireRocket.getCurrentFrameSrc()));
-        }
-        if (explode.isPlaying()) {
-            drawParams.add(new DrawSubImage(explode.getBitmapID(), x, y, explode.getCurrentFrameSrc()));
+        if (!explode.hasPlayed()) {
+            // define specifications for defaultImage
+            drawParams.add(new DrawImage(bitmapData.getId(), x, y));
+            if (moving) {
+                drawParams.add(new DrawSubImage(move.getBitmapID(), x, y, move.getCurrentFrameSrc()));
+            }
+            if (fireRocket.isPlaying()) {
+                drawParams.add(new DrawSubImage(fireRocket.getBitmapID(), x + getWidth() / 2.0f, y, fireRocket.getCurrentFrameSrc()));
+            }
+            if (explode.isPlaying()) {
+                drawParams.add(new DrawSubImage(explode.getBitmapID(), x, y, explode.getCurrentFrameSrc()));
+            }
         }
         return drawParams;
     }

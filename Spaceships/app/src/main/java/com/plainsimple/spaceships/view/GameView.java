@@ -43,6 +43,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean restoreGameState;
     // whether game has started (spaceship has reached starting position)
     private boolean gameStarted;
+    // whether the spaceship has been destroyed
+    private boolean spaceshipDestroyed;
+    // whether game is completely finished and screen has come to a halt
+    private boolean gameFinished;
     // current game score
     private static int score = 0;
     // current level of difficulty (used to determine some game mechanics)
@@ -148,7 +152,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
             background.draw(canvas);
-            if (!GameActivity.getPaused()) {
+            if (!GameActivity.getPaused() && !gameFinished) {
                 update();
             }
             // todo: how to draw bullets and rockets? drawparams in spaceship?
@@ -167,8 +171,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         // adds any new sprites and generates a new set of sprites if needed
         public void update() {
             if (gameStarted) {
-                difficulty++;
-                score += 1 + difficulty / SCORING_CONST;
+                if (!spaceshipDestroyed) {
+                    difficulty++;
+                    score += 1 + difficulty / SCORING_CONST;
+                }
                 updateScrollSpeed();
                 background.scroll(-scrollSpeed * screenW * SCROLL_SPEED_CONST);
             }
@@ -195,12 +201,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             spaceship.move();
             spaceship.updateActions();
             GameEngineUtil.updateSprites(spaceship.getProjectiles());
+            spaceshipDestroyed = spaceship.terminate();
         }
 
         // calculates scrollspeed based on difficulty
         public void updateScrollSpeed() {
-            //scrollSpeed = MAX_SCROLL_SPEED * Math.atan(difficulty / 500.0f) * 2 / Math.PI;
-            scrollSpeed = -Math.log(difficulty + 1) / 600;
+            // spaceship destroyed: slow down scrolling to a halt and fire onGameFinished when scrollspeed = 0
+            if (spaceshipDestroyed) {
+                scrollSpeed /= 1.01f;
+                if (scrollSpeed > -0.0001) {
+                    gameFinished = true;
+                    gameEventsListener.onGameFinished();
+                }
+            } else { // normal scrolling progression
+                //scrollSpeed = MAX_SCROLL_SPEED * Math.atan(difficulty / 500.0f) * 2 / Math.PI;
+                scrollSpeed = -Math.log(difficulty + 1) / 600;
+            }
         }
 
         // handle user touching screen
@@ -240,6 +256,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             healthBar = new HealthBar(c, screenW, screenH, 30, 30);
             scoreDisplay = new ScoreDisplay(c, 0);
             currentStats = new GameStats();
+            gameFinished = false;
         }
 
         public void setSurfaceSize(int width, int height) {
@@ -285,16 +302,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // resets all elements and fields so that a new game can begin
     public void restartGame() {
         gameEventsListener.onGameFinished();
-        spaceship.setInitValues();
-        spaceship.setX(-spaceship.getWidth());
-        spaceship.setY(screenH / 2 - spaceship.getHeight() / 2);
+        spaceship = new Spaceship(-spaceship.getWidth(), screenH / 2 - spaceship.getHeight() / 2, c);
         spaceship.setHP(30);
         background.reset();
         map.reset();
         healthBar.setCurrentHealth(spaceship.getHP());
         healthBar.setMovingToHealth(spaceship.getHP());
         scoreDisplay.reset();
-        gameStarted = false;
+        gameFinished = false;
         difficulty = 0;
         score = 0;
     }

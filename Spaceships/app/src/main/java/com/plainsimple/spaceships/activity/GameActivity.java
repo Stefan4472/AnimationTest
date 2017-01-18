@@ -129,7 +129,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         });
         // set up GameEventsListener
         final Animation arrow_fade_in = AnimationUtils.loadAnimation(this, R.anim.arrowbutton_fadein);
-        gameView.setGameEventsListener(new GameView.GameEventsListener() {
+        gameView.setGameEventsListener(new GameView.GameEventsListener() { // todo: methods in class body
             @Override // fade in direction arrows once spaceship reaches initial position
             public void onGameStarted() {
                 runOnUiThread(new Runnable() {
@@ -154,6 +154,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
                 SharedPreferences.Editor l_stats_e = l_stats.edit();
                 for (String key : GameView.currentStats.getKeySet()) {
                     l_stats_e.putInt(key, l_stats.getInt(key, 0) + GameView.currentStats.get(key));
+                    Log.d("GameActivity.java", "Updated field " + key + " to " + l_stats.getInt(key, 0));
                 }
                 l_stats_e.commit();
                 // add coins collected in game to current available coins (stored in Equipped)
