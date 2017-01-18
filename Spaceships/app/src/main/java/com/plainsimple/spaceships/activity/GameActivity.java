@@ -27,19 +27,17 @@ import com.plainsimple.spaceships.helper.RocketType;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.util.EnumUtil;
-import com.plainsimple.spaceships.view.FontButton;
-import com.plainsimple.spaceships.view.FontTextView;
 import com.plainsimple.spaceships.view.GameView;
 
 import java.util.Hashtable;
-import java.util.concurrent.RunnableFuture;
 
 import plainsimple.spaceships.R;
 
 /**
  * Created by Stefan on 10/17/2015.
  */
-public class GameActivity extends FragmentActivity implements SensorEventListener, PauseDialogFragment.PauseDialogListener {
+public class GameActivity extends FragmentActivity implements SensorEventListener, PauseDialogFragment.PauseDialogListener,
+    GameOverDialogFragment.GameOverDialogListener {
 
     private GameView gameView;
     private ImageButton pauseButton;
@@ -149,7 +147,11 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
                         downArrow.setVisibility(View.INVISIBLE);
                     }
                 });
-                // update lifetime stats with this game's collected stats
+                // display GameOverDialogFragment todo: fade-in animation
+                Log.d("GameActivity.java", "Displaying GameOverDialog");
+                DialogFragment d = new GameOverDialogFragment();
+                d.show(getFragmentManager(), "GameOver");
+                // update lifetime stats with this game's collected stats todo: separate method, called in onQuit and onRestart?
                 SharedPreferences l_stats = getSharedPreferences(GameStats.PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
                 SharedPreferences.Editor l_stats_e = l_stats.edit();
                 for (String key : GameView.currentStats.getKeySet()) {

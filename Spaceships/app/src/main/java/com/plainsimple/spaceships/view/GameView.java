@@ -301,7 +301,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     // resets all elements and fields so that a new game can begin
     public void restartGame() {
-        gameEventsListener.onGameFinished();
         spaceship = new Spaceship(-spaceship.getWidth(), screenH / 2 - spaceship.getHeight() / 2, c);
         spaceship.setHP(30);
         background.reset();

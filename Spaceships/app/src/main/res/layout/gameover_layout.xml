@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+    <!-- Title -->
+    <com.plainsimple.spaceships.view.FontTextView
+        style="@style/GalaxyMonkey"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="60dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/orange"
+        android:text="@string/game_over" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <com.plainsimple.spaceships.view.FontButton
+            style="@style/GalaxyMonkey"
+            android:id="@+id/restartbutton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="30dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/orange"
+            android:text="@string/play_again" />
+        <com.plainsimple.spaceships.view.FontButton
+            style="@style/GalaxyMonkey"
+            android:id="@+id/quitbutton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="30dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/orange"
+            android:text="@string/quit" />
+    </LinearLayout>
+</LinearLayout>
