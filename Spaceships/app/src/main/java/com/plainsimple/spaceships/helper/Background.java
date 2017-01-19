@@ -57,4 +57,9 @@ public class Background {
         dst = new Rect(screenW - offset, 0, screenW, screenH);
         canvas.drawBitmap(background, src, dst, null);
     }
+
+    // returns "distance" travelled: 1 screen width = 1 kilometer (for now) todo: change?
+    public float getDistanceTravelled() {
+        return (float) pixelsScrolled / screenW;
+    }
 }

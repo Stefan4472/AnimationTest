@@ -198,17 +198,18 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     // handle user pressing pause button
     public void onPausePressed(View view) {
         playSound(SoundID.BUTTON_CLICKED);
-        if(paused) { // unpause
-            pauseButton.setBackgroundResource(R.drawable.pause);
-            paused = false;
-            soundPool.autoResume();
-        } else { // pause
+        paused = !paused;
+        if (paused) {
+            gameView.getGameTimer().stop();
             pauseButton.setBackgroundResource(R.drawable.play);
-            paused = true;
             soundPool.autoPause();
             // display pause dialog
             DialogFragment d = PauseDialogFragment.newInstance(gameVolume, musicVolume);
             d.show(getFragmentManager(), "Pause");
+        } else {
+            gameView.getGameTimer().start();
+            pauseButton.setBackgroundResource(R.drawable.pause);
+            soundPool.autoResume();
         }
     }
 
@@ -266,18 +267,24 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
 
     // updates lifetime stats from GameView's current run
     private void updateStats() {
-        // update lifetime stats with this game's collected stats todo: separate method, called in onQuit and onRestart?
+        // ensure gameView's stats are up to date
+        gameView.forceUpdateStats();
+        // update lifetime stats with this game's collected stats
         SharedPreferences l_stats = getSharedPreferences(GameStats.PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor l_stats_e = l_stats.edit();
+        //l_stats_e.clear();
         for (String key : GameView.currentStats.getKeySet()) {
-            l_stats_e.putInt(key, l_stats.getInt(key, 0) + GameView.currentStats.get(key));
-            Log.d("GameActivity.java", "Updated field " + key + " to " + l_stats.getInt(key, 0));
+            l_stats_e.putLong(key, Double.doubleToLongBits(Double.longBitsToDouble(l_stats.getLong(key, 0)) + GameView.currentStats.get(key)));
+            Log.d("GameActivity.java", "Updated field " + key + " to " + Double.longBitsToDouble(l_stats.getLong(key, 0)));
+        }
+        if (GameView.currentStats.get(GameStats.GAME_SCORE) > Double.longBitsToDouble(l_stats.getLong(GameStats.HIGH_SCORE, 0))) {
+            l_stats_e.putLong(GameStats.GAME_SCORE, Double.doubleToLongBits(GameView.currentStats.get(GameStats.GAME_SCORE)));
         }
         l_stats_e.commit();
         // add coins collected in game to current available coins (stored in Equipped)
         SharedPreferences equipped_prefs = getSharedPreferences(Equipped.PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor equipped_prefs_e = equipped_prefs.edit();
-        equipped_prefs_e.putInt(Equipped.COINPURSE_KEY, equipped_prefs.getInt(Equipped.COINPURSE_KEY, 0) + GameView.currentStats.get(GameStats.COINS_COLLECTED));
+        equipped_prefs_e.putInt(Equipped.COINPURSE_KEY, equipped_prefs.getInt(Equipped.COINPURSE_KEY, 0) + (int) GameView.currentStats.get(GameStats.COINS_COLLECTED));
         equipped_prefs_e.commit();
     }
 

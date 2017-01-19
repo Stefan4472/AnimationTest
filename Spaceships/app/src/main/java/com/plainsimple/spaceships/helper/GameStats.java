@@ -29,23 +29,31 @@ public class GameStats {
     public static final String TIME_PLAYED = "TIME_PLAYED"; // todo: add this function
     public static final String DISTANCE_TRAVELED = "DISTANCE_TRAVELED"; // todo: coming soon
     public static final String HIGH_SCORE = "HIGH_SCORE";
+    public static final String GAME_SCORE = "GAME_SCORE";
+    public static final String TOTAL_SCORE = "TOTAL_SCORE";
     public static final String COINS_COLLECTED = "COINS_COLLECTED";
-    public static final String POINTS_EARNED = "POINTS_EARNED";
 
-    private HashMap<String, Integer> values = new HashMap<>();
+    private HashMap<String, Double> values = new HashMap<>();
 
     public GameStats() {
-        values.put(ALIENS_KILLED, 0);
-        values.put(GAMES_PLAYED, 0);
-        values.put(TIME_PLAYED, 0);
-        values.put(DISTANCE_TRAVELED, 0);
-        values.put(HIGH_SCORE, 0);
-        values.put(COINS_COLLECTED, 0);
-        values.put(POINTS_EARNED, 0);
+        values.put(ALIENS_KILLED, new Double(0));
+        values.put(TIME_PLAYED, new Double(0));
+        values.put(DISTANCE_TRAVELED, new Double(0));
+        values.put(GAME_SCORE, new Double(0));
+        values.put(COINS_COLLECTED, new Double(0));
+    }
+
+    // sets value of specified key
+    public void set(String key, double value) throws IllegalArgumentException {
+        if (!values.containsKey(key)) {
+            throw new IllegalArgumentException("GameStats.java: Key not recognized");
+        } else {
+            values.put(key, value);
+        }
     }
 
     // ads amountAdded to the value of the specified key
-    public void addTo(String key, int amountAdded) throws IllegalArgumentException {
+    public void addTo(String key, double amountAdded) throws IllegalArgumentException {
         if (!values.containsKey(key)) {
             throw new IllegalArgumentException("GameStats.java: Key not recognized");
         } else {
@@ -54,7 +62,7 @@ public class GameStats {
     }
 
     // returns value of given key
-    public int get(String key) throws IllegalArgumentException {
+    public double get(String key) throws IllegalArgumentException {
         if (!values.containsKey(key)) {
             throw new IllegalArgumentException("GameStats.java: Key not recognized");
         } else {

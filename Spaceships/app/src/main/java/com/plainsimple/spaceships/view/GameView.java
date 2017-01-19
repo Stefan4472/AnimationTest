@@ -53,6 +53,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int difficulty = 0;
     // used to store this run's stats
     public static GameStats currentStats;
+    // used to keep track of how long this run has taken (takes account of pausing the game)
+    private GameTimer gameTimer = new GameTimer();
     // points a coin is worth
     public static final int COIN_VALUE = 100;
     // selected fire mode (bullet or rocket)
@@ -188,6 +190,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         private void updateSpaceship() {
             // move spaceship to initial position
             if (spaceship.getX() > screenW / 4) {
+                gameTimer.start();
                 gameStarted = true;
                 spaceship.setX(screenW / 4);
                 spaceship.setSpeedX(0);
@@ -201,7 +204,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             spaceship.move();
             spaceship.updateActions();
             GameEngineUtil.updateSprites(spaceship.getProjectiles());
-            spaceshipDestroyed = spaceship.terminate();
+            if (spaceship.terminate()) {
+                gameTimer.stop();
+                spaceshipDestroyed = true;
+            }
         }
 
         // calculates scrollspeed based on difficulty
@@ -308,13 +314,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         spaceship.setHP(30);
         background.reset();
         map.reset();
+        gameTimer.reset();
         healthBar.setCurrentHealth(spaceship.getHP());
         healthBar.setMovingToHealth(spaceship.getHP());
         scoreDisplay.reset();
         spaceshipDestroyed = false;
+        gameStarted = false;
         gameFinished = false;
         difficulty = 0;
         score = 0;
+    }
+
+    // updates this run's currentStats which aren't necessarily constantly updated
+    public void forceUpdateStats() {
+        currentStats.set(GameStats.GAME_SCORE, score);
+        currentStats.set(GameStats.DISTANCE_TRAVELED, background.getDistanceTravelled());
+        currentStats.set(GameStats.TIME_PLAYED, gameTimer.getTotalTime());
     }
 
     public void saveGameState() {
@@ -357,5 +372,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public static void incrementScore(int toAdd) {
         score += toAdd;
+    }
+
+    public GameTimer getGameTimer() {
+        return gameTimer;
     }
 }
