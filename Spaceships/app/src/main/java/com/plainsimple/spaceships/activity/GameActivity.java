@@ -151,19 +151,6 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
                 Log.d("GameActivity.java", "Displaying GameOverDialog");
                 DialogFragment d = new GameOverDialogFragment();
                 d.show(getFragmentManager(), "GameOver");
-                // update lifetime stats with this game's collected stats todo: separate method, called in onQuit and onRestart?
-                SharedPreferences l_stats = getSharedPreferences(GameStats.PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
-                SharedPreferences.Editor l_stats_e = l_stats.edit();
-                for (String key : GameView.currentStats.getKeySet()) {
-                    l_stats_e.putInt(key, l_stats.getInt(key, 0) + GameView.currentStats.get(key));
-                    Log.d("GameActivity.java", "Updated field " + key + " to " + l_stats.getInt(key, 0));
-                }
-                l_stats_e.commit();
-                // add coins collected in game to current available coins (stored in Equipped)
-                SharedPreferences equipped_prefs = getSharedPreferences(Equipped.PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
-                SharedPreferences.Editor equipped_prefs_e = equipped_prefs.edit();
-                equipped_prefs_e.putInt(Equipped.COINPURSE_KEY, equipped_prefs.getInt(Equipped.COINPURSE_KEY, 0) + GameView.currentStats.get(GameStats.COINS_COLLECTED));
-                equipped_prefs_e.commit();
             }
         });
         // set volume control to proper stream
@@ -263,6 +250,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     public void onQuitPressed(DialogFragment dialog) {
         playSound(SoundID.BUTTON_CLICKED);
         quit = true;
+        updateStats();
         Log.d("GameActivity", "Quitting game");
         finish();
     }
@@ -271,8 +259,26 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     public void onRestartPressed(DialogFragment dialog) {
         playSound(SoundID.BUTTON_CLICKED);
         dialog.dismiss();
+        updateStats();
         gameView.restartGame();
-        onPausePressed(gameView);
+        paused = false;
+    }
+
+    // updates lifetime stats from GameView's current run
+    private void updateStats() {
+        // update lifetime stats with this game's collected stats todo: separate method, called in onQuit and onRestart?
+        SharedPreferences l_stats = getSharedPreferences(GameStats.PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor l_stats_e = l_stats.edit();
+        for (String key : GameView.currentStats.getKeySet()) {
+            l_stats_e.putInt(key, l_stats.getInt(key, 0) + GameView.currentStats.get(key));
+            Log.d("GameActivity.java", "Updated field " + key + " to " + l_stats.getInt(key, 0));
+        }
+        l_stats_e.commit();
+        // add coins collected in game to current available coins (stored in Equipped)
+        SharedPreferences equipped_prefs = getSharedPreferences(Equipped.PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor equipped_prefs_e = equipped_prefs.edit();
+        equipped_prefs_e.putInt(Equipped.COINPURSE_KEY, equipped_prefs.getInt(Equipped.COINPURSE_KEY, 0) + GameView.currentStats.get(GameStats.COINS_COLLECTED));
+        equipped_prefs_e.commit();
     }
 
     @Override // we do not restore game state here--only in onCreate

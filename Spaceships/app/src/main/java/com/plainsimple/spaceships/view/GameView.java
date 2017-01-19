@@ -209,8 +209,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             // spaceship destroyed: slow down scrolling to a halt and fire onGameFinished when scrollspeed = 0
             if (spaceshipDestroyed) {
                 scrollSpeed /= 1.01f;
-                if (scrollSpeed > -0.0001) {
+                if (scrollSpeed > -0.0001f) {
                     gameFinished = true;
+                    Log.d("GameView.java", "OnGameFinished()");
                     gameEventsListener.onGameFinished();
                 }
             } else { // normal scrolling progression
@@ -302,12 +303,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // resets all elements and fields so that a new game can begin
     public void restartGame() {
         spaceship = new Spaceship(-spaceship.getWidth(), screenH / 2 - spaceship.getHeight() / 2, c);
+        spaceship.setBulletType(GameActivity.getEquippedBulletType());
+        spaceship.setRocketType(GameActivity.getEquippedRocketType());
         spaceship.setHP(30);
         background.reset();
         map.reset();
         healthBar.setCurrentHealth(spaceship.getHP());
         healthBar.setMovingToHealth(spaceship.getHP());
         scoreDisplay.reset();
+        spaceshipDestroyed = false;
         gameFinished = false;
         difficulty = 0;
         score = 0;

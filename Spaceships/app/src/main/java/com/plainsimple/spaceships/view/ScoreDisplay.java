@@ -57,9 +57,8 @@ public class ScoreDisplay {
         startY = padding;
         Typeface tf = Typeface.createFromAsset(context.getAssets(), FONT);
         paint = new Paint();
-        //paint.setColor(Color.WHITE);
-        //paint.setTextSize(TEXT_SIZE);
         paint.setTypeface(tf); // todo: bold?
+        this.score = startScore;
     }
 
     // adds to the current score and configures animation
