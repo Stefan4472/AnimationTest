@@ -121,6 +121,9 @@ public class MainActivity extends Activity {
     // handle user pressing "Store" button
     public void onStorePressed(View view) {
         soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);
+        // launch StoreActivity
+        Intent store_intent = new Intent(this, StoreActivity.class);
+        this.startActivity(store_intent);
     }
 
     // handle user pressing "Stats" button

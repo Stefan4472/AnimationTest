@@ -54,7 +54,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // used to store this run's stats
     public static GameStats currentStats;
     // used to keep track of how long this run has taken (takes account of pausing the game)
-    private GameTimer gameTimer = new GameTimer();
+    //private GameTimer gameTimer = new GameTimer();
     // points a coin is worth
     public static final int COIN_VALUE = 100;
     // selected fire mode (bullet or rocket)
@@ -165,8 +165,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             GameEngineUtil.drawSprite(spaceship, canvas, c);
             healthBar.draw(canvas);
             scoreDisplay.draw(canvas);
-            canvas.drawText(Double.toString(scrollSpeed), 20, 100, debugPaintRed);
-            canvas.drawText(Integer.toString(difficulty), 20, 150, debugPaintRed);
         }
 
         // updates all game logic
@@ -190,7 +188,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         private void updateSpaceship() {
             // move spaceship to initial position
             if (spaceship.getX() > screenW / 4) {
-                gameTimer.start();
+                //gameTimer.start();
                 gameStarted = true;
                 spaceship.setX(screenW / 4);
                 spaceship.setSpeedX(0);
@@ -205,7 +203,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             spaceship.updateActions();
             GameEngineUtil.updateSprites(spaceship.getProjectiles());
             if (spaceship.terminate()) {
-                gameTimer.stop();
+                //gameTimer.stop();
                 spaceshipDestroyed = true;
             }
         }
@@ -314,7 +312,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         spaceship.setHP(30);
         background.reset();
         map.reset();
-        gameTimer.reset();
+        //gameTimer.reset();
         healthBar.setCurrentHealth(spaceship.getHP());
         healthBar.setMovingToHealth(spaceship.getHP());
         scoreDisplay.reset();
@@ -329,7 +327,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void forceUpdateStats() {
         currentStats.set(GameStats.GAME_SCORE, score);
         currentStats.set(GameStats.DISTANCE_TRAVELED, background.getDistanceTravelled());
-        currentStats.set(GameStats.TIME_PLAYED, gameTimer.getTotalTime());
+        //currentStats.set(GameStats.TIME_PLAYED, gameTimer.getTotalTime());
     }
 
     public void saveGameState() {
@@ -374,7 +372,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         score += toAdd;
     }
 
-    public GameTimer getGameTimer() {
-        return gameTimer;
-    }
+    //public GameTimer getGameTimer() {
+    //    return gameTimer;
+    //}
 }

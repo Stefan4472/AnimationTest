@@ -200,14 +200,14 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         playSound(SoundID.BUTTON_CLICKED);
         paused = !paused;
         if (paused) {
-            gameView.getGameTimer().stop();
+            //gameView.getGameTimer().stop();
             pauseButton.setBackgroundResource(R.drawable.play);
             soundPool.autoPause();
             // display pause dialog
             DialogFragment d = PauseDialogFragment.newInstance(gameVolume, musicVolume);
             d.show(getFragmentManager(), "Pause");
         } else {
-            gameView.getGameTimer().start();
+            //gameView.getGameTimer().start();
             pauseButton.setBackgroundResource(R.drawable.pause);
             soundPool.autoResume();
         }
