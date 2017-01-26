@@ -16,13 +16,13 @@ import plainsimple.spaceships.R;
  * Adapter used to populate ListView in StoreActivity
  */
 
-public class StoreRowAdapter extends ArrayAdapter<CustomItemData> { // TESTING
+public class StoreRowAdapter extends ArrayAdapter<StoreRow> { // TESTING
 
     Context c;
     int id;
-    CustomItemData data[] = null;
+    StoreRow data[] = null;
 
-    public StoreRowAdapter(Context mContext, int id, CustomItemData[] data) {
+    public StoreRowAdapter(Context mContext, int id, StoreRow[] data) {
         super(mContext, id, data);
         c = mContext;
         this.id = id;
@@ -35,15 +35,16 @@ public class StoreRowAdapter extends ArrayAdapter<CustomItemData> { // TESTING
             LayoutInflater inflater = ((Activity) c).getLayoutInflater();
             convertView = inflater.inflate(id, parent, false);
         }
-        // object item based on the position
-        CustomItemData objectItem = data[position];
-        // get the TextView and then set the text (item name) and tag (item ID) values
-        TextView textViewItem = (TextView) convertView.findViewById(R.id.label);
-        textViewItem.setText(objectItem.getString());
-        textViewItem.setTag(objectItem.getNumber()); // todo: we'll need more information to construct the store tiles
+        // get the queued row
+        StoreRow row = data[position];
+        // set row's label
+        TextView label = (TextView) convertView.findViewById(R.id.label);
+        label.setText(row.getRowLabel());
+        label.setTag(row.getId());
         RecyclerView upgrade_display = (RecyclerView) convertView.findViewById(R.id.recycler_view);
         upgrade_display.setLayoutManager(new LinearLayoutManager(c));
-        upgrade_display.setAdapter(new StoreItemAdapter(c, BitmapID.SPACESHIP));
+        // todo: pass the StoreItems
+        upgrade_display.setAdapter(new StoreItemAdapter(c, row.getRowItems()));
         return convertView;
     }
 

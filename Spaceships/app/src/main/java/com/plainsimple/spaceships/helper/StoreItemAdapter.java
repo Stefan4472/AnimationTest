@@ -1,12 +1,17 @@
 package com.plainsimple.spaceships.helper;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.plainsimple.spaceships.util.EnumUtil;
+
+import java.util.List;
 
 import plainsimple.spaceships.R;
 
@@ -17,12 +22,12 @@ import plainsimple.spaceships.R;
 public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemAdapter.ViewHolder> {
 
     private Context c;
-    // id of image to display
-    private BitmapID bitmapID;
+    // StoreItems to display
+    private List<StoreItem> items;
 
-    public StoreItemAdapter(Context context, BitmapID bitmapID) {
+    public StoreItemAdapter(Context context, List<StoreItem> storeItems) {
         c = context;
-        this.bitmapID = bitmapID;
+        items = storeItems; // todo: deep copy required?
     }
 
     @Override
@@ -33,7 +38,7 @@ public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemAdapter.View
 
     @Override
     public void onBindViewHolder(StoreItemAdapter.ViewHolder viewHolder, int i) {
-        viewHolder.storeItemImage.setImageBitmap(BitmapCache.getImage(bitmapID, c));
+        viewHolder.storeItemImage.setImageBitmap(BitmapFactory.decodeResource(c.getResources(), R.drawable.spaceship));
     }
 
     @Override

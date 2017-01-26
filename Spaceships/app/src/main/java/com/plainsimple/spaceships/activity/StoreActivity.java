@@ -10,7 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.plainsimple.spaceships.helper.StoreRowAdapter;
-import com.plainsimple.spaceships.helper.CustomItemData;
+import com.plainsimple.spaceships.helper.StoreRow;
 
 import plainsimple.spaceships.R;
 
@@ -31,10 +31,10 @@ public class StoreActivity extends Activity {
         setContentView(R.layout.store_layout);
         listView = (ListView) findViewById(R.id.list_view);
         // rows to be displayed in ListView (categories of upgrades)
-        CustomItemData[] rows = new CustomItemData[3];
-        rows[0] = new CustomItemData(0, "Cannons");
-        rows[1] = new CustomItemData(1, "Rockets");
-        rows[2] = new CustomItemData(2, "Armor");
+        StoreRow[] rows = new StoreRow[3];
+        rows[0] = new StoreRow(0, "Cannons");
+        rows[1] = new StoreRow(1, "Rockets");
+        rows[2] = new StoreRow(2, "Armor");
         // create adapter instance to display content in each row of ListView
         StoreRowAdapter adapter = new StoreRowAdapter(this, R.layout.listview_item, rows);
         listView.setAdapter(adapter);
