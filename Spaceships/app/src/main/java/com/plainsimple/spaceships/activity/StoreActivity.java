@@ -1,8 +1,6 @@
 package com.plainsimple.spaceships.activity;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,13 +10,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.plainsimple.spaceships.helper.EquipmentManager;
-import com.plainsimple.spaceships.helper.Equipped;
-import com.plainsimple.spaceships.helper.GameStats;
-import com.plainsimple.spaceships.helper.StoreItem;
 import com.plainsimple.spaceships.helper.StoreRowAdapter;
 import com.plainsimple.spaceships.helper.StoreRow;
-
-import java.util.HashMap;
 
 import plainsimple.spaceships.R;
 

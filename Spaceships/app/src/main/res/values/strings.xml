@@ -34,17 +34,4 @@
     <string name="COIN_SPIN">6:10:10:10:10:10:10:true</string>
     <string name="ROCKET_MOVE">2:3:3:true</string>
     <string name="PROJECTILE_EXPLODE">4:1:1:1:1:false</string>
-    <!-- store items and descriptions -->
-    <string name="LASER_CANNON">LASER Cannon</string>
-    <string name="LASER_CANNON_DESC">A cannon that fires LASER rounds.</string>
-    <string name="ION_CANNON">ION Cannon</string>
-    <string name="ION_CANNON_DESC">A cannon that fires ION rounds.</string>
-    <string name="PLASMA_CANNON">PLASMA Cannon</string>
-    <string name="PLASMA_CANNON_DESC">A cannon that fires PLASMA rounds.</string>
-    <string name="PLUTONIUM_CANNON">PLUTONIUM Cannon</string>
-    <string name="PLUTONIUM_CANNON_DESC">A cannon that fires PLUTONIUM rounds.</string>
-    <string name="DEF_ROCKET">DEFAULT Rocket</string>
-    <string name="DEF_ROCKET_DESC">A propelled projectile.</string>
-    <string name="DEF_AROMOR">DEFAULT Armor</string>
-    <string name="DEF_ARMOR_DESC">The default armor.</string>
 </resources>
