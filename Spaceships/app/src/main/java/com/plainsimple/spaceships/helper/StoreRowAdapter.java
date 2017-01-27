@@ -43,7 +43,6 @@ public class StoreRowAdapter extends ArrayAdapter<StoreRow> { // TESTING
         label.setTag(row.getId());
         RecyclerView upgrade_display = (RecyclerView) convertView.findViewById(R.id.recycler_view);
         upgrade_display.setLayoutManager(new LinearLayoutManager(c));
-        // todo: pass the StoreItems
         upgrade_display.setAdapter(new StoreItemAdapter(c, row.getRowItems()));
         return convertView;
     }

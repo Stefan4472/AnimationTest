@@ -14,7 +14,7 @@ public class StoreRow {
     // row label
     public String rowLabel;
     // StoreItems to display in row
-    private List<StoreItem> rowItems;
+    private List<Equipment> rowItems;
 
     public StoreRow(int id, String rowLabel) {
         this.id = id;
@@ -23,7 +23,7 @@ public class StoreRow {
     }
 
     // adds a StoreItem to the row
-    public void addStoreItem(StoreItem toAdd) {
+    public void addStoreItem(Equipment toAdd) {
         rowItems.add(toAdd);
     }
 
@@ -35,7 +35,7 @@ public class StoreRow {
         return rowLabel;
     }
 
-    public List<StoreItem> getRowItems() {
+    public List<Equipment> getRowItems() {
         return rowItems;
     }
 }

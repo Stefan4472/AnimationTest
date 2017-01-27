@@ -23,9 +23,9 @@ public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemAdapter.View
 
     private Context c;
     // StoreItems to display
-    private List<StoreItem> items;
+    private List<Equipment> items;
 
-    public StoreItemAdapter(Context context, List<StoreItem> storeItems) {
+    public StoreItemAdapter(Context context, List<Equipment> storeItems) {
         c = context;
         items = storeItems; // todo: deep copy required?
     }
