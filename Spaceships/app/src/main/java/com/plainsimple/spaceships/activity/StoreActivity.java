@@ -36,12 +36,12 @@ public class StoreActivity extends Activity {
         // create adapter instance to display content in each row of ListView
         StoreRowAdapter adapter = new StoreRowAdapter(this, R.layout.listview_item, rows);
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("StoreActivity.java", "Position = " + position + ", id = " + id);
             }
-        });
+        });*/
     }
 
     // get status of equipment and initialize data required to display the store

@@ -20,7 +20,8 @@ public class StoreRowAdapter extends ArrayAdapter<StoreRow> { // TESTING
 
     Context c;
     int id;
-    StoreRow data[] = null;
+    // contains StoreRow objects to display
+    StoreRow data[];
 
     public StoreRowAdapter(Context mContext, int id, StoreRow[] data) {
         super(mContext, id, data);
@@ -41,9 +42,9 @@ public class StoreRowAdapter extends ArrayAdapter<StoreRow> { // TESTING
         TextView label = (TextView) convertView.findViewById(R.id.label);
         label.setText(row.getRowLabel());
         label.setTag(row.getId());
-        RecyclerView upgrade_display = (RecyclerView) convertView.findViewById(R.id.recycler_view);
-        upgrade_display.setLayoutManager(new LinearLayoutManager(c));
-        upgrade_display.setAdapter(new StoreItemAdapter(c, row.getRowItems()));
+        RecyclerView row_display = (RecyclerView) convertView.findViewById(R.id.recycler_view);
+        row_display.setLayoutManager(new LinearLayoutManager(c));
+        row_display.setAdapter(new StoreItemAdapter(c, row.getRowItems()));
         return convertView;
     }
 
