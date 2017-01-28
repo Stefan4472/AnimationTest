@@ -1,6 +1,7 @@
 package com.plainsimple.spaceships.activity;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -41,6 +42,8 @@ public class StoreActivity extends Activity {
             @Override
             public void onItemClick(Equipment selectedItem) {
                 Log.d("StoreActivity.java", "Detected click on " + selectedItem.getLabel());
+                DialogFragment d = StoreItemDialogFragment.newInstance(selectedItem);
+                d.show(getFragmentManager(), "Store");
             }
         });
         listView.setAdapter(adapter);
