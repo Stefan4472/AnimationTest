@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.AnimCache;
+import com.plainsimple.spaceships.helper.ArmorType;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
@@ -46,6 +47,8 @@ public class Spaceship extends Sprite {
     private RocketType rocketType = RocketType.ROCKET;
     private int lastFiredRocket;
     private BitmapData rocketBitmapData;
+
+    private ArmorType armorType = ArmorType.DEFAULT;
 
     // keeps track of fired bullets and rockets
     private List<Sprite> projectiles = new LinkedList<>();
@@ -101,6 +104,7 @@ public class Spaceship extends Sprite {
     public void setInitValues() {
         collides = true;
         damage = 50;
+        hp = armorType.getHP();
         controllable = false;
         speedX = 0.003f;
         speedY = 0;
@@ -252,5 +256,10 @@ public class Spaceship extends Sprite {
 
     public void setRocketType(RocketType rocketType) {
         this.rocketType = rocketType;
+    }
+
+    public void setArmorType(ArmorType armorType) {
+        this.armorType = armorType;
+        hp = armorType.getHP();
     }
 }

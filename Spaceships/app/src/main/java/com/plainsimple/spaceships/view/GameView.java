@@ -255,7 +255,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             spaceship = new Spaceship(-ship_data.getWidth(), screenH / 2 - ship_data.getHeight() / 2, c);
             spaceship.setBulletType(GameActivity.getEquippedCannon());
             spaceship.setRocketType(GameActivity.getEquippedRocket());
-            spaceship.setHP(30);
+            spaceship.setArmorType(GameActivity.getEquippedArmor());
             background = new Background(screenW, screenH); // todo: re-create background from save
             map = new Map(c, screenW, screenH);
             healthBar = new HealthBar(c, screenW, screenH, 30, 30);
@@ -309,7 +309,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         spaceship = new Spaceship(-spaceship.getWidth(), screenH / 2 - spaceship.getHeight() / 2, c);
         spaceship.setBulletType(GameActivity.getEquippedCannon());
         spaceship.setRocketType(GameActivity.getEquippedRocket());
-        spaceship.setHP(30);
+        spaceship.setArmorType(GameActivity.getEquippedArmor());
         background.reset();
         map.reset();
         //gameTimer.reset();

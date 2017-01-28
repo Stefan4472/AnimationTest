@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.plainsimple.spaceships.helper.Equipment;
@@ -60,7 +58,7 @@ public class StoreActivity extends Activity {
     private StoreRow[] initStoreRows() {
         StoreRow[] rows = new StoreRow[3];
         EquipmentManager equipment = new EquipmentManager(this);
-        rows[0] = new StoreRow(0, "Cannons");
+        rows[0] = new StoreRow(0, "Cannons"); // todo: should add all items automatically
         rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.LASER_KEY));
         rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.ION_KEY));
         rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.PLASMA_KEY));
@@ -68,7 +66,10 @@ public class StoreActivity extends Activity {
         rows[1] = new StoreRow(1, "Rockets");
         rows[1].addStoreItem(equipment.getEquipment(EquipmentManager.ROCKET_KEY));
         rows[2] = new StoreRow(2, "Armor");
-        rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR_KEY));
+        rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR0_KEY));
+        rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR1_KEY));
+        rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR2_KEY));
+        rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR3_KEY));
         return rows;
     }
 }

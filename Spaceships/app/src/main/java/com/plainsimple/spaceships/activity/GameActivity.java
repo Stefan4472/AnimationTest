@@ -20,6 +20,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 
+import com.plainsimple.spaceships.helper.ArmorType;
 import com.plainsimple.spaceships.helper.BulletType;
 import com.plainsimple.spaceships.helper.EquipmentManager;
 import com.plainsimple.spaceships.helper.GameStats;
@@ -54,6 +55,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     private static boolean muted;
     private static BulletType equippedCannon;
     private static RocketType equippedRocket;
+    private static ArmorType equippedArmor;
 
     private SharedPreferences preferences;
     private float musicVolume;
@@ -173,6 +175,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         EquipmentManager equipmentManager = new EquipmentManager(this);
         equippedCannon = equipmentManager.getEquippedCannon();
         equippedRocket = equipmentManager.getEquippedRocket();
+        equippedArmor = equipmentManager.getEquippedArmor();
     }
 
     private void initMedia() {
@@ -268,7 +271,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     // updates lifetime stats from GameView's current run
     private void updateStats() {
         // ensure gameView's stats are up to date
-        gameView.forceUpdateStats();
+        gameView.forceUpdateStats(); // todo: clean up, fix issues
         // update lifetime stats with this game's collected stats
         SharedPreferences l_stats = getSharedPreferences(GameStats.PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor l_stats_e = l_stats.edit();
@@ -377,5 +380,9 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
 
     public static RocketType getEquippedRocket() {
         return equippedRocket;
+    }
+
+    public static ArmorType getEquippedArmor() {
+        return equippedArmor;
     }
 }
