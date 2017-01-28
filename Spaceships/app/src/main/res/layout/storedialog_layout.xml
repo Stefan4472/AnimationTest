@@ -10,8 +10,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:textColor="@color/orange"
-        android:textSize="25dp"/>
+        android:textSize="35dp"/>
     <ImageView
+        android:id="@+id/storeItem_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
@@ -24,10 +25,53 @@
         android:layout_gravity="center_horizontal"
         android:textColor="@color/orange"
         android:textSize="15dp"/>
+    <!-- layout to display if item is unlocked -->
     <LinearLayout
+        android:id="@+id/unlocked_actionbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+        <com.plainsimple.spaceships.view.FontTextView
+            style="@style/GalaxyMonkey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/orange"
+            android:textSize="15dp"
+            android:text="Status:" />
+        <com.plainsimple.spaceships.view.FontTextView
+            android:id="@+id/storeItem_status"
+            style="@style/GalaxyMonkey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="15dp"
+            android:textColor="@color/white" />
+        <com.plainsimple.spaceships.view.FontButton
+            android:id="@+id/storeItem_equip"
+            style="@style/GalaxyMonkey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/grey"
+            android:background="@color/orange"
+            android:text="Equip"/>
+    </LinearLayout>
+    <!-- layout to display if item is locked -->
+    <LinearLayout
+        android:id="@+id/locked_actionbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
+        android:orientation="horizontal"
+        android:visibility="gone">
+        <com.plainsimple.spaceships.view.FontButton
+            android:id="@+id/storeItem_buy"
+            style="@style/GalaxyMonkey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/grey"
+            android:background="@color/orange" />
     </LinearLayout>
 </LinearLayout>
