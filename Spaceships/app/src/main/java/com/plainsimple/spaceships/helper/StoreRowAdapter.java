@@ -19,16 +19,20 @@ import plainsimple.spaceships.R;
 
 public class StoreRowAdapter extends ArrayAdapter<StoreRow> { // TESTING
 
-    Context c;
-    int id;
+    private Context c;
+    private int id;
     // contains StoreRow objects to display
-    StoreRow data[];
+    private StoreRow data[];
+    // receives StoreItem button clicked events
+    private StoreItemAdapter.OnButtonClickedListener buttonListener;
 
-    public StoreRowAdapter(Context mContext, int id, StoreRow[] data) {
+    public StoreRowAdapter(Context mContext, int id, StoreRow[] data,
+                           StoreItemAdapter.OnButtonClickedListener buttonListener) {
         super(mContext, id, data);
         c = mContext;
         this.id = id;
         this.data = data;
+        this.buttonListener = buttonListener;
     }
 
     @Override
@@ -45,12 +49,7 @@ public class StoreRowAdapter extends ArrayAdapter<StoreRow> { // TESTING
         label.setTag(row.getId());
         RecyclerView row_display = (RecyclerView) convertView.findViewById(R.id.recycler_view);
         row_display.setLayoutManager(new LinearLayoutManager(c, LinearLayoutManager.HORIZONTAL, false));
-        row_display.setAdapter(new StoreItemAdapter(c, row.getRowItems(), new StoreItemAdapter.OnButtonClickedListener() {
-            @Override
-            public void onItemClick(Equipment selectedItem) {
-                Log.d("StoreRowAdapter.java", "Detected click on " + selectedItem.getLabel());
-            }
-        }));
+        row_display.setAdapter(new StoreItemAdapter(c, row.getRowItems(), buttonListener));
         return convertView;
     }
 

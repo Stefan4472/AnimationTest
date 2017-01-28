@@ -9,7 +9,9 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.plainsimple.spaceships.helper.Equipment;
 import com.plainsimple.spaceships.helper.EquipmentManager;
+import com.plainsimple.spaceships.helper.StoreItemAdapter;
 import com.plainsimple.spaceships.helper.StoreRowAdapter;
 import com.plainsimple.spaceships.helper.StoreRow;
 
@@ -34,7 +36,13 @@ public class StoreActivity extends Activity {
         // rows to be displayed in ListView (categories of upgrades)
         StoreRow[] rows = initStoreRows();
         // create adapter instance to display content in each row of ListView
-        StoreRowAdapter adapter = new StoreRowAdapter(this, R.layout.listview_item, rows);
+        StoreRowAdapter adapter = new StoreRowAdapter(this, R.layout.listview_item,
+                rows, new StoreItemAdapter.OnButtonClickedListener() {
+            @Override
+            public void onItemClick(Equipment selectedItem) {
+                Log.d("StoreActivity.java", "Detected click on " + selectedItem.getLabel());
+            }
+        });
         listView.setAdapter(adapter);
         /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
