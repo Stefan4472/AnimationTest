@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +45,12 @@ public class StoreRowAdapter extends ArrayAdapter<StoreRow> { // TESTING
         label.setTag(row.getId());
         RecyclerView row_display = (RecyclerView) convertView.findViewById(R.id.recycler_view);
         row_display.setLayoutManager(new LinearLayoutManager(c, LinearLayoutManager.HORIZONTAL, false));
-        row_display.setAdapter(new StoreItemAdapter(c, row.getRowItems()));
+        row_display.setAdapter(new StoreItemAdapter(c, row.getRowItems(), new StoreItemAdapter.OnButtonClickedListener() {
+            @Override
+            public void onItemClick(Equipment selectedItem) {
+                Log.d("StoreRowAdapter.java", "Detected click on " + selectedItem.getLabel());
+            }
+        }));
         return convertView;
     }
 
