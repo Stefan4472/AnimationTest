@@ -24,7 +24,8 @@ import plainsimple.spaceships.R;
 
 public class StoreActivity extends Activity {
 
-    ListView listView;
+    private ListView listView;
+
 
     @Override // initialize the layout and populate the main ListView
     public void onCreate(Bundle savedInstanceState) {

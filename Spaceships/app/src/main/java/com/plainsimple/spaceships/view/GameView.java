@@ -253,8 +253,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             BitmapData ship_data = BitmapCache.getData(BitmapID.SPACESHIP, c);
             // initialize spaceship just off the screen in the middle
             spaceship = new Spaceship(-ship_data.getWidth(), screenH / 2 - ship_data.getHeight() / 2, c);
-            spaceship.setBulletType(GameActivity.getEquippedBulletType());
-            spaceship.setRocketType(GameActivity.getEquippedRocketType());
+            spaceship.setBulletType(GameActivity.getEquippedCannon());
+            spaceship.setRocketType(GameActivity.getEquippedRocket());
             spaceship.setHP(30);
             background = new Background(screenW, screenH); // todo: re-create background from save
             map = new Map(c, screenW, screenH);
@@ -307,8 +307,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // resets all elements and fields so that a new game can begin
     public void restartGame() {
         spaceship = new Spaceship(-spaceship.getWidth(), screenH / 2 - spaceship.getHeight() / 2, c);
-        spaceship.setBulletType(GameActivity.getEquippedBulletType());
-        spaceship.setRocketType(GameActivity.getEquippedRocketType());
+        spaceship.setBulletType(GameActivity.getEquippedCannon());
+        spaceship.setRocketType(GameActivity.getEquippedRocket());
         spaceship.setHP(30);
         background.reset();
         map.reset();

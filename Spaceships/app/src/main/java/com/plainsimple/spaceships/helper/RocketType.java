@@ -36,4 +36,13 @@ public class RocketType {
     public float getSpeedX() {
         return speedX;
     }
+
+    public static RocketType stringToRocketType(String key) {
+        switch (key) {
+            case "ROCKET":
+                return RocketType.ROCKET;
+            default:
+                throw new IllegalArgumentException("Did not recognize " + key);
+        }
+    }
 }

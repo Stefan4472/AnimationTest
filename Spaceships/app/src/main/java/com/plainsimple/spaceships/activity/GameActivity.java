@@ -21,7 +21,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 
 import com.plainsimple.spaceships.helper.BulletType;
-import com.plainsimple.spaceships.helper.Equipped;
+import com.plainsimple.spaceships.helper.EquipmentManager;
 import com.plainsimple.spaceships.helper.GameStats;
 import com.plainsimple.spaceships.helper.RocketType;
 import com.plainsimple.spaceships.helper.SoundID;
@@ -52,8 +52,8 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     private static Hashtable<SoundID, Integer> soundIDs;
     private static boolean paused = false;
     private static boolean muted;
-    private static BulletType equippedBulletType;
-    private static RocketType equippedRocketType;
+    private static BulletType equippedCannon;
+    private static RocketType equippedRocket;
 
     private SharedPreferences preferences;
     private float musicVolume;
@@ -169,10 +169,10 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             gameView.flagRestoreGameState();
         }
 
-        // retrieve equipped bullet and rocket type
-        SharedPreferences equipped_preferences = getSharedPreferences(Equipped.PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
-        equippedBulletType = Equipped.stringToBulletType(equipped_preferences.getString(Equipped.EQUIPPED_BULLET, Equipped.LASER_BULLET));
-        equippedRocketType = Equipped.stringToRocketType(equipped_preferences.getString(Equipped.EQUIPPED_ROCKET, Equipped.ROCKET_DEFAULT));
+        // retrieve equipped cannon and rocket
+        EquipmentManager equipmentManager = new EquipmentManager(this);
+        equippedCannon = equipmentManager.getEquippedCannon();
+        equippedRocket = equipmentManager.getEquippedRocket();
     }
 
     private void initMedia() {
@@ -281,11 +281,9 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             l_stats_e.putLong(GameStats.GAME_SCORE, Double.doubleToLongBits(GameView.currentStats.get(GameStats.GAME_SCORE)));
         }
         l_stats_e.commit();
-        // add coins collected in game to current available coins (stored in Equipped)
-        SharedPreferences equipped_prefs = getSharedPreferences(Equipped.PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
-        SharedPreferences.Editor equipped_prefs_e = equipped_prefs.edit();
-        equipped_prefs_e.putInt(Equipped.COINPURSE_KEY, equipped_prefs.getInt(Equipped.COINPURSE_KEY, 0) + (int) GameView.currentStats.get(GameStats.COINS_COLLECTED));
-        equipped_prefs_e.commit();
+        // add coins collected in game to current available coins (stored in EquipmentManager)
+        EquipmentManager coin_manager = new EquipmentManager(this);
+        coin_manager.addCoins((int) GameView.currentStats.get(GameStats.COINS_COLLECTED));
     }
 
     @Override // we do not restore game state here--only in onCreate
@@ -373,11 +371,11 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         return muted;
     }
 
-    public static BulletType getEquippedBulletType() {
-        return equippedBulletType;
+    public static BulletType getEquippedCannon() {
+        return equippedCannon;
     }
 
-    public static RocketType getEquippedRocketType() {
-        return equippedRocketType;
+    public static RocketType getEquippedRocket() {
+        return equippedRocket;
     }
 }

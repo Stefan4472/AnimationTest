@@ -32,6 +32,7 @@ public class BulletType {
     private static final int PLUTONIUM_DELAY = 18;
     private static final float PLUTONIUM_SPEED_X = 0.013f;
 
+    // todo: enums?
     public static final BulletType LASER = new BulletType(LASER_DAMAGE, LASER_DELAY, LASER_SPEED_X);
     public static final BulletType ION = new BulletType(ION_DAMAGE, ION_DELAY, ION_SPEED_X);
     public static final BulletType PLASMA = new BulletType(PLASMA_DAMAGE, PLASMA_DELAY, PLASMA_SPEED_X);
@@ -53,5 +54,20 @@ public class BulletType {
 
     public float getSpeedX() {
         return speedX;
+    }
+
+    public static BulletType stringToBulletType(String key) {
+        switch (key) {
+            case "LASER_CANNON":
+                return BulletType.LASER;
+            case "ION_CANNON":
+                return BulletType.ION;
+            case "PLASMA_CANNON":
+                return BulletType.PLASMA;
+            case "PLUTONIUM_CANNON":
+                return BulletType.PLUTONIUM;
+            default:
+                throw new IllegalArgumentException("Did not recognize " + key);
+        }
     }
 }

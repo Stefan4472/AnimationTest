@@ -3,12 +3,15 @@ package com.plainsimple.spaceships.helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.plainsimple.spaceships.sprite.Bullet;
+
 import java.util.HashMap;
 
 import plainsimple.spaceships.R;
 
 /**
  * Provides query and interface for accessing stored equipment states
+ * as well as current number of coins
  */
 
 public class EquipmentManager {
@@ -20,8 +23,9 @@ public class EquipmentManager {
     public final static String PLUTONIUM_KEY = "PLUTONIUM_CANNON";
     public final static String ROCKET_KEY = "DEF_ROCKET";
     public final static String ARMOR_KEY = "DEF_ARMOR";
+    public final static String COINS_KEY = "COINS";
 
-    // strings used to define the default equipment
+    // strings used to define the default equipment todo: make id the toString of the BulletType/RocketType/ArmorType enum it represents
     private final static String LASER_CANNON = "LASER_CANNON:CANNON:A cannon that fires laser rounds:" + R.drawable.spaceship + ":Laser Cannon:0:EQUIPPED";
     private final static String ION_CANNON = "ION_CANNON:CANNON:A cannon that fires ion rounds:" + R.drawable.spaceship + ":Ion Cannon:100:LOCKED";
     private final static String PLASMA_CANNON = "PLASMA_CANNON:CANNON:A cannon that fires plasma rounds:" + R.drawable.spaceship + ":Plasma Cannon:175:LOCKED";
@@ -34,6 +38,8 @@ public class EquipmentManager {
 
     // stores Equipment objects for lookup
     private HashMap<String, Equipment> equipmentStates = new HashMap<>();
+    // coins available
+    private int coins;
     // used to write changes to SharedPreferences
     private SharedPreferences.Editor prefEditor;
 
@@ -46,6 +52,7 @@ public class EquipmentManager {
         equipmentStates.put(PLUTONIUM_KEY, new Equipment(data.getString(PLUTONIUM_KEY, PLUTONIUM_CANNON)));
         equipmentStates.put(ARMOR_KEY, new Equipment(data.getString(ARMOR_KEY, ARMOR)));
         equipmentStates.put(ROCKET_KEY, new Equipment(data.getString(ROCKET_KEY, ROCKET)));
+        coins = data.getInt(COINS_KEY, 0);
         prefEditor = data.edit();
     }
 
@@ -69,14 +76,48 @@ public class EquipmentManager {
         }
     }
 
-    // returns the specific equipment that is currently equipped
-    // given the type to look for
-    public Equipment.Type getEquipped(Equipment.Type query) { // todo: this probably won't work
+    // returns the number of coins available
+    public int getCoins() {
+        return coins;
+    }
+
+    // withdraws coins from coin balance. toSpend must be less than available balance
+    public void spendCoins(int toSpend) throws IllegalStateException {
+        if (toSpend > coins) {
+            throw new IllegalStateException("Tried to spend more coins that are available");
+        } else {
+            coins -= toSpend;
+            prefEditor.putInt(COINS_KEY, coins);
+            prefEditor.apply();
+        }
+    }
+
+    // adds specified number of coins to balance
+    public void addCoins(int toAdd) {
+        coins += toAdd;
+        prefEditor.putInt(COINS_KEY, coins);
+        prefEditor.apply();
+    }
+
+    // returns BulletType equipped
+    public BulletType getEquippedCannon() {
         Equipment e;
         for (String key : equipmentStates.keySet()) {
             e = equipmentStates.get(key);
-            if (e.getType().equals(query) && e.getStatus().equals(Equipment.Status.EQUIPPED)) {
-                return e.getType();
+            if (e.getType().equals(Equipment.Type.CANNON) && e.getStatus().equals(Equipment.Status.EQUIPPED)) {
+                return BulletType.stringToBulletType(e.getId());
+            }
+        }
+        return null;
+    }
+
+    // returns RocketType equipped
+    public RocketType getEquippedRocket() {
+        Equipment e;
+        for (String key : equipmentStates.keySet()) {
+            e = equipmentStates.get(key);
+            if (e.getType().equals(Equipment.Type.ROCKET) && e.getStatus().equals(Equipment.Status.EQUIPPED)) {
+                return RocketType.stringToRocketType(e.getId()); // todo: clean up
             }
         }
         return null;
