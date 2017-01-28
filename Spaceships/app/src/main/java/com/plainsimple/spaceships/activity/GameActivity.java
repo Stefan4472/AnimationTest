@@ -21,7 +21,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 
 import com.plainsimple.spaceships.helper.ArmorType;
-import com.plainsimple.spaceships.helper.BulletType;
+import com.plainsimple.spaceships.helper.CannonType;
 import com.plainsimple.spaceships.helper.EquipmentManager;
 import com.plainsimple.spaceships.helper.GameStats;
 import com.plainsimple.spaceships.helper.RocketType;
@@ -53,7 +53,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     private static Hashtable<SoundID, Integer> soundIDs;
     private static boolean paused = false;
     private static boolean muted;
-    private static BulletType equippedCannon;
+    private static CannonType equippedCannon;
     private static RocketType equippedRocket;
     private static ArmorType equippedArmor;
 
@@ -374,7 +374,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         return muted;
     }
 
-    public static BulletType getEquippedCannon() {
+    public static CannonType getEquippedCannon() {
         return equippedCannon;
     }
 

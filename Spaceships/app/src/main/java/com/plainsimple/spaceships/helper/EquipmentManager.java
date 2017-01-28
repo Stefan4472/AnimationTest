@@ -15,28 +15,29 @@ import plainsimple.spaceships.R;
 
 public class EquipmentManager {
 
-    // equipment id's
-    public final static String LASER_KEY = "LASER_CANNON";
-    public final static String ION_KEY = "ION_CANNON";
-    public final static String PLASMA_KEY = "PLASMA_CANNON";
-    public final static String PLUTONIUM_KEY = "PLUTONIUM_CANNON";
-    public final static String ROCKET_KEY = "DEF_ROCKET";
-    public final static String ARMOR0_KEY = "DEF_ARMOR";
-    public final static String ARMOR1_KEY = "ARMOR_1";
-    public final static String ARMOR2_KEY = "ARMOR_2";
-    public final static String ARMOR3_KEY = "ARMOR_3";
+    // equipment id's (equal to toString of their corresponding enum
+    // for convenience)
+    public final static String LASER_KEY = CannonType.LASER.toString();
+    public final static String ION_KEY = CannonType.ION.toString();
+    public final static String PLASMA_KEY = CannonType.PLASMA.toString();
+    public final static String PLUTONIUM_KEY = CannonType.PLUTONIUM.toString();
+    public final static String ROCKET_KEY = RocketType.ROCKET.toString();
+    public final static String ARMOR0_KEY = ArmorType.DEFAULT.toString();
+    public final static String ARMOR1_KEY = ArmorType.ARMOR_1.toString();
+    public final static String ARMOR2_KEY = ArmorType.ARMOR_2.toString();
+    public final static String ARMOR3_KEY = ArmorType.ARMOR_3.toString();
     public final static String COINS_KEY = "COINS";
 
-    // strings used to define the default equipment todo: make id the toString of the BulletType/RocketType/ArmorType enum it represents. clean up
-    private final static String LASER_CANNON = "LASER_CANNON:CANNON:A cannon that fires laser rounds:" + R.drawable.spaceship + ":Laser Cannon:0:EQUIPPED";
-    private final static String ION_CANNON = "ION_CANNON:CANNON:A cannon that fires ion rounds:" + R.drawable.spaceship + ":Ion Cannon:100:LOCKED";
-    private final static String PLASMA_CANNON = "PLASMA_CANNON:CANNON:A cannon that fires plasma rounds:" + R.drawable.spaceship + ":Plasma Cannon:175:LOCKED";
-    private final static String PLUTONIUM_CANNON = "PLUTONIUM_CANNON:CANNON:A cannon that fires plutonium rounds:" + R.drawable.spaceship + ":Plutonium Cannon:350:LOCKED";
-    private final static String ROCKET = "ROCKET:ROCKET:A high-explosive projectile:" + R.drawable.spaceship + ":Standard Rocket:0:EQUIPPED";
-    private final static String ARMOR_0 = ArmorType.DEFAULT.toString() + ":ARMOR:Standard spaceship armor:" + R.drawable.spaceship + ":Standard Armor:0:EQUIPPED";
-    private final static String ARMOR_1 = ArmorType.ARMOR_1.toString() + ":" + Equipment.Type.ARMOR.toString() + ":Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:100:LOCKED";
-    private final static String ARMOR_2 = ArmorType.ARMOR_2.toString() + ":" + Equipment.Type.ARMOR.toString() + ":Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:200:LOCKED";
-    private final static String ARMOR_3 = ArmorType.ARMOR_3.toString() + ":" + Equipment.Type.ARMOR.toString() + ":Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:250:LOCKED";
+    // strings used to define the default equipment todo: clean up?
+    private final static String LASER_CANNON = LASER_KEY + ":CANNON:A cannon that fires laser rounds:" + R.drawable.spaceship + ":Laser Cannon:0:EQUIPPED";
+    private final static String ION_CANNON = ION_KEY + ":CANNON:A cannon that fires ion rounds:" + R.drawable.spaceship + ":Ion Cannon:100:LOCKED";
+    private final static String PLASMA_CANNON = PLASMA_KEY + ":CANNON:A cannon that fires plasma rounds:" + R.drawable.spaceship + ":Plasma Cannon:175:LOCKED";
+    private final static String PLUTONIUM_CANNON = PLUTONIUM_KEY + ":CANNON:A cannon that fires plutonium rounds:" + R.drawable.spaceship + ":Plutonium Cannon:350:LOCKED";
+    private final static String ROCKET = ROCKET_KEY + ":ROCKET:A high-explosive projectile:" + R.drawable.spaceship + ":Standard Rocket:0:EQUIPPED";
+    private final static String ARMOR_0 = ARMOR0_KEY + ":ARMOR:Standard spaceship armor:" + R.drawable.spaceship + ":Standard Armor:0:EQUIPPED";
+    private final static String ARMOR_1 = ARMOR1_KEY + ":" + Equipment.Type.ARMOR.toString() + ":Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:100:LOCKED";
+    private final static String ARMOR_2 = ARMOR2_KEY + ":" + Equipment.Type.ARMOR.toString() + ":Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:200:LOCKED";
+    private final static String ARMOR_3 = ARMOR3_KEY + ":" + Equipment.Type.ARMOR.toString() + ":Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:250:LOCKED";
 
     // file key where data is stored
     public static final String PREFERENCES_FILE_KEY = "com.plainsimple.spaceships.EQUIPMENT_FILE_KEY";
@@ -108,12 +109,12 @@ public class EquipmentManager {
     }
 
     // returns BulletType equipped
-    public BulletType getEquippedCannon() {
+    public CannonType getEquippedCannon() {
         Equipment e;
         for (String key : equipmentStates.keySet()) {
             e = equipmentStates.get(key);
             if (e.getType().equals(Equipment.Type.CANNON) && e.getStatus().equals(Equipment.Status.EQUIPPED)) {
-                return BulletType.stringToBulletType(e.getId());
+                return CannonType.valueOf(e.getId());
             }
         }
         return null;
@@ -125,7 +126,7 @@ public class EquipmentManager {
         for (String key : equipmentStates.keySet()) {
             e = equipmentStates.get(key);
             if (e.getType().equals(Equipment.Type.ROCKET) && e.getStatus().equals(Equipment.Status.EQUIPPED)) {
-                return RocketType.stringToRocketType(e.getId()); // todo: clean up
+                return RocketType.valueOf(e.getId()); 
             }
         }
         return null;

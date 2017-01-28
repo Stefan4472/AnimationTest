@@ -9,7 +9,7 @@ import com.plainsimple.spaceships.helper.ArmorType;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
-import com.plainsimple.spaceships.helper.BulletType;
+import com.plainsimple.spaceships.helper.CannonType;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawSubImage;
@@ -17,7 +17,6 @@ import com.plainsimple.spaceships.helper.GameStats;
 import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.helper.RocketType;
-import com.plainsimple.spaceships.helper.SoundParams;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.view.GameView;
 
@@ -40,7 +39,7 @@ public class Spaceship extends Sprite {
     // whether user has control over spaceship
     private boolean controllable;
 
-    private BulletType bulletType = BulletType.LASER;
+    private CannonType cannonType = CannonType.LASER;
     private int lastFiredBullet; // todo: just one variable, lastFiredProjectile?
     private BitmapData bulletBitmapData;
 
@@ -113,7 +112,7 @@ public class Spaceship extends Sprite {
         explode.reset();
         move.start();
         projectiles.clear();
-        lastFiredBullet = bulletType.getDelay();
+        lastFiredBullet = cannonType.getDelay();
         lastFiredRocket = rocketType.getDelay();
     }
 
@@ -121,7 +120,7 @@ public class Spaceship extends Sprite {
     public void updateActions() {
         lastFiredBullet++;
         lastFiredRocket++;
-        if (fireMode == FireMode.BULLET && lastFiredBullet >= bulletType.getDelay() && hp != 0) {
+        if (fireMode == FireMode.BULLET && lastFiredBullet >= cannonType.getDelay() && hp != 0) {
             fireBullets();
             lastFiredBullet = 0;
         } else if (fireMode == FireMode.ROCKET && lastFiredRocket >= rocketType.getDelay() && hp != 0) {
@@ -143,8 +142,8 @@ public class Spaceship extends Sprite {
 
     // fires two bullets
     public void fireBullets() {
-        projectiles.add(new Bullet(bulletBitmapData, x + getWidth() * 0.78f, y + 0.28f * getHeight(), bulletType));
-        projectiles.add(new Bullet(bulletBitmapData, x + getWidth() * 0.78f, y + 0.66f * getHeight(), bulletType));
+        projectiles.add(new Bullet(bulletBitmapData, x + getWidth() * 0.78f, y + 0.28f * getHeight(), cannonType));
+        projectiles.add(new Bullet(bulletBitmapData, x + getWidth() * 0.78f, y + 0.66f * getHeight(), cannonType));
         GameActivity.playSound(BULLET_SOUND);
     }
 
@@ -250,8 +249,8 @@ public class Spaceship extends Sprite {
         this.fireMode = fireMode;
     }
 
-    public void setBulletType(BulletType bulletType) {
-        this.bulletType = bulletType;
+    public void setCannonType(CannonType cannonType) {
+        this.cannonType = cannonType;
     }
 
     public void setRocketType(RocketType rocketType) {
