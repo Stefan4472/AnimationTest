@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.plainsimple.spaceships.helper.Equipment;
@@ -14,6 +15,7 @@ import com.plainsimple.spaceships.helper.EquipmentManager;
 import com.plainsimple.spaceships.helper.StoreItemAdapter;
 import com.plainsimple.spaceships.helper.StoreRowAdapter;
 import com.plainsimple.spaceships.helper.StoreRow;
+import com.plainsimple.spaceships.view.FontTextView;
 
 import plainsimple.spaceships.R;
 
@@ -24,6 +26,8 @@ import plainsimple.spaceships.R;
 public class StoreActivity extends Activity {
 
     private ListView listView;
+    private FontTextView coinCounter;
+    private EquipmentManager equipment;
 
 
     @Override // initialize the layout and populate the main ListView
@@ -33,6 +37,7 @@ public class StoreActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.store_layout);
+        equipment = new EquipmentManager(this);
         listView = (ListView) findViewById(R.id.list_view);
         // rows to be displayed in ListView (categories of upgrades)
         StoreRow[] rows = initStoreRows();
@@ -47,18 +52,14 @@ public class StoreActivity extends Activity {
             }
         });
         listView.setAdapter(adapter);
-        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("StoreActivity.java", "Position = " + position + ", id = " + id);
-            }
-        });*/
+        coinCounter = (FontTextView) findViewById(R.id.coin_counter);
+        coinCounter.setText(Integer.toString(equipment.getCoins()));
+        ImageView rotatingCoin = (ImageView) findViewById(R.id.rotating_coin);
     }
 
     // get status of equipment and initialize data required to display the store
     private StoreRow[] initStoreRows() {
         StoreRow[] rows = new StoreRow[3];
-        EquipmentManager equipment = new EquipmentManager(this);
         rows[0] = new StoreRow(0, "Cannons"); // todo: should add all items automatically
         rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.LASER_KEY));
         rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.ION_KEY));
