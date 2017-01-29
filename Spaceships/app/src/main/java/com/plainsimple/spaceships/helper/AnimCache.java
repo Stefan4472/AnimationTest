@@ -9,14 +9,14 @@ import plainsimple.spaceships.R;
  * Cache for Sprite Animations. Retrieved using BitmapID // todo: or use AnimCache enum?
  */
 
-public class AnimCache {
+public class AnimCache { // todo: use enums?
 
     // Initializes the specified sprite animation using parameters
     // from R.string. Parameters should be in the form
     // num_frames, followed by the frame counts of each frame,
     // followed by the boolean that determines whether the animation loops.
     // Parameters are separated by the ':' character
-    // @throws IllegalArgumentException if any error is encountered creating the animation todo: AnimID enum
+    // @throws IllegalArgumentException if any error is encountered creating the animation todo: enum??
     public static SpriteAnimation get(BitmapID key, Context context) throws IllegalArgumentException {
         try {
             // convert key to string of params

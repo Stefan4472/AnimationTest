@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ListView;
@@ -71,5 +72,10 @@ public class StoreActivity extends Activity {
         rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR2_KEY));
         rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR3_KEY));
         return rows;
+    }
+
+    // return to main menu
+    public void onLeavePressed(View view) {
+        finish();
     }
 }
