@@ -27,7 +27,6 @@ import com.plainsimple.spaceships.helper.GameStats;
 import com.plainsimple.spaceships.helper.RocketType;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
-import com.plainsimple.spaceships.util.EnumUtil;
 import com.plainsimple.spaceships.view.GameView;
 
 import java.util.Hashtable;
@@ -183,11 +182,10 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
         soundIDs = new Hashtable<>();
         Log.d("Activity Class", "Loading Sounds");
-        soundIDs.put(SoundID.LASER, soundPool.load(this, EnumUtil.getID(SoundID.LASER), 1));
-        soundIDs.put(SoundID.ROCKET, soundPool.load(this, EnumUtil.getID(SoundID.ROCKET), 1));
-        soundIDs.put(SoundID.EXPLOSION, soundPool.load(this, EnumUtil.getID(SoundID.EXPLOSION), 1));
-        soundIDs.put(SoundID.BUTTON_CLICKED, soundPool.load(this, EnumUtil.getID(SoundID.BUTTON_CLICKED), 1));
-        soundIDs.put(SoundID.TITLE_THEME, soundPool.load(this, EnumUtil.getID(SoundID.TITLE_THEME), 1));
+        soundIDs.put(SoundID.LASER, soundPool.load(this, SoundID.LASER.getId(), 1));
+        soundIDs.put(SoundID.ROCKET, soundPool.load(this, SoundID.ROCKET.getId(), 1));
+        soundIDs.put(SoundID.EXPLOSION, soundPool.load(this, SoundID.EXPLOSION.getId(), 1));
+        soundIDs.put(SoundID.BUTTON_CLICKED, soundPool.load(this, SoundID.BUTTON_CLICKED.getId(), 1));
         Log.d("Activity Class", soundIDs.size() + " sounds loaded");
     }
 

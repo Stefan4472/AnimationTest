@@ -16,7 +16,7 @@ public class AnimCache {
     // num_frames, followed by the frame counts of each frame,
     // followed by the boolean that determines whether the animation loops.
     // Parameters are separated by the ':' character
-    // @throws IllegalArgumentException if any error is encountered creating the animation
+    // @throws IllegalArgumentException if any error is encountered creating the animation todo: AnimID enum
     public static SpriteAnimation get(BitmapID key, Context context) throws IllegalArgumentException {
         try {
             // convert key to string of params

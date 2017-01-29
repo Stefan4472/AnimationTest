@@ -126,7 +126,7 @@ public class EquipmentManager {
         for (String key : equipmentStates.keySet()) {
             e = equipmentStates.get(key);
             if (e.getType().equals(Equipment.Type.ROCKET) && e.getStatus().equals(Equipment.Status.EQUIPPED)) {
-                return RocketType.valueOf(e.getId()); 
+                return RocketType.valueOf(e.getId());
             }
         }
         return null;

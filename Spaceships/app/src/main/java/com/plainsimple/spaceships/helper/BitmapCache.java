@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import com.plainsimple.spaceships.util.EnumUtil;
-
 import java.util.Hashtable;
 
 /**
@@ -31,7 +29,7 @@ public class BitmapCache {
         if (bmp == null) {
             // loads in the bitmap if it hasn't already been loaded
             try {
-                bmp = BitmapFactory.decodeResource(context.getResources(), EnumUtil.getID(key));
+                bmp = BitmapFactory.decodeResource(context.getResources(), key.getrId());
                 bmp = Bitmap.createScaledBitmap(bmp,
                         (int) (bmp.getWidth() * scalingFactor),
                         (int) (bmp.getHeight() * scalingFactor), true);
@@ -51,7 +49,7 @@ public class BitmapCache {
         if (data == null) {
             // loads in the bitmap if it hasn't already been loaded
             try {
-                Bitmap bmp = BitmapFactory.decodeResource(context.getResources(), EnumUtil.getID(key));
+                Bitmap bmp = BitmapFactory.decodeResource(context.getResources(), key.getrId());
                 bmp = Bitmap.createScaledBitmap(bmp,
                         (int) (bmp.getWidth() * scalingFactor),
                         (int) (bmp.getHeight() * scalingFactor), true);

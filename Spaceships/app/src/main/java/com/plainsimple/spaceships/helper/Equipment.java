@@ -8,7 +8,7 @@ import plainsimple.spaceships.R;
 
 public class Equipment {
 
-    private String id;
+    private String id; // todo: rename to enum?
     private Type type;
     private String description;
     private int rDrawableId;
