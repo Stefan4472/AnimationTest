@@ -27,7 +27,7 @@ public class StoreActivity extends Activity {
 
     private ListView listView;
     private FontTextView coinCounter;
-    private EquipmentManager equipment;
+    public static EquipmentManager equipment; // todo: coins spent listener
 
 
     @Override // initialize the layout and populate the main ListView

@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.plainsimple.spaceships.helper.Equipment;
+import com.plainsimple.spaceships.helper.EquipmentManager;
 import com.plainsimple.spaceships.view.FontButton;
 import com.plainsimple.spaceships.view.FontTextView;
 
@@ -29,33 +30,19 @@ import plainsimple.spaceships.R;
 public class StoreItemDialogFragment extends DialogFragment {
 
     private final static String LABEL_KEY = "LABEL_KEY";
+    private final static String ID_KEY = "ID_KEY";
     private final static String DESC_KEY = "DESC_KEY";
     private final static String COST_KEY = "COST_KEY";
     private final static String STATUS_KEY = "STATUS_KEY";
     private final static String R_ID_KEY = "R_ID_KEY";
 
-    // status equipment will change to when action button is clicked
-    private Equipment.Status actionButtonChange;
-
-    // interface used to send events to GameActivity
-    // passes the fragment back as well as current settings
-    public interface StoreItemListener {
-        void onGameVolumeChanged(DialogFragment dialog, float gameVolume);
-        void onMusicVolumeChanged(DialogFragment dialog, float musicVolume);
-        void onResumePressed(DialogFragment dialog);
-        void onQuitPressed(DialogFragment dialog);
-        void onRestartPressed(DialogFragment dialog);
-    }
-
-    // used to notify StoreActivity
-    StoreItemListener storeItemListener;
-
-    // creates dialog with data to represent specified equipment
+    // load equipment fields into a Bundle to pass to the fragment
     public static StoreItemDialogFragment newInstance(Equipment equipment) {
         StoreItemDialogFragment fragment = new StoreItemDialogFragment();
         Bundle args = new Bundle();
         args.putString(LABEL_KEY, equipment.getLabel());
         args.putString(DESC_KEY, equipment.getDescription());
+        args.putString(ID_KEY, equipment.getId());
         args.putInt(COST_KEY, equipment.getCost());
         args.putString(STATUS_KEY, equipment.getStatus().toString());
         args.putInt(R_ID_KEY, equipment.getrDrawableId());
@@ -63,64 +50,66 @@ public class StoreItemDialogFragment extends DialogFragment {
         return fragment;
     }
 
-    @Override // instantiates the listener and makes sure host activity implements the interface
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        //try {
-        //    storeListener = (StoreListener) activity;
-        //} catch (ClassCastException e) {
-        //    throw new ClassCastException(activity.toString() + " must implement StoreListener");
-        //}
-    }
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // retrieve arguments from bundle (can't use savedInstanceState)
-        Bundle bundle = getArguments();
+        final Bundle bundle = getArguments();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // inflate the layout
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialog_layout = inflater.inflate(R.layout.storedialog_layout, null);
+        // set the dialog's label
         FontTextView label = (FontTextView) dialog_layout.findViewById(R.id.storeItem_label);
         label.setText(bundle.getString(LABEL_KEY));
+        // set the dialog's thumbnail/image
         ImageView image = (ImageView) dialog_layout.findViewById(R.id.storeItem_image);
         image.setImageBitmap(BitmapFactory.decodeResource(getResources(), bundle.getInt(R_ID_KEY)));
+        // set the dialog's description
         FontTextView description = (FontTextView) dialog_layout.findViewById(R.id.storeItem_description);
         description.setText(bundle.getString(DESC_KEY));
 
         // determine equipment's status
         // result determines whether to show locked_actionbar or unlocked_actionbar
         Equipment.Status status = Equipment.Status.valueOf(bundle.getString(STATUS_KEY));
+
+        // display and populate the "unlocked" LinearLayout
         if (status.equals(Equipment.Status.EQUIPPED) || status.equals(Equipment.Status.UNLOCKED)) {
             LinearLayout unlocked = (LinearLayout) dialog_layout.findViewById(R.id.unlocked_actionbar);
             unlocked.setVisibility(View.VISIBLE);
+            // set the status
             FontTextView display_status = (FontTextView) dialog_layout.findViewById(R.id.storeItem_status);
             display_status.setText(bundle.getString(STATUS_KEY));
             FontButton action_button = (FontButton) dialog_layout.findViewById(R.id.storeItem_equip);
-            if (status.equals(Equipment.Status.UNLOCKED)) {
-                // give option to equip the item
+            if (status.equals(Equipment.Status.UNLOCKED)) { // give option to equip the item
                 action_button.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) { // todo: send back to StoreActivity
-                        Log.d("StoreItemDialogFragment", "Chose to equip");
+                    public void onClick(View v) {
+                        Log.d("StoreItemDialogFragment", "Chose to equip " + bundle.getString(LABEL_KEY));
+                        StoreActivity.equipment.equip(bundle.getString(ID_KEY));
                     }
                 });
-            } else { // already equipped: disable button
+            } else { // already equipped: don't show button
                 action_button.setVisibility(View.GONE);
             }
-        } else { // display button to buy the equipment
+        } else { // display and populate the "locked" LinearLayout
             LinearLayout locked = (LinearLayout) dialog_layout.findViewById(R.id.locked_actionbar);
             locked.setVisibility(View.VISIBLE);
-            int cost = bundle.getInt(COST_KEY);
+            final int cost = bundle.getInt(COST_KEY);
             FontButton buy_button = (FontButton) dialog_layout.findViewById(R.id.storeItem_buy);
             buy_button.setText("Buy for " + cost);
-            // todo: disable if not enough money
-            buy_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d("StoreItemDialogFragment", "Chose to buy");
-                }
-            });
+            // user has enough money: add onClickListener to purchase
+            if (cost <= StoreActivity.equipment.getCoins()) {
+                buy_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    Log.d("StoreItemDialogFragment", "Chose to buy " + bundle.getString(LABEL_KEY));
+                    StoreActivity.equipment.buy(bundle.getString(ID_KEY));
+                    StoreActivity.equipment.spendCoins(cost);
+                    }
+                });
+            } else { // user does not have enough money: disable "buy" button
+                buy_button.setEnabled(false);
+            }
         }
         builder.setCancelable(true);
         builder.setView(dialog_layout);

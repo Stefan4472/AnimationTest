@@ -75,7 +75,7 @@ public class EquipmentManager {
     }
 
     // modifies the specified Equipment object and updates SharedPreferences
-    public void modify(String key, Equipment modified) throws IllegalArgumentException {
+    private void modify(String key, Equipment modified) throws IllegalArgumentException {
         if (!equipmentStates.containsKey(key)) {
             throw new IllegalArgumentException("Did not recognize given key (" + key + ")");
         } else {
@@ -118,6 +118,30 @@ public class EquipmentManager {
             }
         }
         return null;
+    }
+
+    // sets previously equipped item of this type to UNLOCKED and sets
+    // the specified equipment to EQUIPPED
+    public void equip(String toEquipId) throws IllegalArgumentException {
+        if (!equipmentStates.containsKey(toEquipId)) {
+            throw new IllegalArgumentException("Key " + toEquipId + " was not recognized");
+        } else {
+            Equipment to_equip = equipmentStates.get(toEquipId);
+            Equipment.Type type = to_equip.getType();
+            Equipment e;
+            for (String key : equipmentStates.keySet()) {
+                e = equipmentStates.get(key);
+                if (e.getType().equals(type) && e.getStatus().equals(Equipment.Status.EQUIPPED)) {
+                    e.setStatus(Equipment.Status.UNLOCKED);
+                }
+            }
+            modify(toEquipId, equipmentStates.get(toEquipId).setStatus(Equipment.Status.EQUIPPED));
+        }
+    }
+
+    // sets the specified Equipment to "UNLOCKED"
+    public void buy(String toBuyId) throws IllegalArgumentException {
+        modify(toBuyId, equipmentStates.get(toBuyId).setStatus(Equipment.Status.UNLOCKED));
     }
 
     // returns RocketType equipped

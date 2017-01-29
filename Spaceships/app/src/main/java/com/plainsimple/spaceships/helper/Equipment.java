@@ -71,6 +71,11 @@ public class Equipment {
         return status;
     }
 
+    public Equipment setStatus(Status newStatus) {
+        status = newStatus;
+        return this;
+    }
+
     // returns String representation in a readable format
     public String toString() {
         return id + ":" + type.toString() + ":" + description + ":" + rDrawableId +
