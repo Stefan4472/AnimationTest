@@ -1,7 +1,9 @@
 package com.plainsimple.spaceships.sprite;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.CannonType;
 import com.plainsimple.spaceships.helper.DrawImage;
@@ -15,8 +17,8 @@ import java.util.List;
  */
 public class Bullet extends Sprite {
 
-    public Bullet(BitmapData bitmapData, float x, float y, CannonType cannonType) {
-        super(bitmapData, x, y);
+    public Bullet(Context context, float x, float y, CannonType cannonType) {
+        super(BitmapCache.getData(cannonType.getDrawableId(), context), x, y);
         hitBox = new Hitbox(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
         damage = cannonType.getDamage();
         speedX = cannonType.getSpeedX();

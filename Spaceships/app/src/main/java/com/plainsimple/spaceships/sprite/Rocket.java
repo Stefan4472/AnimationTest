@@ -28,7 +28,7 @@ public class Rocket extends Sprite {
     private SpriteAnimation explode;
 
     public Rocket(Context context, float x, float y, RocketType rocketType) {
-        super(BitmapCache.getData(BitmapID.ROCKET, context), x, y);
+        super(BitmapCache.getData(rocketType.getDrawableId(), context), x, y);
         move = AnimCache.get(BitmapID.ROCKET_MOVE, context);
         move.start();
         explode = AnimCache.get(BitmapID.PROJECTILE_EXPLODE, context);
