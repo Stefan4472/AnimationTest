@@ -111,7 +111,7 @@ public class MainActivity extends Activity {
         soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);
         // launch GameActivity
         Intent game_intent = new Intent(this, GameActivity.class);
-        this.startActivity(game_intent);
+        startActivity(game_intent);
     }
 
     // handle user releasing "Play" button
@@ -123,11 +123,14 @@ public class MainActivity extends Activity {
         soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);
         // launch StoreActivity
         Intent store_intent = new Intent(this, StoreActivity.class);
-        this.startActivity(store_intent);
+        startActivity(store_intent);
     }
 
     // handle user pressing "Stats" button
     public void onStatsPressed(View view) {
         soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);
+        // launch StatsActivity
+        Intent stats_intent = new Intent(this, StatsActivity.class);
+        startActivity(stats_intent);
     }
 }

@@ -17,7 +17,7 @@ import plainsimple.spaceships.R;
  * Adapter used to populate ListView in StoreActivity
  */
 
-public class StoreRowAdapter extends ArrayAdapter<StoreRow> { // TESTING
+public class StoreRowAdapter extends ArrayAdapter<StoreRow> {
 
     private Context c;
     private int id;
@@ -52,5 +52,4 @@ public class StoreRowAdapter extends ArrayAdapter<StoreRow> { // TESTING
         row_display.setAdapter(new StoreItemAdapter(c, row.getRowItems(), buttonListener));
         return convertView;
     }
-
 }

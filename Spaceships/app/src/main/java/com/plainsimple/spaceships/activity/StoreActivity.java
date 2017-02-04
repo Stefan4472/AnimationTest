@@ -42,7 +42,7 @@ public class StoreActivity extends Activity implements StoreItemDialogFragment.S
         // rows to be displayed in ListView (categories of upgrades)
         StoreRow[] rows = initStoreRows();
         // create adapter instance to display content in each row of ListView
-        StoreRowAdapter adapter = new StoreRowAdapter(this, R.layout.listview_item,
+        StoreRowAdapter adapter = new StoreRowAdapter(this, R.layout.storerow_layout,
                 rows, new StoreItemAdapter.OnButtonClickedListener() {
             @Override // fires when a store button is clicked. Displays dialog
             public void onItemClick(Equipment selectedItem) {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Tracks lifetime statistics. Saves them in SharedPreferences.
@@ -25,6 +26,7 @@ public class LifeTimeGameStats {
     private static final String TOTAL_TIME_PLAYED = "TOTAL_TIME_PLAYED";
     private static final String LONGEST_GAME = "LONGEST_GAME";
     private static final String MOST_ALIENS_KILLED = "MOST_ALIENS_KILLED";
+    private static final String TOTAL_ALIENS_KILLED = "TOTAL_ALIENS_KILLED";
 
     // stores data under keys
     private HashMap<String, Double> values = new HashMap<>();
@@ -46,6 +48,7 @@ public class LifeTimeGameStats {
        values.put(TOTAL_COINS, getFromPrefs(TOTAL_COINS));
        values.put(LONGEST_GAME, getFromPrefs(LONGEST_GAME));
        values.put(MOST_ALIENS_KILLED, getFromPrefs(MOST_ALIENS_KILLED));
+       values.put(TOTAL_ALIENS_KILLED, getFromPrefs(TOTAL_ALIENS_KILLED));
    }
 
     // get data from preferences and convert from long to double
@@ -63,6 +66,11 @@ public class LifeTimeGameStats {
         values.put(key, values.get(key) + amount);
     }
 
+    // returns values key set
+    public Set<String> getKeySet() {
+        return values.keySet();
+    }
+
     // updates all values using stats from the given game
     // returns whether this game was a highscore
     public boolean update(GameStats game) {
@@ -72,6 +80,7 @@ public class LifeTimeGameStats {
         incrementValue(TOTAL_COINS, game.get(GameStats.COINS_COLLECTED));
         incrementValue(TOTAL_FLOWN, game.get(GameStats.DISTANCE_TRAVELED));
         incrementValue(TOTAL_TIME_PLAYED, game.get(GameStats.TIME_PLAYED));
+        incrementValue(TOTAL_ALIENS_KILLED, game.get(GameStats.ALIENS_KILLED));
         if (game.get(GameStats.COINS_COLLECTED) > values.get(MOST_COINS)) {
             values.put(MOST_COINS, game.get(GameStats.COINS_COLLECTED));
         }
@@ -94,6 +103,37 @@ public class LifeTimeGameStats {
         }
         pEditor.commit();
         return high_score;
+    }
+
+    // retrieves value, formats it into a String and returns
+    // different values get formatted differently. These are ready-to-display
+    public String getFormatted(String key) throws IllegalArgumentException {
+        if (!values.containsKey(key)) {
+            throw new IllegalArgumentException("GameStats.java: Key not recognized");
+        } else {
+            double val = values.get(key);
+            switch (key) {
+                case GAMES_PLAYED:
+                    return Integer.toString((int) val);
+                case LIFETIME_SCORE:
+                case HIGH_SCORE:
+                    return (int) val + " points";
+                case MOST_COINS:
+                case TOTAL_COINS:
+                    return (int) val + " coins";
+                case FARTHEST_FLOWN:
+                case TOTAL_FLOWN:
+                    return val + " kilometers"; // todo: change unit?
+                case TOTAL_TIME_PLAYED:
+                case LONGEST_GAME: // todo: formatting
+                    return (int) (val / 3_600_000) + "h" + (int) (val / 60_000) + "m" + (int) (val/1000) + "s";
+                case MOST_ALIENS_KILLED:
+                case TOTAL_ALIENS_KILLED:
+                    return Integer.toString((int) val);
+                default:
+                    return "ERROR";
+            }
+        }
     }
 
     @Override
