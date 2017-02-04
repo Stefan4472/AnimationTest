@@ -254,7 +254,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             spaceship.setArmorType(GameActivity.getEquippedArmor());
             background = new Background(screenW, screenH); // todo: re-create background from save
             map = new Map(c, screenW, screenH);
-            healthBar = new HealthBar(c, screenW, screenH, 30, 30);
+            healthBar = new HealthBar(c, screenW, screenH, spaceship.getHP(), spaceship.getHP());
             scoreDisplay = new ScoreDisplay(c, 0);
             currentStats = new GameStats();
             gameFinished = false;
