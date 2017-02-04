@@ -24,6 +24,7 @@ import com.plainsimple.spaceships.helper.ArmorType;
 import com.plainsimple.spaceships.helper.CannonType;
 import com.plainsimple.spaceships.helper.EquipmentManager;
 import com.plainsimple.spaceships.helper.GameStats;
+import com.plainsimple.spaceships.helper.LifeTimeGameStats;
 import com.plainsimple.spaceships.helper.RocketType;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
@@ -269,19 +270,11 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     // updates lifetime stats from GameView's current run
     private void updateStats() {
         // ensure gameView's stats are up to date
-        gameView.forceUpdateStats(); // todo: clean up, fix issues
+        gameView.forceUpdateStats();
         // update lifetime stats with this game's collected stats
-        SharedPreferences l_stats = getSharedPreferences(GameStats.PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
-        SharedPreferences.Editor l_stats_e = l_stats.edit();
-        //l_stats_e.clear();
-        for (String key : GameView.currentStats.getKeySet()) {
-            l_stats_e.putLong(key, Double.doubleToLongBits(Double.longBitsToDouble(l_stats.getLong(key, 0)) + GameView.currentStats.get(key)));
-            Log.d("GameActivity.java", "Updated field " + key + " to " + Double.longBitsToDouble(l_stats.getLong(key, 0)));
-        }
-        if (GameView.currentStats.get(GameStats.GAME_SCORE) > Double.longBitsToDouble(l_stats.getLong(GameStats.HIGH_SCORE, 0))) {
-            l_stats_e.putLong(GameStats.GAME_SCORE, Double.doubleToLongBits(GameView.currentStats.get(GameStats.GAME_SCORE)));
-        }
-        l_stats_e.commit();
+        LifeTimeGameStats lifetime_stats = new LifeTimeGameStats(this); // todo: make private field?
+        lifetime_stats.update(GameView.currentStats);
+        Log.d("GameActivity.java", "Lifetime stats:\n" + lifetime_stats.toString());
         // add coins collected in game to current available coins (stored in EquipmentManager)
         EquipmentManager coin_manager = new EquipmentManager(this);
         coin_manager.addCoins((int) GameView.currentStats.get(GameStats.COINS_COLLECTED));

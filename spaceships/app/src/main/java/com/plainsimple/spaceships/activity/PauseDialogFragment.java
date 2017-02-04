@@ -136,6 +136,7 @@ public class PauseDialogFragment extends DialogFragment { // todo: window featur
             }
         });
         builder.setView(dialog_layout);
+        builder.setCancelable(false);
         return builder.create();
     }
 }

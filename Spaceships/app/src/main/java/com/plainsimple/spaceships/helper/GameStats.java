@@ -20,20 +20,14 @@ import plainsimple.spaceships.R;
 
 public class GameStats {
 
-    // name of preferences file where statistics are stored
-    public static final String PREFERENCES_FILE_KEY = "com.plainsimple.spaceships.STATS_KEY";
-
     // keys to data-values in the lifetime game statistics SharedPreference file
     public static final String ALIENS_KILLED = "ALIENS_KILLED";
-    public static final String GAMES_PLAYED = "GAMES_PLAYED";
     public static final String TIME_PLAYED = "TIME_PLAYED"; // todo: add this function
     public static final String DISTANCE_TRAVELED = "DISTANCE_TRAVELED"; // todo: coming soon
-    public static final String HIGH_SCORE = "HIGH_SCORE";
     public static final String GAME_SCORE = "GAME_SCORE";
-    public static final String TOTAL_SCORE = "TOTAL_SCORE";
     public static final String COINS_COLLECTED = "COINS_COLLECTED";
 
-    private HashMap<String, Double> values = new HashMap<>();
+    protected HashMap<String, Double> values = new HashMap<>();
 
     public GameStats() {
         values.put(ALIENS_KILLED, new Double(0));
@@ -73,5 +67,14 @@ public class GameStats {
     // returns key set of values
     public Set<String> getKeySet() {
         return values.keySet();
+    }
+
+    @Override
+    public String toString() {
+        String to_string = "";
+        for (String key : values.keySet()) {
+            to_string += key + ": " + values.get(key) + "\n";
+        }
+        return to_string;
     }
 }

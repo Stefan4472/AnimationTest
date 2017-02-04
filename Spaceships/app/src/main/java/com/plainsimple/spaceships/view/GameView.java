@@ -317,6 +317,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         gameFinished = false;
         difficulty = 0;
         score = 0;
+        currentStats = new GameStats();
     }
 
     // updates this run's currentStats which aren't necessarily constantly updated

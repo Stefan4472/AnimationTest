@@ -64,6 +64,7 @@ public class GameOverDialogFragment extends DialogFragment {
             }
         });
         builder.setView(dialog_layout);
+        builder.setCancelable(false);
         return builder.create();
     }
 }
