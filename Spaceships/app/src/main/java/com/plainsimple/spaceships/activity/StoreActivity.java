@@ -23,7 +23,7 @@ import plainsimple.spaceships.R;
  * Created by Stefan on 1/25/2017.
  */
 
-public class StoreActivity extends Activity {
+public class StoreActivity extends Activity implements StoreItemDialogFragment.StoreItemDialogListener {
 
     private ListView listView;
     private FontTextView coinCounter;
@@ -44,7 +44,7 @@ public class StoreActivity extends Activity {
         // create adapter instance to display content in each row of ListView
         StoreRowAdapter adapter = new StoreRowAdapter(this, R.layout.listview_item,
                 rows, new StoreItemAdapter.OnButtonClickedListener() {
-            @Override
+            @Override // fires when a store button is clicked. Displays dialog
             public void onItemClick(Equipment selectedItem) {
                 Log.d("StoreActivity.java", "Detected click on " + selectedItem.getLabel());
                 DialogFragment d = StoreItemDialogFragment.newInstance(selectedItem);
@@ -78,5 +78,20 @@ public class StoreActivity extends Activity {
     // return to main menu
     public void onLeavePressed(View view) {
         finish();
+    }
+
+    @Override // StoreItemDialogFragment listener callback. Process the change
+    public void onEquipItem(DialogFragment dialog, String toEquipId) {
+        Log.d("StoreItemDialogFragment", "Chose to equip " + toEquipId);
+        equipment.equip(toEquipId);
+    }
+
+    @Override // StoreItemDialogFragment listener callback. Process the transaction
+    public void onBuyItem(DialogFragment dialog, String toBuyId, int cost) {
+        Log.d("StoreItemDialogFragment", "Chose to buy " + toBuyId);
+        equipment.buy(toBuyId);
+        equipment.spendCoins(cost);
+        Log.d("StoreItemDialogFragment", "Updating CoinCounter to " + equipment.getCoins());
+        coinCounter.setText(Integer.toString(equipment.getCoins()));
     }
 }

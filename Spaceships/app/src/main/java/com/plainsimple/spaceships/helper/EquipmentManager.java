@@ -49,8 +49,9 @@ public class EquipmentManager {
     // used to write changes to SharedPreferences
     private SharedPreferences.Editor prefEditor;
 
+    // reads in Equipment data from SharedPreferences and constructs Equipment objects
+    // Populates the HashMap
     public EquipmentManager(Context context) {
-        // reads in Equipment data from SharedPreferences and construct Equipment objects. Populate the hashmap
         SharedPreferences data = context.getSharedPreferences(PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
         equipmentStates.put(LASER_KEY, new Equipment(data.getString(LASER_KEY, LASER_CANNON)));
         equipmentStates.put(ION_KEY, new Equipment(data.getString(ION_KEY, ION_CANNON)));
@@ -81,7 +82,7 @@ public class EquipmentManager {
         } else {
             equipmentStates.put(key, modified);
             prefEditor.putString(key, modified.toString());
-            prefEditor.apply();
+            prefEditor.commit();
         }
     }
 
@@ -97,7 +98,7 @@ public class EquipmentManager {
         } else {
             coins -= toSpend;
             prefEditor.putInt(COINS_KEY, coins);
-            prefEditor.apply();
+            prefEditor.commit();
         }
     }
 
@@ -105,7 +106,7 @@ public class EquipmentManager {
     public void addCoins(int toAdd) {
         coins += toAdd;
         prefEditor.putInt(COINS_KEY, coins);
-        prefEditor.apply();
+        prefEditor.commit();
     }
 
     // returns BulletType equipped
@@ -132,10 +133,10 @@ public class EquipmentManager {
             for (String key : equipmentStates.keySet()) {
                 e = equipmentStates.get(key);
                 if (e.getType().equals(type) && e.getStatus().equals(Equipment.Status.EQUIPPED)) {
-                    e.setStatus(Equipment.Status.UNLOCKED);
+                    modify(e.getId(), e.setStatus(Equipment.Status.UNLOCKED));
                 }
             }
-            modify(toEquipId, equipmentStates.get(toEquipId).setStatus(Equipment.Status.EQUIPPED));
+            modify(toEquipId, to_equip.setStatus(Equipment.Status.EQUIPPED));
         }
     }
 
@@ -161,7 +162,6 @@ public class EquipmentManager {
         for (String key : equipmentStates.keySet()) {
             e = equipmentStates.get(key);
             if (e.getType().equals(Equipment.Type.ARMOR) && e.getStatus().equals(Equipment.Status.EQUIPPED)) {
-                Log.d("EquipmentManger.java", "value of = " + e.getId());
                 return ArmorType.valueOf(e.getId()); // todo: clean up
             }
         }

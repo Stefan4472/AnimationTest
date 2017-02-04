@@ -29,6 +29,16 @@ import plainsimple.spaceships.R;
 
 public class StoreItemDialogFragment extends DialogFragment {
 
+    // interface used to send events to host Activity
+    // passes the fragment as well as the id of equipment to take action on
+    // and any other parameters needed
+    public interface StoreItemDialogListener {
+        void onEquipItem(DialogFragment dialog, String toEquipId);
+        void onBuyItem(DialogFragment dialog, String toBuyId, int cost);
+    }
+
+    private StoreItemDialogListener storeListener;
+
     private final static String LABEL_KEY = "LABEL_KEY";
     private final static String ID_KEY = "ID_KEY";
     private final static String DESC_KEY = "DESC_KEY";
@@ -81,11 +91,10 @@ public class StoreItemDialogFragment extends DialogFragment {
             display_status.setText(bundle.getString(STATUS_KEY));
             FontButton action_button = (FontButton) dialog_layout.findViewById(R.id.storeItem_equip);
             if (status.equals(Equipment.Status.UNLOCKED)) { // give option to equip the item
-                action_button.setOnClickListener(new View.OnClickListener() {
+                action_button.setOnClickListener(new View.OnClickListener() { // todo: lots of work
                     @Override
-                    public void onClick(View v) {
-                        Log.d("StoreItemDialogFragment", "Chose to equip " + bundle.getString(LABEL_KEY));
-                        StoreActivity.equipment.equip(bundle.getString(ID_KEY));
+                    public void onClick(View v) { // send event back to storeListener
+                    storeListener.onEquipItem(StoreItemDialogFragment.this, bundle.getString(ID_KEY));
                     }
                 });
             } else { // already equipped: don't show button
@@ -102,9 +111,7 @@ public class StoreItemDialogFragment extends DialogFragment {
                 buy_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                    Log.d("StoreItemDialogFragment", "Chose to buy " + bundle.getString(LABEL_KEY));
-                    StoreActivity.equipment.buy(bundle.getString(ID_KEY));
-                    StoreActivity.equipment.spendCoins(cost);
+                    storeListener.onBuyItem(StoreItemDialogFragment.this, bundle.getString(ID_KEY), cost);
                     }
                 });
             } else { // user does not have enough money: disable "buy" button
@@ -114,5 +121,15 @@ public class StoreItemDialogFragment extends DialogFragment {
         builder.setCancelable(true);
         builder.setView(dialog_layout);
         return builder.create();
+    }
+
+    @Override // instantiates the listener and makes sure host activity implements the interface
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            storeListener = (StoreItemDialogListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement StoreItemDialogListener");
+        }
     }
 }
