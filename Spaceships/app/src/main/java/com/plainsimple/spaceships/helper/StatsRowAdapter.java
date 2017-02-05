@@ -31,7 +31,6 @@ public class StatsRowAdapter extends ArrayAdapter<String> {
         this.rId = rId;
         this.stats = stats;
         keys = stats.getOrganizedKeysAsArray();
-        Log.d("StatsRowAdapter", "" + keys.length);
     }
 
     @Override

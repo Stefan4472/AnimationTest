@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ListView;
@@ -33,5 +34,10 @@ public class StatsActivity extends Activity {
         // create adapter instance to display content in each row of ListView
         StatsRowAdapter adapter = new StatsRowAdapter(this, R.layout.statsrow_layout, stats);
         listView.setAdapter(adapter);
+    }
+
+    // return to main menu
+    public void onLeavePressed(View view) {
+        finish();
     }
 }
