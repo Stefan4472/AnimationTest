@@ -3,6 +3,7 @@ package com.plainsimple.spaceships.helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -16,17 +17,17 @@ public class LifeTimeGameStats {
     // name of preferences file where statistics are stored
     public static final String PREFERENCES_FILE_KEY = "com.plainsimple.spaceships.STATS_KEY";
 
-    private static final String GAMES_PLAYED = "GAMES_PLAYED";
-    private static final String LIFETIME_SCORE = "LIFETIME_SCORE";
-    private static final String HIGH_SCORE = "HIGH_SCORE";
-    private static final String MOST_COINS = "MOST_COINS"; // todo: some coming soon
-    private static final String TOTAL_COINS = "TOTAL_COINS";
-    private static final String FARTHEST_FLOWN = "FARTHEST_FLOWN";
-    private static final String TOTAL_FLOWN = "TOTAL_FLOWN";
-    private static final String TOTAL_TIME_PLAYED = "TOTAL_TIME_PLAYED";
-    private static final String LONGEST_GAME = "LONGEST_GAME";
-    private static final String MOST_ALIENS_KILLED = "MOST_ALIENS_KILLED";
-    private static final String TOTAL_ALIENS_KILLED = "TOTAL_ALIENS_KILLED";
+    private static final String GAMES_PLAYED = "GAMES PLAYED";
+    private static final String LIFETIME_SCORE = "LIFETIME SCORE";
+    private static final String HIGH_SCORE = "HIGHSCORE";
+    private static final String MOST_COINS = "MOST COINS COLLECTED";
+    private static final String TOTAL_COINS = "TOTAL COINS COLLECTED";
+    private static final String FARTHEST_FLOWN = "FARTHEST DISTANCE FLOWN";
+    private static final String TOTAL_FLOWN = "TOTAL DISTANCE FLOWN";
+    private static final String TOTAL_TIME_PLAYED = "TOTAL TIME PLAYED";
+    private static final String LONGEST_GAME = "LONGEST GAME";
+    private static final String MOST_ALIENS_KILLED = "MOST ALIENS KILLED";
+    private static final String TOTAL_ALIENS_KILLED = "TOTAL ALIENS KILLED";
 
     // stores data under keys
     private HashMap<String, Double> values = new HashMap<>();
@@ -105,6 +106,23 @@ public class LifeTimeGameStats {
         return high_score;
     }
 
+    // returns keys in a String[] array sorted in display order
+    public String[] getOrganizedKeysAsArray() {
+        String[] array = new String[values.size()];
+        array[0] = HIGH_SCORE;
+        array[1] = LIFETIME_SCORE;
+        array[2] = GAMES_PLAYED;
+        array[3] = TOTAL_FLOWN;
+        array[4] = FARTHEST_FLOWN;
+        array[5] = TOTAL_TIME_PLAYED;
+        array[6] = LONGEST_GAME;
+        array[7] = TOTAL_ALIENS_KILLED;
+        array[8] = MOST_ALIENS_KILLED;
+        array[9] = TOTAL_COINS;
+        array[10] = MOST_COINS;
+        return array;
+    }
+
     // retrieves value, formats it into a String and returns
     // different values get formatted differently. These are ready-to-display
     public String getFormatted(String key) throws IllegalArgumentException {
@@ -114,22 +132,19 @@ public class LifeTimeGameStats {
             double val = values.get(key);
             switch (key) {
                 case GAMES_PLAYED:
-                    return Integer.toString((int) val);
                 case LIFETIME_SCORE:
                 case HIGH_SCORE:
-                    return (int) val + " points";
                 case MOST_COINS:
                 case TOTAL_COINS:
-                    return (int) val + " coins";
-                case FARTHEST_FLOWN:
-                case TOTAL_FLOWN:
-                    return val + " kilometers"; // todo: change unit?
-                case TOTAL_TIME_PLAYED:
-                case LONGEST_GAME: // todo: formatting
-                    return (int) (val / 3_600_000) + "h" + (int) (val / 60_000) + "m" + (int) (val/1000) + "s";
                 case MOST_ALIENS_KILLED:
                 case TOTAL_ALIENS_KILLED:
                     return Integer.toString((int) val);
+                case FARTHEST_FLOWN:
+                case TOTAL_FLOWN:
+                    return (new DecimalFormat("#0.00")).format(val) + " km"; // todo: change unit?
+                case TOTAL_TIME_PLAYED:
+                case LONGEST_GAME: // todo: formatting
+                    return (int) (val / 3_600_000) + "h" + (int) (val / 60_000) + "m" + (int) (val/1000) + "s";
                 default:
                     return "ERROR";
             }

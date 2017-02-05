@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.helper;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +26,12 @@ public class StatsRowAdapter extends ArrayAdapter<String> {
     private LifeTimeGameStats stats;
 
     public StatsRowAdapter(Context context, int rId, LifeTimeGameStats stats) {
-        super(context, rId);
+        super(context, rId, stats.getOrganizedKeysAsArray());
         this.context = context;
+        this.rId = rId;
         this.stats = stats;
-        keys = stats.getKeySet().toArray(new String[stats.getKeySet().size()]);
+        keys = stats.getOrganizedKeysAsArray();
+        Log.d("StatsRowAdapter", "" + keys.length);
     }
 
     @Override
