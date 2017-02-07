@@ -2,7 +2,8 @@
 <!-- pop-up with information and buying options for an equipment upgrade -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"> <!-- todo: scrollbar layout -->
+    android:layout_height="match_parent"> <!-- todo: scrollbar layout? -->
+    <!-- label at the top-center of the dialog showing item name -->
     <com.plainsimple.spaceships.view.FontTextView
         android:id="@+id/storeItem_label"
         style="@style/GalaxyMonkey"
@@ -11,12 +12,14 @@
         android:layout_gravity="center_horizontal"
         android:textColor="@color/orange"
         android:textSize="35dp"/>
+    <!-- item's thumbnail -->
     <ImageView
         android:id="@+id/storeItem_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:layout_gravity="center_horizontal"/>
+    <!-- item's description -->
     <com.plainsimple.spaceships.view.FontTextView
         android:id="@+id/storeItem_description"
         style="@style/GalaxyMonkey"
@@ -25,53 +28,60 @@
         android:layout_gravity="center_horizontal"
         android:textColor="@color/orange"
         android:textSize="15dp"/>
-    <!-- layout to display if item is unlocked -->
-    <LinearLayout
-        android:id="@+id/unlocked_actionbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone">
-        <com.plainsimple.spaceships.view.FontTextView
-            style="@style/GalaxyMonkey"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/orange"
-            android:textSize="15dp"
-            android:text="Status:" />
-        <com.plainsimple.spaceships.view.FontTextView
-            android:id="@+id/storeItem_status"
-            style="@style/GalaxyMonkey"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="15dp"
-            android:textColor="@color/white" />
-        <com.plainsimple.spaceships.view.FontButton
-            android:id="@+id/storeItem_equip"
-            style="@style/GalaxyMonkey"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/grey"
-            android:background="@color/orange"
-            android:text="Equip"/>
-    </LinearLayout>
-    <!-- layout to display if item is locked -->
-    <LinearLayout
-        android:id="@+id/locked_actionbar"
+    <!-- ViewSwitcher to switch between the unlocked and locked sub-layouts -->
+    <ViewSwitcher
+        android:id="@+id/view_switcher"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone">
-        <com.plainsimple.spaceships.view.FontButton
-            android:id="@+id/storeItem_buy"
-            style="@style/GalaxyMonkey"
+        android:layout_height="wrap_content">
+        <!-- layout to display if item is locked (buy button) -->
+        <LinearLayout
+            android:id="@+id/locked_actionbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
+            <com.plainsimple.spaceships.view.FontButton
+                android:id="@+id/storeItem_buy"
+                style="@style/GalaxyMonkey"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/grey"
+                android:background="@color/orange" />
+        </LinearLayout>
+        <!-- layout to display if item is unlocked (Status:___ + equip button) -->
+        <LinearLayout
+            android:id="@+id/unlocked_actionbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textColor="@color/grey"
-            android:background="@color/orange" />
-    </LinearLayout>
+            android:orientation="horizontal">
+            <com.plainsimple.spaceships.view.FontTextView
+                style="@style/GalaxyMonkey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/orange"
+                android:textSize="15dp"
+                android:text="Status:" />
+            <com.plainsimple.spaceships.view.FontTextView
+                android:id="@+id/storeItem_status"
+                style="@style/GalaxyMonkey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="15dp"
+                android:textColor="@color/white" />
+            <com.plainsimple.spaceships.view.FontButton
+                android:id="@+id/storeItem_equip"
+                style="@style/GalaxyMonkey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/grey"
+                android:background="@color/orange"
+                android:text="Equip"/>
+        </LinearLayout>
+    </ViewSwitcher>
+
 </LinearLayout>

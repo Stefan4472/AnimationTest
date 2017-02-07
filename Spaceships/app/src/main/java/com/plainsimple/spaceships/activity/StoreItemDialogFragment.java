@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ViewSwitcher;
 
 import com.plainsimple.spaceships.helper.Equipment;
 import com.plainsimple.spaceships.helper.EquipmentManager;
@@ -60,67 +61,98 @@ public class StoreItemDialogFragment extends DialogFragment {
         return fragment;
     }
 
+    // layout's view
+    private View dialogLayout;
+    // used to switch between locked and unlocked layouts
+    private ViewSwitcher viewSwitcher;
+    // contains Equipment parameters
+    private Bundle args;
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // retrieve arguments from bundle (can't use savedInstanceState)
-        final Bundle bundle = getArguments();
+        //final Bundle bundle = getArguments();
+        args = getArguments();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
         // inflate the layout
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View dialog_layout = inflater.inflate(R.layout.storedialog_layout, null);
+        dialogLayout = inflater.inflate(R.layout.storedialog_layout, null);
+
         // set the dialog's label
-        FontTextView label = (FontTextView) dialog_layout.findViewById(R.id.storeItem_label);
-        label.setText(bundle.getString(LABEL_KEY));
+        FontTextView label = (FontTextView) dialogLayout.findViewById(R.id.storeItem_label);
+        label.setText(args.getString(LABEL_KEY));
+
         // set the dialog's thumbnail/image
-        ImageView image = (ImageView) dialog_layout.findViewById(R.id.storeItem_image);
-        image.setImageBitmap(BitmapFactory.decodeResource(getResources(), bundle.getInt(R_ID_KEY)));
+        ImageView image = (ImageView) dialogLayout.findViewById(R.id.storeItem_image);
+        image.setImageBitmap(BitmapFactory.decodeResource(getResources(), args.getInt(R_ID_KEY)));
+
         // set the dialog's description
-        FontTextView description = (FontTextView) dialog_layout.findViewById(R.id.storeItem_description);
-        description.setText(bundle.getString(DESC_KEY));
+        FontTextView description = (FontTextView) dialogLayout.findViewById(R.id.storeItem_description);
+        description.setText(args.getString(DESC_KEY));
 
         // determine equipment's status
         // result determines whether to show locked_actionbar or unlocked_actionbar
-        Equipment.Status status = Equipment.Status.valueOf(bundle.getString(STATUS_KEY));
+        Equipment.Status status = Equipment.Status.valueOf(args.getString(STATUS_KEY));
 
-        // display and populate the "unlocked" LinearLayout
-        if (status.equals(Equipment.Status.EQUIPPED) || status.equals(Equipment.Status.UNLOCKED)) {
-            LinearLayout unlocked = (LinearLayout) dialog_layout.findViewById(R.id.unlocked_actionbar);
-            unlocked.setVisibility(View.VISIBLE);
-            // set the status
-            FontTextView display_status = (FontTextView) dialog_layout.findViewById(R.id.storeItem_status);
-            display_status.setText(bundle.getString(STATUS_KEY));
-            FontButton action_button = (FontButton) dialog_layout.findViewById(R.id.storeItem_equip);
-            if (status.equals(Equipment.Status.UNLOCKED)) { // give option to equip the item
-                action_button.setOnClickListener(new View.OnClickListener() { // todo: lots of work
-                    @Override
-                    public void onClick(View v) { // send event back to storeListener
-                    storeListener.onEquipItem(StoreItemDialogFragment.this, bundle.getString(ID_KEY));
-                    }
-                });
-            } else { // already equipped: don't show button
-                action_button.setVisibility(View.GONE);
-            }
-        } else { // display and populate the "locked" LinearLayout
-            LinearLayout locked = (LinearLayout) dialog_layout.findViewById(R.id.locked_actionbar);
-            locked.setVisibility(View.VISIBLE);
-            final int cost = bundle.getInt(COST_KEY);
-            FontButton buy_button = (FontButton) dialog_layout.findViewById(R.id.storeItem_buy);
-            buy_button.setText("Buy for " + cost);
-            // user has enough money: add onClickListener to purchase
-            if (cost <= StoreActivity.equipment.getCoins()) {
-                buy_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                    storeListener.onBuyItem(StoreItemDialogFragment.this, bundle.getString(ID_KEY), cost);
-                    }
-                });
-            } else { // user does not have enough money: disable "buy" button
-                buy_button.setEnabled(false);
-            }
+        viewSwitcher = (ViewSwitcher) dialogLayout.findViewById(R.id.view_switcher);
+
+        // equipment is locked: populate and display locked_actionbar
+        if (status.equals(Equipment.Status.LOCKED)) {
+            populateLocked();
+        } else {
+            populateUnlocked(status);
+            viewSwitcher.showNext();
         }
         builder.setCancelable(true);
-        builder.setView(dialog_layout);
+        builder.setView(dialogLayout);
         return builder.create();
+    }
+
+    private void populateLocked() { // todo: clean up? best practices?
+        // set the buy button
+        final int cost = args.getInt(COST_KEY);
+        FontButton buy_button = (FontButton) dialogLayout.findViewById(R.id.storeItem_buy);
+        buy_button.setText("Buy for " + cost);
+
+        // user has enough money: add onClickListener to purchase
+        if (cost <= StoreActivity.equipment.getCoins()) {
+            buy_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    storeListener.onBuyItem(StoreItemDialogFragment.this, args.getString(ID_KEY), cost);
+                    // populate unlocked layout and switch to it
+                    populateUnlocked(Equipment.Status.UNLOCKED);
+                    viewSwitcher.showNext();
+                }
+            });
+        } else { // user does not have enough money: disable and darken "buy" button
+            buy_button.setClickable(false);
+            buy_button.setAlpha(0.7f);
+        }
+    }
+
+    private void populateUnlocked(Equipment.Status status) {
+        // set the status
+        final FontTextView display_status = (FontTextView) dialogLayout.findViewById(R.id.storeItem_status);
+        display_status.setText(args.getString(STATUS_KEY));
+        final FontButton action_button = (FontButton) dialogLayout.findViewById(R.id.storeItem_equip);
+
+        // unlocked: give option to equip the item
+        if (status.equals(Equipment.Status.UNLOCKED)) {
+            action_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) { // send event back to storeListener
+                    storeListener.onEquipItem(StoreItemDialogFragment.this, args.getString(ID_KEY));
+                    display_status.setText("EQUIPPED");
+                    // disable action button
+                    action_button.setAlpha(0.5f);
+                    action_button.setClickable(false);
+                }
+            });
+        } else { // already equipped: don't show button
+            action_button.setVisibility(View.GONE);
+        }
     }
 
     @Override // instantiates the listener and makes sure host activity implements the interface
