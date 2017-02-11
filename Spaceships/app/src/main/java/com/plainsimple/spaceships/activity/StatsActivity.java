@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -34,6 +35,10 @@ public class StatsActivity extends Activity {
         // create adapter instance to display content in each row of ListView
         StatsRowAdapter adapter = new StatsRowAdapter(this, R.layout.statsrow_layout, stats);
         listView.setAdapter(adapter);
+
+        // add the "Back to Menu" button below the ListView as a footer
+        View footerView = (LayoutInflater.from(this)).inflate(R.layout.return_to_menu_button, null);
+        listView.addFooterView(footerView);
     }
 
     // return to main menu

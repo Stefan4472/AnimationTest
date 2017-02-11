@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -55,6 +56,10 @@ public class StoreActivity extends Activity implements StoreItemDialogFragment.S
         coinCounter = (FontTextView) findViewById(R.id.coin_counter);
         coinCounter.setText(Integer.toString(equipment.getCoins()));
         ImageView rotatingCoin = (ImageView) findViewById(R.id.rotating_coin);
+
+        // add the "Back to Menu" button below the ListView as a footer
+        View footerView = (LayoutInflater.from(this)).inflate(R.layout.return_to_menu_button, null);
+        listView.addFooterView(footerView);
     }
 
     // get status of equipment and initialize data required to display the store

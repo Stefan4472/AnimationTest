@@ -21,18 +21,6 @@
         android:padding="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_gravity="center_horizontal">
     </ListView>
-    <!-- button leading back to main menu -->
-    <com.plainsimple.spaceships.view.FontButton
-        style="@style/GalaxyMonkey"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:padding="10dp"
-        android:layout_margin="10dp"
-        android:text="Return to Menu"
-        android:textColor="@color/orange"
-        android:textSize="25dp"
-        android:onClick="onLeavePressed"/>
 </LinearLayout>
