@@ -14,12 +14,14 @@ import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRect;
 import com.plainsimple.spaceships.helper.DrawSubImage;
+import com.plainsimple.spaceships.helper.DrawText;
 import com.plainsimple.spaceships.helper.GameStats;
 import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.Point2D;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.view.GameView;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -38,7 +40,10 @@ public class Alien1 extends Alien {
 
     private BitmapData bulletBitmapData;
     private SpriteAnimation explodeAnimation;
+    // draws animated healthbar above Alien if Alien is damaged
     private HealthBarAnimation healthBarAnimation;
+    // stores any running animations showing health leaving alien
+    private List<LoseHealthAnimation> loseHealthAnimations = new LinkedList<>();
 
     public Alien1(float x, float y, float scrollSpeed, Spaceship spaceship, int difficulty, Context context) {
         super(BitmapCache.getData(BitmapID.ALIEN, context), x, y);
@@ -111,9 +116,14 @@ public class Alien1 extends Alien {
         if (s instanceof Bullet || s instanceof Rocket || s instanceof Spaceship) {
             hp -= s.damage;
             hp = hp < 0 ? 0 : hp;
-            healthBarAnimation.start();
+            // check whether explodeAnimation should start
             if (hp == 0 && !explodeAnimation.isPlaying()) {
                 explodeAnimation.start();
+            } else {
+                // start healthBarAnimation and init LoseHealthAnimations
+                healthBarAnimation.start();
+                //loseHealthAnimations.add(new LoseHealthAnimation(getWidth(), getHeight(),
+                //        s.getX() - x, s.getY() - y, s.damage));
             }
             // on spaceship collision set damage to zero so it only applies damage once
             if (s instanceof Spaceship) {
@@ -128,6 +138,12 @@ public class Alien1 extends Alien {
         // only draw alien if it is not in last frame of explode animation
         if (explodeAnimation.getFramesLeft() >= 1) { // todo: does this work?
             drawParams.add(new DrawImage(bitmapData.getId(), x, y));
+        }
+        // draw loseHealthAnimations
+        for (int i = 0; i < loseHealthAnimations.size(); i++) {
+            if (!loseHealthAnimations.get(i).isFinished()) {
+                loseHealthAnimations.get(i).updateAndDraw(x, y, drawParams);
+            }
         }
         if (healthBarAnimation.isShowing()) {
             healthBarAnimation.updateAndDraw(x, y, hp, drawParams);
@@ -271,6 +287,64 @@ public class Alien1 extends Alien {
 
         protected boolean isShowing() {
             return isShowing;
+        }
+    }
+
+    // private class used to draw the alien's health floating up from it when damaged.
+    // tracks with the Alien and moves relative to the alien to the right and up.
+    private class LoseHealthAnimation {
+
+        // x-offset from Alien's x-coordinate where text will be drawn
+        private float offsetX;
+        // y-offset from Alien's y-coordinate where text will be drawn
+        private float offsetY;
+        // amount of health lost, casted to String, which will be displayed
+        private String healthLost;
+        // whether text/animation is still running/showing
+        private boolean showing;
+        // counts number of frames elapsed
+        private int frameCounter;
+        // color of text to be drawn
+        private static final int textColor = Color.GRAY;
+        // number of frames to display
+        private static final int NUM_FRAMES = 20;
+        // movement of the text in x (as fraction of Alien sprite width)
+        private static final float REL_MVMNT_X = 0.4f;
+        // movement of the text in y (as fraction of Alien sprite height)
+        private static final float REL_MVMNT_Y = -0.4f;
+        // movement of text in x and y per frame (px)
+        private float frameDx, frameDy;
+
+        // constructs and starts animation
+        public LoseHealthAnimation(int alienWidth, int alienHeight, float offsetX,
+                                   float offsetY, int healthLost) {
+            // calculate px text should move in x and y each frame
+            frameDx = alienWidth * REL_MVMNT_X / NUM_FRAMES;
+            frameDy = alienHeight * REL_MVMNT_Y / NUM_FRAMES;
+            // set other vars and start animation
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
+            this.healthLost = Integer.toString(healthLost);
+            showing = true;
+        }
+
+        // updates the animation if it is playing, including shifting based on the updated
+        // Alien coordinates. Adds the animation's DrawParams to the given list.
+        protected void updateAndDraw(float alienX, float alienY, List<DrawParams> alienParams) {
+            if (frameCounter == NUM_FRAMES) { // reset
+                frameCounter = 0;
+                showing = false;
+            } else if (showing) {
+                frameCounter++;
+                offsetX += frameDx;
+                offsetY += frameDy;
+                alienParams.add(new DrawText(healthLost, alienX + offsetX, alienY + offsetY));
+            }
+        }
+
+        // returns whether animation has finished
+        protected boolean isFinished() {
+            return !showing;
         }
     }
 }
