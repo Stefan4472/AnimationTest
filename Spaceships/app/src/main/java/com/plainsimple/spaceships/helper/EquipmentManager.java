@@ -2,7 +2,6 @@ package com.plainsimple.spaceships.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import java.util.HashMap;
 
@@ -17,34 +16,34 @@ public class EquipmentManager {
 
     // equipment id's (equal to toString of their corresponding enum
     // for convenience)
-    public final static String LASER_KEY = CannonType.LASER.toString(); // todo: identify by type + num? e.g. ROCKET0, ROCKET1, ROCKET2, etc.?
-    public final static String ION_KEY = CannonType.ION.toString();
-    public final static String PLASMA_KEY = CannonType.PLASMA.toString();
-    public final static String PLUTONIUM_KEY = CannonType.PLUTONIUM.toString();
-    public final static String ROCKET_KEY = RocketType.ROCKET.toString();
-    public final static String HYDRO_ROCKET_KEY = RocketType.HYDROGEN_ROCKET.toString();
-    public final static String IRIDIUM_ROCKET_KEY = RocketType.IRIDIUM_ROCKET.toString();
-    public final static String RADIUM_ROCKET_KEY = RocketType.RADIUM_ROCKET.toString();
-    public final static String ARMOR0_KEY = ArmorType.DEFAULT.toString();
-    public final static String ARMOR1_KEY = ArmorType.ARMOR_1.toString();
-    public final static String ARMOR2_KEY = ArmorType.ARMOR_2.toString();
-    public final static String ARMOR3_KEY = ArmorType.ARMOR_3.toString();
+    public final static String CANNONS_0_KEY = CannonType.DEFAULT.toString();
+    public final static String CANNONS_1_KEY = CannonType.UPGRADE_1.toString();
+    public final static String CANNONS_2_KEY = CannonType.UPGRADE_2.toString();
+    public final static String CANNONS_3_KEY = CannonType.UPGRADE_3.toString();
+    public final static String ROCKET_0_KEY = RocketType.DEFAULT.toString();
+    public final static String ROCKET_1_KEY = RocketType.UPGRADE_1.toString();
+    public final static String ROCKET_2_KEY = RocketType.UPGRADE_2.toString();
+    public final static String ROCKET_3_KEY = RocketType.UPGRADE_3.toString();
+    public final static String ARMOR_0_KEY = ArmorType.DEFAULT.toString();
+    public final static String ARMOR_1_KEY = ArmorType.UPGRADE_1.toString();
+    public final static String ARMOR_2_KEY = ArmorType.UPGRADE_2.toString();
+    public final static String ARMOR_3_KEY = ArmorType.UPGRADE_3.toString();
     public final static String COINS_KEY = "COINS";
 
     // strings used to define the default equipment todo: clean up? find a better way
     // form: String key, equipment type, description, image thumbnail, title, cost, status
-    private final static String LASER_CANNON = LASER_KEY + ":CANNON:A cannon that fires laser rounds:" + R.drawable.spaceship + ":Laser Cannon:0:EQUIPPED";
-    private final static String ION_CANNON = ION_KEY + ":CANNON:A cannon that fires ion rounds:" + R.drawable.spaceship + ":Ion Cannon:100:LOCKED";
-    private final static String PLASMA_CANNON = PLASMA_KEY + ":CANNON:A cannon that fires plasma rounds:" + R.drawable.spaceship + ":Plasma Cannon:175:LOCKED";
-    private final static String PLUTONIUM_CANNON = PLUTONIUM_KEY + ":CANNON:A cannon that fires plutonium rounds:" + R.drawable.spaceship + ":Plutonium Cannon:350:LOCKED";
-    private final static String ROCKET = ROCKET_KEY + ":ROCKET:A high-explosive projectile:" + R.drawable.spaceship + ":Standard Rocket:0:EQUIPPED";
-    private final static String HYROGEN_ROCKET = HYDRO_ROCKET_KEY + ":ROCKET:Launches two powerful explosive cannisters:" + R.drawable.spaceship + ":Hydrogen Rocket:200:LOCKED";
-    private final static String IRIDIUM_ROCKET = IRIDIUM_ROCKET_KEY + ":ROCKET:Launches two medium-powered rockets:" + R.drawable.spaceship + ":Iridium Rocket:225:LOCKED";
-    private final static String RADIUM_ROCKET = RADIUM_ROCKET_KEY + ":ROCKET:6 radioactive and fast missiles launched rapidly:" + R.drawable.spaceship + ":Radium Rocket:300:LOCKED";
-    private final static String ARMOR_0 = ARMOR0_KEY + ":ARMOR:Standard spaceship armor:" + R.drawable.spaceship + ":Standard Armor:0:EQUIPPED";
-    private final static String ARMOR_1 = ARMOR1_KEY + ":" + Equipment.Type.ARMOR.toString() + ":Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:100:LOCKED";
-    private final static String ARMOR_2 = ARMOR2_KEY + ":" + Equipment.Type.ARMOR.toString() + ":Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:200:LOCKED";
-    private final static String ARMOR_3 = ARMOR3_KEY + ":" + Equipment.Type.ARMOR.toString() + ":Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:250:LOCKED";
+    private final static String CANNONS_0 = CANNONS_0_KEY + ":CANNON:A cannon that fires laser rounds:" + R.drawable.spaceship + ":Laser Cannon:0:EQUIPPED";
+    private final static String CANNONS_1 = CANNONS_1_KEY + ":CANNON:A cannon that fires ion rounds:" + R.drawable.spaceship + ":Ion Cannon:100:LOCKED";
+    private final static String CANNONS_2 = CANNONS_2_KEY + ":CANNON:A cannon that fires radium rounds:" + R.drawable.spaceship + ":Radium Cannon:175:LOCKED";
+    private final static String CANNONS_3 = CANNONS_3_KEY + ":CANNON:A cannon that fires plasma rounds:" + R.drawable.spaceship + ":Plasma Cannon:350:LOCKED";
+    private final static String ROCKET_0 = ROCKET_0_KEY + ":ROCKET:A high-explosive projectile:" + R.drawable.spaceship + ":Standard Rocket:0:EQUIPPED";
+    private final static String ROCKET_1 = ROCKET_1_KEY + ":ROCKET:Launches two powerful explosive cannisters:" + R.drawable.spaceship + ":Hydrogen Rocket:200:LOCKED";
+    private final static String ROCKET_2 = ROCKET_2_KEY + ":ROCKET:Launches two medium-powered rockets:" + R.drawable.spaceship + ":Iridium Rocket:225:LOCKED";
+    private final static String ROCKET_3 = ROCKET_3_KEY + ":ROCKET:6 radioactive and fast missiles launched rapidly:" + R.drawable.spaceship + ":Plutonium Rocket:300:LOCKED";
+    private final static String ARMOR_0 = ARMOR_0_KEY + ":ARMOR:Standard spaceship armor:" + R.drawable.spaceship + ":Standard Armor:0:EQUIPPED";
+    private final static String ARMOR_1 = ARMOR_1_KEY + ":" + Equipment.Type.ARMOR.toString() + ":Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:100:LOCKED";
+    private final static String ARMOR_2 = ARMOR_2_KEY + ":" + Equipment.Type.ARMOR.toString() + ":Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:200:LOCKED";
+    private final static String ARMOR_3 = ARMOR_3_KEY + ":" + Equipment.Type.ARMOR.toString() + ":Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:250:LOCKED";
 
     // file key where data is stored
     public static final String PREFERENCES_FILE_KEY = "com.plainsimple.spaceships.EQUIPMENT_FILE_KEY";
@@ -60,18 +59,22 @@ public class EquipmentManager {
     // Populates the HashMap
     public EquipmentManager(Context context) {
         SharedPreferences data = context.getSharedPreferences(PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
-        equipmentStates.put(LASER_KEY, new Equipment(data.getString(LASER_KEY, LASER_CANNON)));
-        equipmentStates.put(ION_KEY, new Equipment(data.getString(ION_KEY, ION_CANNON)));
-        equipmentStates.put(PLASMA_KEY, new Equipment(data.getString(PLASMA_KEY, PLASMA_CANNON)));
-        equipmentStates.put(PLUTONIUM_KEY, new Equipment(data.getString(PLUTONIUM_KEY, PLUTONIUM_CANNON)));
-        equipmentStates.put(ARMOR0_KEY, new Equipment(data.getString(ARMOR0_KEY, ARMOR_0)));
-        equipmentStates.put(ARMOR1_KEY, new Equipment(data.getString(ARMOR1_KEY, ARMOR_1)));
-        equipmentStates.put(ARMOR2_KEY, new Equipment(data.getString(ARMOR2_KEY, ARMOR_2)));
-        equipmentStates.put(ARMOR3_KEY, new Equipment(data.getString(ARMOR3_KEY, ARMOR_3)));
-        equipmentStates.put(ROCKET_KEY, new Equipment(data.getString(ROCKET_KEY, ROCKET)));
-        equipmentStates.put(HYDRO_ROCKET_KEY, new Equipment(data.getString(HYDRO_ROCKET_KEY, HYROGEN_ROCKET)));
-        equipmentStates.put(IRIDIUM_ROCKET_KEY, new Equipment(data.getString(IRIDIUM_ROCKET_KEY, IRIDIUM_ROCKET)));
-        equipmentStates.put(RADIUM_ROCKET_KEY, new Equipment(data.getString(RADIUM_ROCKET_KEY, RADIUM_ROCKET)));
+
+        equipmentStates.put(CANNONS_0_KEY, new Equipment(data.getString(CANNONS_0_KEY, CANNONS_0)));
+        equipmentStates.put(CANNONS_1_KEY, new Equipment(data.getString(CANNONS_1_KEY, CANNONS_1)));
+        equipmentStates.put(CANNONS_2_KEY, new Equipment(data.getString(CANNONS_2_KEY, CANNONS_2)));
+        equipmentStates.put(CANNONS_3_KEY, new Equipment(data.getString(CANNONS_3_KEY, CANNONS_3)));
+
+        equipmentStates.put(ARMOR_0_KEY, new Equipment(data.getString(ARMOR_0_KEY, ARMOR_0)));
+        equipmentStates.put(ARMOR_1_KEY, new Equipment(data.getString(ARMOR_1_KEY, ARMOR_1)));
+        equipmentStates.put(ARMOR_2_KEY, new Equipment(data.getString(ARMOR_2_KEY, ARMOR_2)));
+        equipmentStates.put(ARMOR_3_KEY, new Equipment(data.getString(ARMOR_3_KEY, ARMOR_3)));
+
+        equipmentStates.put(ROCKET_0_KEY, new Equipment(data.getString(ROCKET_0_KEY, ROCKET_0)));
+        equipmentStates.put(ROCKET_1_KEY, new Equipment(data.getString(ROCKET_1_KEY, ROCKET_1)));
+        equipmentStates.put(ROCKET_2_KEY, new Equipment(data.getString(ROCKET_2_KEY, ROCKET_2)));
+        equipmentStates.put(ROCKET_3_KEY, new Equipment(data.getString(ROCKET_3_KEY, ROCKET_3)));
+
         coins = data.getInt(COINS_KEY, 0);
         prefEditor = data.edit();
     }

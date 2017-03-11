@@ -4,11 +4,11 @@ package com.plainsimple.spaceships.helper;
  * Possible Armor types with their names and values
  */
 
-public enum ArmorType { // todo: better names
+public enum ArmorType {
     DEFAULT(30),
-    ARMOR_1(40),
-    ARMOR_2(50),
-    ARMOR_3(75);
+    UPGRADE_1(40),
+    UPGRADE_2(50),
+    UPGRADE_3(75);
 
     private int hp;
 

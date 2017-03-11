@@ -66,20 +66,20 @@ public class StoreActivity extends Activity implements StoreItemDialogFragment.S
     private StoreRow[] initStoreRows() {
         StoreRow[] rows = new StoreRow[3];
         rows[0] = new StoreRow(0, "Cannons"); // todo: should add all items automatically
-        rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.LASER_KEY));
-        rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.ION_KEY));
-        rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.PLASMA_KEY));
-        rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.PLUTONIUM_KEY));
+        rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.CANNONS_0_KEY));
+        rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.CANNONS_1_KEY));
+        rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.CANNONS_2_KEY));
+        rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.CANNONS_3_KEY));
         rows[1] = new StoreRow(1, "Rockets");
-        rows[1].addStoreItem(equipment.getEquipment(EquipmentManager.ROCKET_KEY));
-        rows[1].addStoreItem(equipment.getEquipment(EquipmentManager.HYDRO_ROCKET_KEY));
-        rows[1].addStoreItem(equipment.getEquipment(EquipmentManager.IRIDIUM_ROCKET_KEY));
-        rows[1].addStoreItem(equipment.getEquipment(EquipmentManager.RADIUM_ROCKET_KEY));
+        rows[1].addStoreItem(equipment.getEquipment(EquipmentManager.ROCKET_0_KEY));
+        rows[1].addStoreItem(equipment.getEquipment(EquipmentManager.ROCKET_1_KEY));
+        rows[1].addStoreItem(equipment.getEquipment(EquipmentManager.ROCKET_2_KEY));
+        rows[1].addStoreItem(equipment.getEquipment(EquipmentManager.ROCKET_3_KEY));
         rows[2] = new StoreRow(2, "Armor");
-        rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR0_KEY));
-        rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR1_KEY));
-        rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR2_KEY));
-        rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR3_KEY));
+        rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR_0_KEY));
+        rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR_1_KEY));
+        rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR_2_KEY));
+        rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR_3_KEY));
         return rows;
     }
 

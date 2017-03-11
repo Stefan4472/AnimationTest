@@ -2,7 +2,6 @@ package com.plainsimple.spaceships.sprite;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.Log;
 
@@ -43,11 +42,11 @@ public class Spaceship extends Sprite {
     // whether user has control over spaceship
     private boolean controllable;
 
-    private CannonType cannonType = CannonType.LASER;
+    private CannonType cannonType = CannonType.DEFAULT;
     private int lastFiredBullet;
     private BitmapData bulletBitmapData;
 
-    private RocketType rocketType = RocketType.ROCKET;
+    private RocketType rocketType = RocketType.DEFAULT;
     private int lastFiredRocket;
 
     private ArmorType armorType = ArmorType.DEFAULT;

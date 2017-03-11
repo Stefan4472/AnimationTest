@@ -31,10 +31,14 @@ public class BitmapCache {
         Bitmap bmp = bmpCache.get(key);
         if (bmp == null) {
             // loads in the bitmap if it hasn't already been loaded
-            bmp = BitmapFactory.decodeResource(context.getResources(), key.getrId());
-            bmp = Bitmap.createScaledBitmap(bmp,
-                    (int) (bmp.getWidth() * scalingFactor),
-                    (int) (bmp.getHeight() * scalingFactor), true);
+            try {
+                bmp = BitmapFactory.decodeResource(context.getResources(), key.getrId());
+                bmp = Bitmap.createScaledBitmap(bmp,
+                        (int) (bmp.getWidth() * scalingFactor),
+                        (int) (bmp.getHeight() * scalingFactor), true);
+            } catch (Exception e) {
+                throw e;
+            }
             if (bmp == null) {
                 throw new NoSuchElementException("No bitmap found with given key " + key);
             } else {
