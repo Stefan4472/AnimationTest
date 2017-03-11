@@ -47,6 +47,7 @@ public class StoreRowAdapter extends ArrayAdapter<StoreRow> {
         TextView label = (TextView) convertView.findViewById(R.id.label);
         label.setText(row.getRowLabel());
         label.setTag(row.getId());
+        // create recyclerview to display individual elements in store row
         RecyclerView row_display = (RecyclerView) convertView.findViewById(R.id.recycler_view);
         row_display.setLayoutManager(new LinearLayoutManager(c, LinearLayoutManager.HORIZONTAL, false));
         row_display.setAdapter(new StoreItemAdapter(c, row.getRowItems(), buttonListener));

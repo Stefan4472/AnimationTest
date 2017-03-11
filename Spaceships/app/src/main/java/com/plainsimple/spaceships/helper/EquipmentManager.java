@@ -17,23 +17,30 @@ public class EquipmentManager {
 
     // equipment id's (equal to toString of their corresponding enum
     // for convenience)
-    public final static String LASER_KEY = CannonType.LASER.toString();
+    public final static String LASER_KEY = CannonType.LASER.toString(); // todo: identify by type + num? e.g. ROCKET0, ROCKET1, ROCKET2, etc.?
     public final static String ION_KEY = CannonType.ION.toString();
     public final static String PLASMA_KEY = CannonType.PLASMA.toString();
     public final static String PLUTONIUM_KEY = CannonType.PLUTONIUM.toString();
     public final static String ROCKET_KEY = RocketType.ROCKET.toString();
+    public final static String HYDRO_ROCKET_KEY = RocketType.HYDROGEN_ROCKET.toString();
+    public final static String IRIDIUM_ROCKET_KEY = RocketType.IRIDIUM_ROCKET.toString();
+    public final static String RADIUM_ROCKET_KEY = RocketType.RADIUM_ROCKET.toString();
     public final static String ARMOR0_KEY = ArmorType.DEFAULT.toString();
     public final static String ARMOR1_KEY = ArmorType.ARMOR_1.toString();
     public final static String ARMOR2_KEY = ArmorType.ARMOR_2.toString();
     public final static String ARMOR3_KEY = ArmorType.ARMOR_3.toString();
     public final static String COINS_KEY = "COINS";
 
-    // strings used to define the default equipment todo: clean up?
+    // strings used to define the default equipment todo: clean up? find a better way
+    // form: String key, equipment type, description, image thumbnail, title, cost, status
     private final static String LASER_CANNON = LASER_KEY + ":CANNON:A cannon that fires laser rounds:" + R.drawable.spaceship + ":Laser Cannon:0:EQUIPPED";
     private final static String ION_CANNON = ION_KEY + ":CANNON:A cannon that fires ion rounds:" + R.drawable.spaceship + ":Ion Cannon:100:LOCKED";
     private final static String PLASMA_CANNON = PLASMA_KEY + ":CANNON:A cannon that fires plasma rounds:" + R.drawable.spaceship + ":Plasma Cannon:175:LOCKED";
     private final static String PLUTONIUM_CANNON = PLUTONIUM_KEY + ":CANNON:A cannon that fires plutonium rounds:" + R.drawable.spaceship + ":Plutonium Cannon:350:LOCKED";
     private final static String ROCKET = ROCKET_KEY + ":ROCKET:A high-explosive projectile:" + R.drawable.spaceship + ":Standard Rocket:0:EQUIPPED";
+    private final static String HYROGEN_ROCKET = HYDRO_ROCKET_KEY + ":ROCKET:Launches two powerful explosive cannisters:" + R.drawable.spaceship + ":Hydrogen Rocket:200:LOCKED";
+    private final static String IRIDIUM_ROCKET = IRIDIUM_ROCKET_KEY + ":ROCKET:Launches two medium-powered rockets:" + R.drawable.spaceship + ":Iridium Rocket:225:LOCKED";
+    private final static String RADIUM_ROCKET = RADIUM_ROCKET_KEY + ":ROCKET:6 radioactive and fast missiles launched rapidly:" + R.drawable.spaceship + ":Radium Rocket:300:LOCKED";
     private final static String ARMOR_0 = ARMOR0_KEY + ":ARMOR:Standard spaceship armor:" + R.drawable.spaceship + ":Standard Armor:0:EQUIPPED";
     private final static String ARMOR_1 = ARMOR1_KEY + ":" + Equipment.Type.ARMOR.toString() + ":Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:100:LOCKED";
     private final static String ARMOR_2 = ARMOR2_KEY + ":" + Equipment.Type.ARMOR.toString() + ":Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:200:LOCKED";
@@ -62,6 +69,9 @@ public class EquipmentManager {
         equipmentStates.put(ARMOR2_KEY, new Equipment(data.getString(ARMOR2_KEY, ARMOR_2)));
         equipmentStates.put(ARMOR3_KEY, new Equipment(data.getString(ARMOR3_KEY, ARMOR_3)));
         equipmentStates.put(ROCKET_KEY, new Equipment(data.getString(ROCKET_KEY, ROCKET)));
+        equipmentStates.put(HYDRO_ROCKET_KEY, new Equipment(data.getString(HYDRO_ROCKET_KEY, HYROGEN_ROCKET)));
+        equipmentStates.put(IRIDIUM_ROCKET_KEY, new Equipment(data.getString(IRIDIUM_ROCKET_KEY, IRIDIUM_ROCKET)));
+        equipmentStates.put(RADIUM_ROCKET_KEY, new Equipment(data.getString(RADIUM_ROCKET_KEY, RADIUM_ROCKET)));
         coins = data.getInt(COINS_KEY, 0);
         prefEditor = data.edit();
     }

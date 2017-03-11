@@ -72,6 +72,9 @@ public class StoreActivity extends Activity implements StoreItemDialogFragment.S
         rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.PLUTONIUM_KEY));
         rows[1] = new StoreRow(1, "Rockets");
         rows[1].addStoreItem(equipment.getEquipment(EquipmentManager.ROCKET_KEY));
+        rows[1].addStoreItem(equipment.getEquipment(EquipmentManager.HYDRO_ROCKET_KEY));
+        rows[1].addStoreItem(equipment.getEquipment(EquipmentManager.IRIDIUM_ROCKET_KEY));
+        rows[1].addStoreItem(equipment.getEquipment(EquipmentManager.RADIUM_ROCKET_KEY));
         rows[2] = new StoreRow(2, "Armor");
         rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR0_KEY));
         rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR1_KEY));

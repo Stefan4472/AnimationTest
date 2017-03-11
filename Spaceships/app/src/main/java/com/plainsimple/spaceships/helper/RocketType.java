@@ -5,7 +5,10 @@ package com.plainsimple.spaceships.helper;
  */
 public enum RocketType {
 
-    ROCKET(BitmapID.ROCKET, BitmapID.ROCKET_OVERLAY, 40, 40, 0.0067f);
+    ROCKET(BitmapID.ROCKET, BitmapID.ROCKET_OVERLAY, 40, 40, 0.0067f),
+    HYDROGEN_ROCKET(BitmapID.ROCKET, BitmapID.ROCKET_OVERLAY, 40, 40, 0.0067f),
+    IRIDIUM_ROCKET(BitmapID.ROCKET, BitmapID.ROCKET_OVERLAY, 40, 40, 0.0067f),
+    RADIUM_ROCKET(BitmapID.ROCKET, BitmapID.ROCKET_OVERLAY, 40, 40, 0.0067f);
 
     // BitmapID of fired bullet when it is shown on screen
     private BitmapID drawableId;
