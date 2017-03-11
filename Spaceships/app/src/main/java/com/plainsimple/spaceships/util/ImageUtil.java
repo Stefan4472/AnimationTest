@@ -7,9 +7,11 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;*/
 
+import android.content.Context;
 import android.graphics.*;
 import android.util.Log;
 
+import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawParams;
 
 /**
@@ -17,7 +19,15 @@ import com.plainsimple.spaceships.helper.DrawParams;
  */
 public class ImageUtil {
 
-
+    // convenience method to decode specified R.id and scale it to the given
+    // width/height. Returns decoded and scaled Bitmap
+    public static Bitmap decodeAndScaleTo(Context context, int rId, int scaleToWidth, int scaleToHeight) {
+        return Bitmap.createScaledBitmap(
+                BitmapFactory.decodeResource(context.getResources(), rId),
+                scaleToWidth,
+                scaleToHeight,
+                true);
+    }
     /*// draws specified Bitmap onto canvas using given drawing parameters
     public static void drawBitmap(Canvas canvas, Bitmap toDraw, DrawParams params) {
         Rect source = new Rect((int ) params.getX0(), (int) params.getY0(), (int) params.getX1(), (int) params.getY1());

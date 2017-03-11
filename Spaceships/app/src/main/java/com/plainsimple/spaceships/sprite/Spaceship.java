@@ -1,6 +1,9 @@
 package com.plainsimple.spaceships.sprite;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.util.Log;
 
 import com.plainsimple.spaceships.activity.GameActivity;
@@ -18,6 +21,7 @@ import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.helper.RocketType;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
+import com.plainsimple.spaceships.util.ImageUtil;
 import com.plainsimple.spaceships.view.GameView;
 
 import java.util.LinkedList;
@@ -111,6 +115,23 @@ public class Spaceship extends Sprite {
         projectiles.clear();
         lastFiredBullet = cannonType.getDelay();
         lastFiredRocket = rocketType.getDelay();
+    }
+
+    // renders spaceship bitmap from modular components, scaled to given width/height
+    // loads and draws R.id.spaceship_base, then overlays with the correct cannon overlay
+    // (specified by cannonType) and finally with correct rocket overlay (specified by
+    // rocketType). Returns the final bitmap.
+    public static Bitmap renderSpaceship(Context context, int width, int height,
+                                         CannonType cannonType, RocketType rocketType) {
+        Bitmap rendered = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(rendered);
+        Bitmap base = ImageUtil.decodeAndScaleTo(context, BitmapID.SPACESHIP_BASE.getrId(), width, height);
+        canvas.drawBitmap(base, 0, 0, null);
+        Bitmap cannons = ImageUtil.decodeAndScaleTo(context, cannonType.getSpaceshipOverlayId().getrId(), width, height);
+        canvas.drawBitmap(cannons, 0, 0, null);
+        Bitmap rockets = ImageUtil.decodeAndScaleTo(context, rocketType.getSpaceshipOverlayId().getrId(), width, height);
+        canvas.drawBitmap(rockets, 0, 0, null);
+        return rendered;
     }
 
     @Override
@@ -219,8 +240,12 @@ public class Spaceship extends Sprite {
     public List<DrawParams> getDrawParams() {
         drawParams.clear();
         if (!explode.hasPlayed()) {
-            // define specifications for defaultImage
-            drawParams.add(new DrawImage(bitmapData.getId(), x, y));
+            // todo: pre-render spaceship? some way to increase efficiency
+            // spaceship is drawn from modular parts: spaceship_base, cannons, rocket_overlay
+            drawParams.add(new DrawImage(BitmapID.SPACESHIP_BASE, x, y));
+            drawParams.add(new DrawImage(cannonType.getSpaceshipOverlayId(), x, y));
+            drawParams.add(new DrawImage(rocketType.getSpaceshipOverlayId(), x, y));
+//            drawParams.add(new DrawImage(bitmapData.getId(), x, y));
             if (moving) {
                 drawParams.add(new DrawSubImage(move.getBitmapID(), x, y, move.getCurrentFrameSrc()));
             }

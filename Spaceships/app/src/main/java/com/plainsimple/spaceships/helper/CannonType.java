@@ -1,17 +1,17 @@
 package com.plainsimple.spaceships.helper;
 
-import plainsimple.spaceships.R;
-
 /**
  * Created by Stefan on 8/27/2016.
  */
 public enum CannonType {
 
-    LASER(BitmapID.LASER_BULLET, 10, 12, 0.01f),
-    ION(BitmapID.ION_BULLET, 20, 10, 0.011f),
-    PLASMA(BitmapID.LASER_BULLET, 30, 8, 0.012f), // todo: graphics
-    PLUTONIUM(BitmapID.LASER_BULLET, 40, 18, 0.013f);
+    LASER(BitmapID.LASER_CANNONS, BitmapID.LASER_BULLET, 10, 12, 0.01f),
+    ION(BitmapID.ION_CANNONS, BitmapID.ION_BULLET, 20, 10, 0.011f),
+    PLASMA(BitmapID.PLASMA_CANNONS, BitmapID.LASER_BULLET, 30, 8, 0.012f), // todo: graphics
+    PLUTONIUM(BitmapID.PLUTONIUM_CANNONS, BitmapID.LASER_BULLET, 40, 18, 0.013f);
 
+    // R.drawable of the cannon, which is used to draw the spaceship modularly
+    private BitmapID spaceshipOverlayId;
     // R.drawable of fired bullet when it is shown on screen
     private BitmapID drawableId;
     // damage bullet does on contact with another sprite
@@ -21,7 +21,8 @@ public enum CannonType {
     // speed the bullet travels when fired
     private float speedX;
 
-    CannonType(BitmapID drawableId, int damage, int delay, float speedX) {
+    CannonType(BitmapID spaceshipOverlayId, BitmapID drawableId, int damage, int delay, float speedX) {
+        this.spaceshipOverlayId = spaceshipOverlayId;
         this.drawableId = drawableId;
         this.damage = damage;
         this.delay = delay;
@@ -30,6 +31,10 @@ public enum CannonType {
 
     public BitmapID getDrawableId() {
         return drawableId;
+    }
+
+    public BitmapID getSpaceshipOverlayId() {
+        return spaceshipOverlayId;
     }
 
     public int getDamage() {
