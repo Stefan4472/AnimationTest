@@ -48,4 +48,9 @@ public enum CannonType {
     public float getSpeedX() {
         return speedX;
     }
+
+    @Override
+    public String toString() {
+        return "CannonType." + super.toString();
+    }
 }

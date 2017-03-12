@@ -50,7 +50,7 @@ public class BitmapCache {
         return bmp;
     }
 
-    public static BitmapData getData(BitmapID key, Context context) {
+    public static BitmapData getData(BitmapID key, Context context) throws NoSuchElementException {
         // attempts to get the data from the Hashtable
         BitmapData data = bmpData.get(key);
         if (data == null) {
@@ -64,7 +64,7 @@ public class BitmapCache {
                 bmpData.put(key, data);
                 bmpCache.put(key, bmp);
             } catch (Exception e) {
-                return null;
+                throw new NoSuchElementException("Error with the given key: " + key);
             }
         }
         return data;

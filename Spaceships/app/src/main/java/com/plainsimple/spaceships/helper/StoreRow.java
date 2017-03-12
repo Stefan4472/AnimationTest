@@ -38,4 +38,14 @@ public class StoreRow {
     public List<Equipment> getRowItems() {
         return rowItems;
     }
+
+    @Override
+    public String toString() {
+        String to_string = rowLabel + " row:\n";
+        to_string += rowItems.isEmpty() ? "No Items" : "";
+        for (Equipment e : rowItems) {
+            to_string += e.toString() + "\n";
+        }
+        return to_string;
+    }
 }

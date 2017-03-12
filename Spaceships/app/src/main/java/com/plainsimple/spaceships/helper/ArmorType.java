@@ -19,4 +19,9 @@ public enum ArmorType {
     public int getHP() {
         return hp;
     }
+
+    @Override
+    public String toString() {
+        return "ArmorType." + super.toString();
+    }
 }

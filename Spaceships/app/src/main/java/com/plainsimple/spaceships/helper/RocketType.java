@@ -48,4 +48,9 @@ public enum RocketType {
     public float getSpeedX() {
         return speedX;
     }
+
+    @Override
+    public String toString() {
+        return "RocketType." + super.toString();
+    }
 }
