@@ -5,10 +5,10 @@ package com.plainsimple.spaceships.helper;
  */
 public enum RocketType {
 
-    DEFAULT(BitmapID.ROCKET_0, BitmapID.ROCKET0_OVERLAY, 40, 40, 0.0067f),
-    UPGRADE_1(BitmapID.ROCKET_1, BitmapID.ROCKET1_OVERLAY, 40, 40, 0.0067f),
-    UPGRADE_2(BitmapID.ROCKET_2, BitmapID.ROCKET2_OVERLAY, 40, 40, 0.0067f),
-    UPGRADE_3(BitmapID.ROCKET_3, BitmapID.ROCKET3_OVERLAY, 40, 40, 0.0067f);
+    ROCKET_0(BitmapID.ROCKET_0, BitmapID.ROCKET0_OVERLAY, 40, 40, 0.0067f),
+    ROCKET_1(BitmapID.ROCKET_1, BitmapID.ROCKET1_OVERLAY, 40, 40, 0.0067f),
+    ROCKET_2(BitmapID.ROCKET_2, BitmapID.ROCKET2_OVERLAY, 40, 40, 0.0067f),
+    ROCKET_3(BitmapID.ROCKET_3, BitmapID.ROCKET3_OVERLAY, 40, 40, 0.0067f);
 
     // BitmapID of fired bullet when it is shown on screen
     private BitmapID drawableId;
@@ -47,10 +47,5 @@ public enum RocketType {
 
     public float getSpeedX() {
         return speedX;
-    }
-
-    @Override
-    public String toString() {
-        return "RocketType." + super.toString();
     }
 }

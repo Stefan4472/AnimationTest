@@ -2,7 +2,6 @@ package com.plainsimple.spaceships.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import java.util.HashMap;
 
@@ -17,18 +16,18 @@ public class EquipmentManager {
 
     // equipment id's (equal to toString of their corresponding enum
     // for convenience)
-    public final static String CANNONS_0_KEY = CannonType.DEFAULT.toString();
-    public final static String CANNONS_1_KEY = CannonType.UPGRADE_1.toString();
-    public final static String CANNONS_2_KEY = CannonType.UPGRADE_2.toString();
-    public final static String CANNONS_3_KEY = CannonType.UPGRADE_3.toString();
-    public final static String ROCKET_0_KEY = RocketType.DEFAULT.toString();
-    public final static String ROCKET_1_KEY = RocketType.UPGRADE_1.toString();
-    public final static String ROCKET_2_KEY = RocketType.UPGRADE_2.toString();
-    public final static String ROCKET_3_KEY = RocketType.UPGRADE_3.toString();
-    public final static String ARMOR_0_KEY = ArmorType.DEFAULT.toString();
-    public final static String ARMOR_1_KEY = ArmorType.UPGRADE_1.toString();
-    public final static String ARMOR_2_KEY = ArmorType.UPGRADE_2.toString();
-    public final static String ARMOR_3_KEY = ArmorType.UPGRADE_3.toString();
+    public final static String CANNONS_0_KEY = CannonType.CANNON_0.toString();
+    public final static String CANNONS_1_KEY = CannonType.CANNON_1.toString();
+    public final static String CANNONS_2_KEY = CannonType.CANNON_2.toString();
+    public final static String CANNONS_3_KEY = CannonType.CANNON_3.toString();
+    public final static String ROCKET_0_KEY = RocketType.ROCKET_0.toString();
+    public final static String ROCKET_1_KEY = RocketType.ROCKET_1.toString();
+    public final static String ROCKET_2_KEY = RocketType.ROCKET_2.toString();
+    public final static String ROCKET_3_KEY = RocketType.ROCKET_3.toString();
+    public final static String ARMOR_0_KEY = ArmorType.ARMOR_0.toString();
+    public final static String ARMOR_1_KEY = ArmorType.ARMOR_1.toString();
+    public final static String ARMOR_2_KEY = ArmorType.ARMOR_2.toString();
+    public final static String ARMOR_3_KEY = ArmorType.ARMOR_3.toString();
     public final static String COINS_KEY = "COINS";
 
     // strings used to define the default equipment todo: clean up? find a better way
@@ -42,9 +41,9 @@ public class EquipmentManager {
     private final static String ROCKET_2 = ROCKET_2_KEY + ":ROCKET:Launches two medium-powered rockets:" + R.drawable.rocket2_overlay + ":Iridium Rocket:225:LOCKED";
     private final static String ROCKET_3 = ROCKET_3_KEY + ":ROCKET:6 radioactive and fast missiles launched rapidly:" + R.drawable.rocket3_overlay + ":Plutonium Rocket:300:LOCKED";
     private final static String ARMOR_0 = ARMOR_0_KEY + ":ARMOR:Standard spaceship armor:" + R.drawable.spaceship + ":Standard Armor:0:EQUIPPED";
-    private final static String ARMOR_1 = ARMOR_1_KEY + ":" + Equipment.Type.ARMOR.toString() + ":Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:100:LOCKED";
-    private final static String ARMOR_2 = ARMOR_2_KEY + ":" + Equipment.Type.ARMOR.toString() + ":Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:200:LOCKED";
-    private final static String ARMOR_3 = ARMOR_3_KEY + ":" + Equipment.Type.ARMOR.toString() + ":Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:250:LOCKED";
+    private final static String ARMOR_1 = ARMOR_1_KEY + ":ARMOR:Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:100:LOCKED";
+    private final static String ARMOR_2 = ARMOR_2_KEY + ":ARMOR:Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:200:LOCKED";
+    private final static String ARMOR_3 = ARMOR_3_KEY + ":ARMOR:Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:250:LOCKED";
 
     // file key where data is stored
     public static final String PREFERENCES_FILE_KEY = "com.plainsimple.spaceships.EQUIPMENT_FILE_KEY";
@@ -85,7 +84,6 @@ public class EquipmentManager {
         if (!equipmentStates.containsKey(key)) {
             throw new IllegalArgumentException("Did not recognize given key (" + key + ")");
         } else {
-            Log.d("EquipmentManager.java", "Queried " + key + " and returned " + equipmentStates.get(key));
             return equipmentStates.get(key);
         }
     }

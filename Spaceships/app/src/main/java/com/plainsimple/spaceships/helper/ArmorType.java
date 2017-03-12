@@ -5,10 +5,10 @@ package com.plainsimple.spaceships.helper;
  */
 
 public enum ArmorType {
-    DEFAULT(30),
-    UPGRADE_1(40),
-    UPGRADE_2(50),
-    UPGRADE_3(75);
+    ARMOR_0(30),
+    ARMOR_1(40),
+    ARMOR_2(50),
+    ARMOR_3(75);
 
     private int hp;
 
@@ -18,10 +18,5 @@ public enum ArmorType {
 
     public int getHP() {
         return hp;
-    }
-
-    @Override
-    public String toString() {
-        return "ArmorType." + super.toString();
     }
 }

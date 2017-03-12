@@ -42,14 +42,14 @@ public class Spaceship extends Sprite {
     // whether user has control over spaceship
     private boolean controllable;
 
-    private CannonType cannonType = CannonType.DEFAULT;
+    private CannonType cannonType = CannonType.CANNON_0;
     private int lastFiredBullet;
     private BitmapData bulletBitmapData;
 
-    private RocketType rocketType = RocketType.DEFAULT;
+    private RocketType rocketType = RocketType.ROCKET_0;
     private int lastFiredRocket;
 
-    private ArmorType armorType = ArmorType.DEFAULT;
+    private ArmorType armorType = ArmorType.ARMOR_0;
 
     // keeps track of fired bullets and rockets
     private List<Sprite> projectiles = new LinkedList<>();
