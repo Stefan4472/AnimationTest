@@ -7,8 +7,8 @@ package com.plainsimple.spaceships.helper;
 public enum ArmorType {
     ARMOR_0(30),
     ARMOR_1(40),
-    ARMOR_2(50),
-    ARMOR_3(75);
+    ARMOR_2(60),
+    ARMOR_3(85);
 
     private int hp;
 

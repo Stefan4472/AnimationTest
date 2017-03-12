@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import java.util.HashMap;
 
@@ -30,7 +31,7 @@ public class EquipmentManager {
     public final static String ARMOR_3_KEY = ArmorType.ARMOR_3.toString();
     public final static String COINS_KEY = "COINS";
 
-    // strings used to define the default equipment todo: clean up? find a better way
+    // strings used to define the default equipment todo: clean up? find a better way. Descriptions should be in R/string. Cooler, more in-depth descriptions.
     // form: String key, equipment type, description, image thumbnail, title, cost, status
     private final static String CANNONS_0 = CANNONS_0_KEY + ":CANNON:A cannon that fires laser rounds:" + R.drawable.cannons_0 + ":Laser Cannon:0:EQUIPPED";
     private final static String CANNONS_1 = CANNONS_1_KEY + ":CANNON:A cannon that fires ion rounds:" + R.drawable.cannons_1 + ":Ion Cannon:100:LOCKED";
@@ -40,10 +41,10 @@ public class EquipmentManager {
     private final static String ROCKET_1 = ROCKET_1_KEY + ":ROCKET:Launches two powerful explosive cannisters:" + R.drawable.rocket1_overlay + ":Hydrogen Rocket:200:LOCKED";
     private final static String ROCKET_2 = ROCKET_2_KEY + ":ROCKET:Launches two medium-powered rockets:" + R.drawable.rocket2_overlay + ":Iridium Rocket:225:LOCKED";
     private final static String ROCKET_3 = ROCKET_3_KEY + ":ROCKET:6 radioactive and fast missiles launched rapidly:" + R.drawable.rocket3_overlay + ":Plutonium Rocket:300:LOCKED";
-    private final static String ARMOR_0 = ARMOR_0_KEY + ":ARMOR:Standard spaceship armor:" + R.drawable.spaceship + ":Standard Armor:0:EQUIPPED";
-    private final static String ARMOR_1 = ARMOR_1_KEY + ":ARMOR:Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:100:LOCKED";
-    private final static String ARMOR_2 = ARMOR_2_KEY + ":ARMOR:Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:200:LOCKED";
-    private final static String ARMOR_3 = ARMOR_3_KEY + ":ARMOR:Upgraded spaceship armor:" + R.drawable.spaceship + ":Upgraded Armor:250:LOCKED";
+    private final static String ARMOR_0 = ARMOR_0_KEY + ":ARMOR:Standard spaceship armor. Steel hull and frame. 30hp. Capable of withstanding light damage.:" + R.drawable.spaceship + ":Standard Armor:0:EQUIPPED";
+    private final static String ARMOR_1 = ARMOR_1_KEY + ":ARMOR:Upgraded spaceship armor. A blend of majority steel with chrome for added resilience. 40hp.:" + R.drawable.spaceship + ":Chrome Armor:100:LOCKED";
+    private final static String ARMOR_2 = ARMOR_2_KEY + ":ARMOR:Doubly-upgraded spaceship armor. Blended Tungsten can take a beating. Known for it's top quality marks. 60hp.:" + R.drawable.spaceship + ":Tungsten Armor:200:LOCKED";
+    private final static String ARMOR_3 = ARMOR_3_KEY + ":ARMOR:Maxiumum upgraded spaceship armor. Majority Inconel smelted with Advanced Steel for an incredibly heavyweight and resilient shield. 85 hp.:" + R.drawable.spaceship + ":Inconel Armor:300:LOCKED";
 
     // file key where data is stored
     public static final String PREFERENCES_FILE_KEY = "com.plainsimple.spaceships.EQUIPMENT_FILE_KEY";

@@ -1,5 +1,7 @@
 package com.plainsimple.spaceships.helper;
 
+import android.util.Log;
+
 import plainsimple.spaceships.R;
 
 /**
@@ -36,6 +38,9 @@ public class Equipment {
             label = values[4];
             cost = Integer.parseInt(values[5]);
             status = Status.valueOf(values[6]);
+            if (id.equals("ARMOR_1")) {
+                Log.d("Equipment.java", "ARMOR_1 has drawable id " + rDrawableId);
+            }
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new IllegalArgumentException("Not enough parameters");
         } catch (IllegalArgumentException e) {

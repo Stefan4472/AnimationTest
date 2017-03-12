@@ -43,7 +43,7 @@ public class StoreRowAdapter extends ArrayAdapter<StoreRow> {
         }
         // get the queued row
         StoreRow row = data[position];
-        Log.d("StoreRowAdapter.java", "Queued row: " + position + " contains \n" + row);
+        //Log.d("StoreRowAdapter.java", "Queued row: " + position + " contains \n" + row);
         // set row's label
         TextView label = (TextView) convertView.findViewById(R.id.label);
         label.setText(row.getRowLabel());
