@@ -122,8 +122,8 @@ public class Alien1 extends Alien {
             } else {
                 // start healthBarAnimation and init LoseHealthAnimations
                 healthBarAnimation.start();
-                //loseHealthAnimations.add(new LoseHealthAnimation(getWidth(), getHeight(),
-                //        s.getX() - x, s.getY() - y, s.damage));
+                loseHealthAnimations.add(new LoseHealthAnimation(getWidth(), getHeight(),
+                        s.getX() - x, s.getY() - y, s.damage));
             }
             // on spaceship collision set damage to zero so it only applies damage once
             if (s instanceof Spaceship) {
@@ -298,14 +298,16 @@ public class Alien1 extends Alien {
         private float offsetX;
         // y-offset from Alien's y-coordinate where text will be drawn
         private float offsetY;
-        // amount of health lost, casted to String, which will be displayed
+        // amount of health lost, which will be displayed
         private String healthLost;
         // whether text/animation is still running/showing
         private boolean showing;
         // counts number of frames elapsed
         private int frameCounter;
         // color of text to be drawn
-        private static final int textColor = Color.GRAY;
+        private static final int TEXT_COLOR = Color.WHITE;
+        // size of text to be drawn
+        private static final int TEXT_SIZE = 25;
         // number of frames to display
         private static final int NUM_FRAMES = 20;
         // movement of the text in x (as fraction of Alien sprite width)
@@ -338,7 +340,8 @@ public class Alien1 extends Alien {
                 frameCounter++;
                 offsetX += frameDx;
                 offsetY += frameDy;
-                alienParams.add(new DrawText(healthLost, alienX + offsetX, alienY + offsetY));
+                alienParams.add(new DrawText(healthLost,
+                        alienX + offsetX, alienY + offsetY, TEXT_COLOR, TEXT_SIZE));
             }
         }
 
