@@ -292,7 +292,7 @@ public class Alien1 extends Alien {
 
     // private class used to draw the alien's health floating up from it when damaged.
     // tracks with the Alien and moves relative to the alien to the right and up.
-    private class LoseHealthAnimation {
+    private class LoseHealthAnimation { // todo: optimizations and better color?
 
         // x-offset from Alien's x-coordinate where text will be drawn
         private float offsetX;

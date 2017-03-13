@@ -26,23 +26,26 @@ public class ScoreView extends FontTextView {
     // score to display
     private int score;
     // used to draw the health bar
-    private Paint paint;
+//    private Paint paint;
 
     public ScoreView(Context context) {
         super(context);
-        paint = new Paint();
+        setTextColor(Color.WHITE);
+        setTextSize(30);
+//        paint = new Paint();
     }
 
     public ScoreView(Context context, AttributeSet attrs) { // todo: use xml attributes
         super(context, attrs);
-        paint = new Paint();
+        setTextColor(Color.WHITE);
+        setTextSize(30);
+//        paint = new Paint();
     }
 
     // animates change
     public void updateScore(int newScore) {
         this.score = newScore;
         setText(Integer.toString(newScore));
-        setTextSize(30);
-        invalidate();
+        //invalidate();
     }
 }

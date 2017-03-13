@@ -2,7 +2,7 @@
 <!-- pop-up with information and buying options for an equipment upgrade -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"> <!-- todo: scrollbar layout? -->
+    android:layout_height="match_parent" > <!-- todo: scrollbar layout? -->
     <!-- label at the top-center of the dialog showing item name -->
     <com.plainsimple.spaceships.view.FontTextView
         android:id="@+id/storeItem_label"
@@ -12,12 +12,12 @@
         android:layout_gravity="center_horizontal"
         android:textColor="@color/orange"
         android:textSize="35dp"/>
-    <!-- item's thumbnail -->
+    <!-- item's thumbnail. Has a 2px orange border -->
     <ImageView
         android:id="@+id/storeItem_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:layout_margin="10dp"
         android:layout_gravity="center_horizontal"/>
     <!-- item's description -->
     <com.plainsimple.spaceships.view.FontTextView

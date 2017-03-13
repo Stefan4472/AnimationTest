@@ -91,6 +91,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         void onGameStarted();
         // fired when spaceship has finished exploding
         void onGameFinished();
+        // fired when score changes (sends updated score)
+        void onScoreChanged(int newScore);
     }
 
     public GameView(Context context, AttributeSet attributes) {
@@ -160,7 +162,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             map.draw(canvas, c);
             GameEngineUtil.drawSprite(spaceship, canvas, c);
             healthBar.draw(canvas);
-            scoreDisplay.draw(canvas);
+//            scoreDisplay.draw(canvas);
         }
 
         // updates all game logic
@@ -178,7 +180,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             map.update(difficulty, scrollSpeed, spaceship);
             spaceship.updateAnimations();
             healthBar.setMovingToHealth(spaceship.getHP());
-            scoreDisplay.update(score);
+//            scoreDisplay.update(score);
+            gameEventsListener.onScoreChanged(score);
         }
 
         private void updateSpaceship() {
@@ -255,7 +258,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             background = new Background(screenW, screenH); // todo: re-create background from save
             map = new Map(c, screenW, screenH);
             healthBar = new HealthBar(c, screenW, screenH, spaceship.getHP(), spaceship.getHP());
-            scoreDisplay = new ScoreDisplay(c, 0);
+//            scoreDisplay = new ScoreDisplay(c, 0);
             currentStats = new GameStats();
             gameFinished = false;
         }
@@ -311,7 +314,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         //gameTimer.reset();
         healthBar.setCurrentHealth(spaceship.getHP());
         healthBar.setMovingToHealth(spaceship.getHP());
-        scoreDisplay.reset();
+//        scoreDisplay.reset();
         spaceshipDestroyed = false;
         gameStarted = false;
         gameFinished = false;

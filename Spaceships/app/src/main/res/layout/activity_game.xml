@@ -15,6 +15,15 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:orientation="vertical">
+                <!-- score view/display -->
+                <com.plainsimple.spaceships.view.ScoreView
+                    style="@style/GalaxyMonkey"
+                    android:id="@+id/scoreview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_margin="10dp"/>
                 <!-- pause button -->
                 <ImageButton
                     android:id="@+id/pausebutton"

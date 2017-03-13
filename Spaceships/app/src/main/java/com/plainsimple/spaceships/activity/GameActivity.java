@@ -29,6 +29,7 @@ import com.plainsimple.spaceships.helper.RocketType;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.view.GameView;
+import com.plainsimple.spaceships.view.ScoreView;
 
 import java.util.Hashtable;
 
@@ -38,9 +39,10 @@ import plainsimple.spaceships.R;
  * Created by Stefan on 10/17/2015.
  */
 public class GameActivity extends FragmentActivity implements SensorEventListener, PauseDialogFragment.PauseDialogListener,
-    GameOverDialogFragment.GameOverDialogListener {
+    GameOverDialogFragment.GameOverDialogListener, GameView.GameEventsListener {
 
     private GameView gameView;
+    private ScoreView scoreView;
     private ImageButton pauseButton;
     private ImageButton muteButton;
     private ImageButton toggleBulletButton;
@@ -90,6 +92,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         muted = preferences.getBoolean(MUTED_KEY, false);
         paused = false;
 
+        scoreView = (ScoreView) findViewById(R.id.scoreview);
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pause);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
@@ -127,34 +130,10 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
                 return false; // todo: does return matter?
             }
         });
+
         // set up GameEventsListener
-        final Animation arrow_fade_in = AnimationUtils.loadAnimation(this, R.anim.arrowbutton_fadein);
-        gameView.setGameEventsListener(new GameView.GameEventsListener() { // todo: methods in class body
-            @Override // fade in direction arrows once spaceship reaches initial position
-            public void onGameStarted() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        upArrow.startAnimation(arrow_fade_in);
-                        downArrow.startAnimation(arrow_fade_in);
-                    }
-                });
-            }
-            @Override // pop-up end game dialog when game is over
-            public void onGameFinished() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        upArrow.setVisibility(View.INVISIBLE);
-                        downArrow.setVisibility(View.INVISIBLE);
-                    }
-                });
-                // display GameOverDialogFragment todo: fade-in animation
-                Log.d("GameActivity.java", "Displaying GameOverDialog");
-                DialogFragment d = new GameOverDialogFragment();
-                d.show(getFragmentManager(), "GameOver");
-            }
-        });
+        gameView.setGameEventsListener(this);
+
         // set volume control to proper stream
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -241,7 +220,8 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button);
     }
 
-    @Override
+    @Override // handles the user resuming the game from the PauseDialog
+    // Overrided from PauseDialogListener
     public void onResumePressed(DialogFragment dialog) {
         playSound(SoundID.BUTTON_CLICKED);
         Log.d("GameActivity", "Resuming game");
@@ -249,7 +229,8 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         onPausePressed(gameView);
     }
 
-    @Override
+    @Override // handles the user quitting from the PauseDialog or
+    // GameOverDialog. Overrided from PauseDialogListener and GameOverDialogListener
     public void onQuitPressed(DialogFragment dialog) {
         playSound(SoundID.BUTTON_CLICKED);
         quit = true;
@@ -258,13 +239,54 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         finish();
     }
 
-    @Override
+    @Override // handles the user restarting the game from the PauseDialog
+    // or GameOverDialog. Overrided from PauseDialogListener and GameOverDialogListener
     public void onRestartPressed(DialogFragment dialog) {
         playSound(SoundID.BUTTON_CLICKED);
         dialog.dismiss();
         updateStats();
         gameView.restartGame();
         paused = false;
+    }
+
+    @Override // handles the game officially starting (i.e. the spaceship has reached
+    // the correct horizontal position for obstacles to start. Overrided from
+    // GameEventsListener
+    public void onGameStarted() {
+        final Animation arrow_fade_in = AnimationUtils.loadAnimation(this, R.anim.arrowbutton_fadein);
+        // fade in direction arrows once spaceship reaches initial position
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                upArrow.startAnimation(arrow_fade_in);
+                downArrow.startAnimation(arrow_fade_in);
+            }
+        });
+    }
+
+    @Override // pop-up end game dialog when game is over
+    public void onGameFinished() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                upArrow.setVisibility(View.INVISIBLE);
+                downArrow.setVisibility(View.INVISIBLE);
+            }
+        });
+        // display GameOverDialogFragment todo: fade-in animation
+        Log.d("GameActivity.java", "Displaying GameOverDialog");
+        DialogFragment d = new GameOverDialogFragment();
+        d.show(getFragmentManager(), "GameOver");
+    }
+
+    @Override // score change triggers update of ScoreView
+    public void onScoreChanged(final int newScore) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                scoreView.updateScore(newScore);
+            }
+        });
     }
 
     // updates lifetime stats from GameView's current run
