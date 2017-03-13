@@ -16,6 +16,11 @@ public class TileGenerator {
     public static final int ALIEN_LVL2 = 5; // level 2 alien
     public static final int ALIEN_LVL3 = 6; // level 3 alien
 
+    // models to simulate probability
+    private LinearProbability pTunnel = new LinearProbability(0.15f, 0.3f, 1_500, 300);
+    private LinearProbability pAlienSwarm = new LinearProbability(0.05f, 0.3f, 500, 200);
+    private LinearProbability pCoinTrail = new LinearProbability(0.15f, 0.7f, 1_000, 100);
+
     // length of coin trails
     private static final int COIN_TRAIL_LENGTH = 15;
     // number of coins remaining in current trail
@@ -48,17 +53,17 @@ public class TileGenerator {
             return new byte[rows][bufferLength];
         } else {
             byte[][] generated;
-            if (getPTunnel()) {
+            if (testRandom(pTunnel.getP(difficulty))) {
                 generated = generateTunnel();
-            } else if (getPAlienSwarm()) {
+            } else if (testRandom(pAlienSwarm.getP(difficulty))) {
                 generated = generateAlienSwarm();
             } else {
                 generated = generateObstacles();
             }
-            if (getPCoinTrail()) {
+            if (testRandom(pCoinTrail.getP(difficulty))) {
                 generateCoins(generated);
             }
-            return generated; // todo: asteroids???
+            return generated;
         }
     }
 
@@ -68,17 +73,17 @@ public class TileGenerator {
         int row = random.nextInt(rows);
         byte[][] generated = new byte[rows][size];
         for (int i = 0; i < size; i++) {
-            if (getP(0.4f)) {
+            if (testRandom(0.4f)) {
                 generated[row][i] = OBSTACLE;
                 // generate another obstacle to the right
-                if (i + 1 < size && getP(0.3)) {
+                if (i + 1 < size && testRandom(0.3f)) {
                     generated[row][i + 1] = OBSTACLE;
                     i++;
                 }
                 // generate another obstacle below
-                if (row + 1 < rows && getP(0.3)) {
+                if (row + 1 < rows && testRandom(0.3f)) {
                     generated[row + 1][i] = OBSTACLE;
-                } else if (row > 0 && getP(0.2)) { // else try to generate another obstacle above
+                } else if (row > 0 && testRandom(0.2f)) { // else try to generate another obstacle above
                     generated[row - 1][i] = OBSTACLE;
                 }
                 row = random.nextInt(rows);
@@ -101,11 +106,11 @@ public class TileGenerator {
             }
         }
         for (int j = 1; j < tunnel_length; j++) {
-            if (j < tunnel_length - 2 && getP(change_path)) {
+            if (j < tunnel_length - 2 && testRandom(change_path)) {
                 change_path = -0.1f;
                 // determine which direction to change in
                 int direction = 0;
-                if (getP(0.5f)) {
+                if (testRandom(0.5f)) {
                     if (row < generated.length - 1) {
                         direction = 1;
                     } else if (row > 0) {
@@ -212,56 +217,12 @@ public class TileGenerator {
         }
     }
 
-    // given probability of an event occurring
-    // uses random numbers and will return if event should
-    // occur or not
-    private static boolean getP(double probability) {
-        return random.nextInt(100) + 1 <= probability * 100;
-    }
-
-    // starting probability of generating a tunnel
-    private static final float TUNNEL_P0 = 0.15f;
-    // max probability of generating a tunnel
-    private static final float TUNNEL_Pf = 0.3f;
-    // distance before probability of tunnel increases
-    private static final int TUNNEL_INCREASE_THRESHOLD = 1500;
-    // distance that must be traveled to increase tunnel probability by 1%
-    private static final int TUNNEL_INCREASE_RATE = 300;
-
-    private boolean getPTunnel() {
-        double p = TUNNEL_P0 + (difficulty > TUNNEL_INCREASE_THRESHOLD ? (difficulty - TUNNEL_INCREASE_THRESHOLD) / (100 * TUNNEL_INCREASE_RATE) : 0);
-        return getP(p > TUNNEL_Pf ? TUNNEL_Pf : p);
-    }
-
-    // starting probability of generating an alien swarm // todo: decreasing probabilities?
-    private static final float SWARM_P0 = 0.05f;
-    // max probability of generating an alien swarm
-    private static final float SWARM_Pf = 0.3f;
-    // distance before probability of alien swarm increases
-    private static final int SWARM_INCREASE_THRESHOLD = 500;
-    // distance that must be traveled to increase alien swarm probability by 1%
-    private static final int SWARM_INCREASE_RATE = 200;
-
-    // calculates and returns probability of aliens appearing in a swarm
-    private boolean getPAlienSwarm() {
-        double p = SWARM_P0 + (difficulty > SWARM_INCREASE_THRESHOLD ? (difficulty - SWARM_INCREASE_THRESHOLD) / (100 * SWARM_INCREASE_RATE) : 0);
-        return getP(p > SWARM_Pf ? SWARM_Pf : p);
-    }
-
-    // starting probability of generating a coin trail
-    private static final float COIN_P0 = 0.15f;
-    // max probability of generating a coin trail
-    private static final float COIN_Pf = 0.7f;
-    // distance before probability of cointrail increases
-    private static final int COIN_INCREASE_THRESHOLD = 1000;
-    // distance that must be traveled to increase coin probability by 1%
-    private static final int COIN_INCREASE_RATE = 100;
-
-    // returns whether a coin trail should be generated
-    // p = p0 + (d - t) / (100 * r)
-    private boolean getPCoinTrail() { // todo: double-check, graph the probabilities out
-        double p = COIN_P0 + (difficulty > COIN_INCREASE_THRESHOLD ? (difficulty - COIN_INCREASE_THRESHOLD) / (100 * COIN_INCREASE_RATE) : 0);
-        return getP((p > COIN_Pf ? COIN_Pf : p));
+    // generates a random float and checks if it is below given
+    // probability. Returns true if it does. Used to decide whether
+    // to generate certain types of obstacles given their probabilities
+    // of occurring.
+    private static boolean testRandom(float probability) {
+        return random.nextFloat() <= probability;
     }
 
     // prints map in a 2-d array
@@ -286,5 +247,54 @@ public class TileGenerator {
                 {0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0}
         };
+    }
+
+    // a class to calculate linear probability for map generation
+    private class LinearProbability {
+        
+        // starting probability
+        private float initialProbability;
+        // final probability (max/min)
+        private float finalProbability;
+        // minimum difficulty for probability to start changing
+        private int changeThreshold;
+        // change in difficulty required to increase/decrease probability by 0.01f
+        private float changeRate;
+
+        private LinearProbability(float initialProbability, 
+                                  float finalProbability, 
+                                  int changeThreshold, 
+                                  float changeRate) throws IllegalArgumentException {
+
+            if (initialProbability < 0 || initialProbability > 1 || finalProbability < 0 ||
+                    finalProbability > 1 || changeThreshold < 0 || changeRate < 0) {
+                throw new IllegalArgumentException("Invalid Parameter(s)");
+            } else {
+                this.initialProbability = initialProbability;
+                this.finalProbability = finalProbability;
+                this.changeThreshold = changeThreshold;
+                this.changeRate = changeRate;
+            }
+        }
+
+        // calculates and returns probability based on given difficulty
+        public float getP(int difficulty) {
+            // return initialProbability if difficulty isn't
+            // high enough to have reached changeThreshold
+            if (difficulty < changeThreshold) {
+                return initialProbability;
+            } else {
+                // calculate probability based on given difficulty and parameters
+                float p = initialProbability + (difficulty - changeThreshold) / changeRate / 100;
+                // ensure we don't return a p outside the max/min
+                if (changeRate > 0 && p > finalProbability) {
+                    return finalProbability;
+                } else if (changeRate < 0 && p < finalProbability) {
+                    return finalProbability;
+                } else {
+                    return finalProbability;
+                }
+            }
+        }
     }
 }

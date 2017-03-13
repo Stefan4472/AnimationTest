@@ -80,8 +80,8 @@ public class Map {
 
             // generate more sprites
             if (mapTileCounter == tiles[0].length) {
-//                tiles = tileGenerator.generateTiles(difficulty);
-                tiles = tileGenerator.generateDebugTiles();
+                tiles = tileGenerator.generateTiles(difficulty);
+//                tiles = tileGenerator.generateDebugTiles();
                 mapTileCounter = 0;
             }
             lastTile = getWTile();

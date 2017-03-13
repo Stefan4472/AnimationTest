@@ -110,9 +110,9 @@ public abstract class Sprite { // todo: figure out public vs. protected
         return hitBox.getCenter();
     }
 
-    public boolean getP(double probability) {
-        return random.nextInt(1_000) + 1 <= probability * 1_000;
-    } //todo: make static
+    public boolean getP(float probability) {
+        return random.nextFloat() <= probability;
+    }
 
     public float getX() {
         return x;
