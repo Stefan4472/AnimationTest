@@ -13,6 +13,7 @@ import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
+import com.plainsimple.spaceships.view.GameView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class Coin extends Sprite {
 
     public Coin(float x, float y, float scrollSpeed, Context context) {
         super(BitmapCache.getData(BitmapID.COIN, context), x, y);
-        speedX = scrollSpeed;
+//        speedX = scrollSpeed;
         spin = AnimCache.get(BitmapID.COIN_SPIN, context);
         spin.start();
         hitBox = new Hitbox(x + getWidth() * 0.3f, y + getHeight() * 0.1f, x + getWidth() * 0.7f, y + getHeight() * 0.9f);
@@ -40,9 +41,10 @@ public class Coin extends Sprite {
         }
     }
 
-    @Override
+    @Override // speed tracks with game's scrollspeed for
+    // smooth acceleration and decelleration
     public void updateSpeeds() {
-
+        speedX = GameView.getScrollSpeed();
     }
 
     @Override

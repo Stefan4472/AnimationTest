@@ -10,6 +10,7 @@ import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.Hitbox;
+import com.plainsimple.spaceships.view.GameView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ public class Obstacle extends Sprite {
 
     public Obstacle(float x, float y, float scrollSpeed, boolean collides, Context context) {
         super(BitmapCache.getData(BitmapID.OBSTACLE, context), x, y);
-        speedX = scrollSpeed;
+//        speedX = scrollSpeed;
         this.collides = collides;
         hitBox = new Hitbox(x, y, x + getWidth(), y + getHeight());
         damage = 10_000; // todo: some impossible to reach number?
@@ -39,9 +40,10 @@ public class Obstacle extends Sprite {
 
     }
 
-    @Override
+    @Override // speedX is set to the game's scrollspeed to ensure
+    // smooth acceleration and decelleration with the game
     public void updateSpeeds() {
-
+        speedX = GameView.getScrollSpeed();
     }
 
     @Override

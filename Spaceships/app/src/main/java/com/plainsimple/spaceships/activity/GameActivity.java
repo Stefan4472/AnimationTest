@@ -113,7 +113,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
                    gameView.updateInput(Spaceship.DIRECTION_NONE);
                    downArrow.setVisibility(View.VISIBLE);
                }
-                return false; // todo: does return matter?
+               return false;
             }
         });
         downArrow = (ImageButton) findViewById(R.id.down_arrow);
@@ -281,12 +281,12 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
 
     @Override // score change triggers update of ScoreView
     public void onScoreChanged(final int newScore) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                scoreView.updateScore(newScore);
-            }
-        });
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                scoreView.updateScore(newScore);
+//            }
+//        });
     }
 
     // updates lifetime stats from GameView's current run

@@ -63,7 +63,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Map map;
     //private DrawBackgroundService background;
     // speed of sprites scrolling across the map (must be negative!)
-    private double scrollSpeed = -0.0025;
+    private static float scrollSpeed = -0.0025f;
     // spaceship
     private Spaceship spaceship;
     // relative speed of background scrolling to foreground scrolling
@@ -162,7 +162,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             map.draw(canvas, c);
             GameEngineUtil.drawSprite(spaceship, canvas, c);
             healthBar.draw(canvas);
-//            scoreDisplay.draw(canvas);
+            scoreDisplay.draw(canvas);
         }
 
         // updates all game logic
@@ -180,8 +180,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             map.update(difficulty, scrollSpeed, spaceship);
             spaceship.updateAnimations();
             healthBar.setMovingToHealth(spaceship.getHP());
-//            scoreDisplay.update(score);
-            gameEventsListener.onScoreChanged(score);
+            scoreDisplay.update(score);
+//            gameEventsListener.onScoreChanged(score);
         }
 
         private void updateSpaceship() {
@@ -219,7 +219,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 }
             } else { // normal scrolling progression
                 //scrollSpeed = MAX_SCROLL_SPEED * Math.atan(difficulty / 500.0f) * 2 / Math.PI;
-                scrollSpeed = -Math.log(difficulty + 1) / 600;
+                scrollSpeed = (float) (-Math.log(difficulty + 1) / 600);
             }
         }
 
@@ -258,7 +258,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             background = new Background(screenW, screenH); // todo: re-create background from save
             map = new Map(c, screenW, screenH);
             healthBar = new HealthBar(c, screenW, screenH, spaceship.getHP(), spaceship.getHP());
-//            scoreDisplay = new ScoreDisplay(c, 0);
+            scoreDisplay = new ScoreDisplay(c, 0);
             currentStats = new GameStats();
             gameFinished = false;
         }
@@ -314,7 +314,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         //gameTimer.reset();
         healthBar.setCurrentHealth(spaceship.getHP());
         healthBar.setMovingToHealth(spaceship.getHP());
-//        scoreDisplay.reset();
+        scoreDisplay.reset();
         spaceshipDestroyed = false;
         gameStarted = false;
         gameFinished = false;
@@ -370,6 +370,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public static void incrementScore(int toAdd) {
         score += toAdd;
+    }
+
+    public static float getScrollSpeed() {
+        return scrollSpeed;
     }
 
     //public GameTimer getGameTimer() {
