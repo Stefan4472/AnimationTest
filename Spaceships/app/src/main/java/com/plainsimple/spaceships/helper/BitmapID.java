@@ -32,6 +32,7 @@ public enum BitmapID {
     ROCKET3_OVERLAY(R.drawable.rocket3_overlay),
     ROCKET_MOVE(R.drawable.rocket_move),
     PROJECTILE_EXPLODE(R.drawable.projectile_explode),
+    EXPLOSION_1(R.drawable.exp_1),
     ALIEN(R.drawable.alien),
     ALIEN_BULLET(R.drawable.alienbullet),
     COIN(R.drawable.coin),

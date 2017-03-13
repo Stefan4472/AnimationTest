@@ -162,8 +162,8 @@ public class Alien1 extends Alien {
         Point2D target = s.getHitboxCenter();
         AlienBullet b = new AlienBullet(bulletBitmapData, x, y + (int) (getHeight() * 0.1));
         b.setSpeedX(bulletSpeed);
-        float frames_to_impact = (x - target.getX()) / bulletSpeed;
-        b.setSpeedY((y - target.getY()) / frames_to_impact);
+        float frames_to_impact = (b.getHitboxCenter().getX() - target.getX()) / bulletSpeed;
+        b.setSpeedY((b.getHitboxCenter().getY() - target.getY()) / frames_to_impact);
         projectiles.add(b);
     }
 

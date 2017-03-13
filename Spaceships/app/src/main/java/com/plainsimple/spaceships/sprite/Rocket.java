@@ -31,7 +31,7 @@ public class Rocket extends Sprite {
         super(BitmapCache.getData(rocketType.getDrawableId(), context), x, y);
         move = AnimCache.get(BitmapID.ROCKET_MOVE, context);
         move.start();
-        explode = AnimCache.get(BitmapID.PROJECTILE_EXPLODE, context);
+        explode = AnimCache.get(BitmapID.EXPLOSION_1, context);
         speedX = rocketType.getSpeedX();
         damage = rocketType.getDamage();
         hitBox = new Hitbox(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);

@@ -15,7 +15,8 @@ public class AnimCache { // todo: use enums?
     // from R.string. Parameters should be in the form
     // num_frames, followed by the frame counts of each frame,
     // followed by the boolean that determines whether the animation loops.
-    // Parameters are separated by the ':' character
+    // Parameters are separated by the ':' character. BitmapID must be registered
+    // in keyToString method.
     // @throws IllegalArgumentException if any error is encountered creating the animation todo: enum??
     public static SpriteAnimation get(BitmapID key, Context context) throws IllegalArgumentException {
         try {
@@ -54,6 +55,8 @@ public class AnimCache { // todo: use enums?
                 return context.getString(R.string.ROCKET_MOVE);
             case PROJECTILE_EXPLODE:
                 return context.getString(R.string.PROJECTILE_EXPLODE);
+            case EXPLOSION_1:
+                return context.getString(R.string.EXPLOSION_1);
             default:
                 throw new IllegalArgumentException("No animation corresponds to given key");
         }
