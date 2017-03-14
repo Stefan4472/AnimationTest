@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 
 import com.plainsimple.spaceships.sprite.Alien1;
+import com.plainsimple.spaceships.sprite.Asteroid;
 import com.plainsimple.spaceships.sprite.Coin;
 import com.plainsimple.spaceships.sprite.Obstacle;
 import com.plainsimple.spaceships.sprite.Spaceship;
@@ -80,8 +81,8 @@ public class Map {
 
             // generate more sprites
             if (mapTileCounter == tiles[0].length) {
-                tiles = tileGenerator.generateTiles(difficulty);
-//                tiles = tileGenerator.generateDebugTiles();
+//                tiles = tileGenerator.generateTiles(difficulty);
+                tiles = tileGenerator.generateDebugTiles();
                 mapTileCounter = 0;
             }
             lastTile = getWTile();
@@ -129,6 +130,9 @@ public class Map {
                 break;
             case TileGenerator.ALIEN_LVL1:
                 aliens.add(new Alien1(x, y,scrollSpeed, spaceship, difficulty, context));
+                break;
+            case TileGenerator.ASTEROID: // todo: separate list for asteroids?
+                obstacles.add(new Asteroid(x, y, scrollSpeed, difficulty, context));
                 break;
             default:
                 throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");

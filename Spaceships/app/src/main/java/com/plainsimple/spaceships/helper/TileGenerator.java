@@ -15,11 +15,13 @@ public class TileGenerator {
     public static final int ALIEN_LVL1 = 4; // level 1 alien
     public static final int ALIEN_LVL2 = 5; // level 2 alien
     public static final int ALIEN_LVL3 = 6; // level 3 alien
+    public static final int ASTEROID = 7; // asteroid
 
-    // models to simulate probability
+    // models to simulate probability todo: make less arbitrary
     private LinearProbability pTunnel = new LinearProbability(0.15f, 0.3f, 1_500, 300);
     private LinearProbability pAlienSwarm = new LinearProbability(0.05f, 0.3f, 500, 200);
     private LinearProbability pCoinTrail = new LinearProbability(0.15f, 0.7f, 1_000, 100);
+    private LinearProbability pAsteroid = new LinearProbability(0.10f, 0.25f, 2_000, 250);
 
     // length of coin trails
     private static final int COIN_TRAIL_LENGTH = 15;
@@ -57,6 +59,8 @@ public class TileGenerator {
                 generated = generateTunnel();
             } else if (testRandom(pAlienSwarm.getP(difficulty))) {
                 generated = generateAlienSwarm();
+            } else if (testRandom(pAsteroid.getP(difficulty))) {
+                generated = generateAsteroid();
             } else {
                 generated = generateObstacles();
             }
@@ -173,6 +177,12 @@ public class TileGenerator {
         return generated;
     }
 
+    private byte[][] generateAsteroid() {
+        byte[][] generated = new byte[rows][8];
+        generated[2][random.nextInt(6)] = ASTEROID;
+        return generated;
+    }
+
     // generates a coin trail on map
     private void generateCoins(byte[][] generated) {
         int col, row, end_col;
@@ -240,11 +250,11 @@ public class TileGenerator {
     // generates specific tile set for debugging
     public static byte[][] generateDebugTiles() {
         return new byte[][] {
+                {0, 0, 0, 0, 0, ASTEROID, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {ASTEROID, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, ALIEN_LVL1, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, ASTEROID, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0}
         };
     }

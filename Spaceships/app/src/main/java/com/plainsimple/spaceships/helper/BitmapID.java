@@ -35,6 +35,7 @@ public enum BitmapID {
     EXPLOSION_1(R.drawable.exp_1),
     ALIEN(R.drawable.alien),
     ALIEN_BULLET(R.drawable.alienbullet),
+    ASTEROID(R.drawable.asteroid),
     COIN(R.drawable.coin),
     COIN_SPIN(R.drawable.coin_spin),
     OBSTACLE(R.drawable.obstacle);

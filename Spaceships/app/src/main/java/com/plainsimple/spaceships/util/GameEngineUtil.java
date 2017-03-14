@@ -25,9 +25,6 @@ public class GameEngineUtil {
             s.move();
             s.updateAnimations();
             if(s.terminate()) { // todo: doesn't remove sprites that are out of bounds
-                if (s instanceof Alien) {
-                    Log.d("GameEngine", "Removing Alien where inBounds = " + s.isInBounds());
-                }
                 i.remove();
             }
         }

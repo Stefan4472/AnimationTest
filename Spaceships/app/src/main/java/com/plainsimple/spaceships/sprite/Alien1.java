@@ -113,6 +113,7 @@ public class Alien1 extends Alien {
 
     @Override
     public void handleCollision(Sprite s) {
+        // todo: do we even need this check?
         if (s instanceof Bullet || s instanceof Rocket || s instanceof Spaceship) {
             hp -= s.damage;
             hp = hp < 0 ? 0 : hp;
