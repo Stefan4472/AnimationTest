@@ -7,7 +7,9 @@ import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRotatedImage;
+import com.plainsimple.spaceships.helper.HealthBarAnimation;
 import com.plainsimple.spaceships.helper.Hitbox;
+import com.plainsimple.spaceships.helper.LoseHealthAnimation;
 import com.plainsimple.spaceships.view.GameView;
 
 import java.util.LinkedList;
@@ -27,6 +29,11 @@ public class Asteroid extends Sprite {
     // degrees rotated per frame (positive or negative)
     private float rotationRate;
 
+    // draws animated healthbar above Asteroid if Asteroid takes damage
+    private HealthBarAnimation healthBarAnimation;
+    // stores any running animations showing Asteroid taking damage
+    private List<LoseHealthAnimation> loseHealthAnimations = new LinkedList<>();
+
     public Asteroid(float x, float y, float scrollSpeed, int difficulty, Context context) {
         super(BitmapCache.getData(BitmapID.ASTEROID, context), x, y);
         // speedX: slower than scrollspeed: give the player a chance to destroy it
@@ -41,6 +48,9 @@ public class Asteroid extends Sprite {
         currentRotation = random.nextInt(360);
         // random rotation rate. function of speedY (faster speed = faster rotation)
         rotationRate = speedY * 200;
+        // init HealthBarAnimation for use if Asteroid takes damage
+        healthBarAnimation = new HealthBarAnimation(getWidth(), getHeight(), hp);
+
     }
 
     @Override
@@ -66,15 +76,30 @@ public class Asteroid extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage) {
-
+        // start healthBarAnimation and init LoseHealthAnimations
+        if (damage > 0) {
+            healthBarAnimation.start();
+            loseHealthAnimations.add(new LoseHealthAnimation(getWidth(), getHeight(),
+                    s.getX() - x, s.getY() - y, damage));
+        }
     }
 
     @Override
     public List<DrawParams> getDrawParams() {
-        List<DrawParams> draw_params = new LinkedList<>();
+        drawParams.clear();
         // draw the rotated image, with pivot point the center of the sprite
-        draw_params.add(new DrawRotatedImage(bitmapData.getId(), x, y, (int) currentRotation,
+        drawParams.add(new DrawRotatedImage(bitmapData.getId(), x, y, (int) currentRotation,
                 x + getWidth() / 2, y + getHeight() / 2));
-        return draw_params;
+        // draw loseHealthAnimations
+        for (int i = 0; i < loseHealthAnimations.size(); i++) {
+            if (!loseHealthAnimations.get(i).isFinished()) {
+                loseHealthAnimations.get(i).updateAndDraw(x, y, drawParams);
+            }
+        }
+        // update and draw healthBarAnimation if showing
+        if (healthBarAnimation.isShowing()) {
+            healthBarAnimation.updateAndDraw(x, y, hp, drawParams);
+        }
+        return drawParams;
     }
 }

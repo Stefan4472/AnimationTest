@@ -28,7 +28,7 @@ public class Bullet extends Sprite {
     public void updateActions() {
         if (!isInBounds()) {
             terminate = true;
-            Log.d("Termination", "Removing Bullet at x = " + x);
+//            Log.d("Termination", "Removing Bullet at x = " + x);
         }
     }
 

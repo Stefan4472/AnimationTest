@@ -43,7 +43,7 @@ public class BitmapCache {
                 throw new NoSuchElementException("No bitmap found with given key " + key);
             } else {
                 bmpCache.put(key, bmp);
-                Log.d("Bitmap Cache", "Width is " + bmp.getWidth() + " and height is " + bmp.getHeight());
+//                Log.d("Bitmap Cache", "Width is " + bmp.getWidth() + " and height is " + bmp.getHeight());
                 bmpData.put(key, new BitmapData(key, bmp.getWidth(), bmp.getHeight()));
             }
         }
