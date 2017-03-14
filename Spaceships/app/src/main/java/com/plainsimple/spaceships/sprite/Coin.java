@@ -35,9 +35,8 @@ public class Coin extends Sprite {
 
     @Override
     public void updateActions() {
-        if (!isInBounds() || terminate) {
+        if (!isInBounds()) {
             terminate = true;
-            Log.d("Termination", "Removing Coin at x = " + x);
         }
     }
 
@@ -53,7 +52,7 @@ public class Coin extends Sprite {
     }
 
     @Override
-    public void handleCollision(Sprite s) {
+    public void handleCollision(Sprite s, int damage) {
         if (s instanceof Spaceship) {
             terminate = true;
         }

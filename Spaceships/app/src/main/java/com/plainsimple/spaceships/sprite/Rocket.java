@@ -15,6 +15,7 @@ import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.RocketType;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
+import com.plainsimple.spaceships.view.GameView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class Rocket extends Sprite {
         move.start();
         explode = AnimCache.get(BitmapID.EXPLOSION_1, context);
         speedX = rocketType.getSpeedX();
-        damage = rocketType.getDamage();
+        hp = rocketType.getDamage();
         hitBox = new Hitbox(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
     }
 
@@ -51,12 +52,13 @@ public class Rocket extends Sprite {
     }
 
     @Override
-    public void handleCollision(Sprite s) {
+    public void handleCollision(Sprite s, int damage) {
         if (!(s instanceof Spaceship)) {
             move.stop();
             explode.start();
             speedX = s.speedX;
             collides = false;
+            GameView.incrementScore(damage);
         }
     }
 

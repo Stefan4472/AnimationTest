@@ -102,7 +102,6 @@ public class Spaceship extends Sprite {
     // used when spaceship is first constructed and when it is reset
     public void setInitValues() {
         collides = true;
-        damage = 50;
         hp = armorType.getHP();
         controllable = false;
         speedX = 0.003f;
@@ -219,18 +218,15 @@ public class Spaceship extends Sprite {
     }
 
     @Override
-    public void handleCollision(Sprite s) {
-        if (s instanceof Coin) {
+    public void handleCollision(Sprite s, int damage) {
+        if (s instanceof Coin) { // todo: play sound
             GameView.incrementScore(GameView.COIN_VALUE);
             GameView.currentStats.addTo(GameStats.COINS_COLLECTED, 1);
         } else {
-            hp -= s.getDamage();
-            hp = hp < 0 ? 0 : hp;
-            Log.d("Spaceship class", "Collided with " + (s instanceof Alien ? "alien" : "sprite") + " at " + s.getX());
-            if (hp == 0) {
+//            Log.d("Spaceship class", "Collided with " + (s instanceof Alien ? "alien" : "sprite") + " at " + s.getX());
+            if (hp == 0 && !explode.isPlaying()) {
                 GameActivity.playSound(EXPLODE_SOUND);
                 explode.start();
-                collides = false;
             }
         }
     }

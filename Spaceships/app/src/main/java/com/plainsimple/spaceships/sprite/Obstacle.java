@@ -25,7 +25,7 @@ public class Obstacle extends Sprite {
 //        speedX = scrollSpeed;
         this.collides = collides;
         hitBox = new Hitbox(x, y, x + getWidth(), y + getHeight());
-        damage = 10_000; // todo: some impossible to reach number?
+        hp = 10_000; // todo: some impossible to reach number?
     }
 
     @Override
@@ -35,7 +35,6 @@ public class Obstacle extends Sprite {
         }*/
         if (!isInBounds()) {
             terminate = true;
-            Log.d("Termination", "Removing Obstacle at x = " + x);
         }
 
     }
@@ -52,7 +51,7 @@ public class Obstacle extends Sprite {
     }
 
     @Override
-    public void handleCollision(Sprite s) {
+    public void handleCollision(Sprite s, int damage) {
 
     }
 

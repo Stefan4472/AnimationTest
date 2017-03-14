@@ -23,10 +23,8 @@ public abstract class Sprite { // todo: figure out public vs. protected
     protected float speedX;
     protected float speedY;
 
-    // damage sprite can withstand
+    // hitpoints: essentially, measure of damage sprite can inflict or withstand
     protected int hp;
-    // damage sprite inflicts on contact with another sprite
-    protected int damage;
 
     // whether or not sprite can collide with other sprites
     protected boolean collides = true;
@@ -63,8 +61,9 @@ public abstract class Sprite { // todo: figure out public vs. protected
     // start/stop/update any animations the sprite may play
     public abstract void updateAnimations();
 
-    // handles collision with another sprite
-    public abstract void handleCollision(Sprite s);
+    // handles collision with another sprite. Also passes damage taken
+    // (hp's are cross-subtracted simultaneously; see GameEngineUtil)
+    public abstract void handleCollision(Sprite s, int damage);
 
     // draws sprite onto given canvas
     public abstract List<DrawParams> getDrawParams();
@@ -87,6 +86,13 @@ public abstract class Sprite { // todo: figure out public vs. protected
         } else {
             return true;
         }
+    }
+
+    // subtracts specified damage from sprite's hp and
+    // floors hp at 0 (i.e. if damage > hp)
+    public void takeDamage(int damage) {
+        hp -= damage;
+        hp = (hp < 0) ? 0 : hp;
     }
 
     // returns whether hitbox of this sprite intersects hitbox of specified sprite // todo: some methods could be made static or put in a SpriteUtil or GameEngineUtil class
@@ -180,14 +186,6 @@ public abstract class Sprite { // todo: figure out public vs. protected
 
     public void setTerminate(boolean terminate) {
         this.terminate = terminate;
-    }
-
-    public int getDamage() {
-        return damage;
-    }
-
-    public void setDamage(int damage) {
-        this.damage = damage;
     }
 
     public int getHP() {

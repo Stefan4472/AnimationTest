@@ -95,10 +95,13 @@ public class Map {
             GameEngineUtil.checkCollisions(projectile, obstacles);
             //GameEngineUtil.checkCollisions(projectile, alienProjectiles);
         }
-        GameEngineUtil.checkCollisions(spaceship, aliens);
-        GameEngineUtil.checkCollisions(spaceship, obstacles);
-        GameEngineUtil.checkCollisions(spaceship, coins);
-        GameEngineUtil.checkCollisions(spaceship, alienProjectiles);
+        // check collisions with spaceship only if terminate = false
+        if (!spaceship.terminate()) {
+            GameEngineUtil.checkCollisions(spaceship, aliens);
+            GameEngineUtil.checkCollisions(spaceship, obstacles);
+            GameEngineUtil.checkCollisions(spaceship, coins);
+            GameEngineUtil.checkCollisions(spaceship, alienProjectiles);
+        }
         GameEngineUtil.updateSprites(obstacles);
         GameEngineUtil.updateSprites(obstaclesInvis);
         GameEngineUtil.updateSprites(aliens);
@@ -131,7 +134,7 @@ public class Map {
             case TileGenerator.ALIEN_LVL1:
                 aliens.add(new Alien1(x, y,scrollSpeed, spaceship, difficulty, context));
                 break;
-            case TileGenerator.ASTEROID: // todo: separate list for asteroids?
+            case TileGenerator.ASTEROID: // todo: separate list for asteroids? could bounce off one another
                 obstacles.add(new Asteroid(x, y, scrollSpeed, difficulty, context));
                 break;
             default:

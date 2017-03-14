@@ -55,15 +55,20 @@ public class GameEngineUtil {
 
     // checks sprite against each sprite in list
     // calls handleCollision method if a collision is detected
+    // automatically cross-subtracts the hp's of each sprite
     public static void checkCollisions(Sprite sprite, List<Sprite> toCheck) {
         // return immediately if sprite does not collide
         if (!sprite.collides()) {
             return;
         } else {
-            for (Sprite s : toCheck) { // todo: keep checking if sprite.collides() becomes false? What if three objects collide simultaneously?
+            for (Sprite s : toCheck) {
                 if (sprite.collidesWith(s)) {
-                    sprite.handleCollision(s);
-                    s.handleCollision(sprite);
+                    int sprite_damage = sprite.getHP();
+                    int s_damage = s.getHP();
+                    sprite.takeDamage(s_damage);
+                    s.takeDamage(sprite_damage);
+                    sprite.handleCollision(s, s_damage);
+                    s.handleCollision(sprite, sprite_damage);
                 }
             }
         }

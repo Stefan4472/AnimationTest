@@ -20,7 +20,7 @@ public class Bullet extends Sprite {
     public Bullet(Context context, float x, float y, CannonType cannonType) {
         super(BitmapCache.getData(cannonType.getDrawableId(), context), x, y);
         hitBox = new Hitbox(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
-        damage = cannonType.getDamage();
+        hp = cannonType.getDamage();
         speedX = cannonType.getSpeedX();
     }
 
@@ -43,7 +43,7 @@ public class Bullet extends Sprite {
     }
 
     @Override
-    public void handleCollision(Sprite s) {
+    public void handleCollision(Sprite s, int damage) {
         if (s instanceof Alien) {
             //GameActivity.incrementScore(damage);
         }

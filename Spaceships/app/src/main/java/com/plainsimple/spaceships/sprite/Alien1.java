@@ -69,7 +69,6 @@ public class Alien1 extends Alien {
         framesSinceLastBullet = bulletDelay;
         bulletSpeed = -0.002f - random.nextInt(5) / 10000.0f;
         hitBox = new Hitbox(x + getWidth() * 0.2f, y + getHeight() * 0.2f, x + getWidth() * 0.8f, y + getHeight() * 0.8f);
-        damage = 50;
         healthBarAnimation = new HealthBarAnimation(getWidth(), getHeight(), hp);
     }
 
@@ -112,11 +111,9 @@ public class Alien1 extends Alien {
     }
 
     @Override
-    public void handleCollision(Sprite s) {
-        // todo: do we even need this check?
+    public void handleCollision(Sprite s, int damage) {
+
         if (s instanceof Bullet || s instanceof Rocket || s instanceof Spaceship) {
-            hp -= s.damage;
-            hp = hp < 0 ? 0 : hp;
             // check whether explodeAnimation should start
             if (hp == 0 && !explodeAnimation.isPlaying()) {
                 explodeAnimation.start();
@@ -124,11 +121,7 @@ public class Alien1 extends Alien {
                 // start healthBarAnimation and init LoseHealthAnimations
                 healthBarAnimation.start();
                 loseHealthAnimations.add(new LoseHealthAnimation(getWidth(), getHeight(),
-                        s.getX() - x, s.getY() - y, s.damage));
-            }
-            // on spaceship collision set damage to zero so it only applies damage once
-            if (s instanceof Spaceship) {
-                damage = 0; // todo: collides = false?
+                        s.getX() - x, s.getY() - y, damage));
             }
         }
     }

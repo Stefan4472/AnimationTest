@@ -25,7 +25,7 @@ public class Asteroid extends Sprite {
     // current rotation, in degrees, of asteroid
     private float currentRotation;
     // degrees rotated per frame (positive or negative)
-    private int rotationRate;
+    private float rotationRate;
 
     public Asteroid(float x, float y, float scrollSpeed, int difficulty, Context context) {
         super(BitmapCache.getData(BitmapID.ASTEROID, context), x, y);
@@ -37,11 +37,10 @@ public class Asteroid extends Sprite {
         hp = 40 + difficulty / 100;
         // make hitbox 20% smaller than sprite
         hitBox = new Hitbox(x + getWidth() * 0.1f, y + getHeight() * 0.1f, x + getWidth() * 0.9f, y + getHeight() * 0.9f);
-        damage = 0; // todo: remove damage, use only hp
         // set the current rotation to a random angle
         currentRotation = random.nextInt(360);
         // random rotation rate. function of speedY (faster speed = faster rotation)
-        rotationRate = (int) (speedY * 200);
+        rotationRate = speedY * 200;
     }
 
     @Override
@@ -66,9 +65,8 @@ public class Asteroid extends Sprite {
     }
 
     @Override
-    public void handleCollision(Sprite s) {
-        hp -= s.getHP();
-        hp = hp < 0 ? 0 : hp;
+    public void handleCollision(Sprite s, int damage) {
+
     }
 
     @Override
