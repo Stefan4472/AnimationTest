@@ -10,11 +10,11 @@ import android.graphics.Canvas;
 public class DrawImage implements DrawParams {
 
     // ID of bitmap to be drawn
-    private BitmapID bitmapID;
+    protected BitmapID bitmapID;
     // x-coordinate where drawing begins on canvas
-    private float canvasX0;
+    protected float canvasX0;
     // y-coordinate where drawing begins on canvas
-    private float canvasY0;
+    protected float canvasY0;
 
     public DrawImage(BitmapID bitmapID, float canvasX0, float canvasY0) {
         this.bitmapID = bitmapID;
