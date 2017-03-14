@@ -45,7 +45,7 @@ public class Map {
     // active generated coins
     private List<Sprite> coins = new LinkedList<>();
     // active generated aliens
-    private List<Sprite> aliens = new LinkedList<>();
+    private List<Sprite> aliens = new LinkedList<>(); // todo: any way to keep them in their subclasses?
     // active projectiles on screen fired by aliens
     private List<Sprite> alienProjectiles = new LinkedList<>();
 
@@ -67,7 +67,7 @@ public class Map {
         this.difficulty = difficulty;
 
         // update x
-        x += screenW * scrollSpeed; // todo: make sure different obstacles aren't going at different speeds if they're in the same chunk
+        x += screenW * scrollSpeed;
 
         // check if screen has progressed to render a new tile
         if (getWTile() != lastTile) {
@@ -89,6 +89,7 @@ public class Map {
         }
 
         GameEngineUtil.getAlienBullets(alienProjectiles, aliens);
+
         // check collisions between user-fired projectiles and relevant sprites
         for(Sprite projectile : spaceship.getProjectiles()) {
             GameEngineUtil.checkCollisions(projectile, aliens);
@@ -102,6 +103,7 @@ public class Map {
             GameEngineUtil.checkCollisions(spaceship, coins);
             GameEngineUtil.checkCollisions(spaceship, alienProjectiles);
         }
+        // update all other sprites
         GameEngineUtil.updateSprites(obstacles);
         GameEngineUtil.updateSprites(obstaclesInvis);
         GameEngineUtil.updateSprites(aliens);

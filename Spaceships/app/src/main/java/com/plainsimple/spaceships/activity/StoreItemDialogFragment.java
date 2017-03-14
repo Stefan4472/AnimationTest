@@ -6,16 +6,12 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ViewSwitcher;
 
-import com.plainsimple.spaceships.helper.Equipment;
-import com.plainsimple.spaceships.helper.EquipmentManager;
+import com.plainsimple.spaceships.store.Equipment;
 import com.plainsimple.spaceships.view.FontButton;
 import com.plainsimple.spaceships.view.FontTextView;
 

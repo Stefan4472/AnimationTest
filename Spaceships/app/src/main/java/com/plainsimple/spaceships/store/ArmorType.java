@@ -1,4 +1,4 @@
-package com.plainsimple.spaceships.helper;
+package com.plainsimple.spaceships.store;
 
 /**
  * Possible Armor types with their names and values

@@ -11,11 +11,11 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.plainsimple.spaceships.helper.Equipment;
-import com.plainsimple.spaceships.helper.EquipmentManager;
-import com.plainsimple.spaceships.helper.StoreItemAdapter;
-import com.plainsimple.spaceships.helper.StoreRowAdapter;
-import com.plainsimple.spaceships.helper.StoreRow;
+import com.plainsimple.spaceships.store.Equipment;
+import com.plainsimple.spaceships.store.EquipmentManager;
+import com.plainsimple.spaceships.store.StoreItemAdapter;
+import com.plainsimple.spaceships.store.StoreRowAdapter;
+import com.plainsimple.spaceships.store.StoreRow;
 import com.plainsimple.spaceships.view.FontTextView;
 
 import plainsimple.spaceships.R;

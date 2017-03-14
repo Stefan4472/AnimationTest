@@ -1,4 +1,6 @@
-package com.plainsimple.spaceships.helper;
+package com.plainsimple.spaceships.store;
+
+import com.plainsimple.spaceships.helper.BitmapID;
 
 /**
  * Created by Stefan on 8/27/2016.

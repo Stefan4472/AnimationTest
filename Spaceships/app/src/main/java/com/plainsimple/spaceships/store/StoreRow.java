@@ -1,4 +1,4 @@
-package com.plainsimple.spaceships.helper;
+package com.plainsimple.spaceships.store;
 
 import java.util.LinkedList;
 import java.util.List;

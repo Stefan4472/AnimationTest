@@ -1,23 +1,18 @@
 package com.plainsimple.spaceships.sprite;
 
 import android.content.Context;
-import android.graphics.Rect;
-import android.util.Log;
 
-import com.plainsimple.spaceships.activity.PauseDialogFragment;
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
-import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.helper.Hitbox;
-import com.plainsimple.spaceships.helper.RocketType;
+import com.plainsimple.spaceships.store.RocketType;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.view.GameView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,7 +37,7 @@ public class Rocket extends Sprite {
     public void updateActions() {
         if (!isInBounds() || explode.hasPlayed()) { // todo: potential bug in SpriteAnimation hasPlayed()
             terminate = true;
-            Log.d("Termination", "Removing Rocket at x = " + x);
+//            Log.d("Termination", "Removing Rocket at x = " + x);
         }
     }
 

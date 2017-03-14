@@ -4,11 +4,11 @@ import android.content.Context;
 import android.util.Log;
 
 import com.plainsimple.spaceships.helper.BitmapCache;
-import com.plainsimple.spaceships.helper.BitmapData;
-import com.plainsimple.spaceships.helper.CannonType;
+import com.plainsimple.spaceships.store.CannonType;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.Hitbox;
+import com.plainsimple.spaceships.view.GameView;
 
 import java.util.List;
 
@@ -44,8 +44,8 @@ public class Bullet extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage) {
-        if (s instanceof Alien) {
-            //GameActivity.incrementScore(damage);
+        if (s instanceof Alien || s instanceof Asteroid) {
+            GameView.incrementScore(damage);
         }
         collides = false;
         terminate = true;

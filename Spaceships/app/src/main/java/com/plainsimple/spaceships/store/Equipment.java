@@ -1,8 +1,6 @@
-package com.plainsimple.spaceships.helper;
+package com.plainsimple.spaceships.store;
 
 import android.util.Log;
-
-import plainsimple.spaceships.R;
 
 /**
  * Retrieving/Saving/Accessing equipment data

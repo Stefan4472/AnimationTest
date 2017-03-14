@@ -27,7 +27,7 @@ public class AlienBullet extends Sprite {
     public void updateActions() {
         if (!isInBounds()) {
             terminate = true;
-            Log.d("Termination", "Removing AlienBullet at x = " + x);
+//            Log.d("Termination", "Removing AlienBullet at x = " + x);
         }
     }
 

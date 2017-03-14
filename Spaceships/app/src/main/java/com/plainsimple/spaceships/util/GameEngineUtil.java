@@ -16,15 +16,21 @@ import java.util.List;
  */
 public class GameEngineUtil {
 
+    // runs full update on each sprite in given list
+    // this includes, in order, updating actions, speeds,
+    // coordinates, and animations. Removes sprite from list
+    // if terminate = true after all updating. Note: sprites
+    // must take care of their own terminate logic. Collisions
+    // are not tested in this method.
     public static void updateSprites(List<Sprite> toUpdate) {
         Iterator<Sprite> i = toUpdate.iterator(); // todo: get all sprites together, collisions, etc.
         while(i.hasNext()) {
             Sprite s = i.next();
             s.updateActions();
-            s.updateSpeeds(); // todo: hit detection
+            s.updateSpeeds();
             s.move();
             s.updateAnimations();
-            if(s.terminate()) { // todo: doesn't remove sprites that are out of bounds
+            if(s.terminate()) {
                 i.remove();
             }
         }
@@ -43,13 +49,13 @@ public class GameEngineUtil {
             canvas.drawRect(sprite.getHitBox(), debugPaintPink);
         }*/
     }
-    // goes through sprites, and for each alien uses getAndClearProjectiles,
-    // adds those projectiles to projectiles list
+
+    // goes through sprites, casts each to Alien and uses getAndClearProjectiles
+    // to get their projectiles and add them to the given list.
+    // WARNING! do not use this method on non-Aliens
     public static void getAlienBullets(List<Sprite> projectiles, List<Sprite> sprites) {
         for(Sprite s : sprites) {
-            if (s instanceof Alien) {
-                projectiles.addAll(((Alien) s).getAndClearProjectiles());
-            }
+            projectiles.addAll(((Alien) s).getAndClearProjectiles());
         }
     }
 

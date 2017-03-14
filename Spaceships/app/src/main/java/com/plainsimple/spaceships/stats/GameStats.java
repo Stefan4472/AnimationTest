@@ -1,4 +1,4 @@
-package com.plainsimple.spaceships.helper;
+package com.plainsimple.spaceships.stats;
 
 import android.content.Context;
 import android.content.SharedPreferences;

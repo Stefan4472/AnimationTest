@@ -17,6 +17,7 @@ import android.view.SurfaceView;
 import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.*;
 import com.plainsimple.spaceships.sprite.*;
+import com.plainsimple.spaceships.stats.GameStats;
 import com.plainsimple.spaceships.util.GameEngineUtil;
 
 import plainsimple.spaceships.R;

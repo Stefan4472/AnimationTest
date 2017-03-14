@@ -20,12 +20,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 
-import com.plainsimple.spaceships.helper.ArmorType;
-import com.plainsimple.spaceships.helper.CannonType;
-import com.plainsimple.spaceships.helper.EquipmentManager;
-import com.plainsimple.spaceships.helper.GameStats;
-import com.plainsimple.spaceships.helper.LifeTimeGameStats;
-import com.plainsimple.spaceships.helper.RocketType;
+import com.plainsimple.spaceships.store.ArmorType;
+import com.plainsimple.spaceships.store.CannonType;
+import com.plainsimple.spaceships.store.EquipmentManager;
+import com.plainsimple.spaceships.stats.GameStats;
+import com.plainsimple.spaceships.stats.LifeTimeGameStats;
+import com.plainsimple.spaceships.store.RocketType;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.view.GameView;
