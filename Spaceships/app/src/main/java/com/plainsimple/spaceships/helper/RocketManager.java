@@ -16,15 +16,6 @@ package com.plainsimple.spaceships.helper;
 public abstract class RocketManager {
 
     public abstract FireInstructions attemptFire(int frameCount);
-    /*// returns whether the left rocket can be fired,
-    // given the number of frames spaceship has been
-    // in existence
-    boolean fireLeft(int frameCount);
-
-    // returns whether the right rocket can be fired,
-    // given the number of frames spaceship has been
-    // in existence
-    boolean fireRight(int frameCount);*/
 
     // Straightforward wrapper class to send booleans for firing
     // left rocket and/or right rocket
