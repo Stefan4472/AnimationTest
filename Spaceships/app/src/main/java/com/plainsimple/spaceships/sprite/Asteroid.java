@@ -76,11 +76,14 @@ public class Asteroid extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage) {
-        // start healthBarAnimation and init LoseHealthAnimations
-        if (damage > 0) {
-            healthBarAnimation.start();
-            loseHealthAnimations.add(new LoseHealthAnimation(getWidth(), getHeight(),
-                    s.getX() - x, s.getY() - y, damage));
+        if (s instanceof Spaceship || s instanceof Bullet || s instanceof Rocket) {
+            GameView.incrementScore(damage);
+            // start healthBarAnimation and init LoseHealthAnimations
+            if (damage > 0) {
+                healthBarAnimation.start();
+                loseHealthAnimations.add(new LoseHealthAnimation(getWidth(), getHeight(),
+                        s.getX() - x, s.getY() - y, damage));
+            }
         }
     }
 

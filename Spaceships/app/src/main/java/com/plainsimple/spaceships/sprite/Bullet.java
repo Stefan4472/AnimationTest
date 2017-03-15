@@ -44,9 +44,6 @@ public class Bullet extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage) {
-        if (s instanceof Alien || s instanceof Asteroid) {
-            GameView.incrementScore(damage);
-        }
         collides = false;
         terminate = true;
     }

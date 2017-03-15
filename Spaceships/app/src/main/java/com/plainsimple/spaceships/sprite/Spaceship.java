@@ -148,10 +148,10 @@ public class Spaceship extends Sprite {
             // queue RocketManager for permission to fire
             RocketManager.FireInstructions instructions = rocketManager.attemptFire(frameCount);
             if (instructions.fireLeft()) { // fire left if allowed
-                projectiles.add(new Rocket(context, x + getWidth() * 0.80f, y + 0.29f * getHeight(), rocketType));
+                projectiles.add(Rocket.newInstance(context, x + getWidth() * 0.80f, y + 0.29f * getHeight(), rocketType));
             }
             if (instructions.fireRight()) { // fire right if allowed
-                projectiles.add(new Rocket(context, x + getWidth() * 0.80f, y + 0.65f * getHeight(), rocketType));
+                projectiles.add(Rocket.newInstance(context, x + getWidth() * 0.80f, y + 0.65f * getHeight(), rocketType));
             }
             // play sound and start animation if at least one rocket was fired
             if (instructions.fireLeft() || instructions.fireRight()) {

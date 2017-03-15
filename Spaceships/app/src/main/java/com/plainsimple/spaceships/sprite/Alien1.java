@@ -115,6 +115,7 @@ public class Alien1 extends Alien {
     @Override
     public void handleCollision(Sprite s, int damage) {
         if (s instanceof Bullet || s instanceof Rocket || s instanceof Spaceship) {
+            GameView.incrementScore(damage);
             // check whether explodeAnimation should start
             if (hp == 0 && !explodeAnimation.isPlaying()) {
                 explodeAnimation.start();

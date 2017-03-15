@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
+import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
@@ -14,23 +15,40 @@ import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.view.GameView;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
- * Created by Stefan on 8/13/2015.
+ * A superclass for all rocket types. Because rockets
+ * share so much common functionality, this class is
+ * almost complete. Subclasses may override whichever
+ * methods they choose.
+ * Rockets are required to have a move animation and
+ * an explode animation. todo: work this out. Perhaps a SpriteAnimation superclass?
  */
-public class Rocket extends Sprite {
+public abstract class Rocket extends Sprite {
 
-    private SpriteAnimation move;
-    private SpriteAnimation explode;
+    // static method used to create a new instance of Rocket. Uses rocketType
+    // to determine which subclass to instantiate. This allows the spaceship
+    // to get the Rocket instance without needing to know which subclass to
+    // call.
+    public static Rocket newInstance(Context context, float x, float y, RocketType rocketType) {
+        switch (rocketType) {
+            case ROCKET_0:
+            case ROCKET_1:
+            case ROCKET_2:
+            case ROCKET_3:
+                return new Rocket0(context, x, y);
+            default:
+                throw new NoSuchElementException("Did not recognize RocketType " + rocketType);
+        }
+    }
 
-    public Rocket(Context context, float x, float y, RocketType rocketType) {
-        super(BitmapCache.getData(rocketType.getDrawableId(), context), x, y);
-        move = AnimCache.get(BitmapID.ROCKET_MOVE, context);
-        move.start();
-        explode = AnimCache.get(BitmapID.EXPLOSION_1, context);
-        speedX = rocketType.getSpeedX();
-        hp = rocketType.getDamage();
-        hitBox = new Hitbox(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
+
+    protected SpriteAnimation move;
+    protected SpriteAnimation explode;
+
+    protected Rocket(BitmapData bitmapData, float x, float y) {
+        super(bitmapData, x, y);
     }
 
     @Override
@@ -53,7 +71,6 @@ public class Rocket extends Sprite {
             explode.start();
             speedX = s.speedX;
             collides = false;
-            GameView.incrementScore(damage);
         }
     }
 
