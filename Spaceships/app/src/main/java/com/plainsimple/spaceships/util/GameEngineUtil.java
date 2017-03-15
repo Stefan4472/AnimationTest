@@ -2,7 +2,6 @@ package com.plainsimple.spaceships.util;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.util.Log;
 
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.sprite.Alien;

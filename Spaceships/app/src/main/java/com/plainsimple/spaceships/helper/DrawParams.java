@@ -9,6 +9,6 @@ import android.graphics.Canvas;
 public interface DrawParams {
 
     // draws to the canvas using the specific instructions stored in the class
-    void draw(Canvas canvas, Context context);
+    void draw(Canvas canvas, Context context); // todo: add method that takes paint object, and method that draws it rotated
 
 }

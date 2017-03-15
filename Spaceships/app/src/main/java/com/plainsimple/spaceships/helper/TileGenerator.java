@@ -12,10 +12,8 @@ public class TileGenerator {
     public static final int OBSTACLE = 1; // basic obstacle
     public static final int OBSTACLE_INVIS = 2; // basic obstacle collision = false
     public static final int COIN = 3; // coin tile
-    public static final int ALIEN_LVL1 = 4; // level 1 alien
-    public static final int ALIEN_LVL2 = 5; // level 2 alien
-    public static final int ALIEN_LVL3 = 6; // level 3 alien
-    public static final int ASTEROID = 7; // asteroid
+    public static final int ALIEN = 4; // alien
+    public static final int ASTEROID = 5; // asteroid
 
     // models to simulate probability todo: make less arbitrary
     private LinearProbability pTunnel = new LinearProbability(0.15f, 0.3f, 1_500, 300);
@@ -163,7 +161,7 @@ public class TileGenerator {
     private byte[][] generateAlien() {
         int size = 6 + random.nextInt(10);
         byte[][] generated = new byte[rows][size];
-        generated[1 + random.nextInt(6)][size / 2] = ALIEN_LVL1;
+        generated[1 + random.nextInt(6)][size / 2] = ALIEN;
         return generated;
     }
 
@@ -172,7 +170,7 @@ public class TileGenerator {
         int size = (num_aliens + 1) * 8;
         byte[][] generated = new byte[rows][size];
         for (int i = 0; i < num_aliens; i++) {
-            generated[1 + random.nextInt(4)][8 * (i + 1)] = ALIEN_LVL1;
+            generated[1 + random.nextInt(4)][8 * (i + 1)] = ALIEN;
         }
         return generated;
     }
@@ -251,7 +249,7 @@ public class TileGenerator {
     public static byte[][] generateDebugTiles() {
         return new byte[][] {
                 {0, 0, 0, 0, 0, ASTEROID, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, ALIEN, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, ASTEROID, 0},

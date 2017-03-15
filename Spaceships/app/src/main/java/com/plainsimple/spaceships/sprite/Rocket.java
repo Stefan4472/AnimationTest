@@ -10,6 +10,8 @@ import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.helper.Hitbox;
+import com.plainsimple.spaceships.helper.Rocket0Manager;
+import com.plainsimple.spaceships.helper.RocketManager;
 import com.plainsimple.spaceships.store.RocketType;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.view.GameView;
@@ -24,6 +26,9 @@ import java.util.NoSuchElementException;
  * methods they choose.
  * Rockets are required to have a move animation and
  * an explode animation. todo: work this out. Perhaps a SpriteAnimation superclass?
+ * They are also required to have a RocketManager
+ * implementation available through a public static RocketManager
+ * getRocketManager() method.
  */
 public abstract class Rocket extends Sprite {
 
@@ -34,15 +39,17 @@ public abstract class Rocket extends Sprite {
     public static Rocket newInstance(Context context, float x, float y, RocketType rocketType) {
         switch (rocketType) {
             case ROCKET_0:
-            case ROCKET_1:
-            case ROCKET_2:
-            case ROCKET_3:
                 return new Rocket0(context, x, y);
+            case ROCKET_1:
+                return new Rocket1(context, x, y);
+            case ROCKET_2:
+                return new Rocket2(context, x, y);
+            case ROCKET_3:
+                return new Rocket3(context, x, y);
             default:
                 throw new NoSuchElementException("Did not recognize RocketType " + rocketType);
         }
     }
-
 
     protected SpriteAnimation move;
     protected SpriteAnimation explode;

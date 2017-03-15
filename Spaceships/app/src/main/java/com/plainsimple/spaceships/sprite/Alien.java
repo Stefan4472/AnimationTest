@@ -1,21 +1,34 @@
 package com.plainsimple.spaceships.sprite;
 
+import android.content.Context;
+import android.graphics.Rect;
+
+import com.plainsimple.spaceships.helper.AnimCache;
+import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
+import com.plainsimple.spaceships.helper.BitmapID;
+import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.helper.DrawSubImage;
+import com.plainsimple.spaceships.helper.HealthBarAnimation;
+import com.plainsimple.spaceships.helper.LoseHealthAnimation;
+import com.plainsimple.spaceships.stats.GameStats;
+import com.plainsimple.spaceships.helper.Hitbox;
+import com.plainsimple.spaceships.helper.SpriteAnimation;
+import com.plainsimple.spaceships.view.GameView;
 
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Stefan on 8/28/2015.
+ * Created by Stefan on 9/26/2015.
  */
-public abstract class Alien extends Sprite {
+public class Alien extends Sprite {
 
     // frames to wait between firing bullets
     protected int bulletDelay;
     protected int framesSinceLastBullet = 0;
 
-    protected float bulletSpeed;
     protected List<Sprite> projectiles = new LinkedList<>();
 
     // frames since alien was constructed
@@ -26,9 +39,138 @@ public abstract class Alien extends Sprite {
     // used as a reference for calculating trajectory
     protected float startingY;
 
+    // defines sine wave that describes alien's trajectory
+    private int amplitude;
+    private int period;
+    private int vShift;
+    private int hShift;
+
+    private Spaceship spaceship;
+    private int difficulty;
+
+    private BitmapData bulletBitmapData;
+    private SpriteAnimation explodeAnimation;
+    // draws animated healthbar above Alien if Alien is damaged
+    private HealthBarAnimation healthBarAnimation;
+    // stores any running animations showing health leaving alien
+    private List<LoseHealthAnimation> loseHealthAnimations = new LinkedList<>();
+
+    public Alien(float x, float y, float scrollSpeed, Spaceship spaceship, int difficulty, Context context) {
+        super(BitmapCache.getData(BitmapID.ALIEN, context), x, y);
+        speedX = scrollSpeed / 2;
+        this.spaceship = spaceship;
+
+        bulletBitmapData = BitmapCache.getData(BitmapID.ROCKET_1, context);
+        explodeAnimation = AnimCache.get(BitmapID.SPACESHIP_EXPLODE, context);
+
+        this.difficulty = difficulty;
+
+        initAlien();
+    }
+
+    private void initAlien() { // todo: playability improvements. Esp. "wall of bullets"
+        startingY = y;
+        amplitude = 70 + random.nextInt(60);
+        period = 250 + random.nextInt(100);
+        vShift = random.nextInt(20);
+        hShift = -random.nextInt(3);
+        hp = 10 + difficulty / 100;
+        bulletDelay = 20;
+        framesSinceLastBullet = bulletDelay; // todo: implement AlienBullet FireManager
+        hitBox = new Hitbox(x + getWidth() * 0.2f, y + getHeight() * 0.2f, x + getWidth() * 0.8f, y + getHeight() * 0.8f);
+        healthBarAnimation = new HealthBarAnimation(getWidth(), getHeight(), hp);
+    }
+
+    @Override
+    public void updateActions() { // todo: avoid straight vertical shots
+        // terminate after explosion or if out of bounds
+        if (explodeAnimation.hasPlayed() || !isInBounds()) {
+            terminate = true;
+//            Log.d("Termination", "Removing Alien at x = " + x);
+            GameView.currentStats.addTo(GameStats.ALIENS_KILLED, 1);
+        } else {
+            framesSinceLastBullet++;
+            if (x > (spaceship.getX() * 1.6) && framesSinceLastBullet >= bulletDelay) {
+                if (getP(0.1f)) {
+                    fireBullet(spaceship);
+                    framesSinceLastBullet = 0;
+                }
+            }
+        }
+    }
+
+    // fires bullet at sprite based on current trajectories
+    // that are slightly randomized. Fires from a point slightly below
+    // the top of the sprite
+    public void fireBullet(Sprite s) {
+        projectiles.add(new AlienBullet(bulletBitmapData, x, y + (int) (getHeight() * 0.1), s.getHitboxCenter()));
+    }
+
+    @Override
+    public void updateSpeeds() {
+        float projected_y;
+        // if sprite in top half of screen, start flying down. Else start flying up
+        if (startingY <= 150) {
+            projected_y = amplitude * (float) Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
+        } else { // todo: flying up
+            projected_y = amplitude * (float) Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
+        }
+        speedY = (projected_y - y) / 600.0f; // todo: more elegant
+        elapsedFrames++;
+    }
+
+    @Override
+    public void updateAnimations() {
+        if (explodeAnimation.isPlaying()) {
+            explodeAnimation.incrementFrame();
+        }
+    }
+
+    @Override
+    public void handleCollision(Sprite s, int damage) {
+        if (s instanceof Bullet || s instanceof Rocket || s instanceof Spaceship) {
+            GameView.incrementScore(damage); // todo: make sure score doesn't keep adding once alien is dead
+            // check whether explodeAnimation should start
+            if (hp == 0 && !explodeAnimation.isPlaying()) {
+                explodeAnimation.start();
+            } else if (damage > 0) {
+                // start healthBarAnimation and init LoseHealthAnimations
+                healthBarAnimation.start();
+                loseHealthAnimations.add(new LoseHealthAnimation(getWidth(), getHeight(),
+                        s.getX() - x, s.getY() - y, damage));
+            }
+        }
+    }
+
+    @Override
+    public List<DrawParams> getDrawParams() {
+        drawParams.clear();
+        // only draw alien if it is not in last frame of explode animation
+        if (explodeAnimation.getFramesLeft() >= 1) { // todo: does this work?
+            drawParams.add(new DrawImage(bitmapData.getId(), x, y));
+        }
+        // draw loseHealthAnimations
+        for (int i = 0; i < loseHealthAnimations.size(); i++) {
+            if (!loseHealthAnimations.get(i).isFinished()) {
+                loseHealthAnimations.get(i).updateAndDraw(x, y, drawParams);
+            }
+        }
+        // update and draw healthBarAnimation if showing
+        if (healthBarAnimation.isShowing()) {
+            healthBarAnimation.updateAndDraw(x, y, hp, drawParams);
+        }
+        // add explodeAnimation params if showing
+        if (explodeAnimation.isPlaying()) {
+            Rect source = explodeAnimation.getCurrentFrameSrc();
+            drawParams.add(new DrawSubImage(explodeAnimation.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
+        }
+        return drawParams;
+    }
+
     public List<Sprite> getProjectiles() {
         return projectiles;
     }
+
     public List<Sprite> getAndClearProjectiles() {
         List<Sprite> copy = new LinkedList<>();
         for(Sprite p : projectiles) {
@@ -38,28 +180,4 @@ public abstract class Alien extends Sprite {
         return copy;
     }
 
-    public Alien(BitmapData bitmapData, float x, float y) {
-        super(bitmapData, x, y);
-    }
-
-    // update/handle any actions sprite takes
-    @Override
-    public abstract void updateActions();
-
-    // updates speedX and speedY of spaceship
-    @Override
-    public abstract void updateSpeeds();
-
-    @Override
-    public abstract void updateAnimations();
-
-    // handles collision with specified sprite
-    @Override
-    public abstract void handleCollision(Sprite s, int damage);
-
-    @Override
-    public abstract List<DrawParams> getDrawParams();
-
-    // fires bullet/projectile at specified sprite
-    public abstract void fireBullet(Sprite s); // todo: unnecessary
 }
