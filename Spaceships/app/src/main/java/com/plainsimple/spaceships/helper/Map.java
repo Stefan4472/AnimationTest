@@ -81,8 +81,8 @@ public class Map {
 
             // generate more sprites
             if (mapTileCounter == tiles[0].length) {
-//                tiles = tileGenerator.generateTiles(difficulty);
-                tiles = tileGenerator.generateDebugTiles();
+                tiles = tileGenerator.generateTiles(difficulty);
+//                tiles = tileGenerator.generateDebugTiles();
                 mapTileCounter = 0;
             }
             lastTile = getWTile();
@@ -148,7 +148,7 @@ public class Map {
         for (Sprite o : obstacles) {
             GameEngineUtil.drawSprite(o, canvas, context);
         }
-        for (Sprite o : obstaclesInvis) {
+        for (Sprite o : obstaclesInvis) { // todo: causes concurrentmodificationexception on game restart
             GameEngineUtil.drawSprite(o, canvas, context);
         }
         for (Sprite c : coins) {

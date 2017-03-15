@@ -6,6 +6,8 @@ import android.graphics.Canvas;
 
 import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.AnimCache;
+import com.plainsimple.spaceships.helper.Rocket0Manager;
+import com.plainsimple.spaceships.helper.RocketManager;
 import com.plainsimple.spaceships.store.ArmorType;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
@@ -43,10 +45,14 @@ public class Spaceship extends Sprite {
 
     private CannonType cannonType = CannonType.CANNON_0;
     private int lastFiredBullet;
-    private BitmapData bulletBitmapData;
 
+    // type of rocket spaceship fires
     private RocketType rocketType = RocketType.ROCKET_0;
-    private int lastFiredRocket;
+    // number of frames spaceship has been in existence
+    // (used to determine when rockets can be fired)
+    private int frameCount;
+    // enforces Rocket firing pattern
+    private RocketManager rocketManager = new Rocket0Manager();
 
     private ArmorType armorType = ArmorType.ARMOR_0;
 
@@ -111,7 +117,7 @@ public class Spaceship extends Sprite {
         move.start();
         projectiles.clear();
         lastFiredBullet = cannonType.getDelay();
-        lastFiredRocket = rocketType.getDelay();
+        frameCount = 0;
     }
 
     // renders spaceship bitmap from modular components, scaled to given width/height
@@ -134,25 +140,28 @@ public class Spaceship extends Sprite {
     @Override
     public void updateActions() {
         lastFiredBullet++;
-        lastFiredRocket++;
+        frameCount++;
         if (fireMode == FireMode.BULLET && lastFiredBullet >= cannonType.getDelay() && hp != 0) {
             fireBullets();
             lastFiredBullet = 0;
-        } else if (fireMode == FireMode.ROCKET && lastFiredRocket >= rocketType.getDelay() && hp != 0) {
-            fireRockets();
-            lastFiredRocket = 0;
-            fireRocket.start();
+        } else if (fireMode == FireMode.ROCKET && hp != 0) {
+            // queue RocketManager for permission to fire
+            RocketManager.FireInstructions instructions = rocketManager.attemptFire(frameCount);
+            if (instructions.fireLeft()) { // fire left if allowed
+                projectiles.add(new Rocket(context, x + getWidth() * 0.80f, y + 0.29f * getHeight(), rocketType));
+            }
+            if (instructions.fireRight()) { // fire right if allowed
+                projectiles.add(new Rocket(context, x + getWidth() * 0.80f, y + 0.65f * getHeight(), rocketType));
+            }
+            // play sound and start animation if at least one rocket was fired
+            if (instructions.fireLeft() || instructions.fireRight()) {
+                fireRocket.start();
+                GameActivity.playSound(ROCKET_SOUND);
+            }
         }
         if (explode.hasPlayed()) {
             terminate = true;
         }
-    }
-
-    // fires two rockets
-    public void fireRockets() {
-        projectiles.add(new Rocket(context, x + getWidth() * 0.80f, y + 0.29f * getHeight(), rocketType));
-        projectiles.add(new Rocket(context, x + getWidth() * 0.80f, y + 0.65f * getHeight(), rocketType));
-        GameActivity.playSound(ROCKET_SOUND);
     }
 
     // fires two bullets
