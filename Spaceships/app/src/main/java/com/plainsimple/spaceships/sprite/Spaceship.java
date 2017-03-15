@@ -52,7 +52,7 @@ public class Spaceship extends Sprite {
     // (used to determine when rockets can be fired)
     private int frameCount;
     // enforces Rocket firing pattern
-    private RocketManager rocketManager = new Rocket0Manager();
+    private RocketManager rocketManager;
 
     private ArmorType armorType = ArmorType.ARMOR_0;
 
@@ -108,6 +108,7 @@ public class Spaceship extends Sprite {
     public void setInitValues() {
         collides = true;
         hp = armorType.getHP();
+        rocketManager = RocketManager.newInstance(rocketType);
         controllable = false;
         speedX = 0.003f;
         speedY = 0;
@@ -278,10 +279,13 @@ public class Spaceship extends Sprite {
         this.cannonType = cannonType;
     }
 
+    // set RocketType and get correct RocketManager
     public void setRocketType(RocketType rocketType) {
         this.rocketType = rocketType;
+        rocketManager = RocketManager.newInstance(rocketType);
     }
 
+    // set ArmorType and corresponding hp
     public void setArmorType(ArmorType armorType) {
         this.armorType = armorType;
         hp = armorType.getHP();

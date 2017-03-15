@@ -1,5 +1,7 @@
 package com.plainsimple.spaceships.helper;
 
+import com.plainsimple.spaceships.store.RocketType;
+
 /**
  * The classes that implement this abstract class are used to
  * manage the firing of rockets by the Spaceship. The attemptFire
@@ -14,6 +16,24 @@ package com.plainsimple.spaceships.helper;
  */
 
 public abstract class RocketManager {
+
+    // static method to return a new instance of RocketManager for the
+    // specified RocketType. This allows the Spaceship to get the
+    // correct subclass without having to know which one it is.
+    public static RocketManager newInstance(RocketType rocketType) {
+        switch (rocketType) {
+            case ROCKET_0:
+                return new Rocket0Manager();
+            case ROCKET_1:
+                return new Rocket1Manager();
+            case ROCKET_2:
+                return new Rocket2Manager();
+            case ROCKET_3:
+                return new Rocket3Manager();
+            default:
+                throw new IllegalArgumentException("Did not recognize RocketType " + rocketType);
+        }
+    }
 
     public abstract FireInstructions attemptFire(int frameCount);
 
