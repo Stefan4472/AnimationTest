@@ -228,11 +228,11 @@ public class Spaceship extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage) {
+        takeDamage(damage);
         if (s instanceof Coin) { // todo: play sound
             GameView.incrementScore(GameView.COIN_VALUE);
             GameView.currentStats.addTo(GameStats.COINS_COLLECTED, 1);
         } else {
-//            Log.d("Spaceship class", "Collided with " + (s instanceof Alien ? "alien" : "sprite") + " at " + s.getX());
             if (hp == 0 && !explode.isPlaying()) {
                 GameActivity.playSound(EXPLODE_SOUND);
                 explode.start();
@@ -250,7 +250,7 @@ public class Spaceship extends Sprite {
             drawParams.add(new DrawImage(cannonType.getSpaceshipOverlayId(), x, y));
             drawParams.add(new DrawImage(rocketType.getSpaceshipOverlayId(), x, y));
 //            drawParams.add(new DrawImage(bitmapData.getId(), x, y));
-            if (moving) {
+            if (!explode.isPlaying()) {
                 drawParams.add(new DrawSubImage(move.getBitmapID(), x, y, move.getCurrentFrameSrc()));
             }
             if (fireRocket.isPlaying()) {

@@ -79,7 +79,7 @@ public class Map {
             }
             mapTileCounter++;
 
-            // generate more sprites
+            // generate more sprites todo: only generate if all aliens have been killed, or all bosses, or etc. preventGeneration flag?
             if (mapTileCounter == tiles[0].length) {
 //                tiles = tileGenerator.generateTiles(difficulty);
                 tiles = tileGenerator.generateDebugTiles();

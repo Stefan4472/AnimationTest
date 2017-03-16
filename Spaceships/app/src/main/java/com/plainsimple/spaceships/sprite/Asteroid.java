@@ -76,14 +76,20 @@ public class Asteroid extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage) {
-        if (s instanceof Spaceship || s instanceof Bullet || s instanceof Rocket) {
+        takeDamage(damage);
+        // increment score and start HealthBarAnimation and LoseHealthAnimations
+        // if Asteroid took damage and isn't dead.
+        if (!dead && damage > 0) {
             GameView.incrementScore(damage);
-            // start healthBarAnimation and init LoseHealthAnimations
-            if (damage > 0) {
-                healthBarAnimation.start();
-                loseHealthAnimations.add(new LoseHealthAnimation(getWidth(), getHeight(),
-                        s.getX() - x, s.getY() - y, damage));
-            }
+            healthBarAnimation.start();
+            loseHealthAnimations.add(new LoseHealthAnimation(getWidth(), getHeight(),
+                    s.getX() - x, s.getY() - y, damage));
+        }
+        // if hp has hit zero and dead is false, set it to true.
+        // This means hp has hit zero for the first time, and
+        // Asteroid was "killed" by the collision.
+        if (hp == 0 && !dead) {
+            dead = true;
         }
     }
 

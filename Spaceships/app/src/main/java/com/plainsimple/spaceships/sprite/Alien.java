@@ -124,7 +124,7 @@ public class Alien extends Sprite {
     }
 
     @Override
-    public void updateSpeeds() {
+    public void updateSpeeds() { // todo: comment, improve
         float projected_y;
         // if sprite in top half of screen, start flying down. Else start flying up
         if (startingY <= 150) {
@@ -132,7 +132,7 @@ public class Alien extends Sprite {
         } else { // todo: flying up
             projected_y = amplitude * (float) Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
         }
-        speedY = (projected_y - y) / 600.0f; // todo: more elegant
+        speedY = (projected_y - y) / 600.0f;
         elapsedFrames++;
     }
 
@@ -145,17 +145,21 @@ public class Alien extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage) {
-        if (s instanceof Bullet || s instanceof Rocket || s instanceof Spaceship) {
-            GameView.incrementScore(damage); // todo: make sure score doesn't keep adding once alien is dead
-            // check whether explodeAnimation should start
-            if (hp == 0 && !explodeAnimation.isPlaying()) {
-                explodeAnimation.start();
-            } else if (damage > 0) {
-                // start healthBarAnimation and init LoseHealthAnimations
-                healthBarAnimation.start();
-                loseHealthAnimations.add(new LoseHealthAnimation(getWidth(), getHeight(),
-                        s.getX() - x, s.getY() - y, damage));
-            }
+        takeDamage(damage);
+        // increment score and start HealthBarAnimation and LoseHealthAnimations
+        // if Alien took damage and isn't dead.
+        if (!dead && damage > 0) {
+            GameView.incrementScore(damage);
+            healthBarAnimation.start();
+            loseHealthAnimations.add(new LoseHealthAnimation(getWidth(), getHeight(),
+                    s.getX() - x, s.getY() - y, damage));
+        }
+        // if hp has hit zero and dead is false, set it to true.
+        // This means hp has hit zero for the first time, and
+        // Alien was "killed" by the collision. Start explodeAnimation.
+        if (hp == 0 && !dead) {
+            dead = true;
+            explodeAnimation.start();
         }
     }
 

@@ -28,12 +28,16 @@ public abstract class Sprite { // todo: figure out public vs. protected
 
     // whether or not sprite can collide with other sprites
     protected boolean collides = true;
-    // whether or not sprite is currently moving
-    protected boolean moving = true; // todo: remove?
     // whether or not sprite should be removed from game
     protected boolean terminate;
+    // whether sprite is "dead," i.e. hp has hit zero
+    // this can be useful in cases where the sprite has zero health, but
+    // can still be hit with projectiles. In these instances we'd want
+    // to prevent certain animations or actions from happening that would
+    // normally happen on collision
+    protected boolean dead;
 
-    // hitbox for collision detection todo: complex shapes
+    // hitbox for collision detection todo: complex shapes?
     protected Hitbox hitBox;
 
     // data concerning sprite's default Bitmap

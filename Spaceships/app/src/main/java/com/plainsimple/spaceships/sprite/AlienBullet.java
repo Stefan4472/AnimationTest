@@ -30,7 +30,7 @@ public class AlienBullet extends Sprite {
         super(bitmapData, x, y);
 
         hitBox = new Hitbox(x, y, x + getWidth(), y + getHeight());
-        hp = 10;
+        //hp = 10;
 
         // speedX is fixed
         speedX = -0.008f;
@@ -69,13 +69,8 @@ public class AlienBullet extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage) {
-        if (!(s instanceof Alien)) {
-            collides = false;
-            terminate = true;
-        }
-        //if (s instanceof Spaceship) {
-
-        //}
+        collides = false;
+        terminate = true;
     }
 
     @Override
