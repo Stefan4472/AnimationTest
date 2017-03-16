@@ -107,7 +107,7 @@ public class EquipmentManager {
     // withdraws coins from coin balance. toSpend must be less than available balance
     public void spendCoins(int toSpend) throws IllegalStateException {
         if (toSpend > coins) {
-            throw new IllegalStateException("Tried to spend more coins that are available");
+            throw new IllegalStateException("Tried to spend more coins than are available");
         } else {
             coins -= toSpend;
             prefEditor.putInt(COINS_KEY, coins);

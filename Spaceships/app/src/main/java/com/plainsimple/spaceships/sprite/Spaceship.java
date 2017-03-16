@@ -250,9 +250,9 @@ public class Spaceship extends Sprite {
             drawParams.add(new DrawImage(cannonType.getSpaceshipOverlayId(), x, y));
             drawParams.add(new DrawImage(rocketType.getSpaceshipOverlayId(), x, y));
 //            drawParams.add(new DrawImage(bitmapData.getId(), x, y));
-            if (!explode.isPlaying()) {
-                drawParams.add(new DrawSubImage(move.getBitmapID(), x, y, move.getCurrentFrameSrc()));
-            }
+            // draw moving animation
+            drawParams.add(new DrawSubImage(move.getBitmapID(), x, y, move.getCurrentFrameSrc()));
+
             if (fireRocket.isPlaying()) {
                 drawParams.add(new DrawSubImage(fireRocket.getBitmapID(), x + getWidth() / 2.0f, y, fireRocket.getCurrentFrameSrc()));
             }

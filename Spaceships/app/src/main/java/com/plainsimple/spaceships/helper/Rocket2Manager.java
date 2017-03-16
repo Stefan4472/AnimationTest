@@ -17,23 +17,17 @@ public class Rocket2Manager extends RocketManager {
     // delay after right before left can be fired
     private final static int FULL_DELAY = 100;
     // frame count last time left was fired
-    private int lastLeft = -FULL_DELAY;
-    // frame count last time right was fired
-    private int lastRight = 0;
+    private int lastLeft = -FULL_DELAY - INTER_DELAY;
 
     @Override
     public FireInstructions attemptFire(int frameCount) {
-        int delay_left = frameCount - lastLeft;
-        int delay_right = frameCount - lastRight;
-        if (delay_left > delay_right && delay_left >= FULL_DELAY) {
-            // fire left, but not right
+        int frames_since = frameCount - lastLeft;
+        if (frames_since == INTER_DELAY) { // fire right
+            return new FireInstructions(false, true);
+        } else if (frames_since >= INTER_DELAY + FULL_DELAY) { // allowed to fire left again
             lastLeft = frameCount;
             return new FireInstructions(true, false);
-        } else if (delay_right >= INTER_DELAY) {
-            // fire right, but not left
-            lastRight = frameCount;
-            return new FireInstructions(false, true);
-        } else { // still waiting
+        } else { // none can be fired
             return new FireInstructions(false, false);
         }
     }

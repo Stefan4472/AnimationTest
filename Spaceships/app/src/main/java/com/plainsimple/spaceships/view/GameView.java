@@ -212,7 +212,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         public void updateScrollSpeed() {
             // spaceship destroyed: slow down scrolling to a halt and fire onGameFinished when scrollspeed = 0
             if (spaceshipDestroyed) {
-                scrollSpeed /= 1.01f;
+                scrollSpeed /= 1.02f;
                 if (scrollSpeed > -0.0001f) {
                     gameFinished = true;
                     Log.d("GameView.java", "OnGameFinished()");
@@ -262,6 +262,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             scoreDisplay = new ScoreDisplay(c, 0);
             currentStats = new GameStats();
             gameFinished = false;
+            score = 0;
         }
 
         public void setSurfaceSize(int width, int height) {
