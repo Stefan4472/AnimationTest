@@ -26,26 +26,34 @@ public class AlienBullet extends Sprite {
     // angle that bullet travels
     private float fireAngle;
 
-    public AlienBullet(BitmapData bitmapData, float x, float y, Point2D target) { // todo: damage as a parameter?
+    public AlienBullet(BitmapData bitmapData, float x, float y, float targetX, float targetY) { // todo: damage as a parameter?
         super(bitmapData, x, y);
+
         hitBox = new Hitbox(x, y, x + getWidth(), y + getHeight());
         hp = 10;
+
         // speedX is fixed
-        speedX = -0.004f;// - random.nextInt(5) / 10000.0f;
+        speedX = -0.008f;
+
         // calculate fireAngle based on distance to target in x and y
-        float dist_x = x - target.getX();
-        float dist_y = y - target.getY();
-        fireAngle = (float) -Math.atan(dist_x / dist_y);
+        // keep in mind this gets tricky because we're in canvas coordinates
+        float dist_x = x - targetX;
+        float dist_y = y - targetY;
+
+        fireAngle = (float) Math.toDegrees(Math.atan(dist_y / dist_x));
+
         // calculate speedY using relative screen dimensions
-        float frames_to_impact = (dist_x / GameView.screenW) / speedX;
-        speedY = (dist_y / GameView.screenH) / frames_to_impact;
+        float frames_to_impact = Math.abs(dist_x / GameView.screenW / speedX);
+        speedY = -dist_y / GameView.screenH / frames_to_impact;
+
+        // cap speedY if abs. value greater than 0.012f
+        speedY = (Math.abs(speedY) > 0.012f ? Math.signum(speedY) * 0.012f : speedY);
     }
 
     @Override
     public void updateActions() {
         if (!isInBounds()) {
             terminate = true;
-//            Log.d("Termination", "Removing AlienBullet at x = " + x);
         }
     }
 

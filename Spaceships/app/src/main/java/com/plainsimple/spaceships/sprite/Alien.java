@@ -21,23 +21,35 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Stefan on 9/26/2015.
+ * An Alien is an enemy sprite that flies across the screen
+ * in a sine wave. Its hp is calculated based on the difficulty,
+ * and Aliens become steadily stronger as difficulty increases.
+ * An Alien fires AlienBullets at the Spaceship, with this behavior
+ * determined by the bulletDelay. These bullets are stored in
+ * the projectiles LinkedList, which is accessible and clearable
+ * via the getAndClearProjectiles() method.
+ * The Alien also has a HealthBarAnimation, which
+ * displays when it loses health, and additionally displays
+ * LoseHealthAnimations when it loses damage.
  */
 public class Alien extends Sprite {
 
     // frames to wait between firing bullets
-    protected int bulletDelay;
-    protected int framesSinceLastBullet = 0;
+    private int bulletDelay;
+    // number of frames since last bullet was fired
+    private int framesSinceLastBullet = 0;
+    // number of bullets left alien can fire
+    private int bulletsLeft;
 
-    protected List<Sprite> projectiles = new LinkedList<>();
+    private List<Sprite> projectiles = new LinkedList<>();
 
     // frames since alien was constructed
     // used for calculating trajectory
-    protected int elapsedFrames = 1;
+    private int elapsedFrames = 1;
 
     // starting y-coordinate
     // used as a reference for calculating trajectory
-    protected float startingY;
+    private float startingY;
 
     // defines sine wave that describes alien's trajectory
     private int amplitude;
@@ -57,10 +69,10 @@ public class Alien extends Sprite {
 
     public Alien(float x, float y, float scrollSpeed, Spaceship spaceship, int difficulty, Context context) {
         super(BitmapCache.getData(BitmapID.ALIEN, context), x, y);
-        speedX = scrollSpeed / 2;
+        speedX = scrollSpeed / 2.5f;
         this.spaceship = spaceship;
 
-        bulletBitmapData = BitmapCache.getData(BitmapID.ROCKET_1, context);
+        bulletBitmapData = BitmapCache.getData(BitmapID.ALIEN_BULLET, context);
         explodeAnimation = AnimCache.get(BitmapID.SPACESHIP_EXPLODE, context);
 
         this.difficulty = difficulty;
@@ -68,7 +80,7 @@ public class Alien extends Sprite {
         initAlien();
     }
 
-    private void initAlien() { // todo: playability improvements. Esp. "wall of bullets"
+    private void initAlien() {
         startingY = y;
         amplitude = 70 + random.nextInt(60);
         period = 250 + random.nextInt(100);
@@ -76,34 +88,39 @@ public class Alien extends Sprite {
         hShift = -random.nextInt(3);
         hp = 10 + difficulty / 100;
         bulletDelay = 20;
-        framesSinceLastBullet = bulletDelay; // todo: implement AlienBullet FireManager
+        framesSinceLastBullet = -bulletDelay;
+        bulletsLeft = 4; // todo: implement AlienBullet FireManager?
         hitBox = new Hitbox(x + getWidth() * 0.2f, y + getHeight() * 0.2f, x + getWidth() * 0.8f, y + getHeight() * 0.8f);
         healthBarAnimation = new HealthBarAnimation(getWidth(), getHeight(), hp);
     }
 
     @Override
-    public void updateActions() { // todo: avoid straight vertical shots
+    public void updateActions() {
         // terminate after explosion or if out of bounds
         if (explodeAnimation.hasPlayed() || !isInBounds()) {
             terminate = true;
-//            Log.d("Termination", "Removing Alien at x = " + x);
             GameView.currentStats.addTo(GameStats.ALIENS_KILLED, 1);
         } else {
             framesSinceLastBullet++;
-            if (x > (spaceship.getX() * 1.6) && framesSinceLastBullet >= bulletDelay) {
-                if (getP(0.1f)) {
-                    fireBullet(spaceship);
-                    framesSinceLastBullet = 0;
-                }
+            // rules for firing: alien has waited long enough, spaceship is alive, alien
+            // has bullets left to fire, and alien is on right half of the screen.
+            // To slightly randomize fire rate there is also only a 30% chance it will fire
+            // in this frame, even if all conditions are met
+            if (framesSinceLastBullet >= bulletDelay && !spaceship.terminate() && bulletsLeft > 0 && getP(0.3f)
+                    && x > GameView.screenW / 2) {
+                fireBullet(spaceship);
+                framesSinceLastBullet = 0;
+                bulletsLeft--;
             }
         }
     }
 
-    // fires bullet at sprite based on current trajectories
-    // that are slightly randomized. Fires from a point slightly below
-    // the top of the sprite
+    // fires bullet at sprite with small randomized inaccuracy, based on
+    // current coordinates. Bullet initialized halfway down the alien on the left side
     public void fireBullet(Sprite s) {
-        projectiles.add(new AlienBullet(bulletBitmapData, x, y + (int) (getHeight() * 0.1), s.getHitboxCenter()));
+        projectiles.add(new AlienBullet(bulletBitmapData, x, y + (int) (getHeight() * 0.5),
+                s.getHitboxCenter().getX(),
+                s.getHitboxCenter().getY() + (random.nextBoolean() ? -1 : +1) * random.nextInt(50)));
     }
 
     @Override

@@ -248,11 +248,11 @@ public class TileGenerator {
     // generates specific tile set for debugging
     public static byte[][] generateDebugTiles() {
         return new byte[][] {
-                {0, 0, 0, 0, 0, ASTEROID, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, ALIEN, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, ASTEROID, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0}
         };
     }
