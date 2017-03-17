@@ -5,23 +5,112 @@ import android.content.Context;
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapID;
+import com.plainsimple.spaceships.helper.DrawImage;
+import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.helper.Hitbox;
+import com.plainsimple.spaceships.helper.SpriteAnimation;
+
+import java.util.List;
 
 /**
- * Created by Stefan on 3/15/2017.
+ * Rocket that has a large hitbox that functions as a proximity
+ * detector for Aliens and Asteroids. The proximity detector is also
+ * triggered by Obstacles, but only explodes if Obstacles are much closer.
+ * When the proximity detector
+ * is triggered, the explosion animation starts and the hitbox is
+ * made small again. Each subsequent frame the hitbox increases and
+ * hp increases until it hits maximum size/strength. This action is
+ * configurable.
+ * The rocket also has a rotate animation.
  */
 
 public class Rocket2 extends Rocket {
 
+    private SpriteAnimation move;
+    private SpriteAnimation explode;
+    // whether explosion has been triggered by collision with initial hitbox
+    private boolean explodeTriggered;
+    // number of frames since explosion
+    private int explodeFrameCount;
+    // number of frames explosion lasts
+    private int explodeLength = 5;
+    // number of pixels hitbox expands on each coordinate
+    // per frame of explosion
+    private int explosionExpandRate;
+
+    // hp at the center of the explosion
+    private static final int FULL_HP = 50;
+    // hp lost per frame of the explosion
+    private static final int HP_LOSS_RATE = 4;
+
     protected Rocket2(Context context, float x, float y) {
         super(BitmapCache.getData(BitmapID.ROCKET_2, context), x, y);
         speedX = 0.005f;
-        hp = 35;
-        hitBox = new Hitbox(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
+//        hp = 35;
+//        hitBox = new Hitbox(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
+        // create large hitbox with side approx. equal to 5 * width
+        hitBox = new Hitbox(x - 2 * getWidth(), y - 2 * getWidth(), x + 3 * getWidth(), y + getHeight() + 2 * getWidth());
 
+        // init animations
         move = AnimCache.get(BitmapID.ROCKET_MOVE, context);
         explode = AnimCache.get(BitmapID.EXPLOSION_1, context);
 
+        explosionExpandRate = getWidth() / 2;
         move.start();
+    }
+
+    @Override
+    public void updateActions() {
+        // terminate if out of bounds or explode anim has played
+        if (!isInBounds() || explode.hasPlayed()) {
+            terminate = true;
+        } else if (explodeTriggered && explodeFrameCount < explodeLength) {
+            explodeFrameCount++;
+            // expand hitbox outward and decrease hp
+            hitBox.reset(hitBox.getX() - explosionExpandRate, hitBox.getY() - explosionExpandRate,
+                    hitBox.getWidth() + 2 * explosionExpandRate, hitBox.getHeight() + 2 * explosionExpandRate);
+            hp = (hp >= HP_LOSS_RATE ? hp - HP_LOSS_RATE : hp);
+        }
+    }
+
+    @Override
+    public void updateSpeeds() {
+
+    }
+
+    @Override
+    public void updateAnimations() {
+        if (move.isPlaying()) {
+            move.incrementFrame();
+        } else if (explode.isPlaying()) {
+            explode.incrementFrame();
+        }
+    }
+
+    @Override
+    public void handleCollision(Sprite s, int damage) {
+        // check if conditions met to trigger explosion
+        if (!explodeTriggered && ((s instanceof Alien || s instanceof Asteroid))
+                || distanceTo(s) <= getWidth()) {
+            explodeTriggered = true;
+            explode.start();
+            hitBox.reset(x, y, getWidth(), getHeight()); // todo: want it to be square?
+            hp = FULL_HP;
+        }
+    }
+
+    @Override
+    public List<DrawParams> getDrawParams() {
+        drawParams.clear();
+        if (explode.isPlaying()) {
+            drawParams.add(new DrawSubImage(explode.getBitmapID(), x + (explode.getFrameW() - getWidth()) / 2, y - (explode.getFrameH() - getHeight()) / 2,
+                    explode.getCurrentFrameSrc())); // todo: refine
+        } else if (!explode.hasPlayed()){
+            drawParams.add(new DrawImage(bitmapData.getId(), x, y));
+            // draw moving animation behind the rocket
+            //drawParams.add(new DrawSubImage(move.getBitmapID(), x - move.getFrameW(), y, move.getCurrentFrameSrc()));
+        }
+        return drawParams;
     }
 }

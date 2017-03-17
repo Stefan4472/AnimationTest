@@ -147,7 +147,7 @@ public class Spaceship extends Sprite {
             lastFiredBullet = 0;
         } else if (fireMode == FireMode.ROCKET && hp != 0) {
             // queue RocketManager for permission to fire
-            RocketManager.FireInstructions instructions = rocketManager.attemptFire(frameCount);
+            RocketManager.FireInstructions instructions = rocketManager.attemptFire(frameCount); // todo: force spaceship to fire on schedule in certain cases
             if (instructions.fireLeft()) { // fire left if allowed
                 projectiles.add(Rocket.newInstance(context, x + getWidth() * 0.80f, y + 0.29f * getHeight(), rocketType));
             }
@@ -162,6 +162,7 @@ public class Spaceship extends Sprite {
         }
         if (explode.hasPlayed()) {
             terminate = true;
+            collides = false;
         }
     }
 

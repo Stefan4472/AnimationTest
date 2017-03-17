@@ -71,8 +71,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private static final float SCROLL_SPEED_CONST = 0.4f;
     // number of frames that must pass before score per frame is increased
     private static final float SCORING_CONST = 800;
-    private Paint debugPaintRed = new Paint();
-    private Paint debugPaintPink = new Paint();
 
     // health bar along bottom of screen
     private HealthBar healthBar;
@@ -108,13 +106,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
         });
         setFocusable(true);
-        debugPaintRed.setColor(Color.RED);
-        debugPaintRed.setStyle(Paint.Style.STROKE);
-        debugPaintRed.setStrokeWidth(3);
-        debugPaintRed.setTextSize(20);
-        debugPaintPink.setColor(Color.rgb(255, 105, 180));
-        debugPaintPink.setStyle(Paint.Style.STROKE);
-        debugPaintPink.setStrokeWidth(3);
     }
 
     class GameViewThread extends Thread {

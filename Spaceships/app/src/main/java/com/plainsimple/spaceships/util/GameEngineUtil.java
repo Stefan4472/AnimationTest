@@ -2,8 +2,11 @@ package com.plainsimple.spaceships.util;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.helper.DrawRect;
 import com.plainsimple.spaceships.sprite.Alien;
 import com.plainsimple.spaceships.sprite.Sprite;
 
@@ -14,6 +17,26 @@ import java.util.List;
  * Static methods used in game loop
  */
 public class GameEngineUtil {
+
+    private static Paint debugPaintRed = initRedPaint();
+    private static Paint debugPaintPink = initPinkPaint();
+
+    private static Paint initRedPaint() {
+        Paint red = new Paint();
+        red.setColor(Color.RED);
+        red.setStyle(Paint.Style.STROKE);
+        red.setStrokeWidth(3);
+        red.setTextSize(20);
+        return red;
+    }
+
+    private static Paint initPinkPaint() {
+        Paint pink = new Paint();
+        pink.setColor(Color.rgb(255, 105, 180));
+        pink.setStyle(Paint.Style.STROKE);
+        pink.setStrokeWidth(3);
+        return pink;
+    }
 
     // runs full update on each sprite in given list
     // this includes, in order, updating actions, speeds,
@@ -42,11 +65,10 @@ public class GameEngineUtil {
         for (DrawParams p : drawParams) {
             p.draw(canvas, context);
         }
-        /*if (sprite.collides()) {
-            canvas.drawRect(sprite.getHitBox(), debugPaintRed);
-        } else {
-            canvas.drawRect(sprite.getHitBox(), debugPaintPink);
-        }*/
+        // draw hitbox (debugging)
+        if (sprite.collides()) {
+            (new DrawRect(sprite.getHitBox().toRect(), debugPaintRed.getColor(), debugPaintRed.getStyle(), debugPaintRed.getStrokeWidth())).draw(canvas, context);
+        }
     }
 
     // goes through sprites, casts each to Alien and uses getAndClearProjectiles
@@ -67,7 +89,7 @@ public class GameEngineUtil {
             return;
         } else {
             for (Sprite s : toCheck) {
-                if (sprite.collidesWith(s)) { // todo: we may want the sprites to decide whether they take damage
+                if (sprite.collidesWith(s)) {
                     int sprite_damage = sprite.getHP();
                     int s_damage = s.getHP();
                     sprite.handleCollision(s, s_damage);

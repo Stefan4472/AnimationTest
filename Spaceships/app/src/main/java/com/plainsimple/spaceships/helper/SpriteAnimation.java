@@ -114,6 +114,15 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
         return numFrames - frameCounter;
     }
 
+    // return total frame count of animation
+    public int getFrameCount() {
+        int total = 0;
+        for (int count : frameSpeeds) {
+            total += count;
+        }
+        return total;
+    }
+
     public String getDebug() {
         return ("Frame " + frameCounter + " of " + numFrames + " with current speed at " + frameSpeedCounter + " of " + frameSpeeds[frameCounter] +
                 " " + (isPlaying ? "(playing)" : "(stopped)") + (loop ? " (looping)" : ""));
