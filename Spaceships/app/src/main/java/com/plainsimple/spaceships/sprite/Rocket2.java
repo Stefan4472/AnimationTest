@@ -15,8 +15,8 @@ import java.util.List;
 
 /**
  * Rocket that has a large hitbox that functions as a proximity
- * detector for Aliens and Asteroids. The proximity detector is also
- * triggered by Obstacles, but only explodes if Obstacles are much closer.
+ * detector for Aliens and Asteroids. The proximity detector will also
+ * go off if the Rocket is close to a head-on collision with an Obstacle..
  * When the proximity detector
  * is triggered, the explosion animation starts and the hitbox is
  * made small again. Each subsequent frame the hitbox increases and
@@ -27,7 +27,7 @@ import java.util.List;
 
 public class Rocket2 extends Rocket {
 
-    private SpriteAnimation move;
+    // explosion animation
     private SpriteAnimation explode;
     // whether explosion has been triggered by collision with initial hitbox
     private boolean explodeTriggered;
@@ -52,12 +52,10 @@ public class Rocket2 extends Rocket {
         // create large hitbox with side approx. equal to 5 * width
         hitBox = new Hitbox(x - 2 * getWidth(), y - 2 * getWidth(), x + 3 * getWidth(), y + getHeight() + 2 * getWidth());
 
-        // init animations
-        move = AnimCache.get(BitmapID.ROCKET_MOVE, context);
+        // init explode animation
         explode = AnimCache.get(BitmapID.EXPLOSION_1, context);
 
         explosionExpandRate = getWidth() / 2;
-        move.start();
     }
 
     @Override
@@ -81,9 +79,7 @@ public class Rocket2 extends Rocket {
 
     @Override
     public void updateAnimations() {
-        if (move.isPlaying()) {
-            move.incrementFrame();
-        } else if (explode.isPlaying()) {
+        if (explode.isPlaying()) {
             explode.incrementFrame();
         }
     }
@@ -91,9 +87,10 @@ public class Rocket2 extends Rocket {
     @Override
     public void handleCollision(Sprite s, int damage) {
         // check if conditions met to trigger explosion
-        if (!explodeTriggered && ((s instanceof Alien || s instanceof Asteroid))
-                || distanceTo(s) <= getWidth()) {
+        if (!explodeTriggered && ((s instanceof Alien || s instanceof Asteroid)
+                || s.getX() - x <= getWidth())) {
             explodeTriggered = true;
+            speedX = s.speedX;
             explode.start();
             hitBox.reset(x, y, getWidth(), getHeight()); // todo: want it to be square?
             hp = FULL_HP;
@@ -108,8 +105,6 @@ public class Rocket2 extends Rocket {
                     explode.getCurrentFrameSrc())); // todo: refine
         } else if (!explode.hasPlayed()){
             drawParams.add(new DrawImage(bitmapData.getId(), x, y));
-            // draw moving animation behind the rocket
-            //drawParams.add(new DrawSubImage(move.getBitmapID(), x - move.getFrameW(), y, move.getCurrentFrameSrc()));
         }
         return drawParams;
     }
