@@ -259,6 +259,8 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                upArrow.setVisibility(View.VISIBLE);
+                downArrow.setVisibility(View.VISIBLE);
                 //upArrow.startAnimation(arrow_fade_in);
                 //downArrow.startAnimation(arrow_fade_in);
             }
