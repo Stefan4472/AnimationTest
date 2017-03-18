@@ -148,7 +148,7 @@ public class Map {
         for (Sprite o : obstacles) {
             GameEngineUtil.drawSprite(o, canvas, context);
         }
-        for (Sprite o : obstaclesInvis) { // todo: causes concurrentmodificationexception on game restart
+        for (Sprite o : obstaclesInvis) { // todo: causes concurrentmodificationexception on game restart. Use iterators?
             GameEngineUtil.drawSprite(o, canvas, context);
         }
         for (Sprite c : coins) {

@@ -40,10 +40,8 @@ public class Hitbox {
         return new Point2D((int) (x + width / 2.0f), (int) (y + height / 2.0f));
     }
 
-    public boolean intersects(Hitbox h) { // todo: test
+    public boolean intersects(Hitbox h) {
         return x + width >= h.x && h.x + h.width >= x && y + height >= h.y && h.y + h.height >= y;
-        //return x < h.x + h.width && x + width > h.x && y < h.y + h.height && y + height > h.y;
-        //return x < r.x + r.width && x + width > r.x && y < r.y + r.height && y + height > r.y;
     }
 
     // returns a Rect with hitbox coordinates (basically a conversion)

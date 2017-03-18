@@ -62,7 +62,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // space background (implements parallax scrolling)
     private Background background;
     private Map map;
-    //private DrawBackgroundService background;
     // speed of sprites scrolling across the map (must be negative!)
     private static float scrollSpeed = -0.0025f;
     // spaceship
@@ -88,7 +87,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public interface GameEventsListener { // todo: GameActivity should implement GameActivity.GameEventsListener
         // fired when spaceship has reached starting position
         void onGameStarted();
-        // fired when spaceship has finished exploding
+        // fired when screen come to a halt and it's time to pop up GameOverDialog
         void onGameFinished();
         // fired when score changes (sends updated score)
         void onScoreChanged(int newScore);
