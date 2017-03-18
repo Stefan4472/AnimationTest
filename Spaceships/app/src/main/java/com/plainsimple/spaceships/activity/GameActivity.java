@@ -107,6 +107,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                   findViewById(R.id.down_arrow).setVisibility(View.INVISIBLE);
                    downArrow.setVisibility(View.INVISIBLE); // todo: why did this stop working?
                    gameView.updateInput(Spaceship.DIRECTION_UP);
                } else if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -252,14 +253,14 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     @Override // handles the game officially starting (i.e. the spaceship has reached
     // the correct horizontal position for obstacles to start. Overrided from
     // GameEventsListener
-    public void onGameStarted() {
+    public void onGameStarted() { // todo: this animation was causing arrowbutton visibility change issues
         final Animation arrow_fade_in = AnimationUtils.loadAnimation(this, R.anim.arrowbutton_fadein);
         // fade in direction arrows once spaceship reaches initial position
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                upArrow.startAnimation(arrow_fade_in);
-                downArrow.startAnimation(arrow_fade_in);
+                //upArrow.startAnimation(arrow_fade_in);
+                //downArrow.startAnimation(arrow_fade_in);
             }
         });
     }

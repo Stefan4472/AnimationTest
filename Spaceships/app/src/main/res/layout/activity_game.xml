@@ -69,6 +69,32 @@
                     android:layout_marginBottom="30dp"
                     android:onClick="onToggleRocketPressed"
                     style="?android:attr/borderlessButtonStyle" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_alignParentLeft="true">
+                    <!-- up arrow -->
+                    <ImageButton
+                        android:id="@+id/up_arrow"
+                        android:src="@drawable/up_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_height="0dip"
+                        android:padding="10dp"
+                        android:visibility="visible"
+                        style="?android:attr/borderlessButtonStyle" />
+                    <!-- down arrow -->
+                    <ImageButton
+                        android:id="@+id/down_arrow"
+                        android:src="@drawable/down_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_height="0dip"
+                        android:padding="10dp"
+                        android:visibility="visible"
+                        style="?android:attr/borderlessButtonStyle" />
+                </LinearLayout>
                 <!-- place-holder to align up and down arrows -->
                 <TextView
                     android:id="@+id/arrowPlaceHolder"
@@ -76,29 +102,5 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:visibility="invisible"/>
-                <!-- up arrow key if gyro movement disabled -->
-                <ImageButton
-                    android:id="@+id/up_arrow"
-                    android:src="@drawable/up_arrow_states"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_above="@id/arrowPlaceHolder"
-                    android:visibility="invisible"
-                    style="?android:attr/borderlessButtonStyle" />
-                <!-- down arrow key if gyro movement disabled -->
-                <ImageButton
-                    android:id="@+id/down_arrow"
-                    android:src="@drawable/down_arrow_states"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_below="@id/arrowPlaceHolder"
-                    android:visibility="invisible"
-                    style="?android:attr/borderlessButtonStyle" />
         </RelativeLayout>
 </RelativeLayout>
