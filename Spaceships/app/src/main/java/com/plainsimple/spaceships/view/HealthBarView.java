@@ -61,17 +61,6 @@ public class HealthBarView extends View {
         invalidate();
     }
 
-    public void startAnimatedChange(int change) {
-        movingToHealth += change;
-        if (movingToHealth < 0) {
-            movingToHealth = 0;
-        } else if (movingToHealth > fullHealth) {
-            movingToHealth = fullHealth;
-        }
-        Log.d("HealthBarView.java", "Changed MovingToHealth to " + movingToHealth);
-        invalidate();
-    }
-
     public void setFullHealth(int fullHealth) {
         if (fullHealth < 0) {
             fullHealth = 0;
@@ -120,7 +109,6 @@ public class HealthBarView extends View {
         if (currentHealth != movingToHealth) {
             // transition down 20% of the remaining distance between currentHealth and movingToHealth
             currentHealth -= (double) (currentHealth - movingToHealth) * 0.2;
-            Log.d("HealthBarView", "Currenthealth now at " + currentHealth + " and moving to " + movingToHealth);
             invalidate();
         }
         // getDrawParams the filling of the health bar

@@ -90,8 +90,8 @@ public class Spaceship extends Sprite {
     private static final SoundID EXPLODE_SOUND = SoundID.EXPLOSION;
 
     public interface SpaceshipListener {
-        // fired when Spaceship hp changes. Passes amount changed by
-        void onHealthChanged(int change);
+        // fired when Spaceship hp changes. Passes new hp
+        void onHealthChanged(int newHealth);
         // fired when Spaceship is no longer visible and game is over
         void onInvisible();
     }
@@ -121,6 +121,9 @@ public class Spaceship extends Sprite {
     public void setInitValues() {
         collides = true;
         hp = armorType.getHP();
+        if (listener != null) {
+            listener.onHealthChanged(hp);
+        }
         rocketManager = RocketManager.newInstance(rocketType);
         controllable = false;
         speedX = 0.003f;
@@ -174,7 +177,7 @@ public class Spaceship extends Sprite {
             }
         }
         // make spaceship invisible and undetectable
-        if (explode.hasPlayed()) {
+        if (explode.hasPlayed() && !terminate) {
             terminate = true;
             collides = false;
             if (listener != null) {

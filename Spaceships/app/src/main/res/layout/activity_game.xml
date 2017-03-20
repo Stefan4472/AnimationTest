@@ -70,8 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/toggleBulletButton"
-                    android:layout_below="@id/healthbar"
-                    android:layout_marginRight="10dp"
+                    android:layout_above="@id/healthbar"
                     android:layout_marginBottom="10dp"
                     android:onClick="onToggleRocketPressed"
                     style="?android:attr/borderlessButtonStyle" />

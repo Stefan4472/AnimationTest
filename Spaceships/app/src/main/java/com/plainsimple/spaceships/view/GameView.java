@@ -71,9 +71,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // number of frames that must pass before score per frame is increased
     private static final float SCORING_CONST = 800;
 
-    // health bar along bottom of screen
-    private HealthBar healthBar;
-
     // score display in top left of screen
     private ScoreDisplay scoreDisplay;
 
@@ -154,7 +151,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
             map.draw(canvas, c);
             GameEngineUtil.drawSprite(spaceship, canvas, c);
-//            healthBar.draw(canvas);
             scoreDisplay.draw(canvas);
         }
 
@@ -172,7 +168,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             updateSpaceship();
             map.update(difficulty, scrollSpeed, spaceship);
             spaceship.updateAnimations();
-//            healthBar.setMovingToHealth(spaceship.getHP());
             scoreDisplay.update(score);
 //            gameEventsListener.onScoreChanged(score);
         }
@@ -220,6 +215,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         @Override // handle spaceship becoming invisible
         public void onInvisible() {
+            Log.d("GameView.java", "Received onInvisible");
             spaceshipDestroyed = true;
         }
 
@@ -256,9 +252,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             spaceship.setRocketType(GameActivity.getEquippedRocket());
             spaceship.setArmorType(GameActivity.getEquippedArmor());
             spaceship.setListener(this);
-            background = new Background(screenW, screenH); // todo: re-create background from save
+            background = new Background(screenW, screenH);
             map = new Map(c, screenW, screenH);
-            healthBar = new HealthBar(c, screenW, screenH, spaceship.getHP(), spaceship.getHP());
             scoreDisplay = new ScoreDisplay(c, 0);
             currentStats = new GameStats();
             gameFinished = false;
@@ -307,15 +302,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     // resets all elements and fields so that a new game can begin
     public void restartGame() {
-        spaceship = new Spaceship(-spaceship.getWidth(), screenH / 2 - spaceship.getHeight() / 2, c);
+        spaceship = new Spaceship(-spaceship.getWidth(), screenH / 2 - spaceship.getHeight() / 2, c); // todo: clean up. Better practice would be a spaceship.reset() method
         spaceship.setCannonType(GameActivity.getEquippedCannon());
         spaceship.setRocketType(GameActivity.getEquippedRocket());
         spaceship.setArmorType(GameActivity.getEquippedArmor());
+        spaceship.setListener(thread);
         background.reset();
         map.reset();
         //gameTimer.reset();
-        healthBar.setCurrentHealth(spaceship.getHP());
-        healthBar.setMovingToHealth(spaceship.getHP());
         scoreDisplay.reset();
         spaceshipDestroyed = false;
         gameStarted = false;
@@ -336,7 +330,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         GameSave save = new GameSave(c);
         save.saveMap(map);
         save.saveBackground(background);
-        save.saveHealthBar(healthBar);
         save.saveScoreDisplay(scoreDisplay);
         save.saveSpaceship(spaceship);
     }

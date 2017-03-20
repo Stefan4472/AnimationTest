@@ -301,12 +301,11 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     }
 
     @Override
-    public void onHealthChanged(final int healthChange) {
+    public void onHealthChanged(final int newHealth) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                healthBarView.startAnimatedChange(healthChange);
-
+                healthBarView.setMovingToHealth(newHealth);
             }
         });
     }
