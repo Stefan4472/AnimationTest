@@ -46,16 +46,22 @@
                     android:layout_marginTop="10dp"
                     android:onClick="onMutePressed"
                     style="?android:attr/borderlessButtonStyle" />
+                <!-- HealthBar -->
+                <com.plainsimple.spaceships.view.HealthBarView
+                    android:id="@+id/healthbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"/>
                 <!-- bullet fire selector -->
                 <ImageButton
                     android:id="@+id/toggleBulletButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_alignParentBottom="true"
+                    android:layout_above="@id/healthbar"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginBottom="30dp"
+                    android:layout_marginBottom="10dp"
                     android:onClick="onToggleBulletPressed"
                     style="?android:attr/borderlessButtonStyle" />
                 <!-- rocket fire selector -->
@@ -64,9 +70,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/toggleBulletButton"
-                    android:layout_alignParentBottom="true"
+                    android:layout_below="@id/healthbar"
                     android:layout_marginRight="10dp"
-                    android:layout_marginBottom="30dp"
+                    android:layout_marginBottom="10dp"
                     android:onClick="onToggleRocketPressed"
                     style="?android:attr/borderlessButtonStyle" />
                 <!-- place-holder to align up and down arrows -->

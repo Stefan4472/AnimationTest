@@ -3,6 +3,7 @@ package com.plainsimple.spaceships.sprite;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.AnimCache;
@@ -88,6 +89,16 @@ public class Spaceship extends Sprite {
     private static final SoundID BULLET_SOUND = SoundID.LASER;
     private static final SoundID EXPLODE_SOUND = SoundID.EXPLOSION;
 
+    public interface SpaceshipListener {
+        // fired when Spaceship hp changes. Passes amount changed by
+        void onHealthChanged(int change);
+        // fired when Spaceship is no longer visible and game is over
+        void onInvisible();
+    }
+
+    // listener that receives Spaceship events
+    private SpaceshipListener listener;
+
     // default constructor
     public Spaceship(float x, float y, Context context) {
         super(BitmapCache.getData(BitmapID.SPACESHIP, context), x, y);
@@ -162,9 +173,13 @@ public class Spaceship extends Sprite {
                 GameActivity.playSound(ROCKET_SOUND);
             }
         }
+        // make spaceship invisible and undetectable
         if (explode.hasPlayed()) {
             terminate = true;
             collides = false;
+            if (listener != null) {
+                listener.onInvisible();
+            }
         }
     }
 
@@ -236,6 +251,13 @@ public class Spaceship extends Sprite {
             GameView.incrementScore(GameView.COIN_VALUE);
             GameView.currentStats.addTo(GameStats.COINS_COLLECTED, 1);
         } else {
+            // trigger onHealthChanged event under proper conditions
+            if (damage != 0 && !explode.isPlaying() && listener != null) {
+                listener.onHealthChanged(-damage);
+                Log.d("Spaceship.java", "Firing onHealthChanged");
+            }
+
+            // start explode animation under proper conditions
             if (hp == 0 && !explode.isPlaying()) {
                 GameActivity.playSound(EXPLODE_SOUND);
                 explode.start();
@@ -292,5 +314,10 @@ public class Spaceship extends Sprite {
     public void setArmorType(ArmorType armorType) {
         this.armorType = armorType;
         hp = armorType.getHP();
+    }
+
+    // set listener to receive events
+    public void setListener(SpaceshipListener listener) {
+        this.listener = listener;
     }
 }

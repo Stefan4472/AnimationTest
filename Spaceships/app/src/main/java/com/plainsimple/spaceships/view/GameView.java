@@ -91,6 +91,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         void onGameFinished();
         // fired when score changes (sends updated score)
         void onScoreChanged(int newScore);
+        // fired when spaceship's health changes
+        void onHealthChanged(int healthChange);
     }
 
     public GameView(Context context, AttributeSet attributes) {
@@ -107,7 +109,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         setFocusable(true);
     }
 
-    class GameViewThread extends Thread {
+    class GameViewThread extends Thread implements Spaceship.SpaceshipListener {
 
         public GameViewThread(SurfaceHolder surfaceHolder, Context context, Handler handler) {
             mySurfaceHolder = surfaceHolder;
@@ -152,7 +154,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
             map.draw(canvas, c);
             GameEngineUtil.drawSprite(spaceship, canvas, c);
-            healthBar.draw(canvas);
+//            healthBar.draw(canvas);
             scoreDisplay.draw(canvas);
         }
 
@@ -170,7 +172,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             updateSpaceship();
             map.update(difficulty, scrollSpeed, spaceship);
             spaceship.updateAnimations();
-            healthBar.setMovingToHealth(spaceship.getHP());
+//            healthBar.setMovingToHealth(spaceship.getHP());
             scoreDisplay.update(score);
 //            gameEventsListener.onScoreChanged(score);
         }
@@ -192,10 +194,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             spaceship.move();
             spaceship.updateActions();
             GameEngineUtil.updateSprites(spaceship.getProjectiles());
-            if (spaceship.terminate()) {
-                //gameTimer.stop();
-                spaceshipDestroyed = true;
-            }
         }
 
         // calculates scrollspeed based on difficulty
@@ -212,6 +210,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 //scrollSpeed = MAX_SCROLL_SPEED * Math.atan(difficulty / 500.0f) * 2 / Math.PI;
                 scrollSpeed = (float) (-Math.log(difficulty + 1) / 600);
             }
+        }
+
+        @Override // handle spaceship changing health (send back to GameEventsListener)
+        public void onHealthChanged(int change) {
+            Log.d("GameView.java", "Received onHealthChanged for " + change);
+            gameEventsListener.onHealthChanged(change);
+        }
+
+        @Override // handle spaceship becoming invisible
+        public void onInvisible() {
+            spaceshipDestroyed = true;
         }
 
         // handle user touching screen
@@ -246,6 +255,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             spaceship.setCannonType(GameActivity.getEquippedCannon());
             spaceship.setRocketType(GameActivity.getEquippedRocket());
             spaceship.setArmorType(GameActivity.getEquippedArmor());
+            spaceship.setListener(this);
             background = new Background(screenW, screenH); // todo: re-create background from save
             map = new Map(c, screenW, screenH);
             healthBar = new HealthBar(c, screenW, screenH, spaceship.getHP(), spaceship.getHP());

@@ -59,7 +59,17 @@ public class HealthBarView extends View {
         }
         this.movingToHealth = movingToHealth;
         invalidate();
-        Log.d("HealthBarView", "Calling invalidate()");
+    }
+
+    public void startAnimatedChange(int change) {
+        movingToHealth += change;
+        if (movingToHealth < 0) {
+            movingToHealth = 0;
+        } else if (movingToHealth > fullHealth) {
+            movingToHealth = fullHealth;
+        }
+        Log.d("HealthBarView.java", "Changed MovingToHealth to " + movingToHealth);
+        invalidate();
     }
 
     public void setFullHealth(int fullHealth) {

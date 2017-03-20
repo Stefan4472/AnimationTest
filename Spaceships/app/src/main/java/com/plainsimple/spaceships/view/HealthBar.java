@@ -57,7 +57,7 @@ public class HealthBar {
     }
 
     // sets currentHealth to given value without triggering animated change
-    public void setCurrentHealth(int currentHealth) { // todo: animated change
+    public void setCurrentHealth(int currentHealth) {
         if (currentHealth < 0) {
             currentHealth = 0;
         }

@@ -29,6 +29,7 @@ import com.plainsimple.spaceships.store.RocketType;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.view.GameView;
+import com.plainsimple.spaceships.view.HealthBarView;
 import com.plainsimple.spaceships.view.ScoreView;
 
 import java.util.Hashtable;
@@ -43,6 +44,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
 
     private GameView gameView;
     private ScoreView scoreView;
+    private HealthBarView healthBarView;
     private ImageButton pauseButton;
     private ImageButton muteButton;
     private ImageButton toggleBulletButton;
@@ -93,6 +95,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         paused = false;
 
         scoreView = (ScoreView) findViewById(R.id.scoreview);
+        healthBarView = (HealthBarView) findViewById(R.id.healthbar);
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pause);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
@@ -156,6 +159,10 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         equippedCannon = equipmentManager.getEquippedCannon();
         equippedRocket = equipmentManager.getEquippedRocket();
         equippedArmor = equipmentManager.getEquippedArmor();
+
+        // initialize healthBarView with correct hp values
+        healthBarView.setFullHealth(equippedArmor.getHP());
+        healthBarView.setCurrentHealth(equippedArmor.getHP());
     }
 
     private void initMedia() {
@@ -247,6 +254,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         dialog.dismiss();
         updateStats();
         gameView.restartGame();
+        healthBarView.setCurrentHealth(equippedArmor.getHP());
         paused = false;
     }
 
@@ -290,6 +298,17 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
 //                scoreView.updateScore(newScore);
 //            }
 //        });
+    }
+
+    @Override
+    public void onHealthChanged(final int healthChange) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                healthBarView.startAnimatedChange(healthChange);
+
+            }
+        });
     }
 
     // updates lifetime stats from GameView's current run
