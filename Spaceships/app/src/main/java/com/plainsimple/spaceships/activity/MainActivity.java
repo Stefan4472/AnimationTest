@@ -1,5 +1,9 @@
 package com.plainsimple.spaceships.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +17,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 
 import com.plainsimple.spaceships.imagetransition.SlideInTransition;
@@ -23,12 +28,7 @@ import plainsimple.spaceships.R;
 
 public class MainActivity extends Activity {
 
-    // global preferences
-    public static SharedPreferences preferences;
-
-    // todo: background animation
-    // animation in background that pushes in galaxy getDrawParams
-    private SlideInTransition slideIn;
+    // todo: background animation? SlideInTransition?
     // used to play background song
     private MediaPlayer mediaPlayer;
     // used to play short sounds i.e. button clicked sound
@@ -40,37 +40,34 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("MainActivity", "onCreate Called");
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.mainscreen_layout);
-        preferences = this.getPreferences(Context.MODE_PRIVATE);
+
         initMedia();
+
         // fade in view elements
         FontTextView title = (FontTextView) findViewById(R.id.title);
         Animation fade_in_animation = AnimationUtils.loadAnimation(this, R.anim.fadein);
         title.startAnimation(fade_in_animation);
-        // todo: work on offsets
+
         fade_in_animation.setStartOffset(300);
         FontButton button = (FontButton) findViewById(R.id.playbutton);
         button.startAnimation(fade_in_animation);
+
         fade_in_animation.setStartOffset(200);
         button = (FontButton) findViewById(R.id.storebutton);
         button.startAnimation(fade_in_animation);
+
         fade_in_animation.setStartOffset(400);
         button = (FontButton) findViewById(R.id.statsbutton);
         button.startAnimation(fade_in_animation);
-    }
 
-    // initializes MediaPlayer and SoundPool
-    private void initMedia() {
-        // prepare background song todo: use the asynchronous method
-        mediaPlayer = MediaPlayer.create(this, R.raw.title_theme);
-        mediaPlayer.setLooping(true);
-        //mediaPlayer.start();
-        // set up SoundPool for playing buttonclick sound
-        soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
-        soundID = soundPool.load(this, R.raw.button_clicked, 1);
+        AnimatorSet title_zoom = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.zoom_in_out);
+        title_zoom.setTarget(title);
+        title_zoom.start();
     }
 
     @Override
@@ -88,6 +85,17 @@ public class MainActivity extends Activity {
         super.onResume();
         Log.d("MainActivity", "onResume Called");
         initMedia();
+    }
+
+    // initializes MediaPlayer and SoundPool
+    private void initMedia() {
+        // prepare background song todo: use the asynchronous method
+        mediaPlayer = MediaPlayer.create(this, R.raw.title_theme);
+        mediaPlayer.setLooping(true);
+        //mediaPlayer.start();
+        // set up SoundPool for playing buttonclick sound
+        soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
+        soundID = soundPool.load(this, R.raw.button_clicked, 1);
     }
 
     @Override
@@ -114,10 +122,6 @@ public class MainActivity extends Activity {
         startActivity(game_intent);
     }
 
-    // handle user releasing "Play" button
-    public void onPlayReleased(View view) {
-
-    }
     // handle user pressing "Store" button
     public void onStorePressed(View view) {
         soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);

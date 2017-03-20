@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Animation for a slow and gentle zoom in. Used to "bounce"
+"Spaceships" Title in main screen/MainActivity -->
 <set xmlns:android="http://schemas.android.com/apk/res/android">
-    android:fillAfter="true" >
-
     <scale
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:duration="200"

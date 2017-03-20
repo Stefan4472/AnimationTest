@@ -96,7 +96,9 @@ public class Spaceship extends Sprite {
         fireRocket = AnimCache.get(BitmapID.SPACESHIP_FIRE, context);
         explode = AnimCache.get(BitmapID.SPACESHIP_EXPLODE, context);
 
-        hitBox = new Hitbox(x + getWidth() * 0.17f, y + getHeight() * 0.22f, x + getWidth() * 0.83f, y + getHeight() * 0.78f);
+//        hitBox = new Hitbox(x + getWidth() * 0.17f, y + getHeight() * 0.22f, x + getWidth() * 0.83f, y + getHeight() * 0.78f);
+        hitBox = new Hitbox(x + getWidth() * 0.17f, y + getHeight() * 0.27f, x + getWidth() * 0.7f, y + getHeight() * 0.73f);
+
 
         setInitValues();
 
