@@ -131,7 +131,8 @@ public class StoreItemDialogFragment extends DialogFragment {
     private void populateUnlocked(Equipment.Status status) {
         // set the status
         final FontTextView display_status = (FontTextView) dialogLayout.findViewById(R.id.storeItem_status);
-        display_status.setText(args.getString(STATUS_KEY));
+//        display_status.setText(args.getString(STATUS_KEY));
+        display_status.setText(status.toString());
         final FontButton action_button = (FontButton) dialogLayout.findViewById(R.id.storeItem_equip);
 
         // unlocked: give option to equip the item

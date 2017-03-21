@@ -2,7 +2,7 @@
 <!-- pop-up with information and buying options for an equipment upgrade -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent" > <!-- todo: scrollbar layout? -->
+    android:layout_height="match_parent" android:background="@drawable/dialog_shape"> <!-- todo: scrollbar layout? -->
     <!-- label at the top-center of the dialog showing item name -->
     <com.plainsimple.spaceships.view.FontTextView
         android:id="@+id/storeItem_label"

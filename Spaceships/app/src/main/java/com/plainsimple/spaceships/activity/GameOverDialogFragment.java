@@ -40,6 +40,16 @@ public class GameOverDialogFragment extends DialogFragment {
         }
     }
 
+    public static GameOverDialogFragment newInstance() {
+        GameOverDialogFragment dialog = new GameOverDialogFragment();
+        Bundle bundle = new Bundle();
+        dialog.setArguments(bundle);
+
+        dialog.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
+
+        return dialog;
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // retrieve arguments from bundle (can't use savedInstanceState)
