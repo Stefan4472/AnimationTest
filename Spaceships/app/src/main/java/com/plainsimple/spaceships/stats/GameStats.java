@@ -7,6 +7,7 @@ import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.util.FileUtil;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -18,12 +19,12 @@ import plainsimple.spaceships.R;
  * case the GameStats object should be instantiated and used)
  */
 
-public class GameStats {
+public class GameStats implements StatsContainer { // todo: use enums shared with all StatsContainers?
 
     // keys to data-values in the lifetime game statistics SharedPreference file
     public static final String ALIENS_KILLED = "ALIENS_KILLED";
     public static final String TIME_PLAYED = "TIME_PLAYED"; // todo: add this function
-    public static final String DISTANCE_TRAVELED = "DISTANCE_TRAVELED"; // todo: coming soon
+    public static final String DISTANCE_TRAVELED = "DISTANCE_TRAVELED";
     public static final String GAME_SCORE = "GAME_SCORE";
     public static final String COINS_COLLECTED = "COINS_COLLECTED";
 
@@ -67,6 +68,34 @@ public class GameStats {
     // returns key set of values
     public Set<String> getKeySet() {
         return values.keySet();
+    }
+
+    @Override // returns keys in a String[] array sorted in display order
+    public String[] getOrganizedKeysAsArray() {
+        return new String[] {
+            GAME_SCORE,
+            DISTANCE_TRAVELED,
+            TIME_PLAYED,
+            ALIENS_KILLED,
+            COINS_COLLECTED
+        };
+    }
+
+    @Override // returns formatted value
+    public String getFormatted(String key) throws IllegalArgumentException {
+        switch (key) {
+            case GAME_SCORE:
+            case COINS_COLLECTED:
+            case ALIENS_KILLED:
+                return Integer.toString(values.get(key).intValue());
+            case DISTANCE_TRAVELED:
+                return (new DecimalFormat("#0.00")).format(values.get(key)) + " km";
+            case TIME_PLAYED:
+                double val = values.get(key);
+                return (int) (val / 3_600_000) + "h" + (int) (val / 60_000) + "m" + (int) (val/1000) + "s";
+            default:
+                throw new IllegalArgumentException("The key \'" + key + "\' was not recognized!");
+        }
     }
 
     @Override

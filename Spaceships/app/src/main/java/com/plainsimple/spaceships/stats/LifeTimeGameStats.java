@@ -12,7 +12,7 @@ import java.util.Set;
  * Manages updates.
  */
 
-public class LifeTimeGameStats {
+public class LifeTimeGameStats implements StatsContainer {
 
     // name of preferences file where statistics are stored
     public static final String PREFERENCES_FILE_KEY = "com.plainsimple.spaceships.STATS_KEY";
@@ -106,7 +106,7 @@ public class LifeTimeGameStats {
         return high_score;
     }
 
-    // returns keys in a String[] array sorted in display order
+    @Override // returns keys in a String[] array sorted in display order
     public String[] getOrganizedKeysAsArray() {
         String[] array = new String[values.size()];
         array[0] = HIGH_SCORE;
@@ -123,31 +123,27 @@ public class LifeTimeGameStats {
         return array;
     }
 
-    // retrieves value, formats it into a String and returns
+    @Override // retrieves value, formats it into a String and returns.
     // different values get formatted differently. These are ready-to-display
     public String getFormatted(String key) throws IllegalArgumentException {
-        if (!values.containsKey(key)) {
-            throw new IllegalArgumentException("GameStats.java: Key not recognized");
-        } else {
-            double val = values.get(key);
-            switch (key) {
-                case GAMES_PLAYED:
-                case LIFETIME_SCORE:
-                case HIGH_SCORE:
-                case MOST_COINS:
-                case TOTAL_COINS:
-                case MOST_ALIENS_KILLED:
-                case TOTAL_ALIENS_KILLED:
-                    return Integer.toString((int) val);
-                case FARTHEST_FLOWN:
-                case TOTAL_FLOWN:
-                    return (new DecimalFormat("#0.00")).format(val) + " km"; // todo: change unit?
-                case TOTAL_TIME_PLAYED:
-                case LONGEST_GAME: // todo: formatting
-                    return (int) (val / 3_600_000) + "h" + (int) (val / 60_000) + "m" + (int) (val/1000) + "s";
-                default:
-                    return "ERROR";
-            }
+        switch (key) {
+            case GAMES_PLAYED:
+            case LIFETIME_SCORE:
+            case HIGH_SCORE:
+            case MOST_COINS:
+            case TOTAL_COINS:
+            case MOST_ALIENS_KILLED:
+            case TOTAL_ALIENS_KILLED:
+                return Integer.toString(values.get(key).intValue());
+            case FARTHEST_FLOWN:
+            case TOTAL_FLOWN:
+                return (new DecimalFormat("#0.00")).format(values.get(key)) + " km"; // todo: change unit?
+            case TOTAL_TIME_PLAYED:
+            case LONGEST_GAME: // todo: formatting
+                double val = values.get(key);
+                return (int) (val / 3_600_000) + "h" + (int) (val / 60_000) + "m" + (int) (val/1000) + "s";
+            default:
+                throw new IllegalArgumentException("The key \\'" + key + "\' was not recognized!");
         }
     }
 

@@ -12,7 +12,8 @@ import com.plainsimple.spaceships.view.FontTextView;
 import plainsimple.spaceships.R;
 
 /**
- * Adapter used to populate ListView in StatsActivity
+ * Adapter used to populate a listview with all statistics from a
+ * LifeTimeGameStats object
  */
 
 public class StatsRowAdapter extends ArrayAdapter<String> {
@@ -22,9 +23,9 @@ public class StatsRowAdapter extends ArrayAdapter<String> {
     // contains keys with which to get LifeTimeGameStats
     private String[] keys;
     // stores stats to display
-    private LifeTimeGameStats stats;
+    private StatsContainer stats;
 
-    public StatsRowAdapter(Context context, int rId, LifeTimeGameStats stats) {
+    public StatsRowAdapter(Context context, int rId, StatsContainer stats) {
         super(context, rId, stats.getOrganizedKeysAsArray());
         this.context = context;
         this.rId = rId;
