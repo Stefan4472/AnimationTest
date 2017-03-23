@@ -7,9 +7,14 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.SeekBar;
 
+import com.plainsimple.spaceships.stats.StatsContainer;
+import com.plainsimple.spaceships.stats.StatsRowAdapter;
 import com.plainsimple.spaceships.view.FontButton;
+
+import java.util.List;
 
 import plainsimple.spaceships.R;
 
@@ -40,9 +45,31 @@ public class GameOverDialogFragment extends DialogFragment {
         }
     }
 
-    public static GameOverDialogFragment newInstance() {
+    // keys used for putting keys[] and values[] arrays into the bundle
+    // for later use in StatsRowAdapter
+    private static final String KEYS_ARRAY = "KEYS_ARRAY";
+    private static final String VALUES_ARRAY = "VALUES_ARRAY";
+
+    // initializes and returns a new instance of GameOverDialogFragment // todo: might need to make a custom dialog class extending activity
+    public static GameOverDialogFragment newInstance(StatsContainer displayedStats) {
         GameOverDialogFragment dialog = new GameOverDialogFragment();
+
         Bundle bundle = new Bundle();
+
+        // get keys from StatsContainer
+        String[] keys = displayedStats.getOrganizedKeysAsArray();
+
+        // create corresponding array of formatted values
+        String[] values = new String[keys.length];
+
+        for (int i = 0; i < keys.length; i++) {
+            values[i] = displayedStats.getFormatted(keys[i]);
+        }
+
+        // put both arrays in the bundle
+        bundle.putStringArray(KEYS_ARRAY, keys);
+        bundle.putStringArray(VALUES_ARRAY, values);
+
         dialog.setArguments(bundle);
 
         dialog.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
@@ -54,11 +81,21 @@ public class GameOverDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // retrieve arguments from bundle (can't use savedInstanceState)
         Bundle bundle = getArguments();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
         // inflate the layout
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialog_layout = inflater.inflate(R.layout.gameover_layout, null);
 
+        // populate listview using StatsRowAdapter and Strings[] in bundle
+//        ListView game_stats = (ListView) dialog_layout.findViewById(R.id.gamestats_display);
+        // create adapter instance to display content in each row of ListView
+//        StatsRowAdapter adapter = new StatsRowAdapter(this, R.layout.statsrow_layout,
+//                bundle.getStringArray(KEYS_ARRAY), bundle.getStringArray(VALUES_ARRAY));
+//        game_stats.setAdapter(adapter);
+
+        // button to quit game
         FontButton quit_button = (FontButton) dialog_layout.findViewById(R.id.quitbutton);
         quit_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +103,8 @@ public class GameOverDialogFragment extends DialogFragment {
                 mListener.onQuitPressed(GameOverDialogFragment.this);
             }
         });
+
+        // button to restart game i.e. directly launch a new game
         FontButton restart_button = (FontButton) dialog_layout.findViewById(R.id.restartbutton);
         restart_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +112,7 @@ public class GameOverDialogFragment extends DialogFragment {
                 mListener.onRestartPressed(GameOverDialogFragment.this);
             }
         });
+
         builder.setView(dialog_layout);
         builder.setCancelable(false);
         return builder.create();

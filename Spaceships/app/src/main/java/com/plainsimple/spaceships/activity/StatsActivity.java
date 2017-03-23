@@ -30,8 +30,10 @@ public class StatsActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.stats_layout);
         listView = (ListView) findViewById(R.id.stats_list_view);
+
         // get a handle to lifetime stats
         LifeTimeGameStats stats = new LifeTimeGameStats(this);
+
         // create adapter instance to display content in each row of ListView
         StatsRowAdapter adapter = new StatsRowAdapter(this, R.layout.statsrow_layout, stats);
         listView.setAdapter(adapter);
