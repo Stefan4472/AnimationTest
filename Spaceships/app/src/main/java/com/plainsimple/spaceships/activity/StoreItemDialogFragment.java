@@ -6,8 +6,12 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
@@ -46,6 +50,7 @@ public class StoreItemDialogFragment extends DialogFragment {
     // load equipment fields into a Bundle to pass to the fragment
     public static StoreItemDialogFragment newInstance(Equipment equipment) {
         StoreItemDialogFragment fragment = new StoreItemDialogFragment();
+
         Bundle args = new Bundle();
         args.putString(LABEL_KEY, equipment.getLabel());
         args.putString(DESC_KEY, equipment.getDescription());
@@ -53,62 +58,84 @@ public class StoreItemDialogFragment extends DialogFragment {
         args.putInt(COST_KEY, equipment.getCost());
         args.putString(STATUS_KEY, equipment.getStatus().toString());
         args.putInt(R_ID_KEY, equipment.getrDrawableId());
+
         fragment.setArguments(args);
         return fragment;
     }
 
-    // layout's view
-    private View dialogLayout;
+    @Override // instantiates the listener and makes sure host activity implements the interface
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            storeListener = (StoreItemDialogListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement StoreItemDialogListener");
+        }
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+
+        // request window without title
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+
+        dialog.setCancelable(true);
+
+        return dialog;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.storedialog_layout, container);
+    }
+
     // used to switch between locked and unlocked layouts
     private ViewSwitcher viewSwitcher;
     // contains Equipment parameters
     private Bundle args;
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // retrieve arguments from bundle (can't use savedInstanceState)
-        //final Bundle bundle = getArguments();
-        args = getArguments();
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        // inflate the layout
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        dialogLayout = inflater.inflate(R.layout.storedialog_layout, null);
+        getDialog().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                                         WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        // retrieve arguments from bundle (can't use savedInstanceState)
+        args = getArguments();
 
         // set the dialog's label
-        FontTextView label = (FontTextView) dialogLayout.findViewById(R.id.storeItem_label);
+        FontTextView label = (FontTextView) view.findViewById(R.id.storeItem_label);
         label.setText(args.getString(LABEL_KEY));
 
         // set the dialog's thumbnail/image
-        ImageView image = (ImageView) dialogLayout.findViewById(R.id.storeItem_image);
+        ImageView image = (ImageView) view.findViewById(R.id.storeItem_image);
         image.setImageBitmap(BitmapFactory.decodeResource(getResources(), args.getInt(R_ID_KEY)));
 
         // set the dialog's description
-        FontTextView description = (FontTextView) dialogLayout.findViewById(R.id.storeItem_description);
+        FontTextView description = (FontTextView) view.findViewById(R.id.storeItem_description);
         description.setText(args.getString(DESC_KEY));
 
         // determine equipment's status
         // result determines whether to show locked_actionbar or unlocked_actionbar
         Equipment.Status status = Equipment.Status.valueOf(args.getString(STATUS_KEY));
 
-        viewSwitcher = (ViewSwitcher) dialogLayout.findViewById(R.id.view_switcher);
+        viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher);
 
         // equipment is locked: populate and display locked_actionbar
         if (status.equals(Equipment.Status.LOCKED)) {
-            populateLocked();
+            populateLocked(view);
         } else {
-            populateUnlocked(status);
+            populateUnlocked(view, status);
             viewSwitcher.showNext();
         }
-        builder.setCancelable(true);
-        builder.setView(dialogLayout);
-        return builder.create();
     }
 
-    private void populateLocked() { // todo: clean up? best practices?
+    private void populateLocked(final View view) { // todo: clean up? best practices?
         // set the buy button
         final int cost = args.getInt(COST_KEY);
-        FontButton buy_button = (FontButton) dialogLayout.findViewById(R.id.storeItem_buy);
+        FontButton buy_button = (FontButton) view.findViewById(R.id.storeItem_buy);
         buy_button.setText("Buy for " + cost);
 
         // user has enough money: add onClickListener to purchase
@@ -118,7 +145,7 @@ public class StoreItemDialogFragment extends DialogFragment {
                 public void onClick(View v) {
                     storeListener.onBuyItem(StoreItemDialogFragment.this, args.getString(ID_KEY), cost);
                     // populate unlocked layout and switch to it
-                    populateUnlocked(Equipment.Status.UNLOCKED);
+                    populateUnlocked(view, Equipment.Status.UNLOCKED);
                     viewSwitcher.showNext();
                 }
             });
@@ -128,12 +155,12 @@ public class StoreItemDialogFragment extends DialogFragment {
         }
     }
 
-    private void populateUnlocked(Equipment.Status status) {
+    private void populateUnlocked(final View view, Equipment.Status status) {
         // set the status
-        final FontTextView display_status = (FontTextView) dialogLayout.findViewById(R.id.storeItem_status);
+        final FontTextView display_status = (FontTextView) view.findViewById(R.id.storeItem_status);
 //        display_status.setText(args.getString(STATUS_KEY));
         display_status.setText(status.toString());
-        final FontButton action_button = (FontButton) dialogLayout.findViewById(R.id.storeItem_equip);
+        final FontButton action_button = (FontButton) view.findViewById(R.id.storeItem_equip);
 
         // unlocked: give option to equip the item
         if (status.equals(Equipment.Status.UNLOCKED)) {
@@ -149,16 +176,6 @@ public class StoreItemDialogFragment extends DialogFragment {
             });
         } else { // already equipped: don't show button
             action_button.setVisibility(View.GONE);
-        }
-    }
-
-    @Override // instantiates the listener and makes sure host activity implements the interface
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            storeListener = (StoreItemDialogListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement StoreItemDialogListener");
         }
     }
 }
