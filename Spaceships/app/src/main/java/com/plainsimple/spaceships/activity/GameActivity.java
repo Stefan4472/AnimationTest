@@ -285,8 +285,11 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             }
         });
         // display GameOverDialogFragment todo: fade-in animation
-        Log.d("GameActivity.java", "Displaying GameOverDialog");
-        DialogFragment d = GameOverDialogFragment.newInstance();
+//        Log.d("GameActivity.java", "Displaying GameOverDialog");
+//        DialogFragment d = GameOverDialog.newInstance();
+//        d.show(getFragmentManager(), "GameOver");
+        gameView.forceUpdateStats();
+        DialogFragment d = GameOverDialogFragment.newInstance(GameView.currentStats);
         d.show(getFragmentManager(), "GameOver");
     }
 
