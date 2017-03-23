@@ -108,12 +108,9 @@ public class GameOverDialogFragment extends DialogFragment {
         // retrieve arguments from bundle (can't use savedInstanceState)
         Bundle bundle = getArguments();
 
-        // inflate the layout
-//        LayoutInflater inflater = getActivity().getLayoutInflater();
-//        View dialog_layout = inflater.inflate(R.layout.gameover_layout, null);
-
-        // populate listview using StatsRowAdapter and Strings[] in bundle
+        // populate ListView using StatsRowAdapter and Strings[] in bundle
         ListView game_stats = (ListView) view.findViewById(R.id.gamestats_display);
+
         // create adapter instance to display content in each row of ListView
         StatsRowAdapter adapter = new StatsRowAdapter(getActivity(), R.layout.statsrow_layout,
                 bundle.getStringArray(KEYS_ARRAY), bundle.getStringArray(VALUES_ARRAY));

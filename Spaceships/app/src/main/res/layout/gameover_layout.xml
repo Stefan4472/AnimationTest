@@ -33,7 +33,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="30dp"
-            android:layout_marginTop="10dp"
+            android:layout_margin="5dp"
+            android:layout_marginRight="0dp"
             android:textColor="@color/orange"
             android:text="@string/play_again" />
         <com.plainsimple.spaceships.view.FontButton
@@ -43,7 +44,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="30dp"
-            android:layout_marginTop="10dp"
+            android:layout_margin="5dp"
+            android:layout_marginLeft="0dp"
             android:textColor="@color/orange"
             android:text="@string/quit" />
     </LinearLayout>
