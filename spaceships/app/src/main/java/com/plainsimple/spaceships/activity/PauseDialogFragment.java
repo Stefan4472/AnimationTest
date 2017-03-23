@@ -5,9 +5,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.SeekBar;
 
 import com.plainsimple.spaceships.view.FontButton;
@@ -19,8 +22,7 @@ import plainsimple.spaceships.R;
  * Communicates with GameActivity when Resume or Quit button is clicked
  */
 
-public class PauseDialogFragment extends DialogFragment { // todo: window feature_no_title
-    // todo: change seekbar color
+public class PauseDialogFragment extends DialogFragment {
 
     private SeekBar gameVolumeSelector;
     private SeekBar musicVolumeSelector;
@@ -63,14 +65,31 @@ public class PauseDialogFragment extends DialogFragment { // todo: window featur
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        // request window without title
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+
+        dialog.setCancelable(false);
+
+        return dialog;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setCancelable(false);
+        return inflater.inflate(R.layout.pause_layout, container);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) { // todo: clean up
         // retrieve arguments from bundle (can't use savedInstanceState)
         Bundle bundle = getArguments();
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        // inflate the layout
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View dialog_layout = inflater.inflate(R.layout.pause_layout, null);
 
-        gameVolumeSelector = (SeekBar) dialog_layout.findViewById(R.id.gamevolume_selector);
+        getDialog().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        gameVolumeSelector = (SeekBar) view.findViewById(R.id.gamevolume_selector);
         if (bundle.containsKey(GAMEVOLUME_KEY)) {
             gameVolumeSelector.setProgress((int) (bundle.getFloat(GAMEVOLUME_KEY) * 100));
         }
@@ -92,7 +111,7 @@ public class PauseDialogFragment extends DialogFragment { // todo: window featur
 
             }
         });
-        musicVolumeSelector = (SeekBar) dialog_layout.findViewById(R.id.musicvolume_selector);
+        musicVolumeSelector = (SeekBar) view.findViewById(R.id.musicvolume_selector);
         if (bundle.containsKey(MUSICVOLUME_KEY)) {
             musicVolumeSelector.setProgress((int) (bundle.getFloat(MUSICVOLUME_KEY) * 100));
         }
@@ -114,29 +133,29 @@ public class PauseDialogFragment extends DialogFragment { // todo: window featur
 
             }
         });
-        FontButton resume_button = (FontButton) dialog_layout.findViewById(R.id.resumebutton);
+
+        FontButton resume_button = (FontButton) view.findViewById(R.id.resumebutton);
         resume_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onResumePressed(PauseDialogFragment.this);
             }
         });
-        FontButton quit_button = (FontButton) dialog_layout.findViewById(R.id.quitbutton);
+
+        FontButton quit_button = (FontButton) view.findViewById(R.id.quitbutton);
         quit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onQuitPressed(PauseDialogFragment.this);
             }
         });
-        FontButton restart_button = (FontButton) dialog_layout.findViewById(R.id.restartbutton);
+
+        FontButton restart_button = (FontButton) view.findViewById(R.id.restartbutton);
         restart_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onRestartPressed(PauseDialogFragment.this);
             }
         });
-        builder.setView(dialog_layout);
-        builder.setCancelable(false);
-        return builder.create();
     }
 }

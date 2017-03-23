@@ -39,16 +39,6 @@ public class GameOverDialogFragment extends DialogFragment {
     // listener that receives events
     GameOverDialogListener mListener;
 
-    @Override // instantiates the listener and makes sure host activity implements the interface
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (GameOverDialogFragment.GameOverDialogListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement PauseDialogListener");
-        }
-    }
-
     // keys used for putting keys[] and values[] arrays into the bundle
     // for later use in StatsRowAdapter
     private static final String KEYS_ARRAY = "KEYS_ARRAY";
@@ -79,6 +69,16 @@ public class GameOverDialogFragment extends DialogFragment {
         dialog.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
 
         return dialog;
+    }
+
+    @Override // instantiates the listener and makes sure host activity implements the interface
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (GameOverDialogFragment.GameOverDialogListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement PauseDialogListener");
+        }
     }
 
     @Override
