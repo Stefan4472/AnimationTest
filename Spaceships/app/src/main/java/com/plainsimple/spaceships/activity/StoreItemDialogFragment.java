@@ -46,9 +46,10 @@ public class StoreItemDialogFragment extends DialogFragment {
     private final static String COST_KEY = "COST_KEY";
     private final static String STATUS_KEY = "STATUS_KEY";
     private final static String R_ID_KEY = "R_ID_KEY";
+    private final static String COINS_AVAILABLE_KEY = "COINS_AVAILABLE_KEY";
 
-    // load equipment fields into a Bundle to pass to the fragment
-    public static StoreItemDialogFragment newInstance(Equipment equipment) {
+    // load equipment fields and coins available into a Bundle to pass to the fragment
+    public static StoreItemDialogFragment newInstance(Equipment equipment, int coinsAvailable) {
         StoreItemDialogFragment fragment = new StoreItemDialogFragment();
 
         Bundle args = new Bundle();
@@ -58,6 +59,7 @@ public class StoreItemDialogFragment extends DialogFragment {
         args.putInt(COST_KEY, equipment.getCost());
         args.putString(STATUS_KEY, equipment.getStatus().toString());
         args.putInt(R_ID_KEY, equipment.getrDrawableId());
+        args.putInt(COINS_AVAILABLE_KEY, coinsAvailable);
 
         fragment.setArguments(args);
         return fragment;
@@ -139,7 +141,7 @@ public class StoreItemDialogFragment extends DialogFragment {
         buy_button.setText("Buy for " + cost);
 
         // user has enough money: add onClickListener to purchase
-        if (cost <= StoreActivity.equipment.getCoins()) {
+        if (cost <= args.getInt(COINS_AVAILABLE_KEY)) {
             buy_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -147,6 +149,7 @@ public class StoreItemDialogFragment extends DialogFragment {
                     // populate unlocked layout and switch to it
                     populateUnlocked(view, Equipment.Status.UNLOCKED);
                     viewSwitcher.showNext();
+                    args.putInt(COINS_AVAILABLE_KEY, args.getInt(COINS_AVAILABLE_KEY) - cost);
                 }
             });
         } else { // user does not have enough money: disable and darken "buy" button

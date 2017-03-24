@@ -285,9 +285,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             }
         });
         // display GameOverDialogFragment todo: fade-in animation
-//        Log.d("GameActivity.java", "Displaying GameOverDialog");
-//        DialogFragment d = GameOverDialog.newInstance();
-//        d.show(getFragmentManager(), "GameOver");
+        Log.d("GameActivity.java", "Displaying GameOverDialog");
         gameView.forceUpdateStats();
         DialogFragment d = GameOverDialogFragment.newInstance(GameView.currentStats);
         d.show(getFragmentManager(), "GameOver");
@@ -295,15 +293,10 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
 
     @Override // score change triggers update of ScoreView
     public void onScoreChanged(final int newScore) {
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                scoreView.updateScore(newScore);
-//            }
-//        });
+        // not in use due to large resource-use
     }
 
-    @Override
+    @Override // health changed triggers update of healthBarView
     public void onHealthChanged(final int newHealth) {
         runOnUiThread(new Runnable() {
             @Override
