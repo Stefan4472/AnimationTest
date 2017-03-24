@@ -15,6 +15,10 @@
     <string name="play_again">Play Again</string>
     <string name="game_volume">Game Volume</string>
     <string name="music_volume">Music Volume</string>
+    <string name="return_to_menu">Return to Menu</string>
+    <string name="game_statistics">Game Statistics</string>
+    <string name="equipment_status">Status:</string>
+    <string name="equipment_equip">Equip</string>
     <string name="default_equipped_states">
         LASER_BULLET:EQUIPPED,ION_BULLET:LOCKED,PLASMA_BULLET:LOCKED,PLUTONIUM_BULLET:LOCKED,ROCKET_DEFAULT:EQUIPPED,ARMOR_DEFAULT:EQUIPPED
     </string>

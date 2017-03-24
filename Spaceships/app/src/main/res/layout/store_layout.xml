@@ -8,7 +8,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:padding="10dp"
-        android:text="Store"/>
+        android:text="@string/button_store"/>
     <!-- displays store items in rows -->
     <ListView
         android:id="@+id/list_view"

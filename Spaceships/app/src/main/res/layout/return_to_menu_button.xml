@@ -7,7 +7,7 @@
         style="@style/GalaxyMonkey.TextStyle"
         android:padding="10dp"
         android:layout_margin="10dp"
-        android:text="Return to Menu"
+        android:text="@string/return_to_menu"
         android:textSize="25dp"
         android:onClick="onLeavePressed"/>
 </LinearLayout>

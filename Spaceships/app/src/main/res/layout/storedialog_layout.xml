@@ -54,7 +54,7 @@
                 style="@style/GalaxyMonkey.TextStyle"
                 android:layout_weight="1"
                 android:textSize="15dp"
-                android:text="Status:" />
+                android:text="@string/equipment_status" />
             <com.plainsimple.spaceships.view.FontTextView
                 android:id="@+id/storeItem_status"
                 style="@style/GalaxyMonkey.TextStyle"
@@ -69,7 +69,7 @@
                 android:layout_weight="1"
                 android:textColor="@color/grey"
                 android:background="@color/orange"
-                android:text="Equip"/>
+                android:text="@string/equipment_equip"/>
         </LinearLayout>
     </ViewSwitcher>
 
