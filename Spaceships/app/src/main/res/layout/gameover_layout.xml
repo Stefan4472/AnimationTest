@@ -6,13 +6,11 @@
     android:background="@drawable/dialog_shape">
     <!-- Title -->
     <com.plainsimple.spaceships.view.FontTextView
-        style="@style/GalaxyMonkey"
+        style="@style/GalaxyMonkey.TextStyle"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="60dp"
         android:layout_marginTop="10dp"
-        android:textColor="@color/orange"
         android:text="@string/game_over" />
     <!-- displays formatted stats in rows -->
     <ListView
@@ -27,26 +25,22 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <com.plainsimple.spaceships.view.FontButton
-            style="@style/GalaxyMonkey"
+            style="@style/GalaxyMonkey.ButtonTextStyle"
             android:id="@+id/restartbutton"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="30dp"
             android:layout_margin="5dp"
             android:layout_marginRight="0dp"
-            android:textColor="@color/orange"
             android:text="@string/play_again" />
         <com.plainsimple.spaceships.view.FontButton
-            style="@style/GalaxyMonkey"
+            style="@style/GalaxyMonkey.ButtonTextStyle"
             android:id="@+id/quitbutton"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="30dp"
             android:layout_margin="5dp"
             android:layout_marginLeft="0dp"
-            android:textColor="@color/orange"
             android:text="@string/quit" />
     </LinearLayout>
 </LinearLayout>

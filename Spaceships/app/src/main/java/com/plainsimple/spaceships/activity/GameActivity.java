@@ -104,6 +104,7 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
+
         // initialize listeners
         upArrow = (ImageButton) findViewById(R.id.up_arrow);
         upArrow.setOnTouchListener(new View.OnTouchListener() {

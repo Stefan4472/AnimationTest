@@ -7,12 +7,12 @@
     <!-- upgrade row label -->
     <com.plainsimple.spaceships.view.FontTextView
         android:id="@+id/label"
-        style="@style/GalaxyMonkey"
+        style="@style/GalaxyMonkey.TextStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:textSize="25dp"
-        android:textColor="@color/orange"/>
+        android:layout_gravity="start"
+        android:gravity="start"
+        android:textSize="25dp"/>
     <!-- displays images of possible upgrades -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"

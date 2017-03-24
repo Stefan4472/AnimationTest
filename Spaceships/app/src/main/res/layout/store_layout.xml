@@ -3,15 +3,11 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <com.plainsimple.spaceships.view.FontTextView
-        style="@style/GalaxyMonkey"
         android:id="@+id/store_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/GalaxyMonkey.TextStyle"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:padding="10dp"
-        android:textSize="30dp"
-        android:textColor="@color/orange"
         android:text="Store"/>
     <!-- displays store items in rows -->
     <ListView
@@ -23,11 +19,7 @@
     <!-- displays number of coins available -->
     <com.plainsimple.spaceships.view.FontTextView
         android:id="@+id/coin_counter"
-        style="@style/GalaxyMonkey"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/orange"
-        android:textSize="30dp"
+        style="@style/GalaxyMonkey.TextStyle"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:padding="10dp" />

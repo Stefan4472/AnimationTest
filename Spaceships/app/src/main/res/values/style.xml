@@ -28,6 +28,21 @@
     <style name="GalaxyMonkey.MenuStyle">
         <item name="android:background">@android:color/transparent</item>
     </style>
+    <!-- Base style used for most text -->
+    <style name="GalaxyMonkey.TextStyle">
+        <item name="android:textColor">@color/orange</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">30dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+    <!-- Base style used for most text in FontButtons -->
+    <style name="GalaxyMonkey.ButtonTextStyle">
+        <item name="android:textColor">@color/orange</item>
+        <item name="android:textSize">30dp</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
     <!-- Style used for pause dialog -->
     <style name="DialogStyle">
         <item name="windowActionBar">false</item>

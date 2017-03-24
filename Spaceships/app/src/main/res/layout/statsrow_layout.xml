@@ -7,18 +7,12 @@ in StatsActivity -->
     android:layout_height="wrap_content"> <!-- todo: also fill parent? -->
     <com.plainsimple.spaceships.view.FontTextView
         android:id="@+id/statitem_label"
-        style="@style/GalaxyMonkey"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:textColor="@color/orange"
-        android:textSize="20dp"/>
+        style="@style/GalaxyMonkey.TextStyle"
+        android:textSize="20dp"
+        android:layout_alignParentLeft="true"/>
     <com.plainsimple.spaceships.view.FontTextView
         android:id="@+id/statitem_value"
-        style="@style/GalaxyMonkey"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:textColor="@color/orange"
-        android:textSize="20dp"/>
+        style="@style/GalaxyMonkey.TextStyle"
+        android:textSize="20dp"
+        android:layout_alignParentRight="true"/>
 </RelativeLayout>

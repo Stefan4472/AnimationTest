@@ -8,14 +8,11 @@
     android:background="@drawable/dialog_shape">
     <!-- Title -->
     <com.plainsimple.spaceships.view.FontTextView
-        style="@style/GalaxyMonkey"
+        style="@style/GalaxyMonkey.TextStyle"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
         android:textSize="60dp"
         android:layout_marginTop="10dp"
-        android:textColor="@color/orange"
         android:text="@string/paused"
-        android:gravity="center"
         android:includeFontPadding="false" />
     <!-- layout for labels and seekbars, which should share the layout evenly -->
     <LinearLayout
@@ -30,21 +27,15 @@
             android:layout_weight="1"
             android:paddingLeft="10dp">
             <com.plainsimple.spaceships.view.FontTextView
-                style="@style/GalaxyMonkey"
+                style="@style/GalaxyMonkey.TextStyle"
                 android:id="@+id/gamevolume_display"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:textSize="25dp"
-                android:textColor="@color/orange"
                 android:text="@string/game_volume" >
             </com.plainsimple.spaceships.view.FontTextView>
             <com.plainsimple.spaceships.view.FontTextView
-                style="@style/GalaxyMonkey"
+                style="@style/GalaxyMonkey.TextStyle"
                 android:id="@+id/musicvolume_display"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:textSize="25dp"
-                android:textColor="@color/orange"
                 android:text="@string/music_volume" >
             </com.plainsimple.spaceships.view.FontTextView>
         </LinearLayout>
@@ -71,13 +62,11 @@
     <!-- restart button -->
     <!-- Resume Button -->
     <com.plainsimple.spaceships.view.FontButton
-        style="@style/GalaxyMonkey"
+        style="@style/GalaxyMonkey.ButtonTextStyle"
         android:id="@+id/resumebutton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:textSize="30dp"
-        android:textColor="@color/orange"
         android:text="@string/tap_to_resume"/>
     <!-- container for restart and quit buttons -->
     <LinearLayout
@@ -85,25 +74,21 @@
         android:layout_height="wrap_content">
         <!-- Restart Button -->
         <com.plainsimple.spaceships.view.FontButton
-            style="@style/GalaxyMonkey"
+            style="@style/GalaxyMonkey.ButtonTextStyle"
             android:id="@+id/restartbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginTop="10dp"
-            android:textSize="30dp"
-            android:textColor="@color/orange"
             android:text="@string/restart"/>
         <!-- Quit Button -->
         <com.plainsimple.spaceships.view.FontButton
-            style="@style/GalaxyMonkey"
+            style="@style/GalaxyMonkey.ButtonTextStyle"
             android:id="@+id/quitbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginTop="10dp"
-            android:textSize="30dp"
-            android:textColor="@color/orange"
             android:text="@string/quit"/>
     </LinearLayout>
 </LinearLayout>
