@@ -10,6 +10,7 @@ import com.plainsimple.spaceships.helper.DrawRotatedImage;
 import com.plainsimple.spaceships.helper.HealthBarAnimation;
 import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.LoseHealthAnimation;
+import com.plainsimple.spaceships.stats.GameStats;
 import com.plainsimple.spaceships.view.GameView;
 
 import java.util.LinkedList;
@@ -90,6 +91,8 @@ public class Asteroid extends Sprite {
         // Asteroid was "killed" by the collision.
         if (hp == 0 && !dead) {
             dead = true;
+            // update current GameStats to reflect an Asteroid kill
+            GameView.currentStats.addTo(GameStats.ASTEROIDS_KILLED, 1);
         }
     }
 

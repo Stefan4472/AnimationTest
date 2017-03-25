@@ -99,6 +99,7 @@ public class Alien extends Sprite {
         // terminate after explosion or if out of bounds
         if (explodeAnimation.hasPlayed() || !isInBounds()) {
             terminate = true;
+            // update current GameStats to reflect an Alien Kill
             GameView.currentStats.addTo(GameStats.ALIENS_KILLED, 1);
         } else {
             framesSinceLastBullet++;

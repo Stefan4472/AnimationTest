@@ -7,11 +7,9 @@ import android.util.Log;
 
 import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.AnimCache;
-import com.plainsimple.spaceships.helper.Rocket0Manager;
 import com.plainsimple.spaceships.helper.RocketManager;
 import com.plainsimple.spaceships.store.ArmorType;
 import com.plainsimple.spaceships.helper.BitmapCache;
-import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.store.CannonType;
 import com.plainsimple.spaceships.helper.DrawImage;
@@ -111,7 +109,7 @@ public class Spaceship extends Sprite {
         hitBox = new Hitbox(x + getWidth() * 0.17f, y + getHeight() * 0.27f, x + getWidth() * 0.7f, y + getHeight() * 0.73f);
 
 
-        setInitValues();
+        setInitValues(); // todo: reset() method, or something more elegant
 
         this.context = context;
     }
@@ -159,9 +157,9 @@ public class Spaceship extends Sprite {
         lastFiredBullet++;
         frameCount++;
         if (fireMode == FireMode.BULLET && lastFiredBullet >= cannonType.getDelay() && hp != 0) {
-            fireBullets();
+            fireCannons();
             lastFiredBullet = 0;
-        } else if (fireMode == FireMode.ROCKET && hp != 0) {
+        } else if (fireMode == FireMode.ROCKET && hp != 0) { // todo: clean up?
             // queue RocketManager for permission to fire
             RocketManager.FireInstructions instructions = rocketManager.attemptFire(frameCount); // todo: force spaceship to fire on schedule in certain cases
             if (instructions.fireLeft()) { // fire left if allowed
@@ -169,11 +167,13 @@ public class Spaceship extends Sprite {
             }
             if (instructions.fireRight()) { // fire right if allowed
                 projectiles.add(Rocket.newInstance(context, x + getWidth() * 0.80f, y + 0.65f * getHeight(), rocketType));
+                GameView.currentStats.addTo(GameStats.ROCKETS_FIRED, 1);
             }
             // play sound and start animation if at least one rocket was fired
             if (instructions.fireLeft() || instructions.fireRight()) {
                 fireRocket.start();
                 GameActivity.playSound(ROCKET_SOUND);
+                GameView.currentStats.addTo(GameStats.ROCKETS_FIRED, 1);
             }
         }
         // make spaceship invisible and undetectable
@@ -187,10 +187,11 @@ public class Spaceship extends Sprite {
     }
 
     // fires two bullets
-    public void fireBullets() {
+    public void fireCannons() {
         projectiles.add(new Bullet(context, x + getWidth() * 0.78f, y + 0.28f * getHeight(), cannonType));
         projectiles.add(new Bullet(context, x + getWidth() * 0.78f, y + 0.66f * getHeight(), cannonType));
         GameActivity.playSound(BULLET_SOUND);
+        GameView.currentStats.addTo(GameStats.CANNONS_FIRED, 2);
     }
 
     public void updateInput(InputMode inputType, float value) {

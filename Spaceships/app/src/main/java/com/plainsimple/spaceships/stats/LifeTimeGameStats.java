@@ -29,7 +29,6 @@ public class LifeTimeGameStats implements StatsContainer {
     private static final String LONGEST_GAME = "LONGEST GAME";
     private static final String MOST_ALIENS_KILLED = "MOST ALIENS KILLED";
     private static final String TOTAL_ALIENS_KILLED = "TOTAL ALIENS KILLED";
-    // TODO: IMPLEMENT
     private static final String TOTAL_ASTEROIDS_KILLED = "TOTAL_ASTEROIDS_KILLED";
     private static final String MOST_ASTEROIDS_KILLED = "MOST_ASTEROIDS_KILLED";
     private static final String CANNONS_FIRED = "CANNONS_FIRED";
@@ -46,7 +45,7 @@ public class LifeTimeGameStats implements StatsContainer {
     // used to edit preferences
     private SharedPreferences.Editor pEditor;
 
-   public LifeTimeGameStats(Context context) {
+   public LifeTimeGameStats(Context context) { // todo: find a cleaner way?
        preferences = context.getSharedPreferences(PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
        pEditor = preferences.edit();
        values.put(GAMES_PLAYED, getFromPrefs(GAMES_PLAYED));
@@ -93,6 +92,9 @@ public class LifeTimeGameStats implements StatsContainer {
         incrementValue(TOTAL_FLOWN, game.get(GameStats.DISTANCE_TRAVELED));
         incrementValue(TOTAL_TIME_PLAYED, game.get(GameStats.TIME_PLAYED));
         incrementValue(TOTAL_ALIENS_KILLED, game.get(GameStats.ALIENS_KILLED));
+        incrementValue(TOTAL_ASTEROIDS_KILLED, game.get(GameStats.ASTEROIDS_KILLED));
+        incrementValue(CANNONS_FIRED, game.get(GameStats.CANNONS_FIRED));
+        incrementValue(ROCKETS_FIRED, game.get(GameStats.ROCKETS_FIRED));
         if (game.get(GameStats.COINS_COLLECTED) > values.get(MOST_COINS)) {
             values.put(MOST_COINS, game.get(GameStats.COINS_COLLECTED));
         }
@@ -104,6 +106,9 @@ public class LifeTimeGameStats implements StatsContainer {
         }
         if (game.get(GameStats.ALIENS_KILLED) > values.get(MOST_ALIENS_KILLED)) {
             values.put(MOST_ALIENS_KILLED, game.get(GameStats.ALIENS_KILLED));
+        }
+        if (game.get(GameStats.ASTEROIDS_KILLED) > values.get(MOST_ASTEROIDS_KILLED)) {
+            values.put(MOST_ASTEROIDS_KILLED, game.get(GameStats.ASTEROIDS_KILLED));
         }
         if (game.get(GameStats.GAME_SCORE) > values.get(HIGH_SCORE)) {
             values.put(HIGH_SCORE, game.get(GameStats.GAME_SCORE));
@@ -155,6 +160,8 @@ public class LifeTimeGameStats implements StatsContainer {
             case MOST_ASTEROIDS_KILLED:
             case CANNONS_FIRED:
             case ROCKETS_FIRED:
+            case COINS_SPENT:
+            case UPGRADES_BOUGHT:
                 return Integer.toString(values.get(key).intValue());
             case FARTHEST_FLOWN:
             case TOTAL_FLOWN:
