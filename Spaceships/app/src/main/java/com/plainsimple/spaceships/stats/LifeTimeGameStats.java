@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -28,6 +29,15 @@ public class LifeTimeGameStats implements StatsContainer {
     private static final String LONGEST_GAME = "LONGEST GAME";
     private static final String MOST_ALIENS_KILLED = "MOST ALIENS KILLED";
     private static final String TOTAL_ALIENS_KILLED = "TOTAL ALIENS KILLED";
+    // TODO: IMPLEMENT
+    private static final String TOTAL_ASTEROIDS_KILLED = "TOTAL_ASTEROIDS_KILLED";
+    private static final String MOST_ASTEROIDS_KILLED = "MOST_ASTEROIDS_KILLED";
+    private static final String CANNONS_FIRED = "CANNONS_FIRED";
+    private static final String ROCKETS_FIRED = "ROCKETS_FIRED";
+    private static final String COINS_SPENT = "COINS_SPENT";
+    private static final String UPGRADES_BOUGHT = "UPGRADES_BOUGHT";
+
+
 
     // stores data under keys
     private HashMap<String, Double> values = new HashMap<>();
@@ -50,6 +60,12 @@ public class LifeTimeGameStats implements StatsContainer {
        values.put(LONGEST_GAME, getFromPrefs(LONGEST_GAME));
        values.put(MOST_ALIENS_KILLED, getFromPrefs(MOST_ALIENS_KILLED));
        values.put(TOTAL_ALIENS_KILLED, getFromPrefs(TOTAL_ALIENS_KILLED));
+       values.put(TOTAL_ASTEROIDS_KILLED, getFromPrefs(TOTAL_ASTEROIDS_KILLED));
+       values.put(MOST_ASTEROIDS_KILLED, getFromPrefs(MOST_ASTEROIDS_KILLED));
+       values.put(CANNONS_FIRED, getFromPrefs(CANNONS_FIRED));
+       values.put(ROCKETS_FIRED, getFromPrefs(ROCKETS_FIRED));
+       values.put(COINS_SPENT, getFromPrefs(COINS_SPENT));
+       values.put(UPGRADES_BOUGHT, getFromPrefs(UPGRADES_BOUGHT));
    }
 
     // get data from preferences and convert from long to double
@@ -65,11 +81,6 @@ public class LifeTimeGameStats implements StatsContainer {
     // increments value associated with given key in values HashMap
     private void incrementValue(String key, double amount) {
         values.put(key, values.get(key) + amount);
-    }
-
-    // returns values key set
-    public Set<String> getKeySet() {
-        return values.keySet();
     }
 
     // updates all values using stats from the given game
@@ -108,19 +119,25 @@ public class LifeTimeGameStats implements StatsContainer {
 
     @Override // returns keys in a String[] array sorted in display order
     public String[] getOrganizedKeysAsArray() {
-        String[] array = new String[values.size()];
-        array[0] = HIGH_SCORE;
-        array[1] = LIFETIME_SCORE;
-        array[2] = GAMES_PLAYED;
-        array[3] = TOTAL_FLOWN;
-        array[4] = FARTHEST_FLOWN;
-        array[5] = TOTAL_TIME_PLAYED;
-        array[6] = LONGEST_GAME;
-        array[7] = TOTAL_ALIENS_KILLED;
-        array[8] = MOST_ALIENS_KILLED;
-        array[9] = TOTAL_COINS;
-        array[10] = MOST_COINS;
-        return array;
+        return new String[] {
+            HIGH_SCORE,
+            LIFETIME_SCORE,
+            GAMES_PLAYED,
+            TOTAL_FLOWN,
+            FARTHEST_FLOWN,
+            TOTAL_TIME_PLAYED,
+            LONGEST_GAME,
+            TOTAL_ALIENS_KILLED,
+            MOST_ALIENS_KILLED,
+            TOTAL_ASTEROIDS_KILLED,
+            MOST_ASTEROIDS_KILLED,
+            CANNONS_FIRED,
+            ROCKETS_FIRED,
+            TOTAL_COINS,
+            MOST_COINS,
+            COINS_SPENT,
+            UPGRADES_BOUGHT
+        };
     }
 
     @Override // retrieves value, formats it into a String and returns.
@@ -134,6 +151,10 @@ public class LifeTimeGameStats implements StatsContainer {
             case TOTAL_COINS:
             case MOST_ALIENS_KILLED:
             case TOTAL_ALIENS_KILLED:
+            case TOTAL_ASTEROIDS_KILLED:
+            case MOST_ASTEROIDS_KILLED:
+            case CANNONS_FIRED:
+            case ROCKETS_FIRED:
                 return Integer.toString(values.get(key).intValue());
             case FARTHEST_FLOWN:
             case TOTAL_FLOWN:

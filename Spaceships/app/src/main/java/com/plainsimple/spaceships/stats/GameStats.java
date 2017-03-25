@@ -27,6 +27,9 @@ public class GameStats implements StatsContainer { // todo: use enums shared wit
     public static final String DISTANCE_TRAVELED = "DISTANCE_TRAVELED";
     public static final String GAME_SCORE = "GAME_SCORE";
     public static final String COINS_COLLECTED = "COINS_COLLECTED";
+    public static final String ASTEROIDS_KILLED = "ASTEROIDS_KILLED";
+    public static final String CANNONS_FIRED = "CANNONS_FIRED";
+    public static final String ROCKETS_FIRED = "ROCKETS_FIRED";
 
     protected HashMap<String, Double> values = new HashMap<>();
 
@@ -36,6 +39,9 @@ public class GameStats implements StatsContainer { // todo: use enums shared wit
         values.put(DISTANCE_TRAVELED, new Double(0));
         values.put(GAME_SCORE, new Double(0));
         values.put(COINS_COLLECTED, new Double(0));
+        values.put(ASTEROIDS_KILLED, new Double(0));
+        values.put(CANNONS_FIRED, new Double(0));
+        values.put(ROCKETS_FIRED, new Double(0));
     }
 
     // sets value of specified key
@@ -76,7 +82,10 @@ public class GameStats implements StatsContainer { // todo: use enums shared wit
             GAME_SCORE,
             DISTANCE_TRAVELED,
             TIME_PLAYED,
+            CANNONS_FIRED,
+            ROCKETS_FIRED,
             ALIENS_KILLED,
+            ASTEROIDS_KILLED,
             COINS_COLLECTED
         };
     }
@@ -87,6 +96,9 @@ public class GameStats implements StatsContainer { // todo: use enums shared wit
             case GAME_SCORE:
             case COINS_COLLECTED:
             case ALIENS_KILLED:
+            case ASTEROIDS_KILLED:
+            case CANNONS_FIRED:
+            case ROCKETS_FIRED:
                 return Integer.toString(values.get(key).intValue());
             case DISTANCE_TRAVELED:
                 return (new DecimalFormat("#0.00")).format(values.get(key)) + " km";
