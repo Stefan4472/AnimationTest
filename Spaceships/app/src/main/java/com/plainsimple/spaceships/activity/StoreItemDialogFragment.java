@@ -102,7 +102,7 @@ public class StoreItemDialogFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         getDialog().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                                         WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // retrieve arguments from bundle (can't use savedInstanceState)
         args = getArguments();
@@ -138,7 +138,7 @@ public class StoreItemDialogFragment extends DialogFragment {
         // set the buy button
         final int cost = args.getInt(COST_KEY);
         FontButton buy_button = (FontButton) view.findViewById(R.id.storeItem_buy);
-        buy_button.setText("Buy for " + cost);
+        buy_button.setText("Buy for " + cost + " coins");
 
         // user has enough money: add onClickListener to purchase
         if (cost <= args.getInt(COINS_AVAILABLE_KEY)) {
@@ -159,26 +159,22 @@ public class StoreItemDialogFragment extends DialogFragment {
     }
 
     private void populateUnlocked(final View view, Equipment.Status status) {
-        // set the status
-        final FontTextView display_status = (FontTextView) view.findViewById(R.id.storeItem_status);
-//        display_status.setText(args.getString(STATUS_KEY));
-        display_status.setText(status.toString());
-        final FontButton action_button = (FontButton) view.findViewById(R.id.storeItem_equip);
+        final FontButton equip_button = (FontButton) view.findViewById(R.id.storeItem_equip);
 
         // unlocked: give option to equip the item
         if (status.equals(Equipment.Status.UNLOCKED)) {
-            action_button.setOnClickListener(new View.OnClickListener() {
+            equip_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) { // send event back to storeListener
                     storeListener.onEquipItem(StoreItemDialogFragment.this, args.getString(ID_KEY));
-                    display_status.setText("EQUIPPED");
                     // disable action button
-                    action_button.setAlpha(0.5f);
-                    action_button.setClickable(false);
+                    equip_button.setAlpha(0.5f);
+                    equip_button.setClickable(false);
                 }
             });
-        } else { // already equipped: don't show button
-            action_button.setVisibility(View.GONE);
+        } else { // already equipped: disable button
+            equip_button.setClickable(false);
+            equip_button.setAlpha(0.7f);
         }
     }
 }
