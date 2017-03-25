@@ -36,8 +36,6 @@ public class LifeTimeGameStats implements StatsContainer {
     private static final String COINS_SPENT = "COINS_SPENT";
     private static final String UPGRADES_BOUGHT = "UPGRADES_BOUGHT";
 
-
-
     // stores data under keys
     private HashMap<String, Double> values = new HashMap<>();
     // all data stored here under PREFRENCES_FILE_KEY
@@ -73,13 +71,27 @@ public class LifeTimeGameStats implements StatsContainer {
     }
 
     // convert data from double to long and set in preferences (DOES NOT COMMIT)
-    private void setToPrefs(String key, double val) {
-        pEditor.putLong(key, Double.doubleToLongBits(val));
+    private void setToPrefs(String key) {
+        pEditor.putLong(key, Double.doubleToLongBits(values.get(key)));
     }
 
     // increments value associated with given key in values HashMap
     private void incrementValue(String key, double amount) {
         values.put(key, values.get(key) + amount);
+    }
+
+    // increments COINS_SPENT stat. Needs to be accessed by EquipmentManager
+    public void incrementCoinsSpent(int coinsSpent) {
+        values.put(COINS_SPENT, values.get(COINS_SPENT) + coinsSpent);
+        setToPrefs(COINS_SPENT);
+        pEditor.commit();
+    }
+
+    // increments UPGRADES_BOUGHT stat by one. Needs to be accessed by EquipmentManager
+    public void incrementUpgradesBought() {
+        values.put(UPGRADES_BOUGHT, values.get(UPGRADES_BOUGHT) + 1);
+        setToPrefs(UPGRADES_BOUGHT);
+        pEditor.commit();
     }
 
     // updates all values using stats from the given game
@@ -116,7 +128,7 @@ public class LifeTimeGameStats implements StatsContainer {
         }
         // update and commit preferences
         for (String key : values.keySet()) {
-            setToPrefs(key, values.get(key));
+            setToPrefs(key);
         }
         pEditor.commit();
         return high_score;

@@ -3,6 +3,8 @@ package com.plainsimple.spaceships.store;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.plainsimple.spaceships.stats.LifeTimeGameStats;
+
 import java.util.HashMap;
 
 import plainsimple.spaceships.R;
@@ -54,6 +56,8 @@ public class EquipmentManager {
     private int coins;
     // used to write changes to SharedPreferences
     private SharedPreferences.Editor prefEditor;
+    // tracks some store statistics
+    private LifeTimeGameStats lifeTimeGameStats;
 
     // reads in Equipment data from SharedPreferences and constructs Equipment objects
     // Populates the HashMap
@@ -77,6 +81,7 @@ public class EquipmentManager {
 
         coins = data.getInt(COINS_KEY, 0);
         prefEditor = data.edit();
+        lifeTimeGameStats = new LifeTimeGameStats(context);
     }
 
     // returns queried Equipment object
@@ -109,6 +114,10 @@ public class EquipmentManager {
         if (toSpend > coins) {
             throw new IllegalStateException("Tried to spend more coins than are available");
         } else {
+            // upgrade tracked statistics
+            lifeTimeGameStats.incrementCoinsSpent(toSpend);
+            lifeTimeGameStats.incrementUpgradesBought();
+            // update coins
             coins -= toSpend;
             prefEditor.putInt(COINS_KEY, coins);
             prefEditor.commit();
