@@ -30,7 +30,6 @@ import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.view.GameView;
 import com.plainsimple.spaceships.view.HealthBarView;
-import com.plainsimple.spaceships.view.ScoreView;
 
 import java.util.Hashtable;
 
@@ -43,7 +42,6 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     GameOverDialogFragment.GameOverDialogListener, GameView.GameEventsListener {
 
     private GameView gameView;
-    private ScoreView scoreView;
     private HealthBarView healthBarView;
     private ImageButton pauseButton;
     private ImageButton muteButton;
@@ -94,7 +92,6 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         muted = preferences.getBoolean(MUTED_KEY, false);
         paused = false;
 
-        scoreView = (ScoreView) findViewById(R.id.scoreview);
         healthBarView = (HealthBarView) findViewById(R.id.healthbar);
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pause);

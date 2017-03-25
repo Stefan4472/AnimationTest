@@ -138,7 +138,7 @@ public class StoreItemDialogFragment extends DialogFragment {
         // set the buy button
         final int cost = args.getInt(COST_KEY);
         FontButton buy_button = (FontButton) view.findViewById(R.id.storeItem_buy);
-        buy_button.setText("Buy for " + cost + " coins"); // todo: use internationalization, follow android guides
+        buy_button.setText(getString(R.string.equipment_buy, Integer.toString(cost)));
 
         // user has enough money: add onClickListener to purchase
         if (cost <= args.getInt(COINS_AVAILABLE_KEY)) {
@@ -146,10 +146,10 @@ public class StoreItemDialogFragment extends DialogFragment {
                 @Override
                 public void onClick(View v) {
                     storeListener.onBuyItem(StoreItemDialogFragment.this, args.getString(ID_KEY), cost);
+                    args.putInt(COINS_AVAILABLE_KEY, args.getInt(COINS_AVAILABLE_KEY) - cost);
                     // populate unlocked layout and switch to it
                     populateUnlocked(view, Equipment.Status.UNLOCKED);
                     viewSwitcher.showNext();
-                    args.putInt(COINS_AVAILABLE_KEY, args.getInt(COINS_AVAILABLE_KEY) - cost);
                 }
             });
         } else { // user does not have enough money: disable and darken "buy" button
