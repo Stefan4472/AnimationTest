@@ -138,7 +138,7 @@ public class StoreItemDialogFragment extends DialogFragment {
         // set the buy button
         final int cost = args.getInt(COST_KEY);
         FontButton buy_button = (FontButton) view.findViewById(R.id.storeItem_buy);
-        buy_button.setText("Buy for " + cost + " coins");
+        buy_button.setText("Buy for " + cost + " coins"); // todo: use internationalization, follow android guides
 
         // user has enough money: add onClickListener to purchase
         if (cost <= args.getInt(COINS_AVAILABLE_KEY)) {

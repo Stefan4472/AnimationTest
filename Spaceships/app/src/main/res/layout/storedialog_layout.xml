@@ -41,14 +41,13 @@
             android:layout_gravity="center_horizontal">
             <com.plainsimple.spaceships.view.FontButton
                 android:id="@+id/storeItem_buy"
-                style="@style/GalaxyMonkey"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                style="@style/GalaxyMonkey.TextStyle"
                 android:textColor="@color/grey"
-                android:background="@color/orange" />
+                android:background="@drawable/storebutton_shape"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"/>
         </LinearLayout>
-        <!-- layout to display if item is unlocked (Status:___ + equip button) -->
+        <!-- layout to display if item is unlocked (option to equip) -->
         <LinearLayout
             android:id="@+id/unlocked_actionbar"
             android:layout_width="wrap_content"
@@ -57,12 +56,12 @@
             android:orientation="horizontal">
             <com.plainsimple.spaceships.view.FontButton
                 android:id="@+id/storeItem_equip"
-                style="@style/GalaxyMonkey"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/GalaxyMonkey.TextStyle"
                 android:textColor="@color/grey"
-                android:background="@color/orange"
-                android:text="@string/equipment_equip"/>
+                android:background="@drawable/storebutton_shape"
+                android:text="@string/equipment_equip"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"/>
         </LinearLayout>
     </ViewSwitcher>
 
