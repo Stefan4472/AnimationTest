@@ -76,17 +76,13 @@ public class GameStats implements StatsContainer { // todo: use enums shared wit
         return values.keySet();
     }
 
-    @Override // returns keys in a String[] array sorted in display order
-    public String[] getOrganizedKeysAsArray() {
+    @Override // returns String[] containing keys in display order
+    public String[] getKeysToDisplay() {
         return new String[] {
-            GAME_SCORE,
-            DISTANCE_TRAVELED,
-            TIME_PLAYED,
-            CANNONS_FIRED,
-            ROCKETS_FIRED,
-            ALIENS_KILLED,
-            ASTEROIDS_KILLED,
-            COINS_COLLECTED
+                GAME_SCORE,
+                DISTANCE_TRAVELED,
+                TIME_PLAYED,
+                COINS_COLLECTED
         };
     }
 

@@ -9,8 +9,6 @@ import android.widget.ArrayAdapter;
 
 import com.plainsimple.spaceships.view.FontTextView;
 
-import java.util.InputMismatchException;
-
 import plainsimple.spaceships.R;
 
 /**
@@ -37,11 +35,11 @@ public class StatsRowAdapter extends ArrayAdapter<String> {
 
     // constructor taking StatsContainer object
     public StatsRowAdapter(Context context, int rId, StatsContainer stats) {
-        super(context, rId, stats.getOrganizedKeysAsArray());
+        super(context, rId, stats.getKeysToDisplay());
         this.context = context;
         this.rId = rId;
 
-        keys = stats.getOrganizedKeysAsArray();
+        keys = stats.getKeysToDisplay();
         values = new String[keys.length];
 
         // populate values[] array

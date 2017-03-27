@@ -135,7 +135,7 @@ public class LifeTimeGameStats implements StatsContainer {
     }
 
     @Override // returns keys in a String[] array sorted in display order
-    public String[] getOrganizedKeysAsArray() {
+    public String[] getKeysToDisplay() {
         return new String[] {
             HIGH_SCORE,
             LIFETIME_SCORE,

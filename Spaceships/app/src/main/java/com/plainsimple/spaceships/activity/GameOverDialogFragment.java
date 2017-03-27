@@ -1,7 +1,6 @@
 package com.plainsimple.spaceships.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
@@ -12,13 +11,10 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ListView;
-import android.widget.SeekBar;
 
 import com.plainsimple.spaceships.stats.StatsContainer;
 import com.plainsimple.spaceships.stats.StatsRowAdapter;
 import com.plainsimple.spaceships.view.FontButton;
-
-import java.util.List;
 
 import plainsimple.spaceships.R;
 
@@ -44,14 +40,14 @@ public class GameOverDialogFragment extends DialogFragment {
     private static final String KEYS_ARRAY = "KEYS_ARRAY";
     private static final String VALUES_ARRAY = "VALUES_ARRAY";
 
-    // initializes and returns a new instance of GameOverDialogFragment // todo: might need to make a custom dialog class extending activity
+    // initializes and returns a new instance of GameOverDialogFragment // todo: only show non-zero stats?
     public static GameOverDialogFragment newInstance(StatsContainer displayedStats) {
         GameOverDialogFragment dialog = new GameOverDialogFragment();
 
         Bundle bundle = new Bundle();
 
         // get keys from StatsContainer
-        String[] keys = displayedStats.getOrganizedKeysAsArray();
+        String[] keys = displayedStats.getKeysToDisplay();
 
         // create corresponding array of formatted values
         String[] values = new String[keys.length];

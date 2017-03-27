@@ -8,10 +8,10 @@ package com.plainsimple.spaceships.stats;
 
 public interface StatsContainer {
 
-    // returns keys to stats values in a String[] array
-    // The array should be sorted in the order the values
+    // returns keys to stats values in a String[] array that should be
+    // displayed. The array should be sorted in the order the values
     // will be displayed (from top to bottom)
-    String[] getOrganizedKeysAsArray();
+    String[] getKeysToDisplay();
 
     // returns the value of the statistic given by the key,
     // formatted for display. Throws IllegalArgumentException
