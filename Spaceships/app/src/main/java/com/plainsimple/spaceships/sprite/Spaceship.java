@@ -257,7 +257,7 @@ public class Spaceship extends Sprite {
         } else {
             // trigger onHealthChanged event under proper conditions
             if (damage != 0 && !explode.isPlaying() && listener != null) {
-                listener.onHealthChanged(-damage);
+                listener.onHealthChanged(hp);
                 Log.d("Spaceship.java", "Firing onHealthChanged");
             }
 
