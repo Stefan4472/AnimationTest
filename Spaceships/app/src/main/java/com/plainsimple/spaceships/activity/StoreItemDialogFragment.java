@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -34,8 +35,12 @@ public class StoreItemDialogFragment extends DialogFragment {
     // passes the fragment as well as the id of equipment to take action on
     // and any other parameters needed
     public interface StoreItemDialogListener {
+        // fired when an item is equipped. Returns id
         void onEquipItem(DialogFragment dialog, String toEquipId);
+        // fired when an item is bought. Returns id and cost of equipment
         void onBuyItem(DialogFragment dialog, String toBuyId, int cost);
+        // fired when dialog is closed/dismissed
+        void onDialogClosed(DialogFragment dialog);
     }
 
     private StoreItemDialogListener storeListener;
@@ -167,14 +172,22 @@ public class StoreItemDialogFragment extends DialogFragment {
                 @Override
                 public void onClick(View v) { // send event back to storeListener
                     storeListener.onEquipItem(StoreItemDialogFragment.this, args.getString(ID_KEY));
+                    equip_button.setText(getString(R.string.equipment_equipped));
                     // disable action button
                     equip_button.setAlpha(0.5f);
                     equip_button.setClickable(false);
                 }
             });
-        } else { // already equipped: disable button
+        } else { // already equipped: set text to "Equipped" and disable button
+            equip_button.setText(getString(R.string.equipment_equipped));
             equip_button.setClickable(false);
             equip_button.setAlpha(0.7f);
         }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        storeListener.onDialogClosed(this);
     }
 }

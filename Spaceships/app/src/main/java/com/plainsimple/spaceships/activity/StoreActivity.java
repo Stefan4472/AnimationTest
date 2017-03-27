@@ -1,6 +1,7 @@
 package com.plainsimple.spaceships.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -57,9 +58,10 @@ public class StoreActivity extends Activity implements StoreItemDialogFragment.S
         // create adapter instance to display content in each row of ListView
         StoreRowAdapter adapter = new StoreRowAdapter(this, R.layout.storerow_layout,
                 rows, new StoreItemAdapter.OnButtonClickedListener() {
-            @Override // fires when a store button is clicked. Displays dialog
+            @Override // fires when a store button is clicked. Plays actionPerformedSound and displays dialog
             public void onItemClick(Equipment selectedItem) {
                 Log.d("StoreActivity.java", "Detected click on " + selectedItem.getLabel());
+                soundPool.play(actionPerformedSound, 1.0f, 1.0f, 1, 0, 1.0f);
                 DialogFragment d = StoreItemDialogFragment.newInstance(selectedItem, equipment.getCoins());
                 d.show(getFragmentManager(), "Store");
             }
@@ -115,6 +117,11 @@ public class StoreActivity extends Activity implements StoreItemDialogFragment.S
         soundPool.play(actionPerformedSound, 1.0f, 1.0f, 1, 0, 1.0f);
         Log.d("StoreItemDialogFragment", "Updating CoinCounter to " + equipment.getCoins());
         coinCounter.setText(Integer.toString(equipment.getCoins()));
+    }
+
+    @Override // StoreItemDialogFragment listener callback. Plays a sound when dialog is closed
+    public void onDialogClosed(DialogFragment dialog) {
+        soundPool.play(actionPerformedSound, 1.0f, 1.0f, 1, 0, 1.0f);
     }
 
     @Override // init media

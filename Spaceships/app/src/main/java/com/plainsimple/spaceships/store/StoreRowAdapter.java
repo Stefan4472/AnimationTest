@@ -22,7 +22,8 @@ public class StoreRowAdapter extends ArrayAdapter<StoreRow> {
     private int id;
     // contains StoreRow objects to display
     private StoreRow data[];
-    // receives StoreItem button clicked events
+    // receives StoreItem button clicked events. Uses this listener
+    // for every created row display.
     private StoreItemAdapter.OnButtonClickedListener buttonListener;
 
     public StoreRowAdapter(Context mContext, int id, StoreRow[] data,

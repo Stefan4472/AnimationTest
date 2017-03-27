@@ -19,6 +19,7 @@
     <string name="game_statistics">Game Statistics</string>
     <string name="equipment_status">Status:</string>
     <string name="equipment_equip">Click to Equip</string>
+    <string name="equipment_equipped">Equipped</string>
     <string name="equipment_buy">Buy for %1$s Coins</string>
     <string name="default_equipped_states">
         LASER_BULLET:EQUIPPED,ION_BULLET:LOCKED,PLASMA_BULLET:LOCKED,PLUTONIUM_BULLET:LOCKED,ROCKET_DEFAULT:EQUIPPED,ARMOR_DEFAULT:EQUIPPED
