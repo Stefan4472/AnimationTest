@@ -25,7 +25,7 @@ public class Rocket3 extends Rocket {
     protected Rocket3(Context context, float x, float y) {
         super(BitmapCache.getData(BitmapID.ROCKET_3, context), x, y);
         speedX = 0.015f;
-        hp = 30;
+        hp = 20;
         hitBox = new Hitbox(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
 
         move = AnimCache.get(BitmapID.ROCKET_MOVE, context);

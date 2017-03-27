@@ -49,7 +49,7 @@ public class Rocket2 extends Rocket {
     private int explosionExpandRate;
 
     // hp at the center of the explosion
-    private static final int FULL_HP = 50;
+    private static final int FULL_HP = 60;
     // hp lost per frame of the explosion
     private static final int HP_LOSS_RATE = 4;
 

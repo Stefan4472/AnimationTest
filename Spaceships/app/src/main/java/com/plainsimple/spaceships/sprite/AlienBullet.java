@@ -30,7 +30,7 @@ public class AlienBullet extends Sprite {
         super(bitmapData, x, y);
 
         hitBox = new Hitbox(x, y, x + getWidth(), y + getHeight());
-        //hp = 10;
+        hp = 10;
 
         // speedX is fixed
         speedX = -0.008f;
