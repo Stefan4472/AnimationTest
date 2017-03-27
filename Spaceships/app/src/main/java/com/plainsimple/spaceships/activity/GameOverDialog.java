@@ -32,10 +32,10 @@ public class GameOverDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
-
         // request window without title
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-
+        // set enter and exit animations using DialogAnimation style
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         return dialog;
     }
 
