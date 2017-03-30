@@ -26,7 +26,7 @@ import com.plainsimple.spaceships.view.GameView;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.plainsimple.spaceships.view.GameView.screenH;
+import static com.plainsimple.spaceships.view.GameView.playScreenH;
 
 /**
  * Created by Stefan on 8/13/2015.
@@ -230,8 +230,8 @@ public class Spaceship extends Sprite {
         // prevent spaceship from going off-screen
         if (y < 0) {
             setY(0);
-        } else if (y > screenH - getHeight()) {
-            setY(screenH - getHeight());
+        } else if (y > playScreenH - getHeight()) {
+            setY(playScreenH - getHeight());
         }
     }
 

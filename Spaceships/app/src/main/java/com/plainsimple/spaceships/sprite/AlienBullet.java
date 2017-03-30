@@ -1,17 +1,11 @@
 package com.plainsimple.spaceships.sprite;
 
-import android.graphics.Rect;
-import android.util.Log;
-
 import com.plainsimple.spaceships.helper.BitmapData;
-import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRotatedImage;
 import com.plainsimple.spaceships.helper.Hitbox;
-import com.plainsimple.spaceships.helper.Point2D;
 import com.plainsimple.spaceships.view.GameView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,7 +38,7 @@ public class AlienBullet extends Sprite {
 
         // calculate speedY using relative screen dimensions
         float frames_to_impact = Math.abs(dist_x / GameView.screenW / speedX);
-        speedY = -dist_y / GameView.screenH / frames_to_impact;
+        speedY = -dist_y / GameView.playScreenH / frames_to_impact;
 
         // cap speedY if abs. value greater than 0.012f
         speedY = (Math.abs(speedY) > 0.012f ? Math.signum(speedY) * 0.012f : speedY);

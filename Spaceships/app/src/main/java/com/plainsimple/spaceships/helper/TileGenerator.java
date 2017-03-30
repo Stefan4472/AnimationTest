@@ -134,16 +134,6 @@ public class TileGenerator {
                         generated[i][j] = OBSTACLE;
                         generated[i][j + 1] = OBSTACLE;
                     }
-                    /*else if (i == row + 2 * direction) {
-                        generated[i][j] = OBSTACLE;
-                        generated[i][j + 1] = OBSTACLE;
-                    } else if (i == row - direction) {
-                        generated[i][j] = OBSTACLE;
-                        generated[i][j + 1] = OBSTACLE;
-                    } else {
-                        generated[i][j] = OBSTACLE_INVIS;
-                        generated[i][j + 1] = OBSTACLE_INVIS;
-                    }*/
                 }
                 j++;
                 row += direction;
@@ -154,11 +144,6 @@ public class TileGenerator {
                     } else {
                         generated[i][j] = OBSTACLE;
                     }
-                    /* else if (i == row + 1 || i == row - 1) {
-                        generated[i][j] = OBSTACLE;
-                    } else {
-                        generated[i][j] = OBSTACLE_INVIS;
-                    }*/
                 }
                 // increase probability of changing path by 5%
                 change_path += 0.05f;

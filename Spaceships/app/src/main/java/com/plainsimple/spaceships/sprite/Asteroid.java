@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapID;
-import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRotatedImage;
 import com.plainsimple.spaceships.helper.HealthBarAnimation;
@@ -64,7 +63,7 @@ public class Asteroid extends Sprite {
     @Override
     public void updateSpeeds() {
         // reverse speedY if it is nearly headed off a screen edge
-        if ((y <= 0 && speedY < 0) || (y >= GameView.screenH - getHeight() && speedY > 0)) {
+        if ((y <= 0 && speedY < 0) || (y >= GameView.playScreenH - getHeight() && speedY > 0)) {
             speedY *= -1;
         }
     }

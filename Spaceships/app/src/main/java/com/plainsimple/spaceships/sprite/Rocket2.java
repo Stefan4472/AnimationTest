@@ -5,7 +5,6 @@ import android.content.Context;
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapID;
-import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRotatedImage;
 import com.plainsimple.spaceships.helper.DrawSubImage;
@@ -83,7 +82,7 @@ public class Rocket2 extends Rocket {
             hp = (hp >= HP_LOSS_RATE ? hp - HP_LOSS_RATE : hp);
         }
         // update obstacleHitbox
-        obstacleHitbox.offset(GameView.screenW * speedX, GameView.screenH * speedY);
+        obstacleHitbox.offset(GameView.screenW * speedX, GameView.playScreenH * speedY);
     }
 
     @Override

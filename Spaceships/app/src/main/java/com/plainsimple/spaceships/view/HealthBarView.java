@@ -79,7 +79,7 @@ public class HealthBarView extends View {
     }
 
     // logic for deciding on the measured height of the view
-    public int decideMeasurement(int measureSpec, int preferred) {
+    private int decideMeasurement(int measureSpec, int preferred) {
         int specified_size = MeasureSpec.getSize(measureSpec);
         switch (MeasureSpec.getMode(measureSpec)) {
             case MeasureSpec.EXACTLY: // height of the view must be the one given
@@ -95,6 +95,7 @@ public class HealthBarView extends View {
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
         width = w;
         height = h;
+        Log.d("HealthBarView.java", "Size changed to " + width + "," + height);
     }
 
     @Override

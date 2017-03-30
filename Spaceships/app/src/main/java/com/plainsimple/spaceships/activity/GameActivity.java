@@ -256,8 +256,16 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         paused = false;
     }
 
+    @Override // handles the GameView's dimensions being set or changed
+    // returns given screenHeight minus height of HealthBarView (to avoid
+    // HealthBarView being drawn over part of the GameView).
+    // Overriden from GameEventsListener.
+    public int onGameViewSurfaced(int screenHeight) {
+        return screenHeight - healthBarView.getHeight();
+    }
+
     @Override // handles the game officially starting (i.e. the spaceship has reached
-    // the correct horizontal position for obstacles to start. Overrided from
+    // the correct horizontal position for obstacles to start. Overriden from
     // GameEventsListener
     public void onGameStarted() { // todo: this animation was causing arrowbutton visibility change issues
         final Animation arrow_fade_in = AnimationUtils.loadAnimation(this, R.anim.arrowbutton_fadein);

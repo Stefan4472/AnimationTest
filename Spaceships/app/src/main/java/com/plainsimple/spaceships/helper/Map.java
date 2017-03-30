@@ -40,8 +40,6 @@ public class Map {
 
     // active generated obstacles
     private List<Sprite> obstacles = new LinkedList<>();
-    // active generated non-colliding obstacles
-    private List<Sprite> obstaclesInvis = new LinkedList<>();
     // active generated coins
     private List<Sprite> coins = new LinkedList<>();
     // active generated aliens
@@ -82,6 +80,7 @@ public class Map {
                         tiles[i][col] = TileGenerator.EMPTY;
                     }
                     obstacles.add(new Obstacle(screenW + getWOffset(), i * tileWidth, num_cols, context));
+
                 } else if (tiles[i][mapTileCounter] != TileGenerator.EMPTY) {
                     addMapTile(tiles[i][mapTileCounter], screenW + getWOffset(), i * tileWidth, (float) scrollSpeed, spaceship);
                 }
@@ -97,6 +96,7 @@ public class Map {
             lastTile = getWTile();
         }
 
+        // todo: improve
         GameEngineUtil.getAlienBullets(alienProjectiles, aliens);
 
         // check collisions between user-fired projectiles and relevant sprites
@@ -114,7 +114,6 @@ public class Map {
         }
         // update all other sprites
         GameEngineUtil.updateSprites(obstacles);
-        GameEngineUtil.updateSprites(obstaclesInvis);
         GameEngineUtil.updateSprites(aliens);
         GameEngineUtil.updateSprites(coins);
         GameEngineUtil.updateSprites(alienProjectiles);
@@ -147,11 +146,8 @@ public class Map {
         }
     }
 
-    public void draw(Canvas canvas, Context context) {
+    public void draw(Canvas canvas, Context context) { // todo: causes concurrentmodificationexception on game restart. Use iterators?
         for (Sprite o : obstacles) {
-            GameEngineUtil.drawSprite(o, canvas, context);
-        }
-        for (Sprite o : obstaclesInvis) { // todo: causes concurrentmodificationexception on game restart. Use iterators?
             GameEngineUtil.drawSprite(o, canvas, context);
         }
         for (Sprite c : coins) {
@@ -168,7 +164,6 @@ public class Map {
     // resets the map
     public void reset() {
         obstacles.clear();
-        obstaclesInvis.clear();
         coins.clear();
         aliens.clear();
         alienProjectiles.clear();

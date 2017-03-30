@@ -30,8 +30,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Context c;
     private SurfaceHolder mySurfaceHolder;
     // todo: make non-static
+    // GameView dimensions. screenW and screenH are full dimensions.
+    // playScreenH is the height of the "playable" screen. This can be
+    // configured (e.g. to remove what's underneath the HealthBarView)
     public static int screenW;
-    public static int screenH;
+    public static int playScreenH;
+    private static int screenH;
     private boolean running = false;
     private boolean onTitle = true;
     // wehther game components have been initialized
@@ -50,6 +54,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int difficulty = 0;
     // used to store this run's stats
     public static GameStats currentStats;
+    // paint object
+    private Paint blackPaint;
     // used to keep track of how long this run has taken (takes account of pausing the game)
     //private GameTimer gameTimer = new GameTimer();
     // points a coin is worth
@@ -82,6 +88,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     // interface for events to fire
     public interface GameEventsListener { // todo: GameActivity should implement GameActivity.GameEventsListener
+        // fired when the GameView's dimensions have been determined (setSurfaceSize)
+        // returns an int, which is the screenHeight the game should be set
+        // this allows the height of the screen used to be different that the full
+        // height of the GameView
+        int onGameViewSurfaced(int screenHeight);
         // fired when spaceship has reached starting position
         void onGameStarted();
         // fired when screen come to a halt and it's time to pop up GameOverDialog
@@ -104,6 +115,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
         });
         setFocusable(true);
+        // init blackPaint object to fill
+        blackPaint = new Paint();
+        blackPaint.setColor(Color.BLACK);
+        blackPaint.setStyle(Paint.Style.FILL);
     }
 
     class GameViewThread extends Thread implements Spaceship.SpaceshipListener {
@@ -152,6 +167,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             map.draw(canvas, c);
             GameEngineUtil.drawSprite(spaceship, canvas, c);
             scoreDisplay.draw(canvas);
+            // fill the area outside of playScreenH but in screenH with black
+            canvas.drawRect(0, playScreenH, screenW, screenH, blackPaint);
         }
 
         // updates all game logic
@@ -242,18 +259,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         private void initNewGame() {
             // calculate scaling factor using spaceship_sprite height as a baseline
             Bitmap spaceship_bmp = BitmapFactory.decodeResource(c.getResources(), R.drawable.spaceship);
-            float scalingFactor = (screenH / 6.0f) / (float) spaceship_bmp.getHeight();
+            float scalingFactor = (playScreenH / 6.0f) / (float) spaceship_bmp.getHeight();
             BitmapCache.setScalingFactor(scalingFactor);
             // get spaceship image data from cache
             BitmapData ship_data = BitmapCache.getData(BitmapID.SPACESHIP, c);
             // initialize spaceship just off the screen in the middle
-            spaceship = new Spaceship(-ship_data.getWidth(), screenH / 2 - ship_data.getHeight() / 2, c);
+            spaceship = new Spaceship(-ship_data.getWidth(), playScreenH / 2 - ship_data.getHeight() / 2, c);
             spaceship.setCannonType(GameActivity.getEquippedCannon());
             spaceship.setRocketType(GameActivity.getEquippedRocket());
             spaceship.setArmorType(GameActivity.getEquippedArmor());
             spaceship.setListener(this);
-            background = new Background(screenW, screenH);
-            map = new Map(c, screenW, screenH);
+            background = new Background(screenW, playScreenH);
+            map = new Map(c, screenW, playScreenH);
             scoreDisplay = new ScoreDisplay(c, 0);
             currentStats = new GameStats();
             gameFinished = false;
@@ -264,7 +281,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             synchronized (mySurfaceHolder) {
                 screenW = width;
                 screenH = height;
-                Log.d("GameView", "Screen Dimensions set to " + screenW + "," + screenH);
+                // fire event, asking receiver height of screen *that should be used* todo: more elegant way? using layout?
+                if (gameEventsListener != null) {
+                    playScreenH = gameEventsListener.onGameViewSurfaced(height);
+                } else {
+                    playScreenH = height;
+                }
+                Log.d("GameView", "Screen Dimensions set to " + screenW + "," + playScreenH);
             }
         }
 
@@ -302,7 +325,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     // resets all elements and fields so that a new game can begin
     public void restartGame() {
-        spaceship = new Spaceship(-spaceship.getWidth(), screenH / 2 - spaceship.getHeight() / 2, c); // todo: clean up. Better practice would be a spaceship.reset() method
+        spaceship = new Spaceship(-spaceship.getWidth(), playScreenH / 2 - spaceship.getHeight() / 2, c); // todo: clean up. Better practice would be a spaceship.reset() method
         spaceship.setCannonType(GameActivity.getEquippedCannon());
         spaceship.setRocketType(GameActivity.getEquippedRocket());
         spaceship.setArmorType(GameActivity.getEquippedArmor());

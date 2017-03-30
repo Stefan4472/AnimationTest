@@ -1,6 +1,6 @@
 package com.plainsimple.spaceships.sprite;
 
-import android.graphics.Rect;;
+;
 
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.DrawParams;
@@ -76,8 +76,8 @@ public abstract class Sprite { // todo: figure out public vs. protected
     // and checks if sprite is still visible
     public void move() {
         x += GameView.screenW * speedX; // todo: find a fix
-        y += GameView.screenH * speedY;
-        hitBox.offset(GameView.screenW * speedX, GameView.screenH * speedY);
+        y += GameView.playScreenH * speedY;
+        hitBox.offset(GameView.screenW * speedX, GameView.playScreenH * speedY);
     }
 
     // checks whether sprite's image is withing the screen bounds
@@ -85,7 +85,7 @@ public abstract class Sprite { // todo: figure out public vs. protected
     public boolean isInBounds() {
         if (x > GameView.screenW + bitmapData.getWidth() || x < -bitmapData.getWidth()) {
             return false;
-        } else if (y > GameView.screenH || y < -bitmapData.getHeight()) {
+        } else if (y > GameView.playScreenH || y < -bitmapData.getHeight()) {
             return false;
         } else {
             return true;
