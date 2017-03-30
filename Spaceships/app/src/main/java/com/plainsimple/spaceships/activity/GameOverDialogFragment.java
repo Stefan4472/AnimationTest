@@ -84,7 +84,7 @@ public class GameOverDialogFragment extends DialogFragment {
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         // set windowAnimations to those specified in DialogAnimation style
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-        // don't allow user to cancel (we want them to hit "Play Again" or "Quit"
+        // don't allow user to cancel (we want them to hit "Play Again" or "Quit")
         dialog.setCancelable(false);
         return dialog;
     }

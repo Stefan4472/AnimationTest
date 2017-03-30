@@ -10,7 +10,6 @@ public class TileGenerator {
     // tile id's // todo: use enums
     public static final int EMPTY = 0; // no obstacle
     public static final int OBSTACLE = 1; // basic obstacle
-    public static final int OBSTACLE_INVIS = 2; // basic obstacle collision = false
     public static final int COIN = 3; // coin tile
     public static final int ALIEN = 4; // alien
     public static final int ASTEROID = 5; // asteroid
@@ -108,6 +107,7 @@ public class TileGenerator {
             }
         }
         for (int j = 1; j < tunnel_length; j++) {
+            // check whether to change direction (based on probability)
             if (j < tunnel_length - 2 && testRandom(change_path)) {
                 change_path = -0.1f;
                 // determine which direction to change in
@@ -125,11 +125,16 @@ public class TileGenerator {
                         direction = 1;
                     }
                 }
+                // construct the change in the tunnel
                 for (int i = 0; i < rows; i++) {
                     if (i == row || i == row + direction) {
                         generated[i][j] = EMPTY;
                         generated[i][j + 1] = EMPTY;
-                    } else if (i == row + 2 * direction) {
+                    } else {
+                        generated[i][j] = OBSTACLE;
+                        generated[i][j + 1] = OBSTACLE;
+                    }
+                    /*else if (i == row + 2 * direction) {
                         generated[i][j] = OBSTACLE;
                         generated[i][j + 1] = OBSTACLE;
                     } else if (i == row - direction) {
@@ -138,7 +143,7 @@ public class TileGenerator {
                     } else {
                         generated[i][j] = OBSTACLE_INVIS;
                         generated[i][j + 1] = OBSTACLE_INVIS;
-                    }
+                    }*/
                 }
                 j++;
                 row += direction;
@@ -146,12 +151,16 @@ public class TileGenerator {
                 for (int i = 0; i < rows; i++) {
                     if (i == row) {
                         generated[i][j] = EMPTY;
-                    } else if (i == row + 1 || i == row - 1) {
+                    } else {
+                        generated[i][j] = OBSTACLE;
+                    }
+                    /* else if (i == row + 1 || i == row - 1) {
                         generated[i][j] = OBSTACLE;
                     } else {
                         generated[i][j] = OBSTACLE_INVIS;
-                    }
+                    }*/
                 }
+                // increase probability of changing path by 5%
                 change_path += 0.05f;
             }
         }

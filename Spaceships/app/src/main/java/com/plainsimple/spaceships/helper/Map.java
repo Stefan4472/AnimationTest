@@ -73,7 +73,16 @@ public class Map {
         if (getWTile() != lastTile) {
             // add any non-empty tiles in the current column to the edge of the screen
             for (int i = 0; i < tiles.length; i++) {
-                if (tiles[i][mapTileCounter] != TileGenerator.EMPTY) {
+                // process for adding Obstacles: count the number of adjacent obstacles in the row.
+                // Set them all to EMPTY in the array. Construct the obstacle using this data
+                if (tiles[i][mapTileCounter] == TileGenerator.OBSTACLE) {
+                    int num_cols = 0;
+                    for (int col = mapTileCounter; col < tiles[0].length && tiles[i][col] == TileGenerator.OBSTACLE; col++) {
+                        num_cols++;
+                        tiles[i][col] = TileGenerator.EMPTY;
+                    }
+                    obstacles.add(new Obstacle(screenW + getWOffset(), i * tileWidth, num_cols, context));
+                } else if (tiles[i][mapTileCounter] != TileGenerator.EMPTY) {
                     addMapTile(tiles[i][mapTileCounter], screenW + getWOffset(), i * tileWidth, (float) scrollSpeed, spaceship);
                 }
             }
@@ -124,12 +133,6 @@ public class Map {
     // initializes sprite and adds to the proper list, given parameters
     private void addMapTile(int tileID, float x, float y, float scrollSpeed, Spaceship spaceship) throws IndexOutOfBoundsException {
         switch (tileID) {
-            case TileGenerator.OBSTACLE:
-                obstacles.add(new Obstacle(x, y, scrollSpeed, true, context));
-                break;
-            case TileGenerator.OBSTACLE_INVIS:
-                obstaclesInvis.add(new Obstacle(x, y, scrollSpeed, false, context));
-                break;
             case TileGenerator.COIN:
                 coins.add(new Coin(x, y, scrollSpeed, context));
                 break;
