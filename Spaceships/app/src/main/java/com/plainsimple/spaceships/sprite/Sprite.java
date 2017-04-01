@@ -19,6 +19,10 @@ public abstract class Sprite { // todo: figure out public vs. protected
     protected float x;
     protected float y;
 
+    // "real" dimensions used to calculate whether sprite is out of bounds
+    protected int width;
+    protected int height;
+
     // intended movement in x and y directions each frame
     protected float speedX;
     protected float speedY;
@@ -40,19 +44,25 @@ public abstract class Sprite { // todo: figure out public vs. protected
     // hitbox for collision detection todo: complex shapes?
     protected Hitbox hitBox;
 
-    // data concerning sprite's default Bitmap
-    protected BitmapData bitmapData;
-
     // list of DrawParams (instructions on how to draw the sprite)
     protected List<DrawParams> drawParams = new LinkedList<>();
 
     // random number generator
     protected static final Random random = new Random();
 
-    public Sprite(BitmapData bitmapData, float x, float y) {
-        this.bitmapData = bitmapData;
+    public Sprite(float x, float y) {
+        this(x, y, 0, 0);
+    }
+
+    public Sprite(float x, float y, BitmapData bitmapData) {
+        this(x, y, bitmapData.getWidth(), bitmapData.getHeight());
+    }
+
+    public Sprite(float x, float y, int width, int height) {
         this.x = x;
         this.y = y;
+        this.width = width;
+        this.height = height;
         hitBox = new Hitbox(0, 0, 0, 0);
     }
 
@@ -75,17 +85,18 @@ public abstract class Sprite { // todo: figure out public vs. protected
     // moves sprite using speedX and speedY, updates hitbox,
     // and checks if sprite is still visible
     public void move() {
-        x += GameView.screenW * speedX; // todo: find a fix
+        x += GameView.screenW * speedX;
         y += GameView.playScreenH * speedY;
         hitBox.offset(GameView.screenW * speedX, GameView.playScreenH * speedY);
     }
 
-    // checks whether sprite's image is withing the screen bounds
+    // checks whether sprite's image is partially within the screen bounds
+    // returns false when sprite's width and height are fully off-screen
     // keep in mind sprites are generated past the screen
     public boolean isInBounds() {
-        if (x > GameView.screenW + bitmapData.getWidth() || x < -bitmapData.getWidth()) {
+        if (x > GameView.screenW + width || x < -width) {
             return false;
-        } else if (y > GameView.playScreenH || y < -bitmapData.getHeight()) {
+        } else if (y > GameView.playScreenH || y < -height) {
             return false;
         } else {
             return true;
@@ -132,14 +143,14 @@ public abstract class Sprite { // todo: figure out public vs. protected
         return y;
     }
 
-    // returns width of bitmap
+    // returns sprite width
     public int getWidth() {
-        return bitmapData.getWidth();
+        return width;
     }
 
-    // returns height of bitmap
+    // returns sprite height
     public int getHeight() {
-        return bitmapData.getHeight();
+        return height;
     }
 
     // changes x-coordinate and updates hitbox as well
@@ -154,14 +165,6 @@ public abstract class Sprite { // todo: figure out public vs. protected
         float dy = y - this.y;
         this.y = y;
         hitBox.offset(0, dy);
-    }
-
-    public BitmapData getBitmapData() {
-        return bitmapData;
-    }
-
-    public void setBitmapData(BitmapData bitmapData) {
-        this.bitmapData = bitmapData;
     }
 
     public void setSpeedX(float speedX) {

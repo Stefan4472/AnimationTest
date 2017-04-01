@@ -28,13 +28,9 @@ public class Obstacle extends Sprite {
     // color of obstacle
     private int color = Color.rgb(103, 103, 103);
 
-    // constructor takes x,y coordinates. colTiles is the number of "columns"
-    // the obstacle is long (where each column is a column of the tiles in
-    // Map.java). This number is used in conjunction with the bitmap data
-    // to calculate the obstacle's width.
-    public Obstacle(float x, float y, int colTiles, Context context) {
-        super(BitmapCache.getData(BitmapID.OBSTACLE, context), x, y);
-        hitBox = new Hitbox(x, y, x + colTiles * getWidth(), y + getHeight());
+    public Obstacle(float x, float y, int width, int height) {
+        super(x, y, width, height);
+        hitBox = new Hitbox(x, y, x + getWidth(), y + getHeight());
         hp = 10_000; // todo: some impossible to reach number?
     }
 

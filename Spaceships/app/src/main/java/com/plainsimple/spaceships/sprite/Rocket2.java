@@ -33,6 +33,8 @@ public class Rocket2 extends Rocket {
     // degrees to rotate image of rocket each frame
     private static final int ROTATION_RATE = 5;
 
+    // bitmap
+    private static final BitmapID BITMAP_ID = BitmapID.ROCKET_2;
     // explosion animation
     private SpriteAnimation explode;
     // whether explosion has been triggered by collision with initial hitbox
@@ -53,7 +55,7 @@ public class Rocket2 extends Rocket {
     private static final int HP_LOSS_RATE = 4;
 
     protected Rocket2(Context context, float x, float y) {
-        super(BitmapCache.getData(BitmapID.ROCKET_2, context), x, y);
+        super(BitmapCache.getData(BITMAP_ID, context), x, y);
 
         speedX = 0.005f;
 
@@ -119,7 +121,7 @@ public class Rocket2 extends Rocket {
             drawParams.add(new DrawSubImage(explode.getBitmapID(), x + (explode.getFrameW() - getWidth()) / 2, y - (explode.getFrameH() - getHeight()) / 2,
                     explode.getCurrentFrameSrc())); // todo: refine
         } else if (!explode.hasPlayed()){
-            drawParams.add(new DrawRotatedImage(bitmapData.getId(), x, y, currentRotation, x + getWidth() / 2, y + getHeight() / 2));
+            drawParams.add(new DrawRotatedImage(BITMAP_ID, x, y, currentRotation, x + getWidth() / 2, y + getHeight() / 2));
         }
         return drawParams;
     }

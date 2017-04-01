@@ -40,7 +40,7 @@ public abstract class Rocket extends Sprite {
     }
 
     protected Rocket(BitmapData bitmapData, float x, float y) {
-        super(bitmapData, x, y);
+        super(x, y, bitmapData);
     }
 
 

@@ -1,6 +1,9 @@
 package com.plainsimple.spaceships.sprite;
 
+import android.graphics.Bitmap;
+
 import com.plainsimple.spaceships.helper.BitmapData;
+import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRotatedImage;
 import com.plainsimple.spaceships.helper.Hitbox;
@@ -17,12 +20,13 @@ import java.util.List;
  */
 public class AlienBullet extends Sprite {
 
+    private BitmapID bitmapId;
     // angle that bullet travels
     private float fireAngle;
 
     public AlienBullet(BitmapData bitmapData, float x, float y, float targetX, float targetY) { // todo: damage as a parameter?
-        super(bitmapData, x, y);
-
+        super(x, y, bitmapData);
+        bitmapId = bitmapData.getId();
         hitBox = new Hitbox(x, y, x + getWidth(), y + getHeight());
         hp = 10;
 
@@ -70,7 +74,7 @@ public class AlienBullet extends Sprite {
     @Override
     public List<DrawParams> getDrawParams() {
         drawParams.clear();
-        drawParams.add(new DrawRotatedImage(bitmapData.getId(), x, y,
+        drawParams.add(new DrawRotatedImage(bitmapId, x, y,
                 (int) fireAngle, x + getWidth() / 2, y + getHeight() / 2));
         return drawParams;
     }

@@ -98,14 +98,13 @@ public class Spaceship extends Sprite {
     private SpaceshipListener listener;
 
     // default constructor
-    public Spaceship(float x, float y, Context context) {
-        super(BitmapCache.getData(BitmapID.SPACESHIP, context), x, y);
+    public Spaceship(float x, float y, Context context) {// todo: clean up
+        super(x, y, BitmapCache.getData(BitmapID.SPACESHIP, context).getWidth(), BitmapCache.getData(BitmapID.SPACESHIP, context).getHeight());
 
         move = AnimCache.get(BitmapID.SPACESHIP_MOVE, context);
         fireRocket = AnimCache.get(BitmapID.SPACESHIP_FIRE, context);
         explode = AnimCache.get(BitmapID.SPACESHIP_EXPLODE, context);
 
-//        hitBox = new Hitbox(x + getWidth() * 0.17f, y + getHeight() * 0.22f, x + getWidth() * 0.83f, y + getHeight() * 0.78f);
         hitBox = new Hitbox(x + getWidth() * 0.17f, y + getHeight() * 0.27f, x + getWidth() * 0.7f, y + getHeight() * 0.73f);
 
 
@@ -188,8 +187,8 @@ public class Spaceship extends Sprite {
 
     // fires two bullets
     public void fireCannons() {
-        projectiles.add(new Bullet(context, x + getWidth() * 0.78f, y + 0.28f * getHeight(), cannonType));
-        projectiles.add(new Bullet(context, x + getWidth() * 0.78f, y + 0.66f * getHeight(), cannonType));
+        projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.28f * getHeight(), context, cannonType));
+        projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.66f * getHeight(), context, cannonType));
         GameActivity.playSound(BULLET_SOUND);
         GameView.currentStats.addTo(GameStats.CANNONS_FIRED, 2);
     }

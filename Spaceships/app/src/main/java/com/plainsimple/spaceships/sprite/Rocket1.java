@@ -20,11 +20,12 @@ import java.util.List;
 
 public class Rocket1 extends Rocket {
 
+    private static final BitmapID BITMAP_ID = BitmapID.ROCKET_1;
     private SpriteAnimation move;
     private SpriteAnimation explode;
 
     protected Rocket1(Context context, float x, float y) {
-        super(BitmapCache.getData(BitmapID.ROCKET_1, context), x, y);
+        super(BitmapCache.getData(BITMAP_ID, context), x, y);
         speedX = 0.01f;
         hp = 12;
         hitBox = new Hitbox(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
@@ -73,7 +74,7 @@ public class Rocket1 extends Rocket {
             drawParams.add(new DrawSubImage(explode.getBitmapID(), x + (explode.getFrameW() - getWidth()) / 2, y - (explode.getFrameH() - getHeight()) / 2,
                     explode.getCurrentFrameSrc())); // todo: refine
         } else if (!explode.hasPlayed()){
-            drawParams.add(new DrawImage(bitmapData.getId(), x, y));
+            drawParams.add(new DrawImage(BITMAP_ID, x, y));
             // draw moving animation behind the rocket
             drawParams.add(new DrawSubImage(move.getBitmapID(), x - move.getFrameW(), y, move.getCurrentFrameSrc()));
         }

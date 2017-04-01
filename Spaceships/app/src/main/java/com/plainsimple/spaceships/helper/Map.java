@@ -79,7 +79,7 @@ public class Map {
                         num_cols++;
                         tiles[i][col] = TileGenerator.EMPTY;
                     }
-                    obstacles.add(new Obstacle(screenW + getWOffset(), i * tileWidth, num_cols, context));
+                    obstacles.add(new Obstacle(screenW + getWOffset(), i * tileWidth, num_cols * tileWidth, tileWidth));
 
                 } else if (tiles[i][mapTileCounter] != TileGenerator.EMPTY) {
                     addMapTile(tiles[i][mapTileCounter], screenW + getWOffset(), i * tileWidth, (float) scrollSpeed, spaceship);
@@ -133,7 +133,7 @@ public class Map {
     private void addMapTile(int tileID, float x, float y, float scrollSpeed, Spaceship spaceship) throws IndexOutOfBoundsException {
         switch (tileID) {
             case TileGenerator.COIN:
-                coins.add(new Coin(x, y, scrollSpeed, context));
+                coins.add(new Coin(x, y, context));
                 break;
             case TileGenerator.ALIEN:
                 aliens.add(new Alien(x, y,scrollSpeed, spaceship, difficulty, context));

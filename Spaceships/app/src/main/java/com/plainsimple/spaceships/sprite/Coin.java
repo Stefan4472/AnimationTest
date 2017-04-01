@@ -25,10 +25,11 @@ public class Coin extends Sprite {
 
     private SpriteAnimation spin;
 
-    public Coin(float x, float y, float scrollSpeed, Context context) {
-        super(BitmapCache.getData(BitmapID.COIN, context), x, y);
-//        speedX = scrollSpeed;
+    public Coin(float x, float y, Context context) {
+        super(x, y);
         spin = AnimCache.get(BitmapID.COIN_SPIN, context);
+        width = spin.getFrameW();
+        height = spin.getFrameH();
         spin.start();
         hitBox = new Hitbox(x + getWidth() * 0.3f, y + getHeight() * 0.1f, x + getWidth() * 0.7f, y + getHeight() * 0.9f);
     }

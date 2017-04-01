@@ -24,6 +24,7 @@ import java.util.List;
 
 public class Asteroid extends Sprite {
 
+    private static final BitmapID BITMAP_ID = BitmapID.ASTEROID;
     // current rotation, in degrees, of asteroid
     private float currentRotation;
     // degrees rotated per frame (positive or negative)
@@ -35,7 +36,7 @@ public class Asteroid extends Sprite {
     private List<LoseHealthAnimation> loseHealthAnimations = new LinkedList<>();
 
     public Asteroid(float x, float y, float scrollSpeed, int difficulty, Context context) {
-        super(BitmapCache.getData(BitmapID.ASTEROID, context), x, y);
+        super(x, y, BitmapCache.getData(BITMAP_ID, context));
         // speedX: slower than scrollspeed: give the player a chance to destroy it
         speedX = scrollSpeed * 0.6f;
         // speedY: randomized positive/negative and up to |0.03| or so
@@ -99,7 +100,7 @@ public class Asteroid extends Sprite {
     public List<DrawParams> getDrawParams() {
         drawParams.clear();
         // draw the rotated image, with pivot point the center of the sprite
-        drawParams.add(new DrawRotatedImage(bitmapData.getId(), x, y, (int) currentRotation,
+        drawParams.add(new DrawRotatedImage(BITMAP_ID, x, y, (int) currentRotation,
                 x + getWidth() / 2, y + getHeight() / 2));
         // draw loseHealthAnimations
         for (int i = 0; i < loseHealthAnimations.size(); i++) {

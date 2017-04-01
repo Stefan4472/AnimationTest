@@ -60,6 +60,8 @@ public class Alien extends Sprite {
     private Spaceship spaceship;
     private int difficulty;
 
+    private static final BitmapID BITMAP_ID = BitmapID.ALIEN;
+
     private BitmapData bulletBitmapData;
     private SpriteAnimation explodeAnimation;
     // draws animated healthbar above Alien if Alien is damaged
@@ -68,7 +70,7 @@ public class Alien extends Sprite {
     private List<LoseHealthAnimation> loseHealthAnimations = new LinkedList<>();
 
     public Alien(float x, float y, float scrollSpeed, Spaceship spaceship, int difficulty, Context context) {
-        super(BitmapCache.getData(BitmapID.ALIEN, context), x, y);
+        super(x, y, BitmapCache.getData(BITMAP_ID, context));
         speedX = scrollSpeed / 2.5f;
         this.spaceship = spaceship;
 
@@ -169,7 +171,7 @@ public class Alien extends Sprite {
         drawParams.clear();
         // only draw alien if it is not in last frame of explode animation
         if (explodeAnimation.getFramesLeft() >= 1) { // todo: does this work?
-            drawParams.add(new DrawImage(bitmapData.getId(), x, y));
+            drawParams.add(new DrawImage(BITMAP_ID, x, y));
         }
         // draw loseHealthAnimations
         for (int i = 0; i < loseHealthAnimations.size(); i++) {

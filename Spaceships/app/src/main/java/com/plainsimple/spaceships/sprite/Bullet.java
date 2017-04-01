@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.plainsimple.spaceships.helper.BitmapCache;
+import com.plainsimple.spaceships.helper.BitmapData;
+import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.store.CannonType;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
@@ -17,18 +19,20 @@ import java.util.List;
  */
 public class Bullet extends Sprite {
 
-    public Bullet(Context context, float x, float y, CannonType cannonType) {
-        super(BitmapCache.getData(cannonType.getDrawableId(), context), x, y);
+    private BitmapID bitmapID;
+
+    public Bullet(float x, float y, Context context, CannonType cannonType) {
+        super(x, y, BitmapCache.getData(cannonType.getDrawableId(), context));
         hitBox = new Hitbox(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
         hp = cannonType.getDamage();
         speedX = cannonType.getSpeedX();
+        bitmapID = cannonType.getDrawableId();
     }
 
     @Override
     public void updateActions() {
         if (!isInBounds()) {
             terminate = true;
-//            Log.d("Termination", "Removing Bullet at x = " + x);
         }
     }
 
@@ -51,7 +55,7 @@ public class Bullet extends Sprite {
     @Override
     public List<DrawParams> getDrawParams() {
         drawParams.clear();
-        drawParams.add(new DrawImage(bitmapData.getId(), x, y));
+        drawParams.add(new DrawImage(bitmapID, x, y));
         return drawParams;
     }
 }
