@@ -1,16 +1,10 @@
 package com.plainsimple.spaceships.sprite;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.plainsimple.spaceships.helper.BitmapData;
-import com.plainsimple.spaceships.helper.DrawImage;
-import com.plainsimple.spaceships.helper.DrawParams;
-import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.store.RocketType;
-import com.plainsimple.spaceships.helper.SpriteAnimation;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 /**

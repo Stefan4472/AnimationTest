@@ -3,8 +3,6 @@ package com.plainsimple.spaceships.sprite;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.ColorMatrix;
-import android.graphics.Rect;
 import android.util.Log;
 
 import com.plainsimple.spaceships.activity.GameActivity;
@@ -16,7 +14,6 @@ import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.store.CannonType;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
-import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.stats.GameStats;
 import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.helper.SoundID;
@@ -244,6 +241,9 @@ public class Spaceship extends Sprite {
     }
 
     private DrawImage BASE_DRAW_IMAGE = new DrawImage(BitmapID.SPACESHIP_BASE, 0, 0);
+    private DrawImage DRAW_EXHAUST = new DrawImage(move.getBitmapID());
+    private DrawImage DRAW_ROCKET_FIRED = new DrawImage(fireRocket.getBitmapID());
+    private DrawImage DRAW_EXPLODE = new DrawImage(explode.getBitmapID());
 
     @Override
     public List<DrawParams> getDrawParams() {
@@ -263,15 +263,23 @@ public class Spaceship extends Sprite {
 //            })));
             drawParams.add(new DrawImage(cannonType.getSpaceshipOverlayId(), x, y));
             drawParams.add(new DrawImage(rocketType.getSpaceshipOverlayId(), x, y));
-//            drawParams.add(new DrawImage(bitmapData.getId(), x, y));
             // draw moving animation
-            drawParams.add(new DrawSubImage(move.getBitmapID(), x, y, move.getCurrentFrameSrc()));
+            DRAW_EXHAUST.setCanvasX0(x);
+            DRAW_EXHAUST.setCanvasY0(y);
+            DRAW_EXHAUST.setDrawRegion(move.getCurrentFrameSrc());
+            drawParams.add(DRAW_EXHAUST);
 
             if (fireRocket.isPlaying()) {
-                drawParams.add(new DrawSubImage(fireRocket.getBitmapID(), x + getWidth() / 2.0f, y, fireRocket.getCurrentFrameSrc()));
+                DRAW_ROCKET_FIRED.setCanvasX0(x + getWidth() / 2);
+                DRAW_ROCKET_FIRED.setCanvasY0(y);
+                DRAW_ROCKET_FIRED.setDrawRegion(fireRocket.getCurrentFrameSrc());
+                drawParams.add(DRAW_ROCKET_FIRED);
             }
             if (explode.isPlaying()) {
-                drawParams.add(new DrawSubImage(explode.getBitmapID(), x, y, explode.getCurrentFrameSrc()));
+                DRAW_EXPLODE.setCanvasX0(x);
+                DRAW_EXPLODE.setCanvasY0(y);
+                DRAW_EXPLODE.setDrawRegion(explode.getCurrentFrameSrc());
+                drawParams.add(DRAW_EXPLODE);
             }
         }
         return drawParams;

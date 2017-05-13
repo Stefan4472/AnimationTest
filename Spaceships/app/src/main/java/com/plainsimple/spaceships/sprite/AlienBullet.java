@@ -4,7 +4,6 @@ import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
-import com.plainsimple.spaceships.helper.DrawRotatedImage;
 import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.view.GameView;
 

@@ -1,7 +1,6 @@
 package com.plainsimple.spaceships.sprite;
 
 import android.content.Context;
-import android.graphics.Rect;
 
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
@@ -9,7 +8,6 @@ import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
-import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.helper.HealthBarAnimation;
 import com.plainsimple.spaceships.helper.LoseHealthAnimation;
 import com.plainsimple.spaceships.stats.GameStats;

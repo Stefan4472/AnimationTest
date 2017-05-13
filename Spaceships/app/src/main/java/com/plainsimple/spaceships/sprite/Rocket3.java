@@ -7,7 +7,6 @@ import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
-import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 
