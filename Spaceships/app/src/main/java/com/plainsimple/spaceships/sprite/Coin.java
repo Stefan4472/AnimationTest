@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapID;
+import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.helper.FloatRect;
@@ -53,10 +54,12 @@ public class Coin extends Sprite {
         }
     }
 
+    private DrawImage DRAW_COIN = new DrawImage(spin.getBitmapID());
     @Override
     public List<DrawParams> getDrawParams() {
-        drawParams.clear();
-        drawParams.add(new DrawSubImage(spin.getBitmapID(), x, y, spin.getCurrentFrameSrc()));
+        DRAW_COIN.setCanvasX0(x);
+        DRAW_COIN.setCanvasY0(y);
+        drawParams.set(0, DRAW_COIN);
         return drawParams;
     }
 }

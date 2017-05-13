@@ -102,17 +102,20 @@ public class Asteroid extends Sprite {
     @Override
     public List<DrawParams> getDrawParams() {
         drawParams.clear();
+
         // update DRAW_ASTEROID params with new coordinates and rotation
         DRAW_ASTEROID.setCanvasX0(x);
         DRAW_ASTEROID.setCanvasY0(y);
         DRAW_ASTEROID.setRotation((int) currentRotation);
         drawParams.add(DRAW_ASTEROID);
+
         // draw loseHealthAnimations
         for (int i = 0; i < loseHealthAnimations.size(); i++) {
             if (!loseHealthAnimations.get(i).isFinished()) {
                 loseHealthAnimations.get(i).updateAndDraw(x, y, drawParams);
             }
         }
+
         // update and draw healthBarAnimation if showing
         if (healthBarAnimation.isShowing()) {
             healthBarAnimation.updateAndDraw(x, y, hp, drawParams);

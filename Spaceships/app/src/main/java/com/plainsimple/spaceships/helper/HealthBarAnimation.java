@@ -74,6 +74,9 @@ public class HealthBarAnimation {
         }
     }
 
+    private DrawRect DRAW_OUTLINE = new DrawRect(Color.GRAY, Paint.Style.STROKE, innerPadding);
+    private DrawRect DRAW_FILL = new DrawRect(Color.GREEN, Paint.Style.FILL, innerPadding);
+
     // updates the animation if it is playing, including shifting it to the given sprite coordinates.
     // Adds the animation's DrawParams to the given list.
     public void updateAndDraw(float spriteX, float spriteY, int spriteHP, List<DrawParams> spriteParams) {
@@ -83,20 +86,25 @@ public class HealthBarAnimation {
         } else if (isShowing) {
             frameCounter++;
             this.currentHP = spriteHP;
+
             // top-left drawing coordinates of healthbar
             float x0 = spriteX + offsetX;
             float y0 = spriteY - offsetY;
             int alpha = calculateAlpha();
             int outline_color = Color.argb(alpha, outlineR, outlineG, outlineB);
+
             // draw healthbar outline
-            spriteParams.add(new DrawRect(x0, y0, x0 + healthBarWidth, y0 + healthBarHeight,
-                    outline_color, Paint.Style.STROKE, innerPadding));
+            DRAW_OUTLINE.setBounds(new FloatRect(x0, y0, x0 + healthBarWidth, y0 + healthBarHeight));
+            DRAW_OUTLINE.setColor(outline_color);
+            spriteParams.add(DRAW_OUTLINE);
+
             // draw healthbar fill
             float width = (healthBarWidth - 2 * innerPadding) * ((float) currentHP / maxHP);
             int fill_color = getFillColor(currentHP, maxHP, alpha);
-            spriteParams.add(new DrawRect(x0 + innerPadding, y0 + innerPadding,
-                    x0 + innerPadding + width, y0 + healthBarHeight - innerPadding,
-                    fill_color, Paint.Style.FILL, innerPadding));
+            DRAW_FILL.setBounds(new FloatRect(x0 + innerPadding, y0 + innerPadding,
+                    x0 + innerPadding + width, y0 + healthBarHeight - innerPadding));
+            DRAW_FILL.setColor(fill_color);
+            spriteParams.add(DRAW_FILL);
         }
     }
 

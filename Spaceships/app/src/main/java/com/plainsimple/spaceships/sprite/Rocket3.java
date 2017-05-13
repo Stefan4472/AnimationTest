@@ -66,16 +66,28 @@ public class Rocket3 extends Rocket {
         }
     }
 
+    private DrawImage DRAW_ROCKET = new DrawImage(BITMAP_ID);
+    private DrawImage DRAW_EXHAUST = new DrawImage(move.getBitmapID());
+    private DrawImage DRAW_EXPLOSION = new DrawImage(explode.getBitmapID());
     @Override
     public List<DrawParams> getDrawParams() {
         drawParams.clear();
+        // draw explode frameSrc centered on current coordinates
         if (explode.isPlaying()) {
-            drawParams.add(new DrawSubImage(explode.getBitmapID(), x + (explode.getFrameW() - getWidth()) / 2, y - (explode.getFrameH() - getHeight()) / 2,
-                    explode.getCurrentFrameSrc())); // todo: refine
+            DRAW_EXPLOSION.setCanvasX0(x + explode.getFrameW() - getWidth());
+            DRAW_EXPLOSION.setCanvasY0(y - (explode.getFrameH() - getHeight()) / 2);
+            DRAW_EXPLOSION.setDrawRegion(explode.getCurrentFrameSrc());
+            drawParams.add(DRAW_EXPLOSION);
         } else if (!explode.hasPlayed()){
-            drawParams.add(new DrawImage(BITMAP_ID, x, y));
-            // draw moving animation behind the rocket
-            drawParams.add(new DrawSubImage(move.getBitmapID(), x - move.getFrameW(), y, move.getCurrentFrameSrc()));
+            // draw the rocket at updated coordinates
+            DRAW_ROCKET.setCanvasX0(x);
+            DRAW_ROCKET.setCanvasY0(y);
+            drawParams.add(DRAW_ROCKET);
+            // draw the moving animation behind it
+            DRAW_EXHAUST.setCanvasX0(x - move.getFrameW());
+            DRAW_EXHAUST.setCanvasY0(y);
+            DRAW_EXHAUST.setDrawRegion(move.getCurrentFrameSrc());
+            drawParams.add(DRAW_EXHAUST);
         }
         return drawParams;
     }

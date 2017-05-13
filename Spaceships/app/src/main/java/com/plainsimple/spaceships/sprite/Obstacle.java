@@ -50,10 +50,12 @@ public class Obstacle extends Sprite {
 
     }
 
-    @Override // todo: reuse drawparam to ease performance
+    // init DrawRect instance with specified color and fill Paint Style
+    private DrawRect DRAW_OBSTACLE = new DrawRect(color, Paint.Style.FILL, 1);
+    @Override
     public List<DrawParams> getDrawParams() { // todo: only draw what's on screen
-        drawParams.clear();
-        drawParams.add(new DrawRect(x, y, x + hitBox.getWidth(), y + hitBox.getHeight(), color, Paint.Style.FILL, 1));
+        DRAW_OBSTACLE.setBounds(hitBox);
+        drawParams.set(0, DRAW_OBSTACLE);
         return drawParams;
     }
 }

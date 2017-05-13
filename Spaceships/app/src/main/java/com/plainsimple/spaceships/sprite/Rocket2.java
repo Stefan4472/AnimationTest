@@ -5,6 +5,7 @@ import android.content.Context;
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapID;
+import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRotatedImage;
 import com.plainsimple.spaceships.helper.DrawSubImage;
@@ -114,14 +115,23 @@ public class Rocket2 extends Rocket {
         }
     }
 
+    private DrawImage DRAW_ROCKET = new DrawImage(BITMAP_ID);
+    private DrawImage DRAW_EXPLOSION = new DrawImage(explode.getBitmapID());
     @Override
     public List<DrawParams> getDrawParams() {
         drawParams.clear();
+        // draw explode frameSrc centered on current coordinates
         if (explode.isPlaying()) {
-            drawParams.add(new DrawSubImage(explode.getBitmapID(), x + (explode.getFrameW() - getWidth()) / 2, y - (explode.getFrameH() - getHeight()) / 2,
-                    explode.getCurrentFrameSrc())); // todo: refine
+            DRAW_EXPLOSION.setCanvasX0(x + explode.getFrameW() - getWidth());
+            DRAW_EXPLOSION.setCanvasY0(y - (explode.getFrameH() - getHeight()) / 2);
+            DRAW_EXPLOSION.setDrawRegion(explode.getCurrentFrameSrc());
+            drawParams.add(DRAW_EXPLOSION);
         } else if (!explode.hasPlayed()){
-            drawParams.add(new DrawRotatedImage(BITMAP_ID, x, y, currentRotation, x + getWidth() / 2, y + getHeight() / 2));
+            // draw the rocket with updated coordinates and rotation
+            DRAW_ROCKET.setCanvasX0(x);
+            DRAW_ROCKET.setCanvasY0(y);
+            DRAW_ROCKET.setRotation(currentRotation);
+            drawParams.add(DRAW_ROCKET);
         }
         return drawParams;
     }

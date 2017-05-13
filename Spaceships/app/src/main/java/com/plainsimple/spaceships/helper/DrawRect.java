@@ -13,7 +13,7 @@ public class DrawRect implements DrawParams {
 
     private static Paint paint = new Paint();
 
-    // top-left x-coordinate
+    // top-left x-coordinate todo: simply use Rect?
     private float x;
     // top-left y-coordinate
     private float y;
@@ -28,26 +28,24 @@ public class DrawRect implements DrawParams {
     // width of stroke
     private float strokeWidth;
 
-    public DrawRect(float x, float y, float x1, float y1, int color, Paint.Style style, float strokeWidth) {
-        this.x = x;
-        this.y = y;
-        this.x1 = x1;
-        this.y1 = y1;
+    // initializes properties without setting coordinates
+    public DrawRect(int color, Paint.Style style, float strokeWidth) {
         this.color = color;
         this.style = style;
         this.strokeWidth = strokeWidth;
     }
 
-    public DrawRect(Rect rect, int color, Paint.Style style, float strokeWidth) {
-        x = rect.left;
-        y = rect.top;
-        x1 = rect.right;
-        y1 = rect.bottom;
-        this.color = color;
-        this.style = style;
-        this.strokeWidth = strokeWidth;
+    // sets bounds of rectangle to those specified by given FloatRect
+    public void setBounds(FloatRect bounds) {
+        x = bounds.getX();
+        y = bounds.getY();
+        x1 = bounds.getX() + bounds.getWidth();
+        y1 = bounds.getY() + bounds.getHeight();
     }
 
+    public void setColor(int color) {
+        this.color = color;
+    }
     @Override
     public void draw(Canvas canvas, Context context) {
         paint.setColor(color);

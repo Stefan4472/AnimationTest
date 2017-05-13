@@ -58,7 +58,8 @@ public class GameEngineUtil {
         }
     }
 
-    static List<DrawParams> drawParams;
+    private static List<DrawParams> drawParams;
+    private static DrawRect DRAW_HITBOX = new DrawRect(debugPaintRed.getColor(), debugPaintRed.getStyle(), debugPaintRed.getStrokeWidth());
     // draws sprite onto canvas using sprite drawing params and BitmapCache
     public static void drawSprite(Sprite sprite, Canvas canvas, Context context) {
         drawParams = sprite.getDrawParams();
@@ -67,7 +68,8 @@ public class GameEngineUtil {
         }
         // draw hitbox (debugging)
         if (sprite.collides()) {
-            (new DrawRect(sprite.getHitBox().toRect(), debugPaintRed.getColor(), debugPaintRed.getStyle(), debugPaintRed.getStrokeWidth())).draw(canvas, context);
+            DRAW_HITBOX.setBounds(sprite.getHitBox());
+            DRAW_HITBOX.draw(canvas, context);
         }
     }
 

@@ -49,10 +49,12 @@ public class Bullet extends Sprite {
         terminate = true;
     }
 
+    private DrawImage DRAW_BULLET = new DrawImage(bitmapID);
     @Override
     public List<DrawParams> getDrawParams() {
-        drawParams.clear();
-        drawParams.add(new DrawImage(bitmapID, x, y));
+        DRAW_BULLET.setCanvasX0(x);
+        DRAW_BULLET.setCanvasY0(y);
+        drawParams.set(0, DRAW_BULLET);
         return drawParams;
     }
 }
