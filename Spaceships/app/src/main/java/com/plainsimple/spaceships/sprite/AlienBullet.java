@@ -1,12 +1,11 @@
 package com.plainsimple.spaceships.sprite;
 
-import android.graphics.Bitmap;
-
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
+import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRotatedImage;
-import com.plainsimple.spaceships.helper.Hitbox;
+import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.view.GameView;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class AlienBullet extends Sprite {
     public AlienBullet(BitmapData bitmapData, float x, float y, float targetX, float targetY) { // todo: damage as a parameter?
         super(x, y, bitmapData);
         bitmapId = bitmapData.getId();
-        hitBox = new Hitbox(x, y, x + getWidth(), y + getHeight());
+        hitBox = new FloatRect(x, y, x + getWidth(), y + getHeight());
         hp = 10;
 
         // speedX is fixed
@@ -71,11 +70,15 @@ public class AlienBullet extends Sprite {
         terminate = true;
     }
 
+    // DrawParam used to draw the AlienBullet
+    private DrawImage DRAW_BULLET = new DrawImage(bitmapId);
+
     @Override
     public List<DrawParams> getDrawParams() {
-        drawParams.clear();
-        drawParams.add(new DrawRotatedImage(bitmapId, x, y,
-                (int) fireAngle, x + getWidth() / 2, y + getHeight() / 2));
+        DRAW_BULLET.setCanvasX0(x);
+        DRAW_BULLET.setCanvasY0(y);
+        DRAW_BULLET.setRotation((int) fireAngle);
+        drawParams.set(0, DRAW_BULLET);
         return drawParams;
     }
 }

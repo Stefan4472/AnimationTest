@@ -4,7 +4,7 @@ package com.plainsimple.spaceships.sprite;
 
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.DrawParams;
-import com.plainsimple.spaceships.helper.Hitbox;
+import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.helper.Point2D;
 import com.plainsimple.spaceships.view.GameView;
 
@@ -42,7 +42,7 @@ public abstract class Sprite { // todo: figure out public vs. protected
     protected boolean dead;
 
     // hitbox for collision detection todo: complex shapes?
-    protected Hitbox hitBox;
+    protected FloatRect hitBox;
 
     // list of DrawParams (instructions on how to draw the sprite)
     protected List<DrawParams> drawParams = new LinkedList<>();
@@ -63,7 +63,7 @@ public abstract class Sprite { // todo: figure out public vs. protected
         this.y = y;
         this.width = width;
         this.height = height;
-        hitBox = new Hitbox(0, 0, 0, 0);
+        hitBox = new FloatRect(0, 0, 0, 0);
     }
 
     // update/handle any actions sprite takes
@@ -175,7 +175,7 @@ public abstract class Sprite { // todo: figure out public vs. protected
         this.speedY = speedY;
     }
 
-    public Hitbox getHitBox() {
+    public FloatRect getHitBox() {
         return hitBox;
     }
 

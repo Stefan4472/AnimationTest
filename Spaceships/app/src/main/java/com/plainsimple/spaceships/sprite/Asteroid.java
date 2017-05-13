@@ -4,10 +4,11 @@ import android.content.Context;
 
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapID;
+import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRotatedImage;
 import com.plainsimple.spaceships.helper.HealthBarAnimation;
-import com.plainsimple.spaceships.helper.Hitbox;
+import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.helper.LoseHealthAnimation;
 import com.plainsimple.spaceships.stats.GameStats;
 import com.plainsimple.spaceships.view.GameView;
@@ -44,7 +45,7 @@ public class Asteroid extends Sprite {
         // hp: high
         hp = 40 + difficulty / 100;
         // make hitbox 20% smaller than sprite
-        hitBox = new Hitbox(x + getWidth() * 0.1f, y + getHeight() * 0.1f, x + getWidth() * 0.9f, y + getHeight() * 0.9f);
+        hitBox = new FloatRect(x + getWidth() * 0.1f, y + getHeight() * 0.1f, x + getWidth() * 0.9f, y + getHeight() * 0.9f);
         // set the current rotation to a random angle
         currentRotation = random.nextInt(360);
         // random rotation rate. function of speedY (faster speed = faster rotation)
@@ -96,12 +97,16 @@ public class Asteroid extends Sprite {
         }
     }
 
+    private DrawImage DRAW_ASTEROID = new DrawImage(BITMAP_ID);
+
     @Override
     public List<DrawParams> getDrawParams() {
         drawParams.clear();
-        // draw the rotated image, with pivot point the center of the sprite
-        drawParams.add(new DrawRotatedImage(BITMAP_ID, x, y, (int) currentRotation,
-                x + getWidth() / 2, y + getHeight() / 2));
+        // update DRAW_ASTEROID params with new coordinates and rotation
+        DRAW_ASTEROID.setCanvasX0(x);
+        DRAW_ASTEROID.setCanvasY0(y);
+        DRAW_ASTEROID.setRotation((int) currentRotation);
+        drawParams.add(DRAW_ASTEROID);
         // draw loseHealthAnimations
         for (int i = 0; i < loseHealthAnimations.size(); i++) {
             if (!loseHealthAnimations.get(i).isFinished()) {

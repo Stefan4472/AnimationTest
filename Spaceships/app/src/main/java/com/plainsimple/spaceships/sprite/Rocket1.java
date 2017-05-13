@@ -8,7 +8,7 @@ import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawSubImage;
-import com.plainsimple.spaceships.helper.Hitbox;
+import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class Rocket1 extends Rocket {
         super(BitmapCache.getData(BITMAP_ID, context), x, y);
         speedX = 0.01f;
         hp = 12;
-        hitBox = new Hitbox(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
+        hitBox = new FloatRect(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
 
         move = AnimCache.get(BitmapID.ROCKET_MOVE, context);
         explode = AnimCache.get(BitmapID.EXPLOSION_1, context);

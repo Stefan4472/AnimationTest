@@ -13,7 +13,7 @@ import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.helper.HealthBarAnimation;
 import com.plainsimple.spaceships.helper.LoseHealthAnimation;
 import com.plainsimple.spaceships.stats.GameStats;
-import com.plainsimple.spaceships.helper.Hitbox;
+import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.view.GameView;
 
@@ -92,7 +92,7 @@ public class Alien extends Sprite {
         bulletDelay = 20;
         framesSinceLastBullet = -bulletDelay;
         bulletsLeft = 4; // todo: implement AlienBullet FireManager?
-        hitBox = new Hitbox(x + getWidth() * 0.2f, y + getHeight() * 0.2f, x + getWidth() * 0.8f, y + getHeight() * 0.8f);
+        hitBox = new FloatRect(x + getWidth() * 0.2f, y + getHeight() * 0.2f, x + getWidth() * 0.8f, y + getHeight() * 0.8f);
         healthBarAnimation = new HealthBarAnimation(getWidth(), getHeight(), hp);
     }
 
@@ -166,14 +166,19 @@ public class Alien extends Sprite {
         }
     }
 
+    private DrawImage DRAW_ALIEN = new DrawImage(BITMAP_ID);
+    private DrawImage DRAW_EXPLOSION = new DrawImage(explodeAnimation.getBitmapID());
+
     @Override
     public List<DrawParams> getDrawParams() {
         drawParams.clear();
         // only draw alien if it is not in last frame of explode animation
-        if (explodeAnimation.getFramesLeft() >= 1) { // todo: does this work?
-            drawParams.add(new DrawImage(BITMAP_ID, x, y));
+        if (explodeAnimation.getFramesLeft() >= 1) {
+            DRAW_ALIEN.setCanvasX0(x);
+            DRAW_ALIEN.setCanvasY0(y);
+            drawParams.add(DRAW_ALIEN);
         }
-        // draw loseHealthAnimations
+        // draw loseHealthAnimations todo: cleanup
         for (int i = 0; i < loseHealthAnimations.size(); i++) {
             if (!loseHealthAnimations.get(i).isFinished()) {
                 loseHealthAnimations.get(i).updateAndDraw(x, y, drawParams);
@@ -185,8 +190,10 @@ public class Alien extends Sprite {
         }
         // add explodeAnimation params if showing
         if (explodeAnimation.isPlaying()) {
-            Rect source = explodeAnimation.getCurrentFrameSrc();
-            drawParams.add(new DrawSubImage(explodeAnimation.getBitmapID(), x, y, source.left, source.top, source.right, source.bottom));
+            DRAW_EXPLOSION.setCanvasX0(x);
+            DRAW_EXPLOSION.setCanvasY0(y);
+            DRAW_EXPLOSION.setDrawRegion(explodeAnimation.getCurrentFrameSrc());
+            drawParams.add(DRAW_EXPLOSION);
         }
         return drawParams;
     }

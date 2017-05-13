@@ -8,7 +8,7 @@ import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRotatedImage;
 import com.plainsimple.spaceships.helper.DrawSubImage;
-import com.plainsimple.spaceships.helper.Hitbox;
+import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.view.GameView;
 
@@ -40,7 +40,7 @@ public class Rocket2 extends Rocket {
     // whether explosion has been triggered by collision with initial hitbox
     private boolean explodeTriggered;
     // hitbox triggered by obstacles (only for head-on collisions)
-    private Hitbox obstacleHitbox;
+    private FloatRect obstacleHitbox;
     // number of frames since explosion
     private int explodeFrameCount;
     // number of frames explosion lasts
@@ -60,10 +60,10 @@ public class Rocket2 extends Rocket {
         speedX = 0.005f;
 
         // create large hitbox with side approx. equal to 5 * width
-        hitBox = new Hitbox(x - 2 * getWidth(), y - 2 * getWidth(), x + 3 * getWidth(), y + getHeight() + 2 * getWidth());
+        hitBox = new FloatRect(x - 2 * getWidth(), y - 2 * getWidth(), x + 3 * getWidth(), y + getHeight() + 2 * getWidth());
 
         // create smaller hitbox used only with obstacles
-        obstacleHitbox = new Hitbox(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
+        obstacleHitbox = new FloatRect(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
 
         // init explode animation
         explode = AnimCache.get(BitmapID.EXPLOSION_1, context);

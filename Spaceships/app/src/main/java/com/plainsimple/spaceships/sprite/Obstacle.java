@@ -5,7 +5,7 @@ import android.graphics.Paint;
 
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRect;
-import com.plainsimple.spaceships.helper.Hitbox;
+import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.view.GameView;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class Obstacle extends Sprite {
 
     public Obstacle(float x, float y, int width, int height) {
         super(x, y, width, height);
-        hitBox = new Hitbox(x, y, x + getWidth(), y + getHeight());
+        hitBox = new FloatRect(x, y, x + getWidth(), y + getHeight());
         hp = 10_000; // todo: some impossible to reach number?
     }
 

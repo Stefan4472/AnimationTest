@@ -4,12 +4,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
+import android.graphics.Rect;
 import android.util.Log;
 
 import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
-import com.plainsimple.spaceships.helper.DrawFilteredImage;
 import com.plainsimple.spaceships.helper.RocketManager;
 import com.plainsimple.spaceships.store.ArmorType;
 import com.plainsimple.spaceships.helper.BitmapID;
@@ -18,7 +18,7 @@ import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawSubImage;
 import com.plainsimple.spaceships.stats.GameStats;
-import com.plainsimple.spaceships.helper.Hitbox;
+import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.store.RocketType;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
@@ -107,7 +107,7 @@ public class Spaceship extends Sprite {
         fireRocket = AnimCache.get(BitmapID.SPACESHIP_FIRE, context);
         explode = AnimCache.get(BitmapID.SPACESHIP_EXPLODE, context);
 
-        hitBox = new Hitbox(x + getWidth() * 0.17f, y + getHeight() * 0.27f, x + getWidth() * 0.7f, y + getHeight() * 0.73f);
+        hitBox = new FloatRect(x + getWidth() * 0.17f, y + getHeight() * 0.27f, x + getWidth() * 0.7f, y + getHeight() * 0.73f);
 
 
         setInitValues(); // todo: reset() method, or something more elegant
@@ -270,6 +270,8 @@ public class Spaceship extends Sprite {
         }
     }
 
+    private DrawImage BASE_DRAW_IMAGE = new DrawImage(BitmapID.SPACESHIP_BASE, 0, 0);
+
     @Override
     public List<DrawParams> getDrawParams() {
         drawParams.clear();
@@ -277,12 +279,15 @@ public class Spaceship extends Sprite {
             // todo: pre-render spaceship? some way to increase efficiency
             // spaceship is drawn from modular parts: spaceship_base, cannons, rocket_overlay
 //            drawParams.add(new DrawImage(BitmapID.SPACESHIP_BASE, x, y));
-            drawParams.add(new DrawFilteredImage(BitmapID.SPACESHIP_BASE, x, y, new ColorMatrix(new float[] {
-                    2.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-                    0.0f, 2.0f, 0.0f, 0.0f, 0.0f,
-                    0.0f, 0.0f, 2.0f, 0.0f, 0.0f,
-                    0.0f, 0.0f, 0.0f, 1.0f, 0.0f
-            })));
+            BASE_DRAW_IMAGE.setCanvasX0(x);
+            BASE_DRAW_IMAGE.setCanvasY0(y);
+            drawParams.add(BASE_DRAW_IMAGE);
+//            drawParams.add(new DrawFilteredImage(BitmapID.SPACESHIP_BASE, x, y, new ColorMatrix(new float[] {
+//                    1.0f, 0.0f, 0.0f, 0.0f, 250.0f,
+//                    0.0f, 1.0f, 0.0f, 0.0f, 250.0f,
+//                    0.0f, 0.0f, 1.0f, 0.0f, 250.0f,
+//                    0.0f, 0.0f, 0.0f, 1.0f, 0.0f
+//            })));
             drawParams.add(new DrawImage(cannonType.getSpaceshipOverlayId(), x, y));
             drawParams.add(new DrawImage(rocketType.getSpaceshipOverlayId(), x, y));
 //            drawParams.add(new DrawImage(bitmapData.getId(), x, y));

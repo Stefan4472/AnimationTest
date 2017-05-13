@@ -7,7 +7,7 @@ import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.store.CannonType;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
-import com.plainsimple.spaceships.helper.Hitbox;
+import com.plainsimple.spaceships.helper.FloatRect;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class Bullet extends Sprite {
 
     public Bullet(float x, float y, Context context, CannonType cannonType) {
         super(x, y, BitmapCache.getData(cannonType.getDrawableId(), context));
-        hitBox = new Hitbox(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
+        hitBox = new FloatRect(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
         hp = cannonType.getDamage();
         speedX = cannonType.getSpeedX();
         bitmapID = cannonType.getDrawableId();
