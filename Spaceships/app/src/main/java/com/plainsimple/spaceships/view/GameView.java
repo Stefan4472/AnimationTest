@@ -62,8 +62,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public static final int COIN_VALUE = 100;
     // selected fire mode (bullet or rocket)
     private Spaceship.FireMode selectedFireMode = Spaceship.FireMode.BULLET;
-    // selected input mode (gyro or button)
-    private Spaceship.InputMode inputMode = Spaceship.InputMode.BUTTON;
     private GameViewThread thread;
     // space background (implements parallax scrolling)
     private Background background;
@@ -83,7 +81,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // listener passed in by GameActivity
     private GameEventsListener gameEventsListener;
 
-    // button or gyro input
+    // button input
     private float input;
 
     // interface for events to fire
@@ -138,7 +136,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         draw(canvas);
                     }
                 } catch (NullPointerException e) {
-                    Log.d("GameView", "Caught a NullPointer (canvas == null) and not sure what it means");
+                    Log.d("GameView", "Caught a NullPointer, canvas is null (" + e.getMessage() + ")");
                 } finally {
                     if (canvas != null) {
                         mySurfaceHolder.unlockCanvasAndPost(canvas);
@@ -201,7 +199,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     gameEventsListener.onGameStarted();
                 }
             }
-            spaceship.updateInput(inputMode, input);
+            spaceship.updateInput(input);
             spaceship.updateSpeeds();
             spaceship.move();
             spaceship.updateActions();
@@ -349,37 +347,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         //currentStats.set(GameStats.TIME_PLAYED, gameTimer.getTotalTime());
     }
 
-    public void saveGameState() {
-        GameSave save = new GameSave(c);
-        save.saveMap(map);
-        save.saveBackground(background);
-        save.saveScoreDisplay(scoreDisplay);
-        save.saveSpaceship(spaceship);
-    }
-
-    public void flagRestoreGameState() {
-        this.restoreGameState = true;
-    }
-
-    private void restoreGameState() {
-        GameSave save = new GameSave(c);
-        long start_time = System.currentTimeMillis();
-        Log.d("GameView.java", "Restoring Game State");
-        save.loadMap(map);
-        /*healthBar = save.loadHealthBar();
-        scoreDisplay = save.loadScoreDisplay();
-        spaceship = save.loadSpaceship();
-        background = save.loadBackground();*/
-        Log.d("GameView.java", "Finished restoring game state. Took " + (System.currentTimeMillis() - start_time) + "ms");
-    }
-
     // sets spaceship's firing mode
     public void setFiringMode(Spaceship.FireMode fireMode) {
         selectedFireMode = fireMode;
-    }
-
-    public void setInputMode(Spaceship.InputMode inputMode) {
-        this.inputMode = inputMode;
     }
 
     public void setGameEventsListener(GameEventsListener gameEventsListener) {

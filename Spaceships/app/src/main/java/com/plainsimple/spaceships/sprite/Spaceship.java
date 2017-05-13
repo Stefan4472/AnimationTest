@@ -68,18 +68,6 @@ public class Spaceship extends Sprite {
     // current setting: not shooting
     private FireMode fireMode = FireMode.NONE;
 
-    // two possible input modes: using gyroscope, or using arrow buttons
-    public enum InputMode {
-        GYRO, BUTTON;
-    }
-
-    // tilt of screen as reported by gyroscope (y-axis)
-    private float tilt;
-    private float lastTilt;
-    // minimum change to register
-    private final static float MIN_TILT_CHANGE = 0.01f;
-    private float maxSpeedY = 0.01f;
-
     private int direction;
     public static final int DIRECTION_UP = 1;
     public static final int DIRECTION_DOWN = -1;
@@ -195,34 +183,19 @@ public class Spaceship extends Sprite {
         GameView.currentStats.addTo(GameStats.CANNONS_FIRED, 2);
     }
 
-    public void updateInput(InputMode inputType, float value) {
-        //Log.d("Spaceship", "InputReceived: " + (inputType == InputMode.GYRO ? "gyro" : "button") + " with value " + value);
-        if (inputType == InputMode.GYRO) { // handle gyro input // todo: refinement
-            if (Math.abs(value - tilt) >= MIN_TILT_CHANGE) {
-                lastTilt = tilt;
-                tilt = value;
-                //Log.d("Spaceship", "Registered Tilt Change of " + (tilt - lastTilt));
-            } else {
-                tilt = lastTilt;
-            }
-        } else { // handle non-gyro input
-            if ((int) value == 0) {
-                speedY /= 1.7;
-            } else if (value > 0) {
-                speedY = -0.02f;
-            } else {
-                speedY = 0.02f;
-            }
+    public void updateInput(float value) {
+        if (value == DIRECTION_UP) {
+            speedY = -0.02f;
+        } else if (value == DIRECTION_DOWN){
+            speedY = 0.02f;
+        } else {
+            speedY /= 1.7;
         }
     }
 
     @Override
     public void updateSpeeds() {
-        // negative is tilting away from player -> move up
-        // positive is tilting toward player -> move down
-       // float tiltChange = tilt - lastTilt;
-        //speedY = tiltChange / 10.0f;
-        //Log.d("Spaceship.java", "Tilt is " + tilt + " and change is " + tiltChange);
+
     }
 
     @Override

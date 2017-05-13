@@ -38,7 +38,7 @@ import plainsimple.spaceships.R;
 /**
  * Created by Stefan on 10/17/2015.
  */
-public class GameActivity extends FragmentActivity implements SensorEventListener, PauseDialogFragment.PauseDialogListener,
+public class GameActivity extends FragmentActivity implements PauseDialogFragment.PauseDialogListener,
     GameOverDialogFragment.GameOverDialogListener, GameView.GameEventsListener {
 
     private GameView gameView;
@@ -68,10 +68,6 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     private static final String MUSIC_VOLUME_KEY = "musicVolume";
     private static final String MUTED_KEY = "MUTED";
     private static final String FIRE_MODE_KEY = "SELECTED_FIRE_MODE";
-    private static final String RESTORE_STATE_KEY = "RESTORE_GAME_STATE";
-
-    // sensor manager for gyroscope
-    private SensorManager sensorManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -142,15 +138,6 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
         // retrieve game and music volume from SharedPreferences
         gameVolume = preferences.getFloat(GAME_VOLUME_KEY, 1.0f);
         musicVolume = preferences.getFloat(MUSIC_VOLUME_KEY, 1.0f);
-
-        // get sensor manager
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
-        // retrieve game state if instructions in preferences say so
-        if (preferences.getBoolean(RESTORE_STATE_KEY, false)) {
-            Log.d("GameActivity", "Found a saved game to restore");
-            gameView.flagRestoreGameState();
-        }
 
         // retrieve equipped cannon and rocket
         EquipmentManager equipmentManager = new EquipmentManager(this);
@@ -336,13 +323,6 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             DialogFragment d = PauseDialogFragment.newInstance(gameVolume, musicVolume);
             d.show(getFragmentManager(), "Pause");
         }
-        /*if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) { // todo: only register if inputMode = Gyro
-            sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
-                    SensorManager.SENSOR_DELAY_NORMAL); // todo: test sample rates. Manually restrict rate? // todo: works with Level 9 API +
-            Log.d("Activity Class", "Gyroscope Registered");
-        } else {
-            Log.d("GameView Class", "No Gyroscope");
-        }*/
     }
 
     @Override
@@ -355,18 +335,11 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
             paused = true;
             Log.d("GameActivity", "Finished pausing the game");
         }
-        if (!quit) { // save game state if user did not quit on purpose
-            /*Log.d("GameActivity.java", "Saving game state");
-            long start_time = System.currentTimeMillis();
-            gameView.saveGameState();
-            Log.d("GameActivity", "Finished Save: Took " + (System.currentTimeMillis() - start_time) + "ms");*/
-        }
+        // save volume preferences
         SharedPreferences.Editor editor = preferences.edit();
         editor.putFloat(GAME_VOLUME_KEY, gameVolume);
         editor.putFloat(MUSIC_VOLUME_KEY, musicVolume);
         editor.putBoolean(MUTED_KEY, muted);
-        // flag game restore if user did not explicitly press quit
-        editor.putBoolean(RESTORE_STATE_KEY, !quit);
         editor.commit();
         soundPool.release();
         soundPool = null;
@@ -376,13 +349,6 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     public void onStop() {
         super.onStop();
         Log.d("GameActivity", "onStop called");
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-            gameView.updateInput(event.values[1]); // update gameView with current screen pitch // todo: this should be registered in GameActivity
-        }
     }
 
     @Override
@@ -396,10 +362,6 @@ public class GameActivity extends FragmentActivity implements SensorEventListene
     public void onMusicVolumeChanged(DialogFragment dialog, float musicVolume) {
         this.musicVolume = musicVolume;
         Log.d("GameActivity.java", "New Music Volume set to " + musicVolume);
-    }
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 
     public static boolean getPaused() {
