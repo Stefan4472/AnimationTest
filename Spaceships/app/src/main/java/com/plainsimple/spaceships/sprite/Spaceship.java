@@ -7,9 +7,9 @@ import android.util.Log;
 
 import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.AnimCache;
+import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.RocketManager;
 import com.plainsimple.spaceships.store.ArmorType;
-import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.store.CannonType;
 import com.plainsimple.spaceships.helper.DrawImage;

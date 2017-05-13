@@ -32,7 +32,7 @@ public class DrawRotatedImage extends DrawImage {
         // rotate canvas
         canvas.rotate(rotatedAngle, pivotX, pivotY);
         // draw bitmap
-        canvas.drawBitmap(BitmapCache.getImage(bitmapID, context), canvasX0, canvasY0, null);
+        canvas.drawBitmap(BitmapCache.getBitmap(bitmapID, context), canvasX0, canvasY0, null);
         // restore canvas to original matrix
         canvas.restore();
     }

@@ -59,7 +59,7 @@ public class GameEngineUtil {
     }
 
     static List<DrawParams> drawParams;
-    // draws sprite onto canvas using sprite drawing params and imageCache
+    // draws sprite onto canvas using sprite drawing params and BitmapCache
     public static void drawSprite(Sprite sprite, Canvas canvas, Context context) {
         drawParams = sprite.getDrawParams();
         for (DrawParams p : drawParams) {

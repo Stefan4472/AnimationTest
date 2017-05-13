@@ -56,7 +56,7 @@ public class GameOverDialogFragment extends DialogFragment {
             values[i] = displayedStats.getFormatted(keys[i]);
         }
 
-        // put both arrays in the bundle
+        // putBitmap both arrays in the bundle
         bundle.putStringArray(KEYS_ARRAY, keys);
         bundle.putStringArray(VALUES_ARRAY, values);
 

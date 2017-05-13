@@ -50,6 +50,6 @@ public class DrawSubImage implements DrawParams {
         Rect source = new Rect((int) x0, (int) y0, (int) x1, (int) y1);
         Rect destination = new Rect((int) canvasX0, (int) canvasY0,
                 (int) canvasX0 + source.width(), (int) canvasY0 + source.height());
-        canvas.drawBitmap(BitmapCache.getImage(bitmapID, context), source, destination, null);
+        canvas.drawBitmap(BitmapCache.getBitmap(bitmapID, context), source, destination, null);
     }
 }

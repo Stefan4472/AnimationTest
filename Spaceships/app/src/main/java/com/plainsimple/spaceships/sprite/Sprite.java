@@ -110,7 +110,7 @@ public abstract class Sprite { // todo: figure out public vs. protected
         hp = (hp < 0) ? 0 : hp;
     }
 
-    // returns whether hitbox of this sprite intersects hitbox of specified sprite // todo: some methods could be made static or put in a SpriteUtil or GameEngineUtil class
+    // returns whether hitbox of this sprite intersects hitbox of specified sprite // todo: some methods could be made static or putBitmap in a SpriteUtil or GameEngineUtil class
     public boolean collidesWith(Sprite s) {
         if (!collides || !s.collides) {
             return false;

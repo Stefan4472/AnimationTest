@@ -1,13 +1,8 @@
 package com.plainsimple.spaceships.sprite;
 
 import android.content.Context;
-import android.graphics.Rect;
-import android.util.Log;
 
-import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.AnimCache;
-import com.plainsimple.spaceships.helper.BitmapCache;
-import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawSubImage;
@@ -15,7 +10,6 @@ import com.plainsimple.spaceships.helper.Hitbox;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.view.GameView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

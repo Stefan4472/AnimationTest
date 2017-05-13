@@ -38,4 +38,9 @@ public class BitmapData {
     public void setHeight(int height) {
         this.height = height;
     }
+
+    @Override
+    public String toString() {
+        return id.toString() + "(" + width + "," + height + ")";
+    }
 }

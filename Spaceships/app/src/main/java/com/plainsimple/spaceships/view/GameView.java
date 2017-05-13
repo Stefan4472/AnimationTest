@@ -148,7 +148,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         private void draw(Canvas canvas) {
-            if (!initialized) { // todo: find a better way (put this in onMeasure? But there were issues with pauseDialog
+            if (!initialized) { // todo: find a better way (putBitmap this in onMeasure? But there were issues with pauseDialog
                 initialized = true;
                 initNewGame();
                 // if flag is set, restore game state by populating initialized objects
@@ -263,6 +263,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             BitmapCache.setScalingFactor(scalingFactor);
             // get spaceship image data from cache
             BitmapData ship_data = BitmapCache.getData(BitmapID.SPACESHIP, c);
+            Log.d("GameViewDebug", ship_data.toString());
             // initialize spaceship just off the screen in the middle
             spaceship = new Spaceship(-ship_data.getWidth(), playScreenH / 2 - ship_data.getHeight() / 2, c);
             spaceship.setCannonType(GameActivity.getEquippedCannon());

@@ -24,6 +24,6 @@ public class DrawImage implements DrawParams {
 
     @Override
     public void draw(Canvas canvas, Context context) {
-        canvas.drawBitmap(BitmapCache.getImage(bitmapID, context), canvasX0, canvasY0, null);
+        canvas.drawBitmap(BitmapCache.getBitmap(bitmapID, context), canvasX0, canvasY0, null);
     }
 }
