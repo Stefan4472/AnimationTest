@@ -54,8 +54,9 @@ public class Obstacle extends Sprite {
     private DrawRect DRAW_OBSTACLE = new DrawRect(color, Paint.Style.FILL, 1);
     @Override
     public List<DrawParams> getDrawParams() { // todo: only draw what's on screen
+        drawParams.clear();
         DRAW_OBSTACLE.setBounds(hitBox);
-        drawParams.set(0, DRAW_OBSTACLE);
+        drawParams.add(DRAW_OBSTACLE);
         return drawParams;
     }
 }

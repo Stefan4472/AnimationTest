@@ -6,6 +6,7 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
 /**
  * Stores instructions for drawing a Bitmap
@@ -37,11 +38,6 @@ public class DrawImage implements DrawParams {
         this.bitmapID = bitmapID;
         this.canvasX0 = canvasX0;
         this.canvasY0 = canvasY0;
-    }
-
-    public DrawImage(BitmapID bitmapID, float canvasX0, float canvasY0, Rect subImage) {
-        this(bitmapID, canvasX0, canvasY0);
-        this.drawRegion = subImage;
     }
 
     public void setCanvasX0(float canvasX0) {
@@ -82,7 +78,7 @@ public class DrawImage implements DrawParams {
             // save canvas so we can revert it after performing the rotation
             canvas.save(Canvas.MATRIX_SAVE_FLAG);
             // rotate canvas about center of drawRegion
-            canvas.rotate(degreesRotation, canvasX0 + data.getWidth() / 2, canvasY0 + data.getHeight() / 2);
+            canvas.rotate(degreesRotation, canvasX0 + drawRegion.width() / 2, canvasY0 + drawRegion.height() / 2);
         }
 
         // set color filter if one was specified
@@ -94,6 +90,7 @@ public class DrawImage implements DrawParams {
         Rect destination = new Rect((int) canvasX0, (int) canvasY0,
                 (int) canvasX0 + drawRegion.width(), (int) canvasY0 + drawRegion.height());
 
+        Log.d("DrawImage", "Drawing " + bitmapID + " from " + drawRegion.flattenToString() + " to " + destination.flattenToString());
         // draw command
         canvas.drawBitmap(BitmapCache.getBitmap(bitmapID, context), drawRegion, destination, paint);
 

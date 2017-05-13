@@ -75,10 +75,11 @@ public class AlienBullet extends Sprite {
 
     @Override
     public List<DrawParams> getDrawParams() {
+        drawParams.clear();
         DRAW_BULLET.setCanvasX0(x);
         DRAW_BULLET.setCanvasY0(y);
         DRAW_BULLET.setRotation((int) fireAngle);
-        drawParams.set(0, DRAW_BULLET);
+        drawParams.add(DRAW_BULLET);
         return drawParams;
     }
 }

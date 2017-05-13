@@ -57,9 +57,10 @@ public class Coin extends Sprite {
     private DrawImage DRAW_COIN = new DrawImage(spin.getBitmapID());
     @Override
     public List<DrawParams> getDrawParams() {
+        drawParams.clear();
         DRAW_COIN.setCanvasX0(x);
         DRAW_COIN.setCanvasY0(y);
-        drawParams.set(0, DRAW_COIN);
+        drawParams.add(DRAW_COIN);
         return drawParams;
     }
 }
