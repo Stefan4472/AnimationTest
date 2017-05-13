@@ -3,11 +3,13 @@ package com.plainsimple.spaceships.sprite;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
 import android.util.Log;
 
 import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
+import com.plainsimple.spaceships.helper.DrawFilteredImage;
 import com.plainsimple.spaceships.helper.RocketManager;
 import com.plainsimple.spaceships.store.ArmorType;
 import com.plainsimple.spaceships.helper.BitmapID;
@@ -274,7 +276,13 @@ public class Spaceship extends Sprite {
         if (!explode.hasPlayed()) {
             // todo: pre-render spaceship? some way to increase efficiency
             // spaceship is drawn from modular parts: spaceship_base, cannons, rocket_overlay
-            drawParams.add(new DrawImage(BitmapID.SPACESHIP_BASE, x, y));
+//            drawParams.add(new DrawImage(BitmapID.SPACESHIP_BASE, x, y));
+            drawParams.add(new DrawFilteredImage(BitmapID.SPACESHIP_BASE, x, y, new ColorMatrix(new float[] {
+                    2.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+                    0.0f, 2.0f, 0.0f, 0.0f, 0.0f,
+                    0.0f, 0.0f, 2.0f, 0.0f, 0.0f,
+                    0.0f, 0.0f, 0.0f, 1.0f, 0.0f
+            })));
             drawParams.add(new DrawImage(cannonType.getSpaceshipOverlayId(), x, y));
             drawParams.add(new DrawImage(rocketType.getSpaceshipOverlayId(), x, y));
 //            drawParams.add(new DrawImage(bitmapData.getId(), x, y));

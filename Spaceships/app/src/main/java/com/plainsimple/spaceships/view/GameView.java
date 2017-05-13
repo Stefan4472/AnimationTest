@@ -138,7 +138,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         draw(canvas);
                     }
                 } catch (NullPointerException e) {
-//                    Log.d("GameView", "Caught a NullPointer (canvas == null) and not sure what it means");
+                    Log.d("GameView", "Caught a NullPointer (canvas == null) and not sure what it means");
                 } finally {
                     if (canvas != null) {
                         mySurfaceHolder.unlockCanvasAndPost(canvas);
@@ -261,15 +261,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             Bitmap spaceship_bmp = BitmapFactory.decodeResource(c.getResources(), R.drawable.spaceship);
             float scalingFactor = (playScreenH / 6.0f) / (float) spaceship_bmp.getHeight();
             BitmapCache.setScalingFactor(scalingFactor);
-            Log.d("GameViewDebug", "Hello");
             // get spaceship image data from cache
             BitmapData ship_data = BitmapCache.getData(BitmapID.SPACESHIP, c);
-            Log.d("GameViewDebug", "Hello again");
-            if (ship_data == null) {
-                Log.d("GameViewDebug", "NULL");
-            }
-            Log.d("GameViewDebug", "Data is " + ship_data.toString());
-            Log.d("GameViewDebug", "Hello again again?");
             // initialize spaceship just off the screen in the middle
             spaceship = new Spaceship(-ship_data.getWidth(), playScreenH / 2 - ship_data.getHeight() / 2, c);
             spaceship.setCannonType(GameActivity.getEquippedCannon());
