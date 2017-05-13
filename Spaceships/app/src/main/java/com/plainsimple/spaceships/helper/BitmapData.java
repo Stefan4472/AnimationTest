@@ -1,5 +1,7 @@
 package com.plainsimple.spaceships.helper;
 
+import android.util.Log;
+
 /**
  * Stores ID and dimensions of a bitmap
  */
@@ -41,6 +43,7 @@ public class BitmapData {
 
     @Override
     public String toString() {
+        Log.d("BitmapData", "toString() called");
         return id.toString() + "(" + width + "," + height + ")";
     }
 }
