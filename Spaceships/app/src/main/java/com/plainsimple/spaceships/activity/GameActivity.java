@@ -105,9 +105,9 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                    findViewById(R.id.down_arrow).setVisibility(View.INVISIBLE);
                    downArrow.setVisibility(View.INVISIBLE); // todo: why did this stop working?
-                   gameView.updateInput(Spaceship.DIRECTION_UP);
+                   gameView.updateDirection(Spaceship.Direction.UP);
                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                   gameView.updateInput(Spaceship.DIRECTION_NONE);
+                   gameView.updateDirection(Spaceship.Direction.NONE);
                    downArrow.setVisibility(View.VISIBLE);
                }
                return false;
@@ -119,9 +119,9 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     upArrow.setVisibility(View.INVISIBLE);
-                    gameView.updateInput(Spaceship.DIRECTION_DOWN);
+                    gameView.updateDirection(Spaceship.Direction.DOWN);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    gameView.updateInput(Spaceship.DIRECTION_NONE);
+                    gameView.updateDirection(Spaceship.Direction.NONE);
                     upArrow.setVisibility(View.VISIBLE);
                 }
                 return false; // todo: does return matter?

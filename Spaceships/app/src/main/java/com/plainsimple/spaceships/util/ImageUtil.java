@@ -13,6 +13,8 @@ import android.util.Log;
 
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.store.CannonType;
+import com.plainsimple.spaceships.store.RocketType;
 
 /**
  * Created by Stefan on 8/17/2015.
@@ -28,13 +30,23 @@ public class ImageUtil {
                 scaleToHeight,
                 true);
     }
-    /*// draws specified Bitmap onto canvas using given drawing parameters
-    public static void drawBitmap(Canvas canvas, Bitmap toDraw, DrawParams params) {
-        Rect source = new Rect((int ) params.getX0(), (int) params.getY0(), (int) params.getX1(), (int) params.getY1());
-        Rect destination = new Rect((int) params.getCanvasX0(), (int) params.getCanvasY0(),
-                (int) params.getCanvasX0() + source.width(), (int) params.getCanvasY0() + source.height());
-        canvas.drawBitmap(toDraw, source, destination, null);
-    }*/
+
+    // renders spaceship bitmap from modular components, scaled to given width/height
+    // loads and draws R.id.spaceship_base, then overlays with the correct cannon overlay
+    // (specified by cannonType) and finally with correct rocket overlay (specified by
+    // rocketType). Returns the final bitmap.
+    public static Bitmap renderSpaceship(Context context, int width, int height,
+                                         CannonType cannonType, RocketType rocketType) {
+        Bitmap rendered = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(rendered);
+        Bitmap base = ImageUtil.decodeAndScaleTo(context, BitmapID.SPACESHIP_BASE.getrId(), width, height);
+        canvas.drawBitmap(base, 0, 0, null);
+        Bitmap cannons = ImageUtil.decodeAndScaleTo(context, cannonType.getSpaceshipOverlayId().getrId(), width, height);
+        canvas.drawBitmap(cannons, 0, 0, null);
+        Bitmap rockets = ImageUtil.decodeAndScaleTo(context, rocketType.getSpaceshipOverlayId().getrId(), width, height);
+        canvas.drawBitmap(rockets, 0, 0, null);
+        return rendered;
+    }
 
     // creates a linear gradient across the Bitmap from left to right using the specified colors
     public static void drawGradient(Bitmap b, int leftColor, int rightColor) {

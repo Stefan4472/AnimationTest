@@ -26,6 +26,8 @@ import com.plainsimple.spaceships.view.GameView;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.plainsimple.spaceships.sprite.Spaceship.Direction.DOWN;
+import static com.plainsimple.spaceships.sprite.Spaceship.Direction.UP;
 import static com.plainsimple.spaceships.view.GameView.playScreenH;
 
 /**
@@ -35,6 +37,7 @@ public class Spaceship extends Sprite {
 
     private Context context;
 
+    // SpriteAnimations used
     private SpriteAnimation move;
     private SpriteAnimation fireRocket;
     private SpriteAnimation explode;
@@ -44,6 +47,7 @@ public class Spaceship extends Sprite {
     private DrawImage DRAW_EXHAUST;
     private DrawImage DRAW_ROCKET_FIRED;
     private DrawImage DRAW_EXPLODE;
+
     // key used to register the image of the rendered spaceship in BitmapCache
     private String RENDERED_BMP_KEY = "SPACESHIP_RENDERED";
 
@@ -53,62 +57,66 @@ public class Spaceship extends Sprite {
     // whether user has control over spaceship
     private boolean controllable;
 
+    // type of cannon Spaceship has (default to CANNON_0)
     private CannonType cannonType = CannonType.CANNON_0;
-    private int lastFiredBullet;
-
-    // type of rocket spaceship fires
+    // type of rocket Spaceship has (default to ROCKET_0)
     private RocketType rocketType = RocketType.ROCKET_0;
-    // number of frames spaceship has been in existence
-    // (used to determine when rockets can be fired)
-    private int frameCount;
-    // enforces Rocket firing pattern
-    private RocketManager rocketManager;
-
+    // type of armor Spaceship has (default to ARMOR_0
     private ArmorType armorType = ArmorType.ARMOR_0;
 
-    // keeps track of fired bullets and rockets
-    private List<Sprite> projectiles = new LinkedList<>();
-
-    // available modes: shooting bullets, shooting rockets, or not shooting
+    // available modes for Spaceship to fire (firing cannons, rockets, or nothing)
     public enum FireMode {
         BULLET, ROCKET, NONE;
     }
 
-    // current setting: not shooting
+    // current setting Spaceship is in (defalut to not shooting)
     private FireMode fireMode = FireMode.NONE;
+    // enforces Rocket firing pattern
+    private RocketManager rocketManager;
+    // number of frames spaceship has been in existence (used to determine when rockets can be fired)
+    private int frameCount;
+    // number of frames elapsed since cannon was last fired
+    private int lastFiredCannon;
 
-    private int direction;
-    public static final int DIRECTION_UP = 1;
-    public static final int DIRECTION_DOWN = -1;
-    public static final int DIRECTION_NONE = 0;
+    // keeps track of fired bullets and rockets
+    private List<Sprite> projectiles = new LinkedList<>();
 
+    // available directions Spaceship can move in (up, down, or continue straight horizontally)
+    public enum Direction {
+        UP, DOWN, NONE;
+    }
+
+    // Spaceship's current direction
+    private Direction direction;
+
+    // SoundIDs Spaceship uses
     private static final SoundID ROCKET_SOUND = SoundID.ROCKET;
     private static final SoundID BULLET_SOUND = SoundID.LASER;
     private static final SoundID EXPLODE_SOUND = SoundID.EXPLOSION;
 
+    // listener interface for a classes to receive events from the Spaceship
     public interface SpaceshipListener {
         // fired when Spaceship hp changes. Passes new hp
         void onHealthChanged(int newHealth);
-        // fired when Spaceship is no longer visible and game is over
+        // fired when Spaceship has exploded and is no longer visible (game is over)
         void onInvisible();
     }
 
     // listener that receives Spaceship events
     private SpaceshipListener listener;
 
-    // default constructor
-    public Spaceship(float x, float y, Context context) {// todo: clean up
+    public Spaceship(float x, float y, Context context) {
         super(x, y, BitmapCache.getData(BitmapID.SPACESHIP, context));
+        this.context = context;
+
+        // load animations from AnimCache
         move = AnimCache.get(BitmapID.SPACESHIP_MOVE, context);
         fireRocket = AnimCache.get(BitmapID.SPACESHIP_FIRE, context);
         explode = AnimCache.get(BitmapID.SPACESHIP_EXPLODE, context);
 
-        hitBox = new FloatRect(x + getWidth() * 0.17f, y + getHeight() * 0.27f, x + getWidth() * 0.7f, y + getHeight() * 0.73f);
-
-        // render spaceship using base image and default cannon/rocket types
-        Bitmap rendered = renderSpaceship(context, getWidth(), getHeight(), CannonType.CANNON_0, RocketType.ROCKET_0);
-        // register rendered image under RENDERED_BMP_KEY in BitmapCache.java
-        BitmapCache.putBitmap(RENDERED_BMP_KEY, rendered);
+        // render spaceship using current Cannon and Rocket Types and register rendered image under
+        // RENDERED_BMP_KEY in BitmapCache.java
+        BitmapCache.putBitmap(RENDERED_BMP_KEY, render());
 
         // init DrawParams with correct bitmap keys
         DRAW_SHIP = new DrawImage(RENDERED_BMP_KEY);
@@ -116,63 +124,62 @@ public class Spaceship extends Sprite {
         DRAW_ROCKET_FIRED = new DrawImage(fireRocket.getBitmapID());
         DRAW_EXPLODE = new DrawImage(explode.getBitmapID());
 
-        setInitValues(); // todo: reset() method, or something more elegant
+        hp = armorType.getHP();
+        hitBox = new FloatRect(x + getWidth() * 0.17f, y + getHeight() * 0.27f, x + getWidth() * 0.7f, y + getHeight() * 0.73f);
+        rocketManager = RocketManager.newInstance(rocketType);
 
-        this.context = context;
+        collides = true;
+        speedX = 0.003f;
+        move.start();
+        lastFiredCannon = cannonType.getDelay();
     }
 
-    // sets spaceship fields to initial values
-    // used when spaceship is first constructed and when it is reset
-    public void setInitValues() {
+    // resets spaceship to initial values
+    public void reset() {
+        move.reset();
+        fireRocket.reset();
+        explode.reset();
         collides = true;
+        controllable = false;
+        terminate = false;
         hp = armorType.getHP();
         if (listener != null) {
             listener.onHealthChanged(hp);
         }
-        rocketManager = RocketManager.newInstance(rocketType);
-        controllable = false;
         speedX = 0.003f;
         speedY = 0;
-        move.reset();
-        fireRocket.reset();
-        explode.reset();
-        move.start();
         projectiles.clear();
-        lastFiredBullet = cannonType.getDelay();
+        move.start();
         frameCount = 0;
+        lastFiredCannon = cannonType.getDelay();
     }
 
-    // renders spaceship bitmap from modular components, scaled to given width/height
-    // loads and draws R.id.spaceship_base, then overlays with the correct cannon overlay
-    // (specified by cannonType) and finally with correct rocket overlay (specified by
-    // rocketType). Returns the final bitmap.
-    public static Bitmap renderSpaceship(Context context, int width, int height,
-                                         CannonType cannonType, RocketType rocketType) {
-        Bitmap rendered = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(rendered);
-        Bitmap base = ImageUtil.decodeAndScaleTo(context, BitmapID.SPACESHIP_BASE.getrId(), width, height);
-        canvas.drawBitmap(base, 0, 0, null);
-        Bitmap cannons = ImageUtil.decodeAndScaleTo(context, cannonType.getSpaceshipOverlayId().getrId(), width, height);
-        canvas.drawBitmap(cannons, 0, 0, null);
-        Bitmap rockets = ImageUtil.decodeAndScaleTo(context, rocketType.getSpaceshipOverlayId().getrId(), width, height);
-        canvas.drawBitmap(rockets, 0, 0, null);
-        return rendered;
+    // calls ImageUtil.renderSpaceship() to render a Bitmap of the Spaceship with its current
+    // cannonType and rocketType
+    private Bitmap render() {
+        return ImageUtil.renderSpaceship(context, getWidth(), getHeight(), cannonType, rocketType);
     }
 
     @Override
     public void updateActions() {
-        lastFiredBullet++;
+        lastFiredCannon++;
         frameCount++;
-        if (fireMode == FireMode.BULLET && lastFiredBullet >= cannonType.getDelay() && hp != 0) {
+
+        // fires cannons if in correct FireMode, has waited long enough, and is still alive
+        if (fireMode == FireMode.BULLET && lastFiredCannon >= cannonType.getDelay() && hp != 0) {
             fireCannons();
-            lastFiredBullet = 0;
-        } else if (fireMode == FireMode.ROCKET && hp != 0) { // todo: clean up?
+            lastFiredCannon = 0;
+        } else if (fireMode == FireMode.ROCKET && hp != 0) {
             // queue RocketManager for permission to fire
-            RocketManager.FireInstructions instructions = rocketManager.attemptFire(frameCount); // todo: force spaceship to fire on schedule in certain cases
-            if (instructions.fireLeft()) { // fire left if allowed
+            RocketManager.FireInstructions instructions = rocketManager.attemptFire(frameCount); // todo: force spaceship to fire on schedule in certain cases?
+
+            // fire left if allowed and increment ROCKETS_FIRED stat
+            if (instructions.fireLeft()) {
                 projectiles.add(Rocket.newInstance(context, x + getWidth() * 0.80f, y + 0.29f * getHeight(), rocketType));
+                GameView.currentStats.addTo(GameStats.ROCKETS_FIRED, 1);
             }
-            if (instructions.fireRight()) { // fire right if allowed
+            // fire right if allowed and increment ROCKETS_FIRED stat
+            if (instructions.fireRight()) {
                 projectiles.add(Rocket.newInstance(context, x + getWidth() * 0.80f, y + 0.65f * getHeight(), rocketType));
                 GameView.currentStats.addTo(GameStats.ROCKETS_FIRED, 1);
             }
@@ -180,10 +187,10 @@ public class Spaceship extends Sprite {
             if (instructions.fireLeft() || instructions.fireRight()) {
                 fireRocket.start();
                 GameActivity.playSound(ROCKET_SOUND);
-                GameView.currentStats.addTo(GameStats.ROCKETS_FIRED, 1);
             }
         }
-        // make spaceship invisible and undetectable
+
+        // checks if explosion has played, in which case terminate should be set to true and onInvisible() called
         if (explode.hasPlayed() && !terminate) {
             terminate = true;
             collides = false;
@@ -193,7 +200,7 @@ public class Spaceship extends Sprite {
         }
     }
 
-    // fires two bullets
+    // fires both cannons. Adds new instances of Bullet to projectiles, plays sound, and updates GameStats
     public void fireCannons() {
         projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.28f * getHeight(), context, cannonType));
         projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.66f * getHeight(), context, cannonType));
@@ -201,19 +208,20 @@ public class Spaceship extends Sprite {
         GameView.currentStats.addTo(GameStats.CANNONS_FIRED, 2);
     }
 
-    public void updateInput(float value) {
-        if (value == DIRECTION_UP) {
-            speedY = -0.02f;
-        } else if (value == DIRECTION_DOWN){
-            speedY = 0.02f;
-        } else {
-            speedY /= 1.7;
-        }
+    // updates the direction the Spaceship is moving in
+    public void updateInput(Direction direction) {
+        this.direction = direction;
     }
 
     @Override
     public void updateSpeeds() {
-
+        if (direction == UP) {
+            speedY = -0.02f;
+        } else if (direction== DOWN){
+            speedY = 0.02f;
+        } else {
+            speedY /= 1.7;
+        }
     }
 
     @Override
@@ -232,7 +240,7 @@ public class Spaceship extends Sprite {
         // update ColorMatrixAnimator
         colorMatrixAnimator.update();
 
-        // update the animations
+        // update the other animations
         if (move.isPlaying()) {
             move.incrementFrame();
         }
@@ -247,18 +255,21 @@ public class Spaceship extends Sprite {
     @Override
     public void handleCollision(Sprite s, int damage) {
         takeDamage(damage);
+
         if (s instanceof Coin) { // todo: play sound
             GameView.incrementScore(GameView.COIN_VALUE);
             GameView.currentStats.addTo(GameStats.COINS_COLLECTED, 1);
         } else {
             // trigger onHealthChanged event under proper conditions
-            if (damage != 0 && !explode.isPlaying() && listener != null) {
-                listener.onHealthChanged(hp);
-                Log.d("Spaceship.java", "Firing onHealthChanged");
-            }
+            if (damage != 0 && !explode.isPlaying()) {
+                // trigger sprite flash using ColorMatrixAnimator
+                colorMatrixAnimator.flash();
 
-            // trigger sprite flash using ColorMatrixAnimator
-            colorMatrixAnimator.flash();
+                if (listener != null) {
+                    Log.d("Spaceship.java", "Firing onHealthChanged");
+                    listener.onHealthChanged(hp);
+                }
+            }
 
             // start explode animation under proper conditions
             if (hp == 0 && !explode.isPlaying()) {
@@ -271,19 +282,22 @@ public class Spaceship extends Sprite {
     @Override
     public List<DrawParams> getDrawParams() {
         drawParams.clear();
+
         if (!explode.hasPlayed()) {
+            // draw the Spaceship itself
             DRAW_SHIP.setCanvasX0(x);
             DRAW_SHIP.setCanvasY0(y);
             DRAW_SHIP.setFilter(colorMatrixAnimator.getMatrix());
             drawParams.add(DRAW_SHIP);
 
-            // draw moving animation
+            // draw moving animation behind it
             DRAW_EXHAUST.setCanvasX0(x);
             DRAW_EXHAUST.setCanvasY0(y);
             DRAW_EXHAUST.setDrawRegion(move.getCurrentFrameSrc());
             DRAW_EXHAUST.setFilter(colorMatrixAnimator.getMatrix());
             drawParams.add(DRAW_EXHAUST);
 
+            // draw fireRocket animation if it is in progress
             if (fireRocket.isPlaying()) {
                 DRAW_ROCKET_FIRED.setCanvasX0(x + getWidth() / 2);
                 DRAW_ROCKET_FIRED.setCanvasY0(y);
@@ -291,6 +305,7 @@ public class Spaceship extends Sprite {
                 DRAW_ROCKET_FIRED.setFilter(colorMatrixAnimator.getMatrix());
                 drawParams.add(DRAW_ROCKET_FIRED);
             }
+            // draw explode animation if it is in progress
             if (explode.isPlaying()) {
                 DRAW_EXPLODE.setCanvasX0(x);
                 DRAW_EXPLODE.setCanvasY0(y);
@@ -313,23 +328,19 @@ public class Spaceship extends Sprite {
         this.fireMode = fireMode;
     }
 
-    // set CannonType and update rendered image in BitmapCache
+    // set CannonType and updates rendered image in BitmapCache
     public void setCannonType(CannonType cannonType) {
         this.cannonType = cannonType;
-        // render spaceship using base image and default cannon/rocket types
-        Bitmap rendered = renderSpaceship(context, getWidth(), getHeight(), cannonType, rocketType);
-        // register rendered image under RENDERED_BMP_KEY in BitmapCache.java
-        BitmapCache.putBitmap(RENDERED_BMP_KEY, rendered);
+        // render updated spaceship with given cannonType and register it with BitmapCache
+        BitmapCache.putBitmap(RENDERED_BMP_KEY, render());
     }
 
     // set RocketType, get correct RocketManager, and update rendered image in BitmapCache
     public void setRocketType(RocketType rocketType) {
         this.rocketType = rocketType;
         rocketManager = RocketManager.newInstance(rocketType);
-        // render spaceship using base image and default cannon/rocket types
-        Bitmap rendered = renderSpaceship(context, getWidth(), getHeight(), cannonType, rocketType);
-        // register rendered image under RENDERED_BMP_KEY in BitmapCache.java
-        BitmapCache.putBitmap(RENDERED_BMP_KEY, rendered);
+        // render updated spaceship with given rocketType and register it with BitmapCache
+        BitmapCache.putBitmap(RENDERED_BMP_KEY, render());
     }
 
     // set ArmorType and corresponding hp

@@ -60,6 +60,8 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
     public void reset() {
         frameCounter = 0;
         frameSpeedCounter = 0;
+        hasPlayed = false;
+        isPlaying = false;
     }
 
     // whether animation has finished or not

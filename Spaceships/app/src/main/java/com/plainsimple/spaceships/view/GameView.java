@@ -81,8 +81,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // listener passed in by GameActivity
     private GameEventsListener gameEventsListener;
 
-    // button input
-    private float input;
+    // direction Spaceship should move in, as determined by GameActivity
+    private Spaceship.Direction direction;
 
     // interface for events to fire
     public interface GameEventsListener {
@@ -196,7 +196,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     gameEventsListener.onGameStarted();
                 }
             }
-            spaceship.updateInput(input);
             spaceship.updateSpeeds();
             spaceship.move();
             spaceship.updateActions();
@@ -258,13 +257,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             BitmapCache.setScalingFactor(scalingFactor);
             // get spaceship image data from cache
             BitmapData ship_data = BitmapCache.getData(BitmapID.SPACESHIP, c);
+
             // initialize spaceship just off the screen centered vertically
-//            spaceship = new Spaceship(-ship_data.getWidth(), (playScreenH - ship_data.getHeight() / 2), c);
             spaceship = new Spaceship(-ship_data.getWidth(), playScreenH / 2 - ship_data.getHeight() / 2, c);
+            // set spaceship equipment based on settings in GameActivity
             spaceship.setCannonType(GameActivity.getEquippedCannon());
             spaceship.setRocketType(GameActivity.getEquippedRocket());
             spaceship.setArmorType(GameActivity.getEquippedArmor());
+            // set this class to receive Spaceship events
             spaceship.setListener(this);
+
+            // initialize other required components
             background = new Background(screenW, playScreenH);
             map = new Map(c, screenW, playScreenH);
             scoreDisplay = new ScoreDisplay(c, 0);
@@ -297,8 +300,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         return thread.doTouchEvent(motionEvent);
     }
 
-    public void updateInput(float newInput) {
-        input = newInput;
+    public void updateDirection(Spaceship.Direction newDirection) {
+        spaceship.updateInput(newDirection);
     }
 
     @Override
@@ -321,11 +324,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     // resets all elements and fields so that a new game can begin
     public void restartGame() {
-        spaceship = new Spaceship(-spaceship.getWidth(), playScreenH / 2 - spaceship.getHeight() / 2, c); // todo: clean up. Better practice would be a spaceship.reset() method
-        spaceship.setCannonType(GameActivity.getEquippedCannon());
-        spaceship.setRocketType(GameActivity.getEquippedRocket());
-        spaceship.setArmorType(GameActivity.getEquippedArmor());
-        spaceship.setListener(thread);
+        spaceship.reset();
+        spaceship.setX(-spaceship.getWidth());
+        spaceship.setY(screenH / 2 - spaceship.getHeight() / 2);
         background.reset();
         map.reset();
         //gameTimer.reset();
