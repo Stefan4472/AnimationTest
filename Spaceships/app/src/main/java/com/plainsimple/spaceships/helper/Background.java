@@ -39,7 +39,7 @@ public class Background {
         drawSpace = new DrawSpace();
         drawSpace.setAntiAlias(true);
         drawSpace.setVariance(0.2);
-        drawSpace.setDensity(3); // was 3
+        drawSpace.setDensity(3);
         drawSpace.setStarSize(2);
         drawSpace.setUseGradient(false);
         drawSpace.setBackgroundColor(Color.BLACK);

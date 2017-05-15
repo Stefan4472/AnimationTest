@@ -16,6 +16,8 @@ public class DrawImage implements DrawParams {
 
     // ID of bitmap to be drawn
     protected BitmapID bitmapID;
+    // key to be used with BitmapCache, if bitmapID is not specified
+    protected String bitmapKey;
     // x-coordinate where drawing begins on canvas
     protected float canvasX0;
     // y-coordinate where drawing begins on canvas
@@ -32,6 +34,11 @@ public class DrawImage implements DrawParams {
     // constructor that sets bitmapID
     public DrawImage(BitmapID bitmapID) {
         this.bitmapID = bitmapID;
+    }
+
+    // constructor that sets bitmapKey
+    public DrawImage(String bitmapKey) {
+        this.bitmapKey = bitmapKey;
     }
 
     public DrawImage(BitmapID bitmapID, float canvasX0, float canvasY0) {
@@ -61,12 +68,17 @@ public class DrawImage implements DrawParams {
     }
 
     @Override
-    public void draw(Canvas canvas, Context context) {
+    public void draw(Canvas canvas, Context context) { // todo: refine so data is called once and not every time. Also, set DrawRegion on init
         // reset the paint object
         paint.reset();
 
         // get bitmapData for the image to be drawn
-        BitmapData data = BitmapCache.getData(bitmapID, context);
+        BitmapData data;
+        if (bitmapID == null) {
+            data = BitmapCache.getData(bitmapKey);
+        } else {
+            data = BitmapCache.getData(bitmapID, context);
+        }
 
         // set drawRegion to the full image if none was specified
         if (drawRegion == null) {
@@ -91,7 +103,11 @@ public class DrawImage implements DrawParams {
                 (int) canvasX0 + drawRegion.width(), (int) canvasY0 + drawRegion.height());
 
         // draw command
-        canvas.drawBitmap(BitmapCache.getBitmap(bitmapID, context), drawRegion, destination, paint);
+        if (bitmapID == null) { // use bitmapKey if ID wasn't given
+            canvas.drawBitmap(BitmapCache.getBitmap(bitmapKey), drawRegion, destination, paint);
+        } else {
+            canvas.drawBitmap(BitmapCache.getBitmap(bitmapID, context), drawRegion, destination, paint);
+        }
 
         // restore canvas if it was previously rotated
         if (degreesRotation != 0) {
