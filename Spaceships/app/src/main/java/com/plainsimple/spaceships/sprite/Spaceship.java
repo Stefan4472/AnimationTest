@@ -39,10 +39,12 @@ public class Spaceship extends Sprite {
     private SpriteAnimation explode;
 
     // DrawParam objects that specify how to draw the Spaceship
-    private DrawImage BASE_DRAW_IMAGE;
+    private DrawImage DRAW_SHIP;
     private DrawImage DRAW_EXHAUST;
     private DrawImage DRAW_ROCKET_FIRED;
     private DrawImage DRAW_EXPLODE;
+    // key used to register the image of the rendered spaceship in BitmapCache
+    private String RENDERED_BMP_KEY = "SPACESHIP_RENDRERED";
 
     // whether user has control over spaceship
     private boolean controllable;
@@ -99,7 +101,13 @@ public class Spaceship extends Sprite {
 
         hitBox = new FloatRect(x + getWidth() * 0.17f, y + getHeight() * 0.27f, x + getWidth() * 0.7f, y + getHeight() * 0.73f);
 
-        BASE_DRAW_IMAGE = new DrawImage(BitmapID.SPACESHIP_BASE);
+        // render spaceship using base image and default cannon/rocket types
+        Bitmap rendered = renderSpaceship(context, getWidth(), getHeight(), CannonType.CANNON_0, RocketType.ROCKET_0);
+        // register rendered image under RENDERED_BMP_KEY in BitmapCache.java
+        BitmapCache.putBitmap(RENDERED_BMP_KEY, rendered);
+
+        // init DrawParams with correct bitmap keys
+        DRAW_SHIP = new DrawImage(RENDERED_BMP_KEY);
         DRAW_EXHAUST = new DrawImage(move.getBitmapID());
         DRAW_ROCKET_FIRED = new DrawImage(fireRocket.getBitmapID());
         DRAW_EXPLODE = new DrawImage(explode.getBitmapID());
@@ -256,17 +264,17 @@ public class Spaceship extends Sprite {
             // todo: pre-render spaceship? some way to increase efficiency
             // spaceship is drawn from modular parts: spaceship_base, cannons, rocket_overlay
 //            drawParams.add(new DrawImage(BitmapID.SPACESHIP_BASE, x, y));
-            BASE_DRAW_IMAGE.setCanvasX0(x);
-            BASE_DRAW_IMAGE.setCanvasY0(y);
-            drawParams.add(BASE_DRAW_IMAGE);
+            DRAW_SHIP.setCanvasX0(x);
+            DRAW_SHIP.setCanvasY0(y);
+            drawParams.add(DRAW_SHIP);
 //            drawParams.add(new DrawFilteredImage(BitmapID.SPACESHIP_BASE, x, y, new ColorMatrix(new float[] {
 //                    1.0f, 0.0f, 0.0f, 0.0f, 250.0f,
 //                    0.0f, 1.0f, 0.0f, 0.0f, 250.0f,
 //                    0.0f, 0.0f, 1.0f, 0.0f, 250.0f,
 //                    0.0f, 0.0f, 0.0f, 1.0f, 0.0f
 //            })));
-            drawParams.add(new DrawImage(cannonType.getSpaceshipOverlayId(), x, y));
-            drawParams.add(new DrawImage(rocketType.getSpaceshipOverlayId(), x, y));
+//            drawParams.add(new DrawImage(cannonType.getSpaceshipOverlayId(), x, y));
+//            drawParams.add(new DrawImage(rocketType.getSpaceshipOverlayId(), x, y));
             // draw moving animation
             DRAW_EXHAUST.setCanvasX0(x);
             DRAW_EXHAUST.setCanvasY0(y);
@@ -301,14 +309,23 @@ public class Spaceship extends Sprite {
         this.fireMode = fireMode;
     }
 
+    // set CannonType and update rendered image in BitmapCache
     public void setCannonType(CannonType cannonType) {
         this.cannonType = cannonType;
+        // render spaceship using base image and default cannon/rocket types
+        Bitmap rendered = renderSpaceship(context, getWidth(), getHeight(), cannonType, rocketType);
+        // register rendered image under RENDERED_BMP_KEY in BitmapCache.java
+        BitmapCache.putBitmap(RENDERED_BMP_KEY, rendered);
     }
 
-    // set RocketType and get correct RocketManager
+    // set RocketType, get correct RocketManager, and update rendered image in BitmapCache
     public void setRocketType(RocketType rocketType) {
         this.rocketType = rocketType;
         rocketManager = RocketManager.newInstance(rocketType);
+        // render spaceship using base image and default cannon/rocket types
+        Bitmap rendered = renderSpaceship(context, getWidth(), getHeight(), cannonType, rocketType);
+        // register rendered image under RENDERED_BMP_KEY in BitmapCache.java
+        BitmapCache.putBitmap(RENDERED_BMP_KEY, rendered);
     }
 
     // set ArmorType and corresponding hp

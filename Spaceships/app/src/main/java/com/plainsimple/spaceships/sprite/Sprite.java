@@ -57,14 +57,11 @@ public abstract class Sprite { // todo: figure out public vs. protected
     }
 
     public Sprite(float x, float y, int width, int height) {
-        Log.d("Sprite", "creating sprite");
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         hitBox = new FloatRect(0, 0, 0, 0);
-        Log.d("Sprite", "Finished creating sprite");
-        Log.d("Sprite", x + "," + y + "," + width + "," + height);
     }
 
     public Sprite(float x, float y, BitmapData bitmapData) {
