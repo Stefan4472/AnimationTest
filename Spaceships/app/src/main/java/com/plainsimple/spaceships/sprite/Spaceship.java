@@ -45,7 +45,7 @@ public class Spaceship extends Sprite {
     private DrawImage DRAW_ROCKET_FIRED;
     private DrawImage DRAW_EXPLODE;
     // key used to register the image of the rendered spaceship in BitmapCache
-    private String RENDERED_BMP_KEY = "SPACESHIP_RENDRERED";
+    private String RENDERED_BMP_KEY = "SPACESHIP_RENDERED";
 
     // used to create the spaceship flash animation when hit
     private ColorMatrixAnimator colorMatrixAnimator = new ColorMatrixAnimator(3, 4, 2);
@@ -343,9 +343,12 @@ public class Spaceship extends Sprite {
         this.listener = listener;
     }
 
-    // todo: better explanation
-    // class used by the Spaceship to animate its ColorMatrix, for example when it takes damage and
-    // uses the flash() method. Currently only has capabilities to generate a flash in the color matrix.
+    // class used by the Spaceship to animate its ColorMatrix. Currently the only supported animation
+    // is a flash, where every pixel's Red/Green/Blue values are briefly jacked up to 255 before coming
+    // back down to what they originally were.
+    // The ColorMatrix uses a 20-element float[], visualized as a 4x5 matrix. The 5th column of each row
+    // tells by how much to increase each Red/Green/Blue/Alpha value. So, to transition to full white,
+    // we want to change elems 4, 9, and 14 to 255, before bringing them back down to zero.
     private class ColorMatrixAnimator {
 
         // used to count frames in an animation sequence
@@ -361,8 +364,8 @@ public class Spaceship extends Sprite {
         private int flashOut;
         // total frame count for an animation
         private int totalFrames;
-        // state of matrix currently
-        private float[] currentMatrix;
+        // current calculated vals for ColorMatrix
+        private float[] currentVals;
         // the actual ColorMatrix
         private ColorMatrix colorMatrix = new ColorMatrix();
 
@@ -372,16 +375,14 @@ public class Spaceship extends Sprite {
             this.flashStay = flashStay;
             this.flashOut = flashOut;
             totalFrames = flashIn + flashStay + flashOut;
-            // set currentMatrix to default
-            currentMatrix = colorMatrix.getArray();
+            // set currentVals to default
+            currentVals = colorMatrix.getArray();
         }
 
         // begins a flash animation sequence
         public void flash() {
-            // if currently flashing, determine what frameCount should be for a refresh
-            if (flashing) {
-
-            } else {
+            // if not currently flashing, set flashing to true and reset frameCount
+            if (!flashing) {
                 flashing = true;
                 frameCount = 0;
             }
@@ -389,7 +390,7 @@ public class Spaceship extends Sprite {
 
         // updates the matrix by one frame
         public void update() {
-            // check if frameCount has hit total frames, in which case reset values
+            // check if frameCount has hit total frames, in which case stop flashing
             if (frameCount == totalFrames) {
                 flashing = false;
             }
@@ -397,15 +398,19 @@ public class Spaceship extends Sprite {
             if (flashing) {
                 frameCount++;
                 int add_const = 0;
+                // determine value to add to color chanel. We want it to go up to 255 over flashIn,
+                // stay at 255 during flashStay, and go back to zero over flashOut
                 if (frameCount <= flashIn) {
                     add_const = 255 / flashIn;
                 } else if (frameCount > flashIn + flashStay) {
                     add_const = -255 / flashOut;
                 }
+                // update the 5th column of each color value
                 for (int i = 0; i < 3; i++) {
-                    currentMatrix[4 + 5 * i] += add_const;
+                    currentVals[4 + 5 * i] += add_const;
                 }
-                colorMatrix.set(currentMatrix);
+                // update the matrix
+                colorMatrix.set(currentVals);
             }
         }
 
