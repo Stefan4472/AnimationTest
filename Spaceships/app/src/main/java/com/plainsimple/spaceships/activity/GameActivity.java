@@ -67,7 +67,6 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
     private static final String GAME_VOLUME_KEY = "gameVolume";
     private static final String MUSIC_VOLUME_KEY = "musicVolume";
     private static final String MUTED_KEY = "MUTED";
-    private static final String FIRE_MODE_KEY = "SELECTED_FIRE_MODE";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

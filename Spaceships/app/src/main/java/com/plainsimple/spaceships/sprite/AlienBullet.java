@@ -22,9 +22,14 @@ public class AlienBullet extends Sprite {
     // angle that bullet travels
     private float fireAngle;
 
+    // DrawParam used to draw the AlienBullet
+    private DrawImage DRAW_BULLET;
+
     public AlienBullet(BitmapData bitmapData, float x, float y, float targetX, float targetY) { // todo: damage as a parameter?
         super(x, y, bitmapData);
         bitmapId = bitmapData.getId();
+        // DrawParam used to draw the AlienBullet
+        DRAW_BULLET = new DrawImage(bitmapId);
         hitBox = new FloatRect(x, y, x + getWidth(), y + getHeight());
         hp = 10;
 
@@ -68,9 +73,6 @@ public class AlienBullet extends Sprite {
         collides = false;
         terminate = true;
     }
-
-    // DrawParam used to draw the AlienBullet
-    private DrawImage DRAW_BULLET = new DrawImage(bitmapId);
 
     @Override
     public List<DrawParams> getDrawParams() {

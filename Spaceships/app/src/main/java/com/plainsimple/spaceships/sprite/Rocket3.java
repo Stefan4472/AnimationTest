@@ -22,6 +22,10 @@ public class Rocket3 extends Rocket {
     private SpriteAnimation move;
     private SpriteAnimation explode;
 
+    private DrawImage DRAW_ROCKET;
+    private DrawImage DRAW_EXHAUST;
+    private DrawImage DRAW_EXPLOSION;
+
     protected Rocket3(Context context, float x, float y) {
         super(BitmapCache.getData(BITMAP_ID, context), x, y);
         speedX = 0.015f;
@@ -30,6 +34,10 @@ public class Rocket3 extends Rocket {
 
         move = AnimCache.get(BitmapID.ROCKET_MOVE, context);
         explode = AnimCache.get(BitmapID.EXPLOSION_1, context);
+
+        DRAW_ROCKET = new DrawImage(BITMAP_ID);
+        DRAW_EXHAUST = new DrawImage(move.getBitmapID());
+        DRAW_EXPLOSION = new DrawImage(explode.getBitmapID());
 
         move.start();
     }
@@ -65,9 +73,6 @@ public class Rocket3 extends Rocket {
         }
     }
 
-    private DrawImage DRAW_ROCKET = new DrawImage(BITMAP_ID);
-    private DrawImage DRAW_EXHAUST = new DrawImage(move.getBitmapID());
-    private DrawImage DRAW_EXPLOSION = new DrawImage(explode.getBitmapID());
     @Override
     public List<DrawParams> getDrawParams() {
         drawParams.clear();

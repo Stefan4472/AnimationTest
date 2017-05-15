@@ -38,6 +38,12 @@ public class Spaceship extends Sprite {
     private SpriteAnimation fireRocket;
     private SpriteAnimation explode;
 
+    // DrawParam objects that specify how to draw the Spaceship
+    private DrawImage BASE_DRAW_IMAGE;
+    private DrawImage DRAW_EXHAUST;
+    private DrawImage DRAW_ROCKET_FIRED;
+    private DrawImage DRAW_EXPLODE;
+
     // whether user has control over spaceship
     private boolean controllable;
 
@@ -86,14 +92,17 @@ public class Spaceship extends Sprite {
 
     // default constructor
     public Spaceship(float x, float y, Context context) {// todo: clean up
-        super(x, y, BitmapCache.getData(BitmapID.SPACESHIP, context).getWidth(), BitmapCache.getData(BitmapID.SPACESHIP, context).getHeight());
-
+        super(x, y, BitmapCache.getData(BitmapID.SPACESHIP, context));
         move = AnimCache.get(BitmapID.SPACESHIP_MOVE, context);
         fireRocket = AnimCache.get(BitmapID.SPACESHIP_FIRE, context);
         explode = AnimCache.get(BitmapID.SPACESHIP_EXPLODE, context);
 
         hitBox = new FloatRect(x + getWidth() * 0.17f, y + getHeight() * 0.27f, x + getWidth() * 0.7f, y + getHeight() * 0.73f);
 
+        BASE_DRAW_IMAGE = new DrawImage(BitmapID.SPACESHIP_BASE);
+        DRAW_EXHAUST = new DrawImage(move.getBitmapID());
+        DRAW_ROCKET_FIRED = new DrawImage(fireRocket.getBitmapID());
+        DRAW_EXPLODE = new DrawImage(explode.getBitmapID());
 
         setInitValues(); // todo: reset() method, or something more elegant
 
@@ -239,11 +248,6 @@ public class Spaceship extends Sprite {
             }
         }
     }
-
-    private DrawImage BASE_DRAW_IMAGE = new DrawImage(BitmapID.SPACESHIP_BASE, 0, 0);
-    private DrawImage DRAW_EXHAUST = new DrawImage(move.getBitmapID());
-    private DrawImage DRAW_ROCKET_FIRED = new DrawImage(fireRocket.getBitmapID());
-    private DrawImage DRAW_EXPLODE = new DrawImage(explode.getBitmapID());
 
     @Override
     public List<DrawParams> getDrawParams() {

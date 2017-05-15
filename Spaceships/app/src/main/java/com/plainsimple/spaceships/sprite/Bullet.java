@@ -17,6 +17,7 @@ import java.util.List;
 public class Bullet extends Sprite {
 
     private BitmapID bitmapID;
+    private DrawImage DRAW_BULLET;
 
     public Bullet(float x, float y, Context context, CannonType cannonType) {
         super(x, y, BitmapCache.getData(cannonType.getDrawableId(), context));
@@ -24,6 +25,7 @@ public class Bullet extends Sprite {
         hp = cannonType.getDamage();
         speedX = cannonType.getSpeedX();
         bitmapID = cannonType.getDrawableId();
+        DRAW_BULLET = new DrawImage(bitmapID);
     }
 
     @Override
@@ -49,7 +51,6 @@ public class Bullet extends Sprite {
         terminate = true;
     }
 
-    private DrawImage DRAW_BULLET = new DrawImage(bitmapID);
     @Override
     public List<DrawParams> getDrawParams() {
         drawParams.clear();

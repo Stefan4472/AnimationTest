@@ -43,7 +43,6 @@ public class BitmapData {
 
     @Override
     public String toString() {
-        Log.d("BitmapData", "toString() called");
         return id.toString() + "(" + width + "," + height + ")";
     }
 }

@@ -85,7 +85,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private float input;
 
     // interface for events to fire
-    public interface GameEventsListener { // todo: GameActivity should implement GameActivity.GameEventsListener
+    public interface GameEventsListener {
         // fired when the GameView's dimensions have been determined (setSurfaceSize)
         // returns an int, which is the screenHeight the game should be set
         // this allows the height of the screen used to be different that the full
@@ -130,29 +130,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         public void run() {
             while (running) {
                 Canvas canvas = null;
-                try {
+//                try {
                     canvas = mySurfaceHolder.lockCanvas(null);
                     synchronized (mySurfaceHolder) {
                         draw(canvas);
                     }
-                } catch (NullPointerException e) {
-                    Log.d("GameView", "Caught a NullPointer, canvas is null (" + e.getMessage() + ")");
-                } finally {
+//                } catch (NullPointerException e) {
+//                    Log.d("GameView", "Caught a NullPointer, canvas is null (" + e.getMessage() + ")");
+//                } finally {
                     if (canvas != null) {
                         mySurfaceHolder.unlockCanvasAndPost(canvas);
                     }
-                }
+//                }
             }
         }
 
         private void draw(Canvas canvas) {
             if (!initialized) { // todo: find a better way (putBitmap this in onMeasure? But there were issues with pauseDialog
+                Log.d("GameView", "Initializing new game");
                 initialized = true;
                 initNewGame();
-                // if flag is set, restore game state by populating initialized objects
-                if (restoreGameState) {
-                    //restoreGameState();
-                }
             }
             background.draw(canvas);
             if (!GameActivity.getPaused() && !gameFinished) {
@@ -261,7 +258,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             BitmapCache.setScalingFactor(scalingFactor);
             // get spaceship image data from cache
             BitmapData ship_data = BitmapCache.getData(BitmapID.SPACESHIP, c);
-            // initialize spaceship just off the screen in the middle
+            // initialize spaceship just off the screen centered vertically
+//            spaceship = new Spaceship(-ship_data.getWidth(), (playScreenH - ship_data.getHeight() / 2), c);
             spaceship = new Spaceship(-ship_data.getWidth(), playScreenH / 2 - ship_data.getHeight() / 2, c);
             spaceship.setCannonType(GameActivity.getEquippedCannon());
             spaceship.setRocketType(GameActivity.getEquippedRocket());

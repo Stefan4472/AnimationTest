@@ -60,6 +60,10 @@ public class Alien extends Sprite {
 
     private static final BitmapID BITMAP_ID = BitmapID.ALIEN;
 
+    // DrawParams to draw Alien and Explosion
+    private DrawImage DRAW_ALIEN;
+    private DrawImage DRAW_EXPLOSION;
+
     private BitmapData bulletBitmapData;
     private SpriteAnimation explodeAnimation;
     // draws animated healthbar above Alien if Alien is damaged
@@ -74,6 +78,9 @@ public class Alien extends Sprite {
 
         bulletBitmapData = BitmapCache.getData(BitmapID.ALIEN_BULLET, context);
         explodeAnimation = AnimCache.get(BitmapID.SPACESHIP_EXPLODE, context);
+
+        DRAW_ALIEN = new DrawImage(BITMAP_ID);
+        DRAW_EXPLOSION = new DrawImage(explodeAnimation.getBitmapID());
 
         this.difficulty = difficulty;
 
@@ -163,9 +170,6 @@ public class Alien extends Sprite {
             explodeAnimation.start();
         }
     }
-
-    private DrawImage DRAW_ALIEN = new DrawImage(BITMAP_ID);
-    private DrawImage DRAW_EXPLOSION = new DrawImage(explodeAnimation.getBitmapID());
 
     @Override
     public List<DrawParams> getDrawParams() {

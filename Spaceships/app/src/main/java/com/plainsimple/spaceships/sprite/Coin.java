@@ -18,6 +18,7 @@ import java.util.List;
 public class Coin extends Sprite {
 
     private SpriteAnimation spin;
+    private DrawImage DRAW_COIN;
 
     public Coin(float x, float y, Context context) {
         super(x, y);
@@ -25,6 +26,7 @@ public class Coin extends Sprite {
         width = spin.getFrameW();
         height = spin.getFrameH();
         spin.start();
+        DRAW_COIN = new DrawImage(spin.getBitmapID());
         hitBox = new FloatRect(x + getWidth() * 0.3f, y + getHeight() * 0.1f, x + getWidth() * 0.7f, y + getHeight() * 0.9f);
     }
 
@@ -53,7 +55,6 @@ public class Coin extends Sprite {
         }
     }
 
-    private DrawImage DRAW_COIN = new DrawImage(spin.getBitmapID());
     @Override
     public List<DrawParams> getDrawParams() {
         drawParams.clear();

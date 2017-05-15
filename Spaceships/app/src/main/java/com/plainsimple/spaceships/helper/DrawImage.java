@@ -90,7 +90,6 @@ public class DrawImage implements DrawParams {
         Rect destination = new Rect((int) canvasX0, (int) canvasY0,
                 (int) canvasX0 + drawRegion.width(), (int) canvasY0 + drawRegion.height());
 
-        Log.d("DrawImage", "Drawing " + bitmapID + " from " + drawRegion.flattenToString() + " to " + destination.flattenToString());
         // draw command
         canvas.drawBitmap(BitmapCache.getBitmap(bitmapID, context), drawRegion, destination, paint);
 

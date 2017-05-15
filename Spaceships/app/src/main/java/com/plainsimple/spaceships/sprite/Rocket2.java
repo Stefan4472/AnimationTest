@@ -53,6 +53,9 @@ public class Rocket2 extends Rocket {
     // hp lost per frame of the explosion
     private static final int HP_LOSS_RATE = 4;
 
+    private DrawImage DRAW_ROCKET;
+    private DrawImage DRAW_EXPLOSION;
+
     protected Rocket2(Context context, float x, float y) {
         super(BitmapCache.getData(BITMAP_ID, context), x, y);
 
@@ -68,6 +71,9 @@ public class Rocket2 extends Rocket {
         explode = AnimCache.get(BitmapID.EXPLOSION_1, context);
 
         explosionExpandRate = getWidth() / 2;
+
+        DRAW_ROCKET = new DrawImage(BITMAP_ID);
+        DRAW_EXPLOSION = new DrawImage(explode.getBitmapID());
     }
 
     @Override
@@ -113,8 +119,6 @@ public class Rocket2 extends Rocket {
         }
     }
 
-    private DrawImage DRAW_ROCKET = new DrawImage(BITMAP_ID);
-    private DrawImage DRAW_EXPLOSION = new DrawImage(explode.getBitmapID());
     @Override
     public List<DrawParams> getDrawParams() {
         drawParams.clear();
