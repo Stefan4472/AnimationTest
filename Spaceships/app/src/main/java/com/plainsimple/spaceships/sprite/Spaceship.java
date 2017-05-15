@@ -3,6 +3,7 @@ package com.plainsimple.spaceships.sprite;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
 import android.util.Log;
 
 import com.plainsimple.spaceships.activity.GameActivity;
@@ -45,6 +46,9 @@ public class Spaceship extends Sprite {
     private DrawImage DRAW_EXPLODE;
     // key used to register the image of the rendered spaceship in BitmapCache
     private String RENDERED_BMP_KEY = "SPACESHIP_RENDRERED";
+
+    // used to create the spaceship flash animation when hit
+    private ColorMatrixAnimator colorMatrixAnimator = new ColorMatrixAnimator(3, 4, 2);
 
     // whether user has control over spaceship
     private boolean controllable;
@@ -225,6 +229,10 @@ public class Spaceship extends Sprite {
 
     @Override
     public void updateAnimations() {
+        // update ColorMatrixAnimator
+        colorMatrixAnimator.update();
+
+        // update the animations
         if (move.isPlaying()) {
             move.incrementFrame();
         }
@@ -249,6 +257,9 @@ public class Spaceship extends Sprite {
                 Log.d("Spaceship.java", "Firing onHealthChanged");
             }
 
+            // trigger sprite flash using ColorMatrixAnimator
+            colorMatrixAnimator.flash();
+
             // start explode animation under proper conditions
             if (hp == 0 && !explode.isPlaying()) {
                 GameActivity.playSound(EXPLODE_SOUND);
@@ -261,30 +272,23 @@ public class Spaceship extends Sprite {
     public List<DrawParams> getDrawParams() {
         drawParams.clear();
         if (!explode.hasPlayed()) {
-            // todo: pre-render spaceship? some way to increase efficiency
-            // spaceship is drawn from modular parts: spaceship_base, cannons, rocket_overlay
-//            drawParams.add(new DrawImage(BitmapID.SPACESHIP_BASE, x, y));
             DRAW_SHIP.setCanvasX0(x);
             DRAW_SHIP.setCanvasY0(y);
+            DRAW_SHIP.setFilter(colorMatrixAnimator.getMatrix());
             drawParams.add(DRAW_SHIP);
-//            drawParams.add(new DrawFilteredImage(BitmapID.SPACESHIP_BASE, x, y, new ColorMatrix(new float[] {
-//                    1.0f, 0.0f, 0.0f, 0.0f, 250.0f,
-//                    0.0f, 1.0f, 0.0f, 0.0f, 250.0f,
-//                    0.0f, 0.0f, 1.0f, 0.0f, 250.0f,
-//                    0.0f, 0.0f, 0.0f, 1.0f, 0.0f
-//            })));
-//            drawParams.add(new DrawImage(cannonType.getSpaceshipOverlayId(), x, y));
-//            drawParams.add(new DrawImage(rocketType.getSpaceshipOverlayId(), x, y));
+
             // draw moving animation
             DRAW_EXHAUST.setCanvasX0(x);
             DRAW_EXHAUST.setCanvasY0(y);
             DRAW_EXHAUST.setDrawRegion(move.getCurrentFrameSrc());
+            DRAW_EXHAUST.setFilter(colorMatrixAnimator.getMatrix());
             drawParams.add(DRAW_EXHAUST);
 
             if (fireRocket.isPlaying()) {
                 DRAW_ROCKET_FIRED.setCanvasX0(x + getWidth() / 2);
                 DRAW_ROCKET_FIRED.setCanvasY0(y);
                 DRAW_ROCKET_FIRED.setDrawRegion(fireRocket.getCurrentFrameSrc());
+                DRAW_ROCKET_FIRED.setFilter(colorMatrixAnimator.getMatrix());
                 drawParams.add(DRAW_ROCKET_FIRED);
             }
             if (explode.isPlaying()) {
@@ -337,5 +341,77 @@ public class Spaceship extends Sprite {
     // set listener to receive events
     public void setListener(SpaceshipListener listener) {
         this.listener = listener;
+    }
+
+    // todo: better explanation
+    // class used by the Spaceship to animate its ColorMatrix, for example when it takes damage and
+    // uses the flash() method. Currently only has capabilities to generate a flash in the color matrix.
+    private class ColorMatrixAnimator {
+
+        // used to count frames in an animation sequence
+        private int frameCount;
+        // whether the animation is currently running
+        private boolean flashing;
+        // number of frames it takes for sprite to reach completely white
+        private int flashIn;
+        // number of frames sprite will stay completely white
+        private int flashStay;
+        // number of frames it takes for sprite to go back to normal after being
+        // completely white.
+        private int flashOut;
+        // total frame count for an animation
+        private int totalFrames;
+        // state of matrix currently
+        private float[] currentMatrix;
+        // the actual ColorMatrix
+        private ColorMatrix colorMatrix = new ColorMatrix();
+
+        public ColorMatrixAnimator(int flashIn, int flashStay, int flashOut) {
+            // set params
+            this.flashIn = flashIn;
+            this.flashStay = flashStay;
+            this.flashOut = flashOut;
+            totalFrames = flashIn + flashStay + flashOut;
+            // set currentMatrix to default
+            currentMatrix = colorMatrix.getArray();
+        }
+
+        // begins a flash animation sequence
+        public void flash() {
+            // if currently flashing, determine what frameCount should be for a refresh
+            if (flashing) {
+
+            } else {
+                flashing = true;
+                frameCount = 0;
+            }
+        }
+
+        // updates the matrix by one frame
+        public void update() {
+            // check if frameCount has hit total frames, in which case reset values
+            if (frameCount == totalFrames) {
+                flashing = false;
+            }
+            // if currently flashing, update the matrix
+            if (flashing) {
+                frameCount++;
+                int add_const = 0;
+                if (frameCount <= flashIn) {
+                    add_const = 255 / flashIn;
+                } else if (frameCount > flashIn + flashStay) {
+                    add_const = -255 / flashOut;
+                }
+                for (int i = 0; i < 3; i++) {
+                    currentMatrix[4 + 5 * i] += add_const;
+                }
+                colorMatrix.set(currentMatrix);
+            }
+        }
+
+        // returns ColorMatrix with calculated values
+        public ColorMatrix getMatrix() {
+            return colorMatrix;
+        }
     }
 }
