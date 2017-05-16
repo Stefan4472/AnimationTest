@@ -43,7 +43,7 @@ public class Map {
     // active generated coins
     private List<Sprite> coins = new LinkedList<>();
     // active generated aliens
-    private List<Sprite> aliens = new LinkedList<>(); // todo: any way to keep them in their subclasses?
+    private List<Sprite> aliens = new LinkedList<>();
     // active projectiles on screen fired by aliens
     private List<Sprite> alienProjectiles = new LinkedList<>();
 

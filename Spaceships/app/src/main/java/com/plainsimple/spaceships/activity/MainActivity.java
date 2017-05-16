@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
 
         initMedia();
 
-        // fade in view elements
+        // fade in view elements todo: update Animations to use AnimatorSet
         FontTextView title = (FontTextView) findViewById(R.id.title);
         Animation fade_in_animation = AnimationUtils.loadAnimation(this, R.anim.fadein);
         title.startAnimation(fade_in_animation);
@@ -117,9 +117,9 @@ public class MainActivity extends Activity {
         button.setPaintFlags(button.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);*/
         // play button clicked sound
         soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);
-        // launch GameActivity
-        Intent game_intent = new Intent(this, GameActivity.class);
-        startActivity(game_intent);
+        // launch PlayScreenActivity
+        Intent playscreen_intent = new Intent(this, PlayScreenActivity.class);
+        startActivity(playscreen_intent);
     }
 
     // handle user pressing "Store" button

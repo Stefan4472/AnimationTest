@@ -240,6 +240,7 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         gameView.restartGame();
         healthBarView.setCurrentHealth(equippedArmor.getHP());
         paused = false;
+        pauseButton.setBackgroundResource(R.drawable.pause);
     }
 
     @Override // handles the GameView's dimensions being set or changed
