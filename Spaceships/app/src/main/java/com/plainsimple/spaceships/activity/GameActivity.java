@@ -49,12 +49,15 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
     private ImageButton toggleRocketButton;
     private ImageButton upArrow;
     private ImageButton downArrow;
+
     // whether the user selected to quit the game
     private boolean quit = false;
-    private static SoundPool soundPool;
-    private static Hashtable<SoundID, Integer> soundIDs;
     private static boolean paused = false;
     private static boolean muted;
+
+    private static SoundPool soundPool;
+    private static Hashtable<SoundID, Integer> soundIDs;
+
     private static CannonType equippedCannon;
     private static RocketType equippedRocket;
     private static ArmorType equippedArmor;
@@ -67,26 +70,30 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
     private static final String GAME_VOLUME_KEY = "gameVolume";
     private static final String MUSIC_VOLUME_KEY = "musicVolume";
     private static final String MUTED_KEY = "MUTED";
+    public static final String DIFFICULTY_KEY = "GAME_DIFFICULTY";
+    public static final String DIFFICULTY_EASY = "DIFFICULTY_EASY";
+    public static final String DIFFICULTY_MED = "DIFFICULTY_MEDIUM";
+    public static final String DIFFICULTY_HARD = "DIFFICULTY_HARD";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("GameActivity", "onCreate called");
-        Log.d("GameActivity", "Screen Density is " + getResources().getDisplayMetrics().densityDpi);
+
         // go full screen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         // set content view/layout to gameview layout
         setContentView(R.layout.activity_game);
-        // set up view elements
-        gameView = (GameView) findViewById(R.id.spaceships); // todo: what should go in onResume()?
 
         // get handle to SharedPreferences
         preferences = getPreferences(Context.MODE_PRIVATE);
         muted = preferences.getBoolean(MUTED_KEY, false);
         paused = false;
 
+        // set up view elements
+        gameView = (GameView) findViewById(R.id.spaceships); // todo: what should go in onResume()?
         healthBarView = (HealthBarView) findViewById(R.id.healthbar);
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pause);
@@ -97,6 +104,26 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
 
+        // unpack bundle and determine difficulty
+        Bundle args = getIntent().getExtras();
+        if (args != null && args.containsKey(DIFFICULTY_KEY)) {
+            Log.d("GameActivity", "Found key specifying difficulty level is " + args.getString(DIFFICULTY_KEY));
+            switch (args.getString(DIFFICULTY_KEY)) {
+                case DIFFICULTY_EASY:
+                    gameView.setDifficultyLevel(GameView.Difficulty.EASY);
+                    break;
+                case DIFFICULTY_MED:
+                    gameView.setDifficultyLevel(GameView.Difficulty.MEDIUM);
+                    break;
+                case DIFFICULTY_HARD:
+                    gameView.setDifficultyLevel(GameView.Difficulty.HARD);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid Difficulty Key");
+            }
+        } else { // default to EASY
+            gameView.setDifficultyLevel(GameView.Difficulty.EASY);
+        }
         // initialize listeners
         upArrow = (ImageButton) findViewById(R.id.up_arrow);
         upArrow.setOnTouchListener(new View.OnTouchListener() {

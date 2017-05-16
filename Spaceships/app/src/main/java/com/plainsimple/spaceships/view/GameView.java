@@ -51,7 +51,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // current game score
     private static int score = 0;
     // current level of difficulty (used to determine some game mechanics)
-    private int difficulty = 0;
+    private float difficulty = 0;
     // used to store this run's stats
     public static GameStats currentStats;
     // paint object
@@ -74,6 +74,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private static final float SCROLL_SPEED_CONST = 0.4f;
     // number of frames that must pass before score per frame is increased
     private static final float SCORING_CONST = 800;
+
+    // this game's level of difficulty (default to EASY)
+    private Difficulty difficultyLevel = Difficulty.EASY;
+
+    // available difficulty levels with their difficulty increments per frame
+    public enum Difficulty {
+        EASY(0.6f), MEDIUM(1.0f), HARD(1.4f);
+
+        private float perFrameIncrease;
+        public float getPerFrameIncrease() {
+            return perFrameIncrease;
+        }
+        Difficulty(float perFrameIncrease) {
+            this.perFrameIncrease = perFrameIncrease;
+        }
+    }
 
     // score display in top left of screen
     private ScoreDisplay scoreDisplay;
@@ -171,14 +187,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         public void update() {
             if (gameStarted) {
                 if (!spaceshipDestroyed) {
-                    difficulty++;
+                    // increment difficulty by amount specified in difficultyLevel
+                    difficulty += difficultyLevel.getPerFrameIncrease();
                     score += 1 + difficulty / SCORING_CONST;
                 }
                 updateScrollSpeed();
                 background.scroll(-scrollSpeed * screenW * SCROLL_SPEED_CONST);
             }
             updateSpaceship();
-            map.update(difficulty, scrollSpeed, spaceship);
+            map.update((int) difficulty, scrollSpeed, spaceship);
             spaceship.updateAnimations();
             scoreDisplay.update(score);
 //            gameEventsListener.onScoreChanged(score);
@@ -344,6 +361,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         currentStats.set(GameStats.GAME_SCORE, score);
         currentStats.set(GameStats.DISTANCE_TRAVELED, background.getDistanceTravelled());
         //currentStats.set(GameStats.TIME_PLAYED, gameTimer.getTotalTime());
+    }
+
+    // sets difficultyLevel of the game
+    public void setDifficultyLevel(Difficulty difficultyLevel) {
+        this.difficultyLevel = difficultyLevel;
+        Log.d("GameView", "Difficulty Level set to " + difficultyLevel);
     }
 
     // sets spaceship's firing mode

@@ -20,7 +20,7 @@ import plainsimple.spaceships.R;
 public class PlayScreenActivity extends Activity {
 
     private FontButton playButton;
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +38,10 @@ public class PlayScreenActivity extends Activity {
     public void onPlayPressed(View view) {
         // launch PlayScreenActivity
         Intent game_intent = new Intent(this, GameActivity.class);
+        // specify difficulty level
+        Bundle b = new Bundle();
+        b.putString(GameActivity.DIFFICULTY_KEY, GameActivity.DIFFICULTY_HARD);
+        game_intent.putExtras(b);
         startActivity(game_intent);
     }
 }
