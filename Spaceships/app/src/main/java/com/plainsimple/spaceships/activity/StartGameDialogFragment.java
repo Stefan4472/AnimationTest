@@ -88,27 +88,40 @@ public class StartGameDialogFragment extends DialogFragment {
         // retrieve arguments from bundle (can't use savedInstanceState)
         Bundle args = getArguments();
 
-        FontButton set_easy = (FontButton) view.findViewById(R.id.set_easy);
+        // give buttons on-click listeners that fire onDifficultySelected and set proper button's
+        // background to difficultybutton_selected.xml and the others to difficultybutton.xml
+        // (sort of like a radio button)
+        final FontButton set_easy = (FontButton) view.findViewById(R.id.set_easy);
+        final FontButton set_medium = (FontButton) view.findViewById(R.id.set_medium);
+        final FontButton set_hard = (FontButton) view.findViewById(R.id.set_hard);
+
         set_easy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.onDifficultySelected(StartGameDialogFragment.this, GameActivity.DIFFICULTY_EASY);
+                set_easy.setBackgroundResource(R.drawable.difficultybutton_selected);
+                set_medium.setBackgroundResource(R.drawable.difficultybutton);
+                set_hard.setBackgroundResource(R.drawable.difficultybutton);
             }
         });
 
-        FontButton set_medium = (FontButton) view.findViewById(R.id.set_medium);
         set_medium.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.onDifficultySelected(StartGameDialogFragment.this, GameActivity.DIFFICULTY_MED);
+                set_easy.setBackgroundResource(R.drawable.difficultybutton);
+                set_medium.setBackgroundResource(R.drawable.difficultybutton_selected);
+                set_hard.setBackgroundResource(R.drawable.difficultybutton);
             }
         });
 
-        FontButton set_hard = (FontButton) view.findViewById(R.id.set_hard);
         set_hard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.onDifficultySelected(StartGameDialogFragment.this, GameActivity.DIFFICULTY_HARD);
+                set_easy.setBackgroundResource(R.drawable.difficultybutton);
+                set_medium.setBackgroundResource(R.drawable.difficultybutton);
+                set_hard.setBackgroundResource(R.drawable.difficultybutton_selected);
             }
         });
 
