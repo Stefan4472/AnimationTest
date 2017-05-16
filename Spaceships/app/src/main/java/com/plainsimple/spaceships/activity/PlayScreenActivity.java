@@ -41,7 +41,7 @@ public class PlayScreenActivity extends Activity implements StartGameDialogFragm
 
     // launch StartGameDialogFragment
     public void onPlayPressed(View view) {
-        DialogFragment d = StartGameDialogFragment.newInstance();
+        DialogFragment d = StartGameDialogFragment.newInstance("Endless", GameActivity.DIFFICULTY_EASY);
         d.show(getFragmentManager(), "Start Game");
     }
 

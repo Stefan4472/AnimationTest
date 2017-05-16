@@ -13,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.plainsimple.spaceships.view.FontButton;
+import com.plainsimple.spaceships.view.FontTextView;
 import com.plainsimple.spaceships.view.GameView;
 
 import plainsimple.spaceships.R;
@@ -22,6 +23,10 @@ import plainsimple.spaceships.R;
  */
 
 public class StartGameDialogFragment extends DialogFragment {
+
+    // key of GameMode name set in bundle
+    private static final String GAMEMODE_KEY = "SPECIFIED_GAME_MODE";
+    private static final String INITIAL_DIFFICULTY = "INITIAL_DIFFICULTY";
 
     // interface used to send events to host Activity
     public interface StartGameDialogListener {
@@ -35,10 +40,12 @@ public class StartGameDialogFragment extends DialogFragment {
     private StartGameDialogListener listener;
 
     // load equipment fields and coins available into a Bundle to pass to the fragment
-    public static StartGameDialogFragment newInstance() {
+    public static StartGameDialogFragment newInstance(String gameMode, String initDifficulty) {
         StartGameDialogFragment fragment = new StartGameDialogFragment();
 
         Bundle args = new Bundle();
+        args.putString(GAMEMODE_KEY, gameMode);
+        args.putString(INITIAL_DIFFICULTY, initDifficulty);
 
         fragment.setArguments(args);
         return fragment;
@@ -112,6 +119,12 @@ public class StartGameDialogFragment extends DialogFragment {
                 listener.onPlayPressed(StartGameDialogFragment.this);
             }
         });
+
+        // set title to specified game mode
+        FontTextView dialog_title = (FontTextView) view.findViewById(R.id.gamemode);
+        if (args != null) {
+            dialog_title.setText(args.getString(GAMEMODE_KEY));
+        }
     }
 
     @Override
