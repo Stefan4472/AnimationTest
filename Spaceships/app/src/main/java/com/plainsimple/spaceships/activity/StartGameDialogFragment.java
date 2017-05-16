@@ -1,0 +1,121 @@
+package com.plainsimple.spaceships.activity;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+
+import com.plainsimple.spaceships.view.FontButton;
+import com.plainsimple.spaceships.view.GameView;
+
+import plainsimple.spaceships.R;
+
+/**
+ * Created by Stefan on 5/15/2017.
+ */
+
+public class StartGameDialogFragment extends DialogFragment {
+
+    // interface used to send events to host Activity
+    public interface StartGameDialogListener {
+        // fired when a button is clicked to set difficulty level. Returns level selected
+        void onDifficultySelected(DialogFragment dialog, String difficulty);
+        // fired when the "Go!" button is clicked, telling the listener to launch the game
+        void onPlayPressed(DialogFragment dialog);
+    }
+
+    // listener receiving events
+    private StartGameDialogListener listener;
+
+    // load equipment fields and coins available into a Bundle to pass to the fragment
+    public static StartGameDialogFragment newInstance() {
+        StartGameDialogFragment fragment = new StartGameDialogFragment();
+
+        Bundle args = new Bundle();
+
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override // instantiates the listener and makes sure host activity implements the interface
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            listener = (StartGameDialogListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement StartGameDialogListener");
+        }
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+
+        // request window without title
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+
+        dialog.setCancelable(true);
+
+        return dialog;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.startgamedialog_layout, container);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        getDialog().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        // retrieve arguments from bundle (can't use savedInstanceState)
+        Bundle args = getArguments();
+
+        FontButton set_easy = (FontButton) view.findViewById(R.id.set_easy);
+        set_easy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onDifficultySelected(StartGameDialogFragment.this, GameActivity.DIFFICULTY_EASY);
+            }
+        });
+
+        FontButton set_medium = (FontButton) view.findViewById(R.id.set_medium);
+        set_medium.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onDifficultySelected(StartGameDialogFragment.this, GameActivity.DIFFICULTY_MED);
+            }
+        });
+
+        FontButton set_hard = (FontButton) view.findViewById(R.id.set_hard);
+        set_hard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onDifficultySelected(StartGameDialogFragment.this, GameActivity.DIFFICULTY_HARD);
+            }
+        });
+
+        FontButton start_game = (FontButton) view.findViewById(R.id.start_game);
+        start_game.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onPlayPressed(StartGameDialogFragment.this);
+            }
+        });
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+    }
+}
