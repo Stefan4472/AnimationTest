@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- a layout for displaying GameMode information in GameModeAdapter, i.e. the list of available
+GameModes in PlayScreenActivity. Displays name of GameMode. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.plainsimple.spaceships.view.FontTextView
+        android:id="@+id/gamemode_name"
+        style="@style/GalaxyMonkey.TextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
