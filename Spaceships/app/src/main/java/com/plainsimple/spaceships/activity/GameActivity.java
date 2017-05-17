@@ -71,9 +71,6 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
     private static final String MUSIC_VOLUME_KEY = "musicVolume";
     private static final String MUTED_KEY = "MUTED";
     public static final String DIFFICULTY_KEY = "GAME_DIFFICULTY";
-    public static final String DIFFICULTY_EASY = "DIFFICULTY_EASY";
-    public static final String DIFFICULTY_MED = "DIFFICULTY_MEDIUM";
-    public static final String DIFFICULTY_HARD = "DIFFICULTY_HARD";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,22 +101,14 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
 
-        // unpack bundle and determine difficulty
+        // unpack bundle and determine difficulty by comparing to GameView enums
         Bundle args = getIntent().getExtras();
         if (args != null && args.containsKey(DIFFICULTY_KEY)) {
-            Log.d("GameActivity", "Found key specifying difficulty level is " + args.getString(DIFFICULTY_KEY));
-            switch (args.getString(DIFFICULTY_KEY)) {
-                case DIFFICULTY_EASY:
-                    gameView.setDifficultyLevel(GameView.Difficulty.EASY);
-                    break;
-                case DIFFICULTY_MED:
-                    gameView.setDifficultyLevel(GameView.Difficulty.MEDIUM);
-                    break;
-                case DIFFICULTY_HARD:
-                    gameView.setDifficultyLevel(GameView.Difficulty.HARD);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Invalid Difficulty Key");
+            Log.d("GameActivity", "Retrieved difficulty level (" + args.getString(DIFFICULTY_KEY) + ")");
+            try {
+                gameView.setDifficultyLevel(GameView.Difficulty.valueOf(args.getString(DIFFICULTY_KEY)));
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid Difficulty Key");
             }
         } else { // default to EASY
             gameView.setDifficultyLevel(GameView.Difficulty.EASY);

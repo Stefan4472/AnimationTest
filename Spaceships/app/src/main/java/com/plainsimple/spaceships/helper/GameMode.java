@@ -1,9 +1,6 @@
 package com.plainsimple.spaceships.helper;
 
-import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.view.GameView;
-
-import java.util.IllegalFormatCodePointException;
 
 /**
  * Stores all information required to administer a specific GameMode. GameModes are written for easy
@@ -12,6 +9,8 @@ import java.util.IllegalFormatCodePointException;
 
 public class GameMode {
 
+    // key used by GameModeManager to identify this GameMode
+    private String key;
     // GameMode's name (e.g. "Asteroid Survival"
     private String name;
     // level of difficulty GameMode was last played on
@@ -31,9 +30,9 @@ public class GameMode {
 
     @Override
     public String toString() {
-        return name + ":" + lastDifficulty.toString() + ":" + highscore + ":" + oneStarPoints +
-                ":" + twoStarPoints + ":" + threeStarPoints + ":" + fourStarPoints + ":" +
-                fiveStarPoints + ":" + instructions + ":" + levelData;
+        return key + ":" + name + ":" + lastDifficulty.toString() + ":" + highscore + ":"
+                + oneStarPoints + ":" + twoStarPoints + ":" + threeStarPoints + ":" + fourStarPoints
+                + ":" + fiveStarPoints + ":" + instructions + ":" + levelData;
     }
 
     public static String toString(GameMode gameMode) {
@@ -47,16 +46,17 @@ public class GameMode {
         String[] args = constructor.split(":");
         GameMode initialized = new GameMode();
         try {
-            initialized.name = args[0];
-            initialized.lastDifficulty = GameView.Difficulty.valueOf(args[1]);
-            initialized.highscore = Integer.parseInt(args[2]);
-            initialized.oneStarPoints = Integer.parseInt(args[3]);
-            initialized.twoStarPoints = Integer.parseInt(args[4]);
-            initialized.threeStarPoints = Integer.parseInt(args[5]);
-            initialized.fourStarPoints = Integer.parseInt(args[6]);
-            initialized.fiveStarPoints = Integer.parseInt(args[7]);
-            initialized.instructions = args[8];
-            initialized.levelData = args[9];
+            initialized.key = args[0];
+            initialized.name = args[1];
+            initialized.lastDifficulty = GameView.Difficulty.valueOf(args[2]);
+            initialized.highscore = Integer.parseInt(args[3]);
+            initialized.oneStarPoints = Integer.parseInt(args[4]);
+            initialized.twoStarPoints = Integer.parseInt(args[5]);
+            initialized.threeStarPoints = Integer.parseInt(args[6]);
+            initialized.fourStarPoints = Integer.parseInt(args[7]);
+            initialized.fiveStarPoints = Integer.parseInt(args[8]);
+            initialized.instructions = args[9];
+            initialized.levelData = args[10];
             return initialized;
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Error parsing the given String. It should be " +
@@ -64,6 +64,10 @@ public class GameMode {
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new IllegalArgumentException("Not enough parameters");
         }
+    }
+
+    public String getKey() {
+        return key;
     }
 
     public String getName() {

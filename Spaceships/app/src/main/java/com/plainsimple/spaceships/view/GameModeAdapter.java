@@ -1,18 +1,13 @@
 package com.plainsimple.spaceships.view;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.plainsimple.spaceships.helper.GameMode;
 import com.plainsimple.spaceships.helper.GameModeManager;
-import com.plainsimple.spaceships.store.Equipment;
-
-import java.util.List;
 
 import plainsimple.spaceships.R;
 
@@ -29,15 +24,15 @@ public class GameModeAdapter extends RecyclerView.Adapter<GameModeAdapter.ViewHo
     // GameModes to display
     private GameMode[] displayedModes;
     // receives button clicked events
-    private GameModeAdapter.OnButtonClickedListener listener;
+    private OnGameModeSelected listener;
 
     // listener fired when user selects one of the GameMode buttons. Passes the button's corresponding GameMode object
-    public interface OnButtonClickedListener {
+    public interface OnGameModeSelected {
         void onGameModeSelected(GameMode selectedGameMode);
     }
 
     public GameModeAdapter(Context context, String[] gameModesToDisplay,
-                           GameModeAdapter.OnButtonClickedListener listener) throws NullPointerException {
+                           OnGameModeSelected listener) throws NullPointerException {
         if (listener == null) {
             throw new NullPointerException("Listener cannot be null");
         } else {

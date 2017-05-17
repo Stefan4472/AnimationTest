@@ -103,18 +103,21 @@ public class StartGameDialogFragment extends DialogFragment {
 
         // set initially-selected button
         if (args.containsKey(INITIAL_DIFFICULTY)) {
-            switch (args.getString(INITIAL_DIFFICULTY)) {
-                case GameActivity.DIFFICULTY_EASY:
-                    set_easy.setBackgroundResource(R.drawable.difficultybutton_selected);
-                    break;
-                case GameActivity.DIFFICULTY_MED:
-                    set_medium.setBackgroundResource(R.drawable.difficultybutton_selected);
-                    break;
-                case GameActivity.DIFFICULTY_HARD:
-                    set_hard.setBackgroundResource(R.drawable.difficultybutton_selected);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Invalid key (\"" + args.getString(INITIAL_DIFFICULTY) + "\")");
+            try {
+                GameView.Difficulty specified_diff = GameView.Difficulty.valueOf(args.getString(INITIAL_DIFFICULTY));
+                switch (specified_diff) {
+                    case EASY:
+                        set_easy.setBackgroundResource(R.drawable.difficultybutton_selected);
+                        break;
+                    case MEDIUM:
+                        set_medium.setBackgroundResource(R.drawable.difficultybutton_selected);
+                        break;
+                    case HARD:
+                        set_hard.setBackgroundResource(R.drawable.difficultybutton_selected);
+                        break;
+                }
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid key (\"" + args.getString(INITIAL_DIFFICULTY) + "\")");
             }
         } else { // default to medium
             set_medium.setBackgroundResource(R.drawable.difficultybutton_selected);
@@ -123,7 +126,7 @@ public class StartGameDialogFragment extends DialogFragment {
         set_easy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onDifficultySelected(StartGameDialogFragment.this, GameActivity.DIFFICULTY_EASY);
+                listener.onDifficultySelected(StartGameDialogFragment.this, GameView.Difficulty.EASY.toString());
                 set_easy.setBackgroundResource(R.drawable.difficultybutton_selected);
                 set_medium.setBackgroundResource(R.drawable.difficultybutton);
                 set_hard.setBackgroundResource(R.drawable.difficultybutton);
@@ -133,7 +136,7 @@ public class StartGameDialogFragment extends DialogFragment {
         set_medium.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onDifficultySelected(StartGameDialogFragment.this, GameActivity.DIFFICULTY_MED);
+                listener.onDifficultySelected(StartGameDialogFragment.this, GameView.Difficulty.MEDIUM.toString());
                 set_easy.setBackgroundResource(R.drawable.difficultybutton);
                 set_medium.setBackgroundResource(R.drawable.difficultybutton_selected);
                 set_hard.setBackgroundResource(R.drawable.difficultybutton);
@@ -143,7 +146,7 @@ public class StartGameDialogFragment extends DialogFragment {
         set_hard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onDifficultySelected(StartGameDialogFragment.this, GameActivity.DIFFICULTY_HARD);
+                listener.onDifficultySelected(StartGameDialogFragment.this, GameView.Difficulty.HARD.toString());
                 set_easy.setBackgroundResource(R.drawable.difficultybutton);
                 set_medium.setBackgroundResource(R.drawable.difficultybutton);
                 set_hard.setBackgroundResource(R.drawable.difficultybutton_selected);
