@@ -39,7 +39,8 @@ public class Equipment {
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new IllegalArgumentException("Not enough parameters");
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Error casting one of the values. String is " + constructor);
+            throw new IllegalArgumentException("Error parsing the given String. It should be the toString()" +
+                    "of an Equipment object");
         }
     }
 

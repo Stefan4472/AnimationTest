@@ -21,7 +21,6 @@ import plainsimple.spaceships.R;
 
 public class PlayScreenActivity extends Activity implements StartGameDialogFragment.StartGameDialogListener {
 
-    private FontButton playButton;
     // key of difficulty level selected
     private String selectedDifficulty = GameActivity.DIFFICULTY_EASY;
 
@@ -35,8 +34,6 @@ public class PlayScreenActivity extends Activity implements StartGameDialogFragm
 
         // set content view/layout to gameview layout
         setContentView(R.layout.playscreen_layout);
-        // set up view elements
-        playButton = (FontButton) findViewById(R.id.playbutton);
     }
 
     // launch StartGameDialogFragment

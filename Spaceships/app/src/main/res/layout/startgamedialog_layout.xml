@@ -5,6 +5,7 @@
     <com.plainsimple.spaceships.view.FontTextView
         style="@style/GalaxyMonkey.TextStyle"
         android:id="@+id/gamemode"
+        android:textSize="40dp"
         android:text="@string/endless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

@@ -88,12 +88,37 @@ public class StartGameDialogFragment extends DialogFragment {
         // retrieve arguments from bundle (can't use savedInstanceState)
         Bundle args = getArguments();
 
+        // set title to specified game mode
+        FontTextView dialog_title = (FontTextView) view.findViewById(R.id.gamemode);
+        if (args != null) {
+            dialog_title.setText(args.getString(GAMEMODE_KEY));
+        }
+
         // give buttons on-click listeners that fire onDifficultySelected and set proper button's
         // background to difficultybutton_selected.xml and the others to difficultybutton.xml
-        // (sort of like a radio button)
+        // (sort of like a radio button) todo: more efficient code
         final FontButton set_easy = (FontButton) view.findViewById(R.id.set_easy);
         final FontButton set_medium = (FontButton) view.findViewById(R.id.set_medium);
         final FontButton set_hard = (FontButton) view.findViewById(R.id.set_hard);
+
+        // set initially-selected button
+        if (args.containsKey(INITIAL_DIFFICULTY)) {
+            switch (args.getString(INITIAL_DIFFICULTY)) {
+                case GameActivity.DIFFICULTY_EASY:
+                    set_easy.setBackgroundResource(R.drawable.difficultybutton_selected);
+                    break;
+                case GameActivity.DIFFICULTY_MED:
+                    set_medium.setBackgroundResource(R.drawable.difficultybutton_selected);
+                    break;
+                case GameActivity.DIFFICULTY_HARD:
+                    set_hard.setBackgroundResource(R.drawable.difficultybutton_selected);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid key (\"" + args.getString(INITIAL_DIFFICULTY) + "\")");
+            }
+        } else { // default to medium
+            set_medium.setBackgroundResource(R.drawable.difficultybutton_selected);
+        }
 
         set_easy.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,12 +157,6 @@ public class StartGameDialogFragment extends DialogFragment {
                 listener.onPlayPressed(StartGameDialogFragment.this);
             }
         });
-
-        // set title to specified game mode
-        FontTextView dialog_title = (FontTextView) view.findViewById(R.id.gamemode);
-        if (args != null) {
-            dialog_title.setText(args.getString(GAMEMODE_KEY));
-        }
     }
 
     @Override
