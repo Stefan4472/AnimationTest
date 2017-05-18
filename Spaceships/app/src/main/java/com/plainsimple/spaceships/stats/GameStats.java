@@ -33,7 +33,7 @@ public class GameStats implements StatsContainer { // todo: use enums shared wit
 
     protected HashMap<String, Double> values = new HashMap<>();
 
-    public GameStats() {
+    public GameStats() { // todo: better design
         values.put(ALIENS_KILLED, new Double(0));
         values.put(TIME_PLAYED, new Double(0));
         values.put(DISTANCE_TRAVELED, new Double(0));
@@ -104,6 +104,10 @@ public class GameStats implements StatsContainer { // todo: use enums shared wit
             default:
                 throw new IllegalArgumentException("The key \'" + key + "\' was not recognized!");
         }
+    }
+
+    public Double getScore() {
+        return values.get(GAME_SCORE);
     }
 
     @Override

@@ -55,6 +55,9 @@ public class Background {
         if (background == null) {
             Log.d("Background", "Background is null???");
         }
+        if (canvas == null) {
+            Log.d("Background", "Canvas is null");
+        }
         canvas.drawBitmap(background, src, dst, null);
         src = new Rect(0, 0, offset, screenH);
         dst = new Rect(screenW - offset, 0, screenW, screenH);

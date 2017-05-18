@@ -19,7 +19,7 @@ public class GameModeManager {
     private static final String PREFERENCES_FILE_KEY = "com.plainsimple.spaceships.GAMEMODE_FILE_KEY";
 
     // available GameModes
-    public static final String ENDLESS_0 = "ENDLESS_0"; // todo: efficiency?
+    public static final String ENDLESS_0 = "ENDLESS_0"; // todo: efficiency? enums?
     public static final String ENDLESS_1 = "ENDLESS_1";
     public static final String ENDLESS_2 = "ENDLESS_2";
     public static final String CAMPAIGN_0 = "CAMPAIGN_0";
@@ -58,10 +58,9 @@ public class GameModeManager {
     // the GameMode object resulting from it. The keys must be one of the "available GameModes"
     // defined above. Throws IllegalArgumentException if key is invalid.
     public static GameMode retrieve(Context context, String gameModeKey) throws IllegalArgumentException {
-        Log.d("GameModeManager", "Retrieving " + gameModeKey);
         SharedPreferences data = context.getSharedPreferences(PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
         if (defaultStrings.containsKey(gameModeKey)) {
-            Log.d("GameModeManager", "GameModeKey is valid, returns " + defaultStrings.get(gameModeKey));
+            Log.d("GameModeManager", "Retrieving " + gameModeKey);
             return GameMode.fromString(data.getString(gameModeKey, defaultStrings.get(gameModeKey)));
         } else {
             throw new IllegalArgumentException("Unrecognized key (\"" + gameModeKey + "\")");
@@ -74,6 +73,7 @@ public class GameModeManager {
         // get a handle to correct SharedPreferences fiel
         SharedPreferences data = context.getSharedPreferences(PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
         if (defaultStrings.containsKey(gameModeKey)) {
+            Log.d("GameModeManager", "Putting " + gameMode + " under " + gameModeKey);
             data.edit().putString(gameModeKey, gameMode.toString()).commit();
         } else {
             throw new IllegalArgumentException("Unrecognized key (\"" + gameModeKey + "\")");

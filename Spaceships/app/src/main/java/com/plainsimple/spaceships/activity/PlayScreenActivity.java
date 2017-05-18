@@ -62,6 +62,7 @@ public class PlayScreenActivity extends Activity implements StartGameDialogFragm
 
     @Override // update selectedDifficulty with given difficulty
     public void onDifficultySelected(DialogFragment dialog, String difficulty) {
+        // todo: should we remember the change, even if the user exits before playing?
         selectedDifficulty = difficulty;
         Log.d("PlayScreenActivity", "Difficulty updated to " + difficulty);
     }

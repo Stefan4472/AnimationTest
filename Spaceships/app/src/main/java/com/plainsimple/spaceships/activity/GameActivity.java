@@ -54,6 +54,8 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
 
     // GameMode object containing all data required to administer the selected GameMode
     private GameMode gameMode;
+    // difficulty game is being played at
+    private GameView.Difficulty difficulty;
 
     // whether the user selected to quit the game
     private boolean quit = false;
@@ -75,8 +77,8 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
     private static final String GAME_VOLUME_KEY = "gameVolume";
     private static final String MUSIC_VOLUME_KEY = "musicVolume";
     private static final String MUTED_KEY = "MUTED";
-    public static final String DIFFICULTY_KEY = "GAME_DIFFICULTY";
-    public static final String GAMEMODE_KEY = "GAMEMODE";
+    public static final String DIFFICULTY_KEY = "SELECTED_GAME_DIFFICULTY";
+    public static final String GAMEMODE_KEY = "SELECTED_GAMEMODE";
 
     @Override // loads everything required and starts the game. Requires a bundle with valid
     // DIFFICULTY_KEY and GAMEMODE_KEY params. Throws IllegalArgumentException if this is not the
@@ -113,7 +115,8 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
 
         try {
             gameMode = GameModeManager.retrieve(this, args.getString(GAMEMODE_KEY));
-            gameView.setDifficultyLevel(GameView.Difficulty.valueOf(args.getString(DIFFICULTY_KEY)));
+            difficulty = GameView.Difficulty.valueOf(args.getString(DIFFICULTY_KEY));
+            gameView.setDifficultyLevel(difficulty);
             Log.d("GameActivity", "Playing " + gameMode.getName() + " on " + args.getString(DIFFICULTY_KEY));
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("GameActivity requires a Bundle with valid " +
@@ -217,7 +220,7 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
             muteButton.setBackgroundResource(R.drawable.sound_on);
             playSound(SoundID.BUTTON_CLICKED);
         }
-        AudioManager a_manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        AudioManager a_manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         a_manager.setStreamMute(AudioManager.STREAM_MUSIC, muted);
     }
 
@@ -300,8 +303,7 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
                 downArrow.setVisibility(View.INVISIBLE);
             }
         });
-        // display GameOverDialogFragment todo: fade-in animation
-        Log.d("GameActivity.java", "Displaying GameOverDialog");
+        // update stats and display GameOverDialogFragment
         gameView.forceUpdateStats();
         DialogFragment d = GameOverDialogFragment.newInstance(GameView.currentStats);
         d.show(getFragmentManager(), "GameOver");
@@ -322,17 +324,28 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         });
     }
 
-    // updates lifetime stats from GameView's current run
-    private void updateStats() {
+    // updates all necessary statistics using data from GameView's current run. This includes
+    // LifeTimeGameStats, Coins, and GameMode-specific stats. Returns this run's score - GameMode's
+    // highscore (will be positive if a high score).
+    private int updateStats() { // todo: improve
         // ensure gameView's stats are up to date
         gameView.forceUpdateStats();
         // update lifetime stats with this game's collected stats
         LifeTimeGameStats lifetime_stats = new LifeTimeGameStats(this); // todo: make private field?
         lifetime_stats.update(GameView.currentStats);
-        Log.d("GameActivity.java", "Lifetime stats:\n" + lifetime_stats.toString());
         // add coins collected in game to current available coins (stored in EquipmentManager)
         EquipmentManager coin_manager = new EquipmentManager(this);
         coin_manager.addCoins((int) GameView.currentStats.get(GameStats.COINS_COLLECTED));
+        // update GameMode specific data and commit to GameModeManager
+        int return_val = GameView.currentStats.getScore().intValue() - gameMode.getHighscore();
+        if (return_val > 0) {
+            gameMode.setHighscore(GameView.currentStats.getScore().intValue());
+            Log.d("GameActivity", "Highscore! by " + return_val);
+        }
+        // ensure GameMode is set to correct difficulty
+        gameMode.setLastDifficulty(difficulty);
+        GameModeManager.put(this, gameMode.getKey(), gameMode);
+        return return_val;
     }
 
     @Override // we do not restore game state here--only in onCreate
