@@ -26,10 +26,8 @@ import plainsimple.spaceships.R;
 public class PlayScreenActivity extends Activity implements StartGameDialogFragment.StartGameDialogListener,
         GameModeAdapter.OnGameModeSelected {
 
-    // key of GameMode selected
-    private String selectedGameModeKey;
-    // key of difficulty level selected
-    private String selectedDifficulty = GameView.Difficulty.EASY.toString(); // todo: readability improvements
+    // GameMode selected
+    private GameMode selectedGameMode;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +51,7 @@ public class PlayScreenActivity extends Activity implements StartGameDialogFragm
     public void onGameModeSelected(GameMode selectedGameMode) {
         Log.d("PlayScreenActivity", "Received Selection for " + selectedGameMode.getName());
         // update selectedGameModeKey
-        this.selectedGameModeKey = selectedGameMode.getKey();
+        this.selectedGameMode = selectedGameMode;
         // launch dialog
         DialogFragment d = StartGameDialogFragment.newInstance(selectedGameMode.getName(),
                 selectedGameMode.getLastDifficulty().toString());
@@ -61,9 +59,9 @@ public class PlayScreenActivity extends Activity implements StartGameDialogFragm
     }
 
     @Override // update selectedDifficulty with given difficulty
-    public void onDifficultySelected(DialogFragment dialog, String difficulty) {
-        // todo: should we remember the change, even if the user exits before playing?
-        selectedDifficulty = difficulty;
+    public void onDifficultySelected(DialogFragment dialog, GameView.Difficulty difficulty) {
+        // todo: should we commit the change, even if the user exits before playing?
+        selectedGameMode.setLastDifficulty(difficulty);
         Log.d("PlayScreenActivity", "Difficulty updated to " + difficulty);
     }
 
@@ -71,8 +69,8 @@ public class PlayScreenActivity extends Activity implements StartGameDialogFragm
     public void onPlayPressed(DialogFragment dialog) {
         Intent game_intent = new Intent(this, GameActivity.class);
         Bundle b = new Bundle();
-        b.putString(GameActivity.DIFFICULTY_KEY, selectedDifficulty);
-        b.putString(GameActivity.GAMEMODE_KEY, selectedGameModeKey);
+        b.putString(GameActivity.DIFFICULTY_KEY, selectedGameMode.getLastDifficulty().toString());
+        b.putString(GameActivity.GAMEMODE_KEY, selectedGameMode.getKey());
         game_intent.putExtras(b);
         startActivity(game_intent);
     }
