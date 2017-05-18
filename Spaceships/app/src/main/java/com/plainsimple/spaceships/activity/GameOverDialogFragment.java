@@ -15,12 +15,14 @@ import android.widget.ListView;
 import com.plainsimple.spaceships.stats.StatsContainer;
 import com.plainsimple.spaceships.stats.StatsRowAdapter;
 import com.plainsimple.spaceships.view.FontButton;
+import com.plainsimple.spaceships.view.FontTextView;
 
 import plainsimple.spaceships.R;
 
 /**
- * Pop-up dialog when game has finished. Gives option to restart the game
- * or quit and return to main menu
+ * Pop-up dialog when game has finished. Displays statistics from game that was just completed
+ * (provided by StatsContainer object) as well as whether it was a highscore. Gives option to play
+ * again or quit and return to main menu
  */
 
 public class GameOverDialogFragment extends DialogFragment {
@@ -40,8 +42,11 @@ public class GameOverDialogFragment extends DialogFragment {
     private static final String KEYS_ARRAY = "KEYS_ARRAY";
     private static final String VALUES_ARRAY = "VALUES_ARRAY";
 
+    // key used for storing whether this is a highscore
+    private static final String HIGHSCORE_KEY = "HIGHSCORE";
+
     // initializes and returns a new instance of GameOverDialogFragment // todo: only show non-zero stats?
-    public static GameOverDialogFragment newInstance(StatsContainer displayedStats) {
+    public static GameOverDialogFragment newInstance(StatsContainer displayedStats, boolean highScore) {
         GameOverDialogFragment dialog = new GameOverDialogFragment();
 
         Bundle bundle = new Bundle();
@@ -56,9 +61,10 @@ public class GameOverDialogFragment extends DialogFragment {
             values[i] = displayedStats.getFormatted(keys[i]);
         }
 
-        // putBitmap both arrays in the bundle
+        // put both arrays and highscore boolean in the bundle
         bundle.putStringArray(KEYS_ARRAY, keys);
         bundle.putStringArray(VALUES_ARRAY, values);
+        bundle.putBoolean(HIGHSCORE_KEY, highScore);
 
         dialog.setArguments(bundle);
 
@@ -112,6 +118,11 @@ public class GameOverDialogFragment extends DialogFragment {
                 bundle.getStringArray(KEYS_ARRAY), bundle.getStringArray(VALUES_ARRAY));
         game_stats.setAdapter(adapter);
 
+        // make highscore FontTextView visible if this game was a highscore
+        if (bundle.getBoolean(HIGHSCORE_KEY)) {
+            FontTextView highscore_label = (FontTextView) view.findViewById(R.id.highscore);
+            highscore_label.setVisibility(View.VISIBLE);
+        }
         // button to quit game
         FontButton quit_button = (FontButton) view.findViewById(R.id.quitbutton);
         quit_button.setOnClickListener(new View.OnClickListener() {

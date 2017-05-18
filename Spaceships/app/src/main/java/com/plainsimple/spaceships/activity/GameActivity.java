@@ -249,10 +249,9 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
 
     @Override // handles the user quitting from the PauseDialog or
     // GameOverDialog. Overrided from PauseDialogListener and GameOverDialogListener
-    public void onQuitPressed(DialogFragment dialog) {
+    public void onQuitPressed(DialogFragment dialog) { // todo: wouldn't save stats if prematurely exited
         playSound(SoundID.BUTTON_CLICKED);
         quit = true;
-        updateStats();
         Log.d("GameActivity", "Quitting game");
         finish();
     }
@@ -262,7 +261,6 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
     public void onRestartPressed(DialogFragment dialog) {
         playSound(SoundID.BUTTON_CLICKED);
         dialog.dismiss();
-        updateStats();
         gameView.restartGame();
         healthBarView.setCurrentHealth(equippedArmor.getHP());
         paused = false;
@@ -303,9 +301,11 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
                 downArrow.setVisibility(View.INVISIBLE);
             }
         });
-        // update stats and display GameOverDialogFragment
+        // update all stats and display GameOverDialogFragment
         gameView.forceUpdateStats();
-        DialogFragment d = GameOverDialogFragment.newInstance(GameView.currentStats);
+        boolean high_score = updateStats();
+
+        DialogFragment d = GameOverDialogFragment.newInstance(GameView.currentStats, high_score);
         d.show(getFragmentManager(), "GameOver");
     }
 
@@ -325,9 +325,9 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
     }
 
     // updates all necessary statistics using data from GameView's current run. This includes
-    // LifeTimeGameStats, Coins, and GameMode-specific stats. Returns this run's score - GameMode's
-    // highscore (will be positive if a high score).
-    private int updateStats() { // todo: improve
+    // LifeTimeGameStats, Coins, and GameMode-specific stats. Returns whether this run was a highscore
+    // for the GameMode
+    private boolean updateStats() { // todo: improve
         // ensure gameView's stats are up to date
         gameView.forceUpdateStats();
         // update lifetime stats with this game's collected stats
@@ -337,15 +337,15 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         EquipmentManager coin_manager = new EquipmentManager(this);
         coin_manager.addCoins((int) GameView.currentStats.get(GameStats.COINS_COLLECTED));
         // update GameMode specific data and commit to GameModeManager
-        int return_val = GameView.currentStats.getScore().intValue() - gameMode.getHighscore();
-        if (return_val > 0) {
+        boolean high_score = GameView.currentStats.getScore().intValue() - gameMode.getHighscore() > 0;
+        if (high_score) {
             gameMode.setHighscore(GameView.currentStats.getScore().intValue());
-            Log.d("GameActivity", "Highscore! by " + return_val);
+            Log.d("GameActivity", "Highscore!");
         }
         // ensure GameMode is set to correct difficulty
         gameMode.setLastDifficulty(difficulty);
         GameModeManager.put(this, gameMode.getKey(), gameMode);
-        return return_val;
+        return high_score;
     }
 
     @Override // we do not restore game state here--only in onCreate
