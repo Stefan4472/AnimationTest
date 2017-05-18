@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -28,9 +27,9 @@ public class PlayScreenActivity extends Activity implements StartGameDialogFragm
         GameModeAdapter.OnGameModeSelected {
 
     // key of GameMode selected
-    private String selectedGameMode;
+    private String selectedGameModeKey;
     // key of difficulty level selected
-    private String selectedDifficulty = GameView.Difficulty.EASY.toString();
+    private String selectedDifficulty = GameView.Difficulty.EASY.toString(); // todo: readability improvements
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,8 +52,8 @@ public class PlayScreenActivity extends Activity implements StartGameDialogFragm
     // display the StartGameDialogFragment with the correct data
     public void onGameModeSelected(GameMode selectedGameMode) {
         Log.d("PlayScreenActivity", "Received Selection for " + selectedGameMode.getName());
-        // update selectedGameMode
-        this.selectedGameMode = selectedGameMode.getKey();
+        // update selectedGameModeKey
+        this.selectedGameModeKey = selectedGameMode.getKey();
         // launch dialog
         DialogFragment d = StartGameDialogFragment.newInstance(selectedGameMode.getName(),
                 selectedGameMode.getLastDifficulty().toString());
@@ -67,13 +66,12 @@ public class PlayScreenActivity extends Activity implements StartGameDialogFragm
         Log.d("PlayScreenActivity", "Difficulty updated to " + difficulty);
     }
 
-    @Override // launch the game with last-selected difficulty
+    @Override // launch the game with selected GameMode and difficulty
     public void onPlayPressed(DialogFragment dialog) {
-        // launch PlayScreenActivity
         Intent game_intent = new Intent(this, GameActivity.class);
-        // specify difficulty level
         Bundle b = new Bundle();
         b.putString(GameActivity.DIFFICULTY_KEY, selectedDifficulty);
+        b.putString(GameActivity.GAMEMODE_KEY, selectedGameModeKey);
         game_intent.putExtras(b);
         startActivity(game_intent);
     }

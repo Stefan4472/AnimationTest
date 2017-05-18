@@ -20,6 +20,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 
+import com.plainsimple.spaceships.helper.GameMode;
+import com.plainsimple.spaceships.helper.GameModeManager;
 import com.plainsimple.spaceships.store.ArmorType;
 import com.plainsimple.spaceships.store.CannonType;
 import com.plainsimple.spaceships.store.EquipmentManager;
@@ -50,6 +52,9 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
     private ImageButton upArrow;
     private ImageButton downArrow;
 
+    // GameMode object containing all data required to administer the selected GameMode
+    private GameMode gameMode;
+
     // whether the user selected to quit the game
     private boolean quit = false;
     private static boolean paused = false;
@@ -71,9 +76,12 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
     private static final String MUSIC_VOLUME_KEY = "musicVolume";
     private static final String MUTED_KEY = "MUTED";
     public static final String DIFFICULTY_KEY = "GAME_DIFFICULTY";
+    public static final String GAMEMODE_KEY = "GAMEMODE";
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+    @Override // loads everything required and starts the game. Requires a bundle with valid
+    // DIFFICULTY_KEY and GAMEMODE_KEY params. Throws IllegalArgumentException if this is not the
+    // case.
+    public void onCreate(Bundle savedInstanceState) throws IllegalArgumentException {
         super.onCreate(savedInstanceState);
 
         // go full screen
@@ -101,18 +109,17 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
 
-        // unpack bundle and determine difficulty by comparing to GameView enums
         Bundle args = getIntent().getExtras();
-        if (args != null && args.containsKey(DIFFICULTY_KEY)) {
-            Log.d("GameActivity", "Retrieved difficulty level (" + args.getString(DIFFICULTY_KEY) + ")");
-            try {
-                gameView.setDifficultyLevel(GameView.Difficulty.valueOf(args.getString(DIFFICULTY_KEY)));
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("Invalid Difficulty Key");
-            }
-        } else { // default to EASY
-            gameView.setDifficultyLevel(GameView.Difficulty.EASY);
+
+        try {
+            gameMode = GameModeManager.retrieve(this, args.getString(GAMEMODE_KEY));
+            gameView.setDifficultyLevel(GameView.Difficulty.valueOf(args.getString(DIFFICULTY_KEY)));
+            Log.d("GameActivity", "Playing " + gameMode.getName() + " on " + args.getString(DIFFICULTY_KEY));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("GameActivity requires a Bundle with valid " +
+                    "GAMEMODE_KEY and DIFFICULTY_KEY params");
         }
+
         // initialize listeners
         upArrow = (ImageButton) findViewById(R.id.up_arrow);
         upArrow.setOnTouchListener(new View.OnTouchListener() {
