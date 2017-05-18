@@ -82,6 +82,11 @@ public class GameModeManager {
 
     // returns all GameModeKeys in a String array
     public static String[] getGameModeKeys() {
-        return defaultStrings.keySet().toArray(new String[defaultStrings.size()]);
+        return new String[] {
+                ENDLESS_0,
+                ENDLESS_1,
+                ENDLESS_2,
+                CAMPAIGN_0
+        };
     }
 }

@@ -90,8 +90,10 @@ public class StartGameDialogFragment extends DialogFragment {
 
         // set title to specified game mode
         FontTextView dialog_title = (FontTextView) view.findViewById(R.id.gamemode);
-        if (args != null) {
+        if (args != null && args.containsKey(GAMEMODE_KEY)) {
             dialog_title.setText(args.getString(GAMEMODE_KEY));
+        } else {
+            dialog_title.setText("No GameMode Specified");
         }
 
         // give buttons on-click listeners that fire onDifficultySelected and set proper button's

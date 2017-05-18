@@ -2,17 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <com.plainsimple.spaceships.view.FontButton
+    <com.plainsimple.spaceships.view.FontTextView
         style="@style/GalaxyMonkey.ButtonTextStyle"
-        android:id="@+id/playbutton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button_play"
-        android:onClick="onPlayPressed"/>
+        android:layout_gravity="center_horizontal"
+        android:text="@string/available_gamemodes"/>
     <!-- displays available GameModes in a vertical list as defined by GameModeAdapter -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/available_modes"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+    <!-- Return to Menu button that finishes the PlayScreen activity -->
+    <com.plainsimple.spaceships.view.FontButton
+        style="@style/GalaxyMonkey.TextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/return_to_menu"
+        android:onClick="onReturnToMenuPressed"/>
 </LinearLayout>

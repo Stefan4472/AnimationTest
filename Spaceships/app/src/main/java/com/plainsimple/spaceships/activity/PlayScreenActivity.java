@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -48,10 +49,16 @@ public class PlayScreenActivity extends Activity implements StartGameDialogFragm
         available_modes.setAdapter(new GameModeAdapter(this, GameModeManager.getGameModeKeys(), this));
     }
 
-    // launch StartGameDialogFragment
-    public void onPlayPressed(View view) {
-//        DialogFragment d = StartGameDialogFragment.newInstance("Endless", GameActivity.DIFFICULTY_EASY);
-//        d.show(getFragmentManager(), "Start Game");
+    @Override // fired when the user selects a GameMode from the available_modes RecyclerView
+    // display the StartGameDialogFragment with the correct data
+    public void onGameModeSelected(GameMode selectedGameMode) {
+        Log.d("PlayScreenActivity", "Received Selection for " + selectedGameMode.getName());
+        // update selectedGameMode
+        this.selectedGameMode = selectedGameMode.getKey();
+        // launch dialog
+        DialogFragment d = StartGameDialogFragment.newInstance(selectedGameMode.getName(),
+                selectedGameMode.getLastDifficulty().toString());
+        d.show(getFragmentManager(), "Start Game");
     }
 
     @Override // update selectedDifficulty with given difficulty
@@ -71,14 +78,8 @@ public class PlayScreenActivity extends Activity implements StartGameDialogFragm
         startActivity(game_intent);
     }
 
-    @Override // fired when the user selects a GameMode from the available_modes RecyclerView
-    // display the StartGameDialogFragment with the correct data
-    public void onGameModeSelected(GameMode selectedGameMode) {
-        // update selectedGameMode
-        this.selectedGameMode = selectedGameMode.getKey();
-        // launch dialog
-        DialogFragment d = StartGameDialogFragment.newInstance(selectedGameMode.getName(),
-                selectedGameMode.getLastDifficulty().toString());
-        d.show(getFragmentManager(), "Start Game");
+    // called when the user clicks the button to Return to Menu. Finishes the Activity.
+    public void onReturnToMenuPressed(View view) {
+        finish();
     }
 }

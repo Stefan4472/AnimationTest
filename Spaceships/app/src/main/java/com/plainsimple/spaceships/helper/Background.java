@@ -52,6 +52,9 @@ public class Background {
         int offset = pixelsScrolled % screenW;
         Rect src = new Rect(offset, 0, screenW, screenH);
         Rect dst = new Rect(0, 0, src.width(), screenH);
+        if (background == null) {
+            Log.d("Background", "Background is null???");
+        }
         canvas.drawBitmap(background, src, dst, null);
         src = new Rect(0, 0, offset, screenH);
         dst = new Rect(screenW - offset, 0, screenW, screenH);
