@@ -14,7 +14,7 @@ import plainsimple.spaceships.R;
 
 public class EquipmentManager {
 
-    // equipment id's (equal to toString of their corresponding enum
+    // equipment id's (equal to getDebugString of their corresponding enum
     // for convenience)
     public final static String CANNONS_0_KEY = CannonType.CANNON_0.toString();
     public final static String CANNONS_1_KEY = CannonType.CANNON_1.toString();

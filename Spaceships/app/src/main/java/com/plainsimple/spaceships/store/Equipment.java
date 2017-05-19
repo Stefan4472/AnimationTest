@@ -29,7 +29,7 @@ public class Equipment {
     }
 
     // creates the object using information from the given String, which must be in the correct format.
-    // The string should be the toString() of an Equipment object
+    // The string should be the getDebugString() of an Equipment object
     public static Equipment fromString(String constructor) throws IllegalArgumentException {
         Equipment constructed = new Equipment();
         String[] values = constructor.split(":");
@@ -45,7 +45,7 @@ public class Equipment {
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new IllegalArgumentException("Not enough parameters");
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Error parsing the given String. It should be the toString()" +
+            throw new IllegalArgumentException("Error parsing the given String. It should be the getDebugString()" +
                     "of an Equipment object");
         }
     }

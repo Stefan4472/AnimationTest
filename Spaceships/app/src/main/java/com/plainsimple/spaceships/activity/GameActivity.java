@@ -3,10 +3,6 @@ package com.plainsimple.spaceships.activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -26,7 +22,7 @@ import com.plainsimple.spaceships.store.ArmorType;
 import com.plainsimple.spaceships.store.CannonType;
 import com.plainsimple.spaceships.store.EquipmentManager;
 import com.plainsimple.spaceships.stats.GameStats;
-import com.plainsimple.spaceships.stats.LifeTimeGameStats;
+import com.plainsimple.spaceships.stats.StatsManager;
 import com.plainsimple.spaceships.store.RocketType;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
@@ -324,14 +320,13 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
     }
 
     // updates all necessary statistics using data from GameView's current run. This includes
-    // LifeTimeGameStats, Coins, and GameMode-specific stats. Returns whether this run was a highscore
+    // StatsManager, Coins, and GameMode-specific stats. Returns whether this run was a highscore
     // for the GameMode
     private boolean updateStats() { // todo: improve
         // ensure gameView's stats are up to date
         gameView.forceUpdateStats();
         // update lifetime stats with this game's collected stats
-        LifeTimeGameStats lifetime_stats = new LifeTimeGameStats(this); // todo: make private field?
-        lifetime_stats.update(GameView.currentStats);
+        StatsManager.update(GameView.currentStats);
         // add coins collected in game to current available coins (stored in EquipmentManager)
         EquipmentManager.addCoins((int) GameView.currentStats.get(GameStats.COINS_COLLECTED));
         // update GameMode specific data and commit to GameModeManager

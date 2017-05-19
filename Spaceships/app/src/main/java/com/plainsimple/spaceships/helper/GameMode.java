@@ -4,7 +4,7 @@ import com.plainsimple.spaceships.view.GameView;
 
 /**
  * Stores all information required to administer a specific GameMode. GameModes are written for easy
- * persistent storage and retrieval via the toString/fromString methods.
+ * persistent storage and retrieval via the getDebugString/fromString methods.
  */
 
 public class GameMode {
@@ -40,7 +40,7 @@ public class GameMode {
     }
 
     // creates a GameMode object from the given String. Only works if the String was generated
-    // by a GameMode's toString() method (requires specific format!). Throws IllegalArgumentException
+    // by a GameMode's getDebugString() method (requires specific format!). Throws IllegalArgumentException
     // if given String cannot be parsed.
     public static GameMode fromString(String constructor) throws IllegalArgumentException {
         String[] args = constructor.split(":");

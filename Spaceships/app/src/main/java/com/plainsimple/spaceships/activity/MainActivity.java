@@ -1,13 +1,9 @@
 package com.plainsimple.spaceships.activity;
 
-import android.animation.Animator;
 import android.animation.AnimatorInflater;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -17,11 +13,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 
 import com.plainsimple.spaceships.helper.GameModeManager;
-import com.plainsimple.spaceships.imagetransition.SlideInTransition;
+import com.plainsimple.spaceships.stats.StatsManager;
 import com.plainsimple.spaceships.store.EquipmentManager;
 import com.plainsimple.spaceships.view.FontButton;
 import com.plainsimple.spaceships.view.FontTextView;
@@ -51,6 +46,7 @@ public class MainActivity extends Activity {
         // initialize classes requiring Context to access SharedPreferences
         EquipmentManager.init(this);
         GameModeManager.init(this);
+        StatsManager.init(this);
 
         initMedia();
 

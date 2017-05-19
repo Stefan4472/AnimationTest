@@ -11,7 +11,7 @@ import java.util.Hashtable;
 import java.util.NoSuchElementException;
 
 /**
- * Bitmap cache for R.drawables. Retrieved using BitmapID.toString()
+ * Bitmap cache for R.drawables. Retrieved using BitmapID.getDebugString()
  */
 public class BitmapCache {
 

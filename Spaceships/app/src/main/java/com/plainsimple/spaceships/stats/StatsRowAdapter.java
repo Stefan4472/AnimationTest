@@ -17,10 +17,8 @@ import plainsimple.spaceships.R;
  * in two String arrays. The keys array stores the keys in the order prescribed
  * by the StatsContainer. The values array stores the formatted String
  * values of each actual statistic, in corresponding order (i.e. values[i]
- * is the value of keys[i]). Two constructors are given: one takes a
- * StatsContainer object and creates the two arrays from it, and the
- * other takes two already-created arrays. The arrays must be of the same
- * length.
+ * is the value of keys[i]). The constructor takes these two already-created arrays, which
+ * must be of the same length.
  */
 
 public class StatsRowAdapter extends ArrayAdapter<String> {
@@ -33,35 +31,18 @@ public class StatsRowAdapter extends ArrayAdapter<String> {
     // each index of values corresponds to the same index in keys[]
     private String[] values;
 
-    // constructor taking StatsContainer object
-    public StatsRowAdapter(Context context, int rId, StatsContainer stats) {
-        super(context, rId, stats.getKeysToDisplay());
-        this.context = context;
-        this.rId = rId;
-
-        keys = stats.getKeysToDisplay();
-        values = new String[keys.length];
-
-        // populate values[] array
-        for (int i = 0; i < keys.length; i++) {
-            values[i] = stats.getFormatted(keys[i]);
-        }
-    }
-
-    // constructor taking keys[] and values[] arrays. Must be same length
+    // constructor taking keys[] and values[] arrays. Must be same length todo: what's up with rId?
     public StatsRowAdapter(Context context, int rId, String[] keys, String[] values) throws IllegalArgumentException {
         super(context, rId, keys);
         this.context = context;
         this.rId = rId;
 
-        if (keys == null || values == null) {
-            throw new NullPointerException("Cannot be null");
-        } else if (keys.length != values.length) {
+        if (keys.length != values.length) {
             throw new IllegalArgumentException("Keys.length must be equal to values.length");
+        } else {
+            this.keys = keys;
+            this.values = values;
         }
-
-        this.keys = keys;
-        this.values = values;
     }
 
     @Override

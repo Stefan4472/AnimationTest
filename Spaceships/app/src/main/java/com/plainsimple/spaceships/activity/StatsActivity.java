@@ -8,7 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ListView;
 
-import com.plainsimple.spaceships.stats.LifeTimeGameStats;
+import com.plainsimple.spaceships.stats.StatsManager;
 import com.plainsimple.spaceships.stats.StatsRowAdapter;
 
 import plainsimple.spaceships.R;
@@ -31,11 +31,14 @@ public class StatsActivity extends Activity {
         setContentView(R.layout.stats_layout);
         listView = (ListView) findViewById(R.id.stats_list_view);
 
-        // get a handle to lifetime stats
-        LifeTimeGameStats stats = new LifeTimeGameStats(this);
-
+        // get String array of StatsManager keys and values
+        String[] keys = new StatsManager().getKeysToDisplay(); // todo: clean up, remove StatsContainer interface
+        String[] vals = new String[keys.length];
+        for (int i = 0; i < vals.length; i++) {
+            vals[i] = new StatsManager().getFormatted(keys[i]);
+        }
         // create adapter instance to display content in each row of ListView
-        StatsRowAdapter adapter = new StatsRowAdapter(this, R.layout.statsrow_layout, stats);
+        StatsRowAdapter adapter = new StatsRowAdapter(this, R.layout.statsrow_layout, keys, vals);
         listView.setAdapter(adapter);
 
         // add the "Back to Menu" button below the ListView as a footer
