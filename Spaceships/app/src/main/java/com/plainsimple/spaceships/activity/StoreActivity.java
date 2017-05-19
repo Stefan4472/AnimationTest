@@ -1,7 +1,6 @@
 package com.plainsimple.spaceships.activity;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -14,15 +13,12 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.store.Equipment;
 import com.plainsimple.spaceships.store.EquipmentManager;
 import com.plainsimple.spaceships.store.StoreItemAdapter;
 import com.plainsimple.spaceships.store.StoreRowAdapter;
 import com.plainsimple.spaceships.store.StoreRow;
 import com.plainsimple.spaceships.view.FontTextView;
-
-import java.util.Hashtable;
 
 import plainsimple.spaceships.R;
 
@@ -34,8 +30,6 @@ public class StoreActivity extends Activity implements StoreItemDialogFragment.S
 
     // displays number of coins user may spend
     private FontTextView coinCounter;
-    // used to get data about user's equipment and available equipment
-    private EquipmentManager equipment;
     // used to play short sound files
     private SoundPool soundPool;
 
@@ -49,7 +43,6 @@ public class StoreActivity extends Activity implements StoreItemDialogFragment.S
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.store_layout);
-        equipment = new EquipmentManager(this);
 
         ListView listView = (ListView) findViewById(R.id.list_view);
         // rows to be displayed in ListView (categories of upgrades)
@@ -62,14 +55,14 @@ public class StoreActivity extends Activity implements StoreItemDialogFragment.S
             public void onItemClick(Equipment selectedItem) {
                 Log.d("StoreActivity.java", "Detected click on " + selectedItem.getLabel());
                 soundPool.play(actionPerformedSound, 1.0f, 1.0f, 1, 0, 1.0f);
-                DialogFragment d = StoreItemDialogFragment.newInstance(selectedItem, equipment.getCoins());
+                DialogFragment d = StoreItemDialogFragment.newInstance(selectedItem, EquipmentManager.getCoins());
                 d.show(getFragmentManager(), "Store");
             }
         });
         listView.setAdapter(adapter);
 
         coinCounter = (FontTextView) findViewById(R.id.coin_counter);
-        coinCounter.setText(Integer.toString(equipment.getCoins()));
+        coinCounter.setText(Integer.toString(EquipmentManager.getCoins()));
 
         ImageView rotatingCoin = (ImageView) findViewById(R.id.rotating_coin);
 
@@ -85,38 +78,38 @@ public class StoreActivity extends Activity implements StoreItemDialogFragment.S
     private StoreRow[] initStoreRows() {
         StoreRow[] rows = new StoreRow[3];
         rows[0] = new StoreRow(0, "Cannons"); // todo: should add all items automatically. Implement Iterator?
-        rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.CANNONS_0_KEY));
-        rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.CANNONS_1_KEY));
-        rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.CANNONS_2_KEY));
-        rows[0].addStoreItem(equipment.getEquipment(EquipmentManager.CANNONS_3_KEY));
+        rows[0].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.CANNONS_0_KEY));
+        rows[0].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.CANNONS_1_KEY));
+        rows[0].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.CANNONS_2_KEY));
+        rows[0].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.CANNONS_3_KEY));
         rows[1] = new StoreRow(1, "Rockets");
-        rows[1].addStoreItem(equipment.getEquipment(EquipmentManager.ROCKET_0_KEY));
-        rows[1].addStoreItem(equipment.getEquipment(EquipmentManager.ROCKET_1_KEY));
-        rows[1].addStoreItem(equipment.getEquipment(EquipmentManager.ROCKET_2_KEY));
-        rows[1].addStoreItem(equipment.getEquipment(EquipmentManager.ROCKET_3_KEY));
+        rows[1].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.ROCKET_0_KEY));
+        rows[1].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.ROCKET_1_KEY));
+        rows[1].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.ROCKET_2_KEY));
+        rows[1].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.ROCKET_3_KEY));
         rows[2] = new StoreRow(2, "Armor");
-        rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR_0_KEY));
-        rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR_1_KEY));
-        rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR_2_KEY));
-        rows[2].addStoreItem(equipment.getEquipment(EquipmentManager.ARMOR_3_KEY));
+        rows[2].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.ARMOR_0_KEY));
+        rows[2].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.ARMOR_1_KEY));
+        rows[2].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.ARMOR_2_KEY));
+        rows[2].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.ARMOR_3_KEY));
         return rows;
     }
 
     @Override // StoreItemDialogFragment listener callback. Process the change
     public void onEquipItem(DialogFragment dialog, String toEquipId) {
         Log.d("StoreItemDialogFragment", "Chose to equip " + toEquipId);
-        equipment.equip(toEquipId);
+        EquipmentManager.equip(toEquipId);
         soundPool.play(actionPerformedSound, 1.0f, 1.0f, 1, 0, 1.0f);
     }
 
     @Override // StoreItemDialogFragment listener callback. Process the transaction
     public void onBuyItem(DialogFragment dialog, String toBuyId, int cost) {
         Log.d("StoreItemDialogFragment", "Chose to buy " + toBuyId);
-        equipment.buy(toBuyId);
-        equipment.spendCoins(cost);
+        EquipmentManager.buy(toBuyId);
+        EquipmentManager.spendCoins(cost);
         soundPool.play(actionPerformedSound, 1.0f, 1.0f, 1, 0, 1.0f);
-        Log.d("StoreItemDialogFragment", "Updating CoinCounter to " + equipment.getCoins());
-        coinCounter.setText(Integer.toString(equipment.getCoins()));
+        Log.d("StoreItemDialogFragment", "Updating CoinCounter to " + EquipmentManager.getCoins());
+        coinCounter.setText(Integer.toString(EquipmentManager.getCoins()));
     }
 
     @Override // StoreItemDialogFragment listener callback. Plays a sound when dialog is closed

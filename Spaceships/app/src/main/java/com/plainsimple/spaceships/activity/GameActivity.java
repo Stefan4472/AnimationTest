@@ -165,10 +165,10 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         musicVolume = preferences.getFloat(MUSIC_VOLUME_KEY, 1.0f);
 
         // retrieve equipped cannon and rocket
-        EquipmentManager equipmentManager = new EquipmentManager(this);
-        equippedCannon = equipmentManager.getEquippedCannon();
-        equippedRocket = equipmentManager.getEquippedRocket();
-        equippedArmor = equipmentManager.getEquippedArmor();
+        EquipmentManager.init(this);
+        equippedCannon = EquipmentManager.getEquippedCannon();
+        equippedRocket = EquipmentManager.getEquippedRocket();
+        equippedArmor = EquipmentManager.getEquippedArmor();
 
         // initialize healthBarView with correct hp values
         healthBarView.setFullHealth(equippedArmor.getHP());
@@ -334,8 +334,7 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         LifeTimeGameStats lifetime_stats = new LifeTimeGameStats(this); // todo: make private field?
         lifetime_stats.update(GameView.currentStats);
         // add coins collected in game to current available coins (stored in EquipmentManager)
-        EquipmentManager coin_manager = new EquipmentManager(this);
-        coin_manager.addCoins((int) GameView.currentStats.get(GameStats.COINS_COLLECTED));
+        EquipmentManager.addCoins((int) GameView.currentStats.get(GameStats.COINS_COLLECTED));
         // update GameMode specific data and commit to GameModeManager
         boolean high_score = GameView.currentStats.getScore().intValue() - gameMode.getHighscore() > 0;
         if (high_score) {

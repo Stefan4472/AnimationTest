@@ -3,7 +3,7 @@ package com.plainsimple.spaceships.store;
 import android.util.Log;
 
 /**
- * Retrieving/Saving/Accessing equipment data
+ * Stores all information about a piece of Equipment available.
  */
 
 public class Equipment {
@@ -24,18 +24,24 @@ public class Equipment {
         EQUIPPED, LOCKED, UNLOCKED;
     }
 
-    // creates the object using information from the given constructor
-    // String must include all values
-    public Equipment(String constructor) throws IllegalArgumentException {
+    private Equipment() {
+
+    }
+
+    // creates the object using information from the given String, which must be in the correct format.
+    // The string should be the toString() of an Equipment object
+    public static Equipment fromString(String constructor) throws IllegalArgumentException {
+        Equipment constructed = new Equipment();
         String[] values = constructor.split(":");
         try {
-            id = values[0];
-            type = Type.valueOf(values[1]);
-            description = values[2];
-            rDrawableId = Integer.parseInt(values[3]);
-            label = values[4];
-            cost = Integer.parseInt(values[5]);
-            status = Status.valueOf(values[6]);
+            constructed.id = values[0];
+            constructed.type = Type.valueOf(values[1]);
+            constructed.description = values[2];
+            constructed.rDrawableId = Integer.parseInt(values[3]);
+            constructed.label = values[4];
+            constructed.cost = Integer.parseInt(values[5]);
+            constructed.status = Status.valueOf(values[6]);
+            return constructed;
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new IllegalArgumentException("Not enough parameters");
         } catch (IllegalArgumentException e) {

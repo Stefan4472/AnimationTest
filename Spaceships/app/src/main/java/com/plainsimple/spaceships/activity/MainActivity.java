@@ -21,6 +21,7 @@ import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 
 import com.plainsimple.spaceships.imagetransition.SlideInTransition;
+import com.plainsimple.spaceships.store.EquipmentManager;
 import com.plainsimple.spaceships.view.FontButton;
 import com.plainsimple.spaceships.view.FontTextView;
 
@@ -45,6 +46,9 @@ public class MainActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.mainscreen_layout);
+
+        // initialize EquipmentManager, which requires a Context
+        EquipmentManager.init(this);
 
         initMedia();
 
