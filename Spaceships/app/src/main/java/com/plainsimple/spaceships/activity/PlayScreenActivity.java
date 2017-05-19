@@ -43,7 +43,7 @@ public class PlayScreenActivity extends Activity implements StartGameDialogFragm
         // create recyclerview to display individual GameModes
         RecyclerView available_modes = (RecyclerView) findViewById(R.id.available_modes);
         available_modes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        available_modes.setAdapter(new GameModeAdapter(this, GameModeManager.getGameModeKeys(), this));
+        available_modes.setAdapter(new GameModeAdapter(GameModeManager.getGameModeKeys(), this));
     }
 
     @Override // fired when the user selects a GameMode from the available_modes RecyclerView

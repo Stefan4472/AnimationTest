@@ -78,20 +78,20 @@ public class StoreActivity extends Activity implements StoreItemDialogFragment.S
     private StoreRow[] initStoreRows() {
         StoreRow[] rows = new StoreRow[3];
         rows[0] = new StoreRow(0, "Cannons"); // todo: should add all items automatically. Implement Iterator?
-        rows[0].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.CANNONS_0_KEY));
-        rows[0].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.CANNONS_1_KEY));
-        rows[0].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.CANNONS_2_KEY));
-        rows[0].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.CANNONS_3_KEY));
+        rows[0].addStoreItem(EquipmentManager.retrieve(EquipmentManager.CANNONS_0_KEY));
+        rows[0].addStoreItem(EquipmentManager.retrieve(EquipmentManager.CANNONS_1_KEY));
+        rows[0].addStoreItem(EquipmentManager.retrieve(EquipmentManager.CANNONS_2_KEY));
+        rows[0].addStoreItem(EquipmentManager.retrieve(EquipmentManager.CANNONS_3_KEY));
         rows[1] = new StoreRow(1, "Rockets");
-        rows[1].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.ROCKET_0_KEY));
-        rows[1].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.ROCKET_1_KEY));
-        rows[1].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.ROCKET_2_KEY));
-        rows[1].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.ROCKET_3_KEY));
+        rows[1].addStoreItem(EquipmentManager.retrieve(EquipmentManager.ROCKET_0_KEY));
+        rows[1].addStoreItem(EquipmentManager.retrieve(EquipmentManager.ROCKET_1_KEY));
+        rows[1].addStoreItem(EquipmentManager.retrieve(EquipmentManager.ROCKET_2_KEY));
+        rows[1].addStoreItem(EquipmentManager.retrieve(EquipmentManager.ROCKET_3_KEY));
         rows[2] = new StoreRow(2, "Armor");
-        rows[2].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.ARMOR_0_KEY));
-        rows[2].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.ARMOR_1_KEY));
-        rows[2].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.ARMOR_2_KEY));
-        rows[2].addStoreItem(EquipmentManager.getEquipment(EquipmentManager.ARMOR_3_KEY));
+        rows[2].addStoreItem(EquipmentManager.retrieve(EquipmentManager.ARMOR_0_KEY));
+        rows[2].addStoreItem(EquipmentManager.retrieve(EquipmentManager.ARMOR_1_KEY));
+        rows[2].addStoreItem(EquipmentManager.retrieve(EquipmentManager.ARMOR_2_KEY));
+        rows[2].addStoreItem(EquipmentManager.retrieve(EquipmentManager.ARMOR_3_KEY));
         return rows;
     }
 

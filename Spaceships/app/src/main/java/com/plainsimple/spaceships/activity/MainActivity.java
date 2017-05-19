@@ -20,6 +20,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 
+import com.plainsimple.spaceships.helper.GameModeManager;
 import com.plainsimple.spaceships.imagetransition.SlideInTransition;
 import com.plainsimple.spaceships.store.EquipmentManager;
 import com.plainsimple.spaceships.view.FontButton;
@@ -47,8 +48,9 @@ public class MainActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.mainscreen_layout);
 
-        // initialize EquipmentManager, which requires a Context
+        // initialize classes requiring Context to access SharedPreferences
         EquipmentManager.init(this);
+        GameModeManager.init(this);
 
         initMedia();
 

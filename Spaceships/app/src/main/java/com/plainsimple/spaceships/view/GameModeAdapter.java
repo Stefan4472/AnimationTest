@@ -30,12 +30,12 @@ public class GameModeAdapter extends RecyclerView.Adapter<GameModeAdapter.ViewHo
         void onGameModeSelected(GameMode selectedGameMode);
     }
 
-    public GameModeAdapter(Context context, String[] gameModesToDisplay, OnGameModeSelected listener) {
+    public GameModeAdapter(String[] gameModesToDisplay, OnGameModeSelected listener) {
         this.listener = listener;
         // retrieve specified GameModes from GameModeManager
         displayedModes = new GameMode[gameModesToDisplay.length];
         for (int i = 0; i < gameModesToDisplay.length; i++) {
-            displayedModes[i] = GameModeManager.retrieve(context, gameModesToDisplay[i]);
+            displayedModes[i] = GameModeManager.retrieve(gameModesToDisplay[i]);
         }
     }
 

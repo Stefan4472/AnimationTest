@@ -114,7 +114,7 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         Bundle args = getIntent().getExtras();
 
         try {
-            gameMode = GameModeManager.retrieve(this, args.getString(GAMEMODE_KEY));
+            gameMode = GameModeManager.retrieve(args.getString(GAMEMODE_KEY));
             difficulty = GameView.Difficulty.valueOf(args.getString(DIFFICULTY_KEY));
             gameView.setDifficultyLevel(difficulty);
             Log.d("GameActivity", "Playing " + gameMode.getName() + " on " + args.getString(DIFFICULTY_KEY));
@@ -165,7 +165,6 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         musicVolume = preferences.getFloat(MUSIC_VOLUME_KEY, 1.0f);
 
         // retrieve equipped cannon and rocket
-        EquipmentManager.init(this);
         equippedCannon = EquipmentManager.getEquippedCannon();
         equippedRocket = EquipmentManager.getEquippedRocket();
         equippedArmor = EquipmentManager.getEquippedArmor();
@@ -343,7 +342,7 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         }
         // ensure GameMode is set to correct difficulty
         gameMode.setLastDifficulty(difficulty);
-        GameModeManager.put(this, gameMode.getKey(), gameMode);
+        GameModeManager.put(gameMode.getKey(), gameMode);
         return high_score;
     }
 

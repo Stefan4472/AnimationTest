@@ -39,43 +39,51 @@ public class GameModeManager {
             + ":" + 0 + ":" + 10000 + ":" + 15000 + ":" + 20000 + ":" + 25000 + ":" + 30000 + ":" +
             "Complete the mission! Survive to the end of the level!" + ":" + "GENERATE WELL-DESIGNED TERRAIN BABY!";
 
-    // file key where data is stored
+    // file key where prefs is stored
     private static final String PREFERENCES_FILE_KEY = "com.plainsimple.spaceships.GAMEMODE_FILE_KEY";
     // mapping of each key to its default value
     private static final HashMap<String, String> defaultStrings = getDefaultStrings();
+    // cache of already-loaded GameModes
+    private static HashMap<String, GameMode> gameModeCache = new HashMap<>();
     // SharedPreferences handle
-    private static SharedPreferences data;
+    private static SharedPreferences prefs;
 
     private GameModeManager() {
 
     }
 
-    // looks up the given gameModeKey in the Shared Preferences file. Parses the String and returns
-    // the GameMode object resulting from it. The keys must be one of the "available GameModes"
-    // defined above. Throws IllegalArgumentException if key is invalid.
-    public static GameMode retrieve(Context context, String gameModeKey) throws IllegalArgumentException {
-        if (data == null) {
-            data = context.getSharedPreferences(PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
-        }
-        if (defaultStrings.containsKey(gameModeKey)) {
-            Log.d("GameModeManager", "Retrieving " + gameModeKey);
-            return GameMode.fromString(data.getString(gameModeKey, defaultStrings.get(gameModeKey)));
-        } else {
-            throw new IllegalArgumentException("Unrecognized key (\"" + gameModeKey + "\")");
+    // get a handle to SharedPreferences using given Context. REQUIRED!
+    public static void init(Context context) {
+        if (prefs == null) {
+            prefs = context.getSharedPreferences(PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
         }
     }
 
-    // makes sure the given gameModeKey is valid. Calls gameMode's toString() method and stores it
-    // under the given key in the Preferences file. Commits changed GameMode
-    public static void put(Context context, String gameModeKey, GameMode gameMode) throws IllegalArgumentException {
-        if (data == null) {
-            data = context.getSharedPreferences(PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
-        }
-        if (defaultStrings.containsKey(gameModeKey)) {
-            Log.d("GameModeManager", "Putting " + gameMode + " under " + gameModeKey);
-            data.edit().putString(gameModeKey, gameMode.toString()).commit();
+    // looks up the given gameModeKey in the cache, and then the Shared Preferences file.
+    // The keys must be one of the "available GameModes" defined above. Throws IllegalArgumentException
+    // if key is invalid.
+    public static GameMode retrieve(String key) throws IllegalArgumentException {
+        // check if already present in cache
+        if (gameModeCache.containsKey(key)) {
+            return gameModeCache.get(key);
+        } else if (defaultStrings.containsKey(key)) { // or load it and add to cache
+            GameMode loaded = GameMode.fromString(prefs.getString(key, defaultStrings.get(key)));
+            gameModeCache.put(key, loaded);
+            return loaded;
         } else {
-            throw new IllegalArgumentException("Unrecognized key (\"" + gameModeKey + "\")");
+            throw new IllegalArgumentException("Key '" + key + "' not recognized");
+        }
+    }
+
+    // updates value under specified key with the given GameMode in cache and in SharedPreferences.
+    // Throws IllegalArgumentException if key is invalid
+    public static void put(String key, GameMode gameMode) throws IllegalArgumentException {
+        if (defaultStrings.containsKey(key)) {
+            gameModeCache.put(key, gameMode);
+            prefs.edit().putString(key, gameMode.toString()).commit();
+            Log.d("GameModeManager", "Put " + gameMode + " under key");
+        } else {
+            throw new IllegalArgumentException("Key '" + key + "' not recognized");
         }
     }
 

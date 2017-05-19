@@ -3,8 +3,6 @@ package com.plainsimple.spaceships.store;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.plainsimple.spaceships.stats.LifeTimeGameStats;
-
 import java.util.HashMap;
 
 import plainsimple.spaceships.R;
@@ -68,7 +66,7 @@ public class EquipmentManager {
     }
 
     // returns queried Equipment object
-    public static Equipment getEquipment(String key) throws IllegalArgumentException {
+    public static Equipment retrieve(String key) throws IllegalArgumentException {
         // throw exception if key is not recognized
         if (!defaultVals.containsKey(key)) {
             throw new IllegalArgumentException("Did not recognize given key \"" + key + "\"");
@@ -126,11 +124,11 @@ public class EquipmentManager {
         if (!defaultVals.containsKey(toEquipId)) {
             throw new IllegalArgumentException("Key '" + toEquipId + "' not recognized");
         } else {
-            Equipment to_equip = getEquipment(toEquipId);
+            Equipment to_equip = retrieve(toEquipId);
             Equipment.Type type = to_equip.getType();
             Equipment e;
             for (String key : defaultVals.keySet()) {
-                e = getEquipment(key);
+                e = retrieve(key);
                 if (e.getType().equals(type) && e.getStatus().equals(Equipment.Status.EQUIPPED)) {
                     modify(e.getId(), e.setStatus(Equipment.Status.UNLOCKED));
                 }
@@ -153,7 +151,7 @@ public class EquipmentManager {
         Equipment e;
         // load each Equipment object and check if it meets the criteria
         for (String key : defaultVals.keySet()) {
-            e = getEquipment(key);
+            e = retrieve(key);
             if (e.getType().equals(Equipment.Type.CANNON) && e.getStatus().equals(Equipment.Status.EQUIPPED)) {
                 return CannonType.valueOf(e.getId());
             }
@@ -165,7 +163,7 @@ public class EquipmentManager {
     public static RocketType getEquippedRocket() {
         Equipment e;
         for (String key : defaultVals.keySet()) {
-            e = getEquipment(key);
+            e = retrieve(key);
             if (e.getType().equals(Equipment.Type.ROCKET) && e.getStatus().equals(Equipment.Status.EQUIPPED)) {
                 return RocketType.valueOf(e.getId());
             }
@@ -176,7 +174,7 @@ public class EquipmentManager {
     public static ArmorType getEquippedArmor() {
         Equipment e;
         for (String key : defaultVals.keySet()) {
-            e = getEquipment(key);
+            e = retrieve(key);
             if (e.getType().equals(Equipment.Type.ARMOR) && e.getStatus().equals(Equipment.Status.EQUIPPED)) {
                 return ArmorType.valueOf(e.getId());
             }
