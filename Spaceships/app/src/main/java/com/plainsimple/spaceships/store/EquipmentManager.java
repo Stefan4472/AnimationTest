@@ -3,6 +3,8 @@ package com.plainsimple.spaceships.store;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.plainsimple.spaceships.stats.StatsManager;
+
 import java.util.HashMap;
 
 import plainsimple.spaceships.R;
@@ -100,12 +102,10 @@ public class EquipmentManager {
             throw new IllegalStateException("Tried to spend more coins than are available");
         } else {
             // upgrade tracked statistics
-//            lifeTimeGameStats.incrementCoinsSpent(toSpend);
-//            lifeTimeGameStats.incrementUpgradesBought();
-//             update coins
-//            coins -= toSpend;
-//            prefEditor.putInt(COINS_KEY, coins);
-//            prefEditor.commit();
+            StatsManager.incrementCoinsSpent(toSpend);
+            StatsManager.incrementUpgradesBought();
+            // update coins
+            data.edit().putInt(COINS_KEY, getCoins() - toSpend).commit();
         }
     }
 
