@@ -19,7 +19,7 @@ import plainsimple.spaceships.R;
  * case the GameStats object should be instantiated and used)
  */
 
-public class GameStats implements StatsContainer { // todo: use enums shared with all StatsContainers?
+public class GameStats { // todo: use enums shared with all StatsContainers?
 
     // keys to data-values in the lifetime game statistics SharedPreference file
     public static final String ALIENS_KILLED = "ALIENS_KILLED";
@@ -76,17 +76,7 @@ public class GameStats implements StatsContainer { // todo: use enums shared wit
         return values.keySet();
     }
 
-    @Override // returns String[] containing keys in display order
-    public String[] getKeysToDisplay() {
-        return new String[] {
-                GAME_SCORE,
-                DISTANCE_TRAVELED,
-                TIME_PLAYED,
-                COINS_COLLECTED
-        };
-    }
-
-    @Override // returns formatted value
+    // returns formatted value given key
     public String getFormatted(String key) throws IllegalArgumentException {
         switch (key) {
             case GAME_SCORE:

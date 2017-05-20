@@ -300,7 +300,8 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         gameView.forceUpdateStats();
         boolean high_score = updateStats();
 
-        DialogFragment d = GameOverDialogFragment.newInstance(GameView.currentStats, high_score);
+        GameModeManager.init(this);
+        DialogFragment d = GameOverDialogFragment.newInstance(GameView.currentStats, "GameOver Message", high_score);
         d.show(getFragmentManager(), "GameOver");
     }
 

@@ -112,11 +112,11 @@ public class HealthBarView extends View {
             currentHealth -= (double) (currentHealth - movingToHealth) * 0.2;
             invalidate();
         }
-        // getDrawParams the filling of the health bar
+        // draw the filling of the health bar
         paint.setColor(getHealthBarColor());
         paint.setStyle(Paint.Style.FILL);
         canvas.drawRect(height * 0.1f, height * 0.1f, height * 0.1f + (currentHealth / (float) fullHealth) * (width - height * 0.1f), height * 0.9f, paint);
-        // getDrawParams label on hitbar showing current health vs. full health
+        // draw label on healthbar showing current health vs. full health
         paint.setColor(Color.GRAY);
         paint.setTextSize(height * 0.8f);
         // todo: better calculate where to position text

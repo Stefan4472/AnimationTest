@@ -10,12 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ListView;
 
-import com.plainsimple.spaceships.stats.StatsContainer;
+import com.plainsimple.spaceships.stats.GameStats;
 import com.plainsimple.spaceships.stats.StatsRowAdapter;
 import com.plainsimple.spaceships.view.FontButton;
 import com.plainsimple.spaceships.view.FontTextView;
+import com.plainsimple.spaceships.view.StarsEarnedView;
 
 import plainsimple.spaceships.R;
 
@@ -37,33 +37,31 @@ public class GameOverDialogFragment extends DialogFragment {
     // listener that receives events
     GameOverDialogListener mListener;
 
-    // keys used for putting keys[] and values[] arrays into the bundle
-    // for later use in StatsRowAdapter
-    private static final String KEYS_ARRAY = "KEYS_ARRAY";
-    private static final String VALUES_ARRAY = "VALUES_ARRAY";
-
+    // key
+    private static final String MAIN_MSG_KEY = "MAIN_MESSAGE";
+    // game score key
+    private static final String GAME_SCORE_KEY = "GAME_SCORE";
+    // distance traveled key
+    private static final String DIST_TRAVELED_KEY = "DISTANCE_TRAVELED";
+    // time played key
+    private static final String ROUND_DURATION_KEY = "ROUND_DURATION";
+    // coins collected key
+    private static final String COINS_COLLECTED_KEY = "COINS_COLLECTED";
     // key used for storing whether this is a highscore
-    private static final String HIGHSCORE_KEY = "HIGHSCORE";
+    private static final String HIGHSCORE_KEY = "HIGHSCORE?";
 
-    // initializes and returns a new instance of GameOverDialogFragment // todo: only show non-zero stats?
-    public static GameOverDialogFragment newInstance(StatsContainer displayedStats, boolean highScore) {
+    // initializes and returns a new instance of GameOverDialogFragment given statistics of the game,
+    // main message to display (e.g. "You Won!", and whether it was won or lost
+    public static GameOverDialogFragment newInstance(GameStats gameStats, String message, boolean highScore) {
         GameOverDialogFragment dialog = new GameOverDialogFragment();
 
         Bundle bundle = new Bundle();
 
-        // get keys from StatsContainer
-        String[] keys = displayedStats.getKeysToDisplay();
-
-        // create corresponding array of formatted values
-        String[] values = new String[keys.length];
-
-        for (int i = 0; i < keys.length; i++) {
-            values[i] = displayedStats.getFormatted(keys[i]);
-        }
-
-        // put both arrays and highscore boolean in the bundle
-        bundle.putStringArray(KEYS_ARRAY, keys);
-        bundle.putStringArray(VALUES_ARRAY, values);
+        bundle.putString(GAME_SCORE_KEY, gameStats.getFormatted(GameStats.GAME_SCORE));
+        bundle.putString(DIST_TRAVELED_KEY, gameStats.getFormatted(GameStats.DISTANCE_TRAVELED));
+        bundle.putString(ROUND_DURATION_KEY, gameStats.getFormatted(GameStats.TIME_PLAYED));
+        bundle.putString(COINS_COLLECTED_KEY, gameStats.getFormatted(GameStats.COINS_COLLECTED));
+        bundle.putString(MAIN_MSG_KEY, message);
         bundle.putBoolean(HIGHSCORE_KEY, highScore);
 
         dialog.setArguments(bundle);
@@ -110,19 +108,24 @@ public class GameOverDialogFragment extends DialogFragment {
         // retrieve arguments from bundle (can't use savedInstanceState)
         Bundle bundle = getArguments();
 
-        // populate ListView using StatsRowAdapter and Strings[] in bundle
-        ListView game_stats = (ListView) view.findViewById(R.id.gamestats_display);
+        // set main message (depends on whether game was won or lost)
+        FontTextView main_msg = (FontTextView) view.findViewById(R.id.message);
+        main_msg.setText(bundle.getString(MAIN_MSG_KEY));
 
-        // create adapter instance to display content in each row of ListView
-        StatsRowAdapter adapter = new StatsRowAdapter(getActivity(), R.layout.statsrow_layout,
-                bundle.getStringArray(KEYS_ARRAY), bundle.getStringArray(VALUES_ARRAY));
-        game_stats.setAdapter(adapter);
+        // display how many stars were earned
+        StarsEarnedView stars_earned = (StarsEarnedView) view.findViewById(R.id.starsearned_display);
+        stars_earned.setFilledStars(1);
 
-        // make highscore FontTextView visible if this game was a highscore
+        // display sub-message if desired
+
+        // display GameScore
+        FontTextView game_score = (FontTextView) view.findViewById(R.id.game_score);
         if (bundle.getBoolean(HIGHSCORE_KEY)) {
-            FontTextView highscore_label = (FontTextView) view.findViewById(R.id.highscore);
-            highscore_label.setVisibility(View.VISIBLE);
+            game_score.setText("Score: " + bundle.getString(GAME_SCORE_KEY) + " (Highscore!)");
+        } else {
+            game_score.setText("Score: " + bundle.getString(GAME_SCORE_KEY));
         }
+
         // button to quit game
         FontButton quit_button = (FontButton) view.findViewById(R.id.quitbutton);
         quit_button.setOnClickListener(new View.OnClickListener() {

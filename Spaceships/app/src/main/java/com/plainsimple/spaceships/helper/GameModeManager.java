@@ -56,6 +56,7 @@ public class GameModeManager {
     public static void init(Context context) {
         if (prefs == null) {
             prefs = context.getSharedPreferences(PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
+            Log.d("GameModeManager", "prefs initialized, equals " + prefs);
         }
     }
 
@@ -63,10 +64,15 @@ public class GameModeManager {
     // The keys must be one of the "available GameModes" defined above. Throws IllegalArgumentException
     // if key is invalid.
     public static GameMode retrieve(String key) throws IllegalArgumentException {
+        Log.d("GameModeManager", "Retrieving " + key);
         // check if already present in cache
         if (gameModeCache.containsKey(key)) {
             return gameModeCache.get(key);
         } else if (defaultStrings.containsKey(key)) { // or load it and add to cache
+            if (prefs == null) {
+                Log.d("GameModeManager", "Soemthing's wrong"); // todo: what broke?
+                return GameMode.fromString(defaultStrings.get(ENDLESS_1));
+            }
             GameMode loaded = GameMode.fromString(prefs.getString(key, defaultStrings.get(key)));
             gameModeCache.put(key, loaded);
             return loaded;
