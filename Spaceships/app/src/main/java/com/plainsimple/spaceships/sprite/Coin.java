@@ -60,6 +60,7 @@ public class Coin extends Sprite {
         drawParams.clear();
         DRAW_COIN.setCanvasX0(x);
         DRAW_COIN.setCanvasY0(y);
+        DRAW_COIN.setDrawRegion(spin.getCurrentFrameSrc());
         drawParams.add(DRAW_COIN);
         return drawParams;
     }

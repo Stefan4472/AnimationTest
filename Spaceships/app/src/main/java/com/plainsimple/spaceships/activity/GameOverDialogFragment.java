@@ -130,6 +130,13 @@ public class GameOverDialogFragment extends DialogFragment {
             game_score.setText("Score: " + bundle.getString(GAME_SCORE_KEY));
         }
 
+        // display other stats
+        FontTextView other_stats = (FontTextView) view.findViewById(R.id.other_stats);
+        String stats_str = bundle.getString(DIST_TRAVELED_KEY) + " / " +
+                bundle.getString(ROUND_DURATION_KEY) + " / " +
+                bundle.getString(COINS_COLLECTED_KEY) + " Coins";
+        other_stats.setText(stats_str);
+
         // button to quit game
         FontButton quit_button = (FontButton) view.findViewById(R.id.quitbutton);
         quit_button.setOnClickListener(new View.OnClickListener() {

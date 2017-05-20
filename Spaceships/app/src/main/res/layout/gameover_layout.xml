@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="wrap_content"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:background="@drawable/dialog_shape">
@@ -8,7 +9,7 @@
     <com.plainsimple.spaceships.view.FontTextView
         android:id="@+id/title_message"
         style="@style/GalaxyMonkey.TextStyle"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:gravity="center"
         android:textSize="60dp"
         android:lines="1"
@@ -61,7 +62,7 @@
         <com.plainsimple.spaceships.view.FontButton
             style="@style/GalaxyMonkey.ButtonTextStyle"
             android:id="@+id/restartbutton"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_margin="5dp"
@@ -70,7 +71,7 @@
         <com.plainsimple.spaceships.view.FontButton
             style="@style/GalaxyMonkey.ButtonTextStyle"
             android:id="@+id/quitbutton"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_margin="5dp"
