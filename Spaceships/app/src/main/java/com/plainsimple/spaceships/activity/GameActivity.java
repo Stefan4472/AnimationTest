@@ -300,8 +300,12 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         gameView.forceUpdateStats();
         boolean high_score = updateStats();
 
+        Log.d("GameActivity", "Testing to make sure GAmeModeManager is initialized");
         GameModeManager.init(this);
-        DialogFragment d = GameOverDialogFragment.newInstance(GameView.currentStats, "GameOver Message", high_score);
+        // query GameMode for number of stars earned, based on currentStats
+        int stars_earned = gameMode.calculateStars(GameView.currentStats.getScore().intValue());
+        DialogFragment d = GameOverDialogFragment.newInstance(GameView.currentStats, "GameOver",
+                high_score, stars_earned);
         d.show(getFragmentManager(), "GameOver");
     }
 

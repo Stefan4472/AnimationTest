@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <!-- dialog's title, displays name of selected GameMode -->
+    <!-- dialog's title: displays name of selected GameMode -->
     <com.plainsimple.spaceships.view.FontTextView
         style="@style/GalaxyMonkey.TextStyle"
         android:id="@+id/title"
@@ -10,6 +10,19 @@
         android:text="@string/endless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <!-- displays GameMode's highscore -->
+    <com.plainsimple.spaceships.view.FontTextView
+        style="@style/GalaxyMonkey.TextStyle"
+        android:id="@+id/highscore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
+    <!-- displays max stars earned for the GameMode -->
+    <com.plainsimple.spaceships.view.StarsEarnedView
+        android:id="@+id/starsearned_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
     <!-- horizontal linearlayout containing three equally-sized and spaced buttons for selecting
     difficulty level -->
     <LinearLayout

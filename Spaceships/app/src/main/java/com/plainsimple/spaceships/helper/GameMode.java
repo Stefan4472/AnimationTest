@@ -1,5 +1,6 @@
 package com.plainsimple.spaceships.helper;
 
+import com.plainsimple.spaceships.stats.GameStats;
 import com.plainsimple.spaceships.view.GameView;
 
 /**
@@ -63,6 +64,23 @@ public class GameMode {
                     "the toString() of a GameMode object");
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new IllegalArgumentException("Not enough parameters");
+        }
+    }
+
+    // calculates the stars earned according to the score of a game todo: use GameStats object for more nuanced calculations?
+    public int calculateStars(int score) {
+        if (score < oneStarPoints) {
+            return 0;
+        } else if (score < twoStarPoints) {
+            return 1;
+        } else if (score < threeStarPoints) {
+            return 2;
+        } else if (score < fourStarPoints) {
+            return 3;
+        } else if (score < fiveStarPoints) {
+            return 4;
+        } else {
+            return 5;
         }
     }
 

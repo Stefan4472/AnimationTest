@@ -57,6 +57,8 @@ public class GameModeManager {
         if (prefs == null) {
             prefs = context.getSharedPreferences(PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
             Log.d("GameModeManager", "prefs initialized, equals " + prefs);
+        } else {
+            Log.d("GameModeManager", "Prefs already initialized, equals " + prefs);
         }
     }
 

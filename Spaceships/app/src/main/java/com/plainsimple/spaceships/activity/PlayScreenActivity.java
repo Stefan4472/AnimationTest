@@ -53,8 +53,7 @@ public class PlayScreenActivity extends Activity implements StartGameDialogFragm
         // update selectedGameModeKey
         this.selectedGameMode = selectedGameMode;
         // launch dialog
-        DialogFragment d = StartGameDialogFragment.newInstance(selectedGameMode.getName(),
-                selectedGameMode.getLastDifficulty().toString());
+        DialogFragment d = StartGameDialogFragment.newInstance(selectedGameMode);
         d.show(getFragmentManager(), "Start Game");
     }
 

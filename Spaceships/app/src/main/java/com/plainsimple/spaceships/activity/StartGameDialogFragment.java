@@ -12,9 +12,12 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.plainsimple.spaceships.helper.GameMode;
+import com.plainsimple.spaceships.helper.GameModeManager;
 import com.plainsimple.spaceships.view.FontButton;
 import com.plainsimple.spaceships.view.FontTextView;
 import com.plainsimple.spaceships.view.GameView;
+import com.plainsimple.spaceships.view.StarsEarnedView;
 
 import plainsimple.spaceships.R;
 
@@ -26,7 +29,6 @@ public class StartGameDialogFragment extends DialogFragment {
 
     // key of GameMode name set in bundle
     private static final String GAMEMODE_KEY = "SPECIFIED_GAME_MODE";
-    private static final String INITIAL_DIFFICULTY = "INITIAL_DIFFICULTY";
 
     // interface used to send events to host Activity
     public interface StartGameDialogListener {
@@ -39,13 +41,13 @@ public class StartGameDialogFragment extends DialogFragment {
     // listener receiving events
     private StartGameDialogListener listener;
 
-    // load equipment fields and coins available into a Bundle to pass to the fragment
-    public static StartGameDialogFragment newInstance(String gameMode, String initDifficulty) {
+    // initialize fragment with a GameMode. Stores GameMode key in Bundle so it can be retrieved
+    // later
+    public static StartGameDialogFragment newInstance(GameMode selectedGameMode) {
         StartGameDialogFragment fragment = new StartGameDialogFragment();
 
         Bundle args = new Bundle();
-        args.putString(GAMEMODE_KEY, gameMode);
-        args.putString(INITIAL_DIFFICULTY, initDifficulty);
+        args.putString(GAMEMODE_KEY, selectedGameMode.getKey());
 
         fragment.setArguments(args);
         return fragment;
@@ -97,13 +99,23 @@ public class StartGameDialogFragment extends DialogFragment {
         Bundle args = getArguments();
 
         try {
-            // set title to GameMode title (specified in Bundle under GAMEMODE_KEY)
+            // retrieve the specified GameMode
+            GameMode selected_mode = GameModeManager.retrieve(args.getString(GAMEMODE_KEY));
+
+            // set title to GameMode name
             FontTextView dialog_title = (FontTextView) view.findViewById(R.id.title);
-            dialog_title.setText(args.getString(GAMEMODE_KEY));
+            dialog_title.setText(selected_mode.getName());
+
+            // populate highscore field with GameMode's highscore
+            FontTextView high_score = (FontTextView) view.findViewById(R.id.highscore);
+            high_score.setText(getString(R.string.highscore_equals, selected_mode.getHighscore() + ""));
+
+            // set stars_earned to the number of stars earned with that highscore todo: could be wrong if depends on difficulty level as well as highscore
+            StarsEarnedView stars_earned = (StarsEarnedView) view.findViewById(R.id.starsearned_display);
+            stars_earned.setFilledStars(selected_mode.calculateStars(selected_mode.getHighscore()));
 
             // determine difficulty to set selected and mark the corresponding button
-            GameView.Difficulty specified_diff = GameView.Difficulty.valueOf(args.getString(INITIAL_DIFFICULTY));
-            switch (specified_diff) {
+            switch (selected_mode.getLastDifficulty()) {
                 case EASY:
                     set_easy.setBackgroundResource(R.drawable.difficultybutton_selected);
                     break;

@@ -60,10 +60,9 @@ public class StarsEarnedView extends View {
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // calculate desired height, based on DEFAULT_HEIGHT_DP
         int desired_height = (int) (DEFAULT_HEIGHT_DP * getResources().getDisplayMetrics().density);
-        Log.d("StarsEarnedView", "Desired: " + desired_height);
         // retrieve preferred height the parent wants
         int preferred_height = MeasureSpec.getSize(heightMeasureSpec);
-        Log.d("StarsEarnedView", "Preferred: " + preferred_height);
+        Log.d("StarsEarnedView", "Heights: " + desired_height + "," + preferred_height);
         // decide actual width based on MeasureSpec requirements
         int actual_height;
         switch (MeasureSpec.getMode(widthMeasureSpec)) {
@@ -81,6 +80,7 @@ public class StarsEarnedView extends View {
         int desired_width = 5 * desired_height;
         // get width the parent wants
         int preferred_width = MeasureSpec.getSize(widthMeasureSpec);
+        Log.d("StarsEarnedView", "Widths: " + desired_height + "," + preferred_height);
         // determine actual width based on MeasureSpec requirements
         int actual_width;
         switch (MeasureSpec.getMode(heightMeasureSpec)) {

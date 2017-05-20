@@ -28,6 +28,7 @@
     <string name="go">Let\'s Go!</string>
     <string name="available_gamemodes">Available GameModes</string>
     <string name="highscore">Congrats! HIGHSCORE!!!</string>
+    <string name="highscore_equals">Highscore: %1$s</string>
     <string name="default_equipped_states">
         LASER_BULLET:EQUIPPED,ION_BULLET:LOCKED,PLASMA_BULLET:LOCKED,PLUTONIUM_BULLET:LOCKED,ROCKET_DEFAULT:EQUIPPED,ARMOR_DEFAULT:EQUIPPED
     </string>

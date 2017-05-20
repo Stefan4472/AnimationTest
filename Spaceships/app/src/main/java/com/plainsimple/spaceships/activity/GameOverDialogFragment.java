@@ -37,22 +37,25 @@ public class GameOverDialogFragment extends DialogFragment {
     // listener that receives events
     GameOverDialogListener mListener;
 
-    // key
+    // key used for storing main message to display as title
     private static final String MAIN_MSG_KEY = "MAIN_MESSAGE";
-    // game score key
+    // key used for storing game score
     private static final String GAME_SCORE_KEY = "GAME_SCORE";
-    // distance traveled key
+    // key used for storing distance travelled
     private static final String DIST_TRAVELED_KEY = "DISTANCE_TRAVELED";
-    // time played key
+    // key used for storing time played
     private static final String ROUND_DURATION_KEY = "ROUND_DURATION";
-    // coins collected key
+    // key used for storing coins collected
     private static final String COINS_COLLECTED_KEY = "COINS_COLLECTED";
     // key used for storing whether this is a highscore
     private static final String HIGHSCORE_KEY = "HIGHSCORE?";
+    // key used for storing number of stars earned
+    private static final String STARS_EARNED_KEY = "STARS_EARNED";
 
     // initializes and returns a new instance of GameOverDialogFragment given statistics of the game,
-    // main message to display (e.g. "You Won!", and whether it was won or lost
-    public static GameOverDialogFragment newInstance(GameStats gameStats, String message, boolean highScore) {
+    // main message to display (e.g. "You Won!", whether it was a highscore, and how many stars were earned
+    public static GameOverDialogFragment newInstance(GameStats gameStats, String message,
+                                                     boolean highScore, int starsEarned) {
         GameOverDialogFragment dialog = new GameOverDialogFragment();
 
         Bundle bundle = new Bundle();
@@ -62,6 +65,7 @@ public class GameOverDialogFragment extends DialogFragment {
         bundle.putString(ROUND_DURATION_KEY, gameStats.getFormatted(GameStats.TIME_PLAYED));
         bundle.putString(COINS_COLLECTED_KEY, gameStats.getFormatted(GameStats.COINS_COLLECTED));
         bundle.putString(MAIN_MSG_KEY, message);
+        bundle.putInt(STARS_EARNED_KEY, starsEarned);
         bundle.putBoolean(HIGHSCORE_KEY, highScore);
 
         dialog.setArguments(bundle);
@@ -114,7 +118,7 @@ public class GameOverDialogFragment extends DialogFragment {
 
         // display how many stars were earned
         StarsEarnedView stars_earned = (StarsEarnedView) view.findViewById(R.id.starsearned_display);
-        stars_earned.setFilledStars(1);
+        stars_earned.setFilledStars(bundle.getInt(STARS_EARNED_KEY));
 
         // display sub-message if desired
 
