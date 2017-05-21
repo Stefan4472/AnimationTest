@@ -99,7 +99,7 @@ public class StarsEarnedView extends View {
                 actual_width = preferred_width;
                 break;
         }*/
-        Log.d("StarsEarnedView", "Actual set to " + actual_width + "," + actual_height);
+//        Log.d("StarsEarnedView", "Actual set to " + actual_width + "," + actual_height);
         // set dimensions to those determined
         setMeasuredDimension(actual_width, actual_height);
     }
@@ -107,11 +107,13 @@ public class StarsEarnedView extends View {
     @Override // handle on size changed by loading filled and unfilled bitmaps and scaling them
     // properly (height to new height, width to new width / 5)
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
-        width = w;
-        height = h;
-        filled = ImageUtil.decodeAndScaleTo(getContext(), FILLED_ID, w / 5, h);
-        unfilled = ImageUtil.decodeAndScaleTo(getContext(), UNFILLED_ID, w / 5, h);
-        Log.d("StarsEarnedView.java", "Size changed to " + width + "," + height);
+        if (w != width || h != height) {
+            filled = ImageUtil.decodeAndScaleTo(getContext(), FILLED_ID, w / 5, h);
+            unfilled = ImageUtil.decodeAndScaleTo(getContext(), UNFILLED_ID, w / 5, h);
+            width = w;
+            height = h;
+            Log.d("StarsEarnedView", "Size set to " + width + "," + height);
+        }
     }
 
     @Override

@@ -13,6 +13,7 @@ public class TileGenerator {
     public static final int COIN = 3; // coin tile
     public static final int ALIEN = 4; // alien
     public static final int ASTEROID = 5; // asteroid
+    public static final int END_GAME = 6; // end the game
 
     // chunkTypes, used by GenCommand to tell the Generator what type of chunk to generate
     public static final String GEN_OBSTACLES = "genObstacles";
@@ -22,6 +23,7 @@ public class TileGenerator {
     public static final String GEN_TUNNEL = "genTunnel;";
     public static final String GEN_RANDOM = "genRandom";
     public static final String GEN_DEBUG = "genDebug";
+    public static final String GEN_GAMEOVER = "END";
 
     // models to simulate probability todo: make less arbitrary
     private static final LinearProbability pTunnel = new LinearProbability(0.15f, 0.3f, 1_500, 300);
@@ -32,7 +34,7 @@ public class TileGenerator {
     // length each coin trail must be
     private static final int COIN_TRAIL_LENGTH = 15;
     // number of rows of tiles to generate todo: make final? determine by map?
-    private static final int rows = 6;
+    private static final int ROWS = 6;
     // used for generating random numbers todo: use seed?
     private static final Random random = new Random();
 
@@ -60,6 +62,8 @@ public class TileGenerator {
                 break;
             case GEN_DEBUG:
                 return generateDebugTiles();
+            case GEN_GAMEOVER:
+                return genEndGame();
             default:
                 throw new IllegalArgumentException("Invalid ChunkType '" + genCommand.getChunkType() + "'");
         }
@@ -87,8 +91,8 @@ public class TileGenerator {
     // generates chunk of randomly-placed obstacles
     private static byte[][] generateObstacles() {
         int size = COIN_TRAIL_LENGTH + random.nextInt(5);
-        int row = random.nextInt(rows);
-        byte[][] generated = new byte[rows][size];
+        int row = random.nextInt(ROWS);
+        byte[][] generated = new byte[ROWS][size];
         for (int i = 0; i < size; i++) {
             if (testRandom(0.4f)) {
                 generated[row][i] = OBSTACLE;
@@ -98,12 +102,12 @@ public class TileGenerator {
                     i++;
                 }
                 // generate another obstacle below
-                if (row + 1 < rows && testRandom(0.3f)) {
+                if (row + 1 < ROWS && testRandom(0.3f)) {
                     generated[row + 1][i] = OBSTACLE;
                 } else if (row > 0 && testRandom(0.2f)) { // else try to generate another obstacle above
                     generated[row - 1][i] = OBSTACLE;
                 }
-                row = random.nextInt(rows);
+                row = random.nextInt(ROWS);
             }
         }
         return generated;
@@ -112,12 +116,12 @@ public class TileGenerator {
     // generates tunnel
     private static byte[][] generateTunnel() {
         int tunnel_length = COIN_TRAIL_LENGTH + 3 + random.nextInt(10);
-        byte[][] generated = new byte[rows][tunnel_length];
-        int row = 1 + random.nextInt(rows - 2);
+        byte[][] generated = new byte[ROWS][tunnel_length];
+        int row = 1 + random.nextInt(ROWS - 2);
         // probability tunnel will move up or down
         float change_path = 0.0f;
         // generate first column
-        for (int i = 0; i < rows; i++) {
+        for (int i = 0; i < ROWS; i++) {
             if (i != row) {
                 generated[i][0] = OBSTACLE;
             }
@@ -142,7 +146,7 @@ public class TileGenerator {
                     }
                 }
                 // construct the change in the tunnel
-                for (int i = 0; i < rows; i++) {
+                for (int i = 0; i < ROWS; i++) {
                     if (i == row || i == row + direction) {
                         generated[i][j] = EMPTY;
                         generated[i][j + 1] = EMPTY;
@@ -154,7 +158,7 @@ public class TileGenerator {
                 j++;
                 row += direction;
             } else {
-                for (int i = 0; i < rows; i++) {
+                for (int i = 0; i < ROWS; i++) {
                     if (i == row) {
                         generated[i][j] = EMPTY;
                     } else {
@@ -170,7 +174,7 @@ public class TileGenerator {
 
     private static byte[][] generateAlien() {
         int size = 6 + random.nextInt(10);
-        byte[][] generated = new byte[rows][size];
+        byte[][] generated = new byte[ROWS][size];
         generated[1 + random.nextInt(6)][size / 2] = ALIEN;
         return generated;
     }
@@ -178,7 +182,7 @@ public class TileGenerator {
     private static byte[][] generateAlienSwarm() {
         int num_aliens = 2 + random.nextInt(3);
         int size = (num_aliens + 1) * 8;
-        byte[][] generated = new byte[rows][size];
+        byte[][] generated = new byte[ROWS][size];
         for (int i = 0; i < num_aliens; i++) {
             generated[1 + random.nextInt(4)][8 * (i + 1)] = ALIEN;
         }
@@ -186,7 +190,7 @@ public class TileGenerator {
     }
 
     private static byte[][] generateAsteroid() {
-        byte[][] generated = new byte[rows][8];
+        byte[][] generated = new byte[ROWS][8];
         generated[2][random.nextInt(6)] = ASTEROID;
         return generated;
     }
@@ -235,6 +239,15 @@ public class TileGenerator {
         }
     }
 
+    // generates a 5 column chunk of tiles. The first column is filled with END_GAME tiles and the
+    // rest is empty
+    private static byte[][] genEndGame() {
+        byte[][] generated = new byte[ROWS][5];
+        for (int i = 0; i < ROWS; i++) {
+            generated[i][0] = END_GAME;
+        }
+        return generated;
+    }
     // generates a random float and checks if it is below given
     // probability. Returns true if it does. Used to decide whether
     // to generate certain types of obstacles given their probabilities

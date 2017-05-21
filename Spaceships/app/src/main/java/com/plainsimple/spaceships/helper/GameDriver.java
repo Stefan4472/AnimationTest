@@ -57,7 +57,7 @@ public class GameDriver {
         tileWidth = screenH / ROWS;
         tiles = new byte[ROWS][screenW / tileWidth];
         // todo: take String defining map as a parameter
-        map = Map.parse("loop(3,genObstacles,genAsteroids),genAliens[5]");
+        map = Map.parse("loop(3,genObstacles,genAsteroids),genAliens[5],END");
     }
 
     // creates new sprites as specified by the tiles
