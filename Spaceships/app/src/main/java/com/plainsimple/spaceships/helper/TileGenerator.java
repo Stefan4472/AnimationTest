@@ -7,7 +7,7 @@ import java.util.Random;
  */
 public class TileGenerator {
 
-    // tile id's // todo: use enums
+    // tile id's
     public static final int EMPTY = 0; // no obstacle
     public static final int OBSTACLE = 1; // basic obstacle
     public static final int COIN = 3; // coin tile
