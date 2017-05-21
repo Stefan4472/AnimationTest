@@ -4,14 +4,21 @@ GameModes in PlayScreenActivity. Displays name of GameMode. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/difficultybutton_selected">
+    <!-- displays GameMode's name -->
     <com.plainsimple.spaceships.view.FontTextView
         android:id="@+id/gamemode_name"
         style="@style/GalaxyMonkey.TextStyle"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/difficultybutton_selected"
         android:gravity="start"
         android:padding="3dp"
         android:layout_margin="3dp"/>
+    <!-- displays max stars earned playing this GameMode -->
+    <com.plainsimple.spaceships.view.StarsEarnedView
+        android:id="@+id/starsearned_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical"/>
 </LinearLayout>

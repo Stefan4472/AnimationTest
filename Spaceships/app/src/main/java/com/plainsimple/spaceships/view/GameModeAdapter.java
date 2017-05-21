@@ -49,6 +49,7 @@ public class GameModeAdapter extends RecyclerView.Adapter<GameModeAdapter.ViewHo
     @Override // set itemThumbnail to the right bitmap, bind item to listener
     public void onBindViewHolder(GameModeAdapter.ViewHolder viewHolder, final int position) {
         viewHolder.displayName.setText(displayedModes[position].getName());
+        viewHolder.displayStars.setFilledStars(displayedModes[position].calculateStars(displayedModes[position].getHighscore()));
     }
 
     @Override
@@ -59,10 +60,13 @@ public class GameModeAdapter extends RecyclerView.Adapter<GameModeAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // displays the name of the GameMode (simple label)
         private FontTextView displayName;
+        // displays most stars earned
+        private StarsEarnedView displayStars;
 
         public ViewHolder(View view) {
             super(view);
             displayName = (FontTextView) view.findViewById(R.id.gamemode_name);
+            displayStars = (StarsEarnedView) view.findViewById(R.id.starsearned_display);
             view.setOnClickListener(this);
         }
 
