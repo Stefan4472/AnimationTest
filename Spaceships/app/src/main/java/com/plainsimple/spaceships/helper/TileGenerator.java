@@ -14,6 +14,13 @@ public class TileGenerator {
     public static final int ALIEN = 4; // alien
     public static final int ASTEROID = 5; // asteroid
 
+    // chunkTypes, used by GenCommand to tell the Generator what type of chunk to generate
+    public static final String GEN_OBSTACLES = "GENERATE_OBSTACLES";
+    public static final String GEN_COINS = "GENERATE_COINS";
+    public static final String GEN_ALIENS = "GENERATE_ALIENS";
+    public static final String GEN_ASTEROIDS = "GENERATE_ASTEROIDS";
+    public static final String GEN_TUNNEL = "GENERATE_TUNNEL;";
+
     // models to simulate probability todo: make less arbitrary
     private LinearProbability pTunnel = new LinearProbability(0.15f, 0.3f, 1_500, 300);
     private LinearProbability pAlienSwarm = new LinearProbability(0.05f, 0.3f, 500, 200);
@@ -297,6 +304,35 @@ public class TileGenerator {
                     return finalProbability;
                 }
             }
+        }
+    }
+
+    // object that contains information required to generate a chunk of tiles. This includes the
+    // tileId, which must be
+    public static class GenCommand {
+
+        // key specifying type of chunk to generate. Must be a valid chunkType defined in the class
+        private String chunkType;
+        private byte size;
+        // denotes generator to use size it would by default for the tileId
+        public static final byte DEFAULT = 0;
+
+        public GenCommand(String chunkType, byte size) {
+            this.chunkType = chunkType;
+            this.size = size;
+        }
+
+        public String getChunkType() {
+            return chunkType;
+        }
+
+        public byte getSize() {
+            return size;
+        }
+
+        @Override
+        public String toString() {
+            return chunkType + "[" + size + "]";
         }
     }
 }

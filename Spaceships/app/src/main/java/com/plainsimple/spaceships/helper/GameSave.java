@@ -3,15 +3,11 @@ package com.plainsimple.spaceships.helper;
 import android.content.Context;
 
 import com.plainsimple.spaceships.sprite.Spaceship;
-import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.util.FileUtil;
 import com.plainsimple.spaceships.view.HealthBar;
 import com.plainsimple.spaceships.view.ScoreDisplay;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Saves game state to file and can re-create game state from file
@@ -53,12 +49,12 @@ public class GameSave {
     private static final String SCOREDISPLAY = "SCOREDISPLAYFILE";
     private static final String HEALTHBAR = "HEALTHBARFILE";
 
-    public boolean saveMap(Map map) { // todo: custom saving and restoring of the objects
+    public boolean saveMap(GameDriver map) { // todo: custom saving and restoring of the objects
         return FileUtil.writeObject(new File(directory, MAP), map);
     }
 
     // loads saved data into the given Map object
-    public void loadMap(Map restore) {
+    public void loadMap(GameDriver restore) {
         /*Map saved = (Map) FileUtil.readObject(new File(directory, MAP));
         restore.setTiles(saved.getTiles());
         restore.setTileGenerator(saved.getTileGenerator());

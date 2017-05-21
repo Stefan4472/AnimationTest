@@ -65,7 +65,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private GameViewThread thread;
     // space background (implements parallax scrolling)
     private Background background;
-    private Map map;
+    private GameDriver map;
     // speed of sprites scrolling across the map (must be negative!)
     private static float scrollSpeed = -0.0025f;
     // spaceship
@@ -286,7 +286,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
             // initialize other required components
             background = new Background(screenW, playScreenH);
-            map = new Map(c, screenW, playScreenH);
+            map = new GameDriver(c, screenW, playScreenH);
             scoreDisplay = new ScoreDisplay(c, 0);
             currentStats = new GameStats();
             gameFinished = false;
