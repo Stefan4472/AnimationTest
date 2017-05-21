@@ -30,8 +30,8 @@ public class Map {
 
     public byte[][] genNext(int difficulty) { // todo: check indexoutofbounds?
         pointer++;
-//        return TileGenerator.generateTiles(generated.get(pointer));
-        return null;
+        // call TileGenerator to generate a chunk given the next GenCommand and current difficulty
+        return TileGenerator.generateTiles(generated.get(pointer), difficulty);
     }
 
     public void restart() {
@@ -42,12 +42,16 @@ public class Map {
     public static Map parse(String toParse) {
         Map parser = new Map();
         while (!toParse.isEmpty()) {
+            // evaluate loop
             if (toParse.startsWith("loop(")) { // todo: nested loops
                 parser.generated.addAll(evalLoop(toParse.substring(5, toParse.indexOf(')'))));
                 toParse = toParse.substring(toParse.indexOf(')') + 1);
-            } else {
+            } else if (toParse.contains(",")){ // at least one more command
                 parser.generated.add(evalCommand(toParse.substring(0, toParse.indexOf(','))));
                 toParse = toParse.substring(toParse.indexOf(',') + 1);
+            } else { // no more commands
+                parser.generated.add(evalCommand(toParse));
+                toParse = "";
             }
         }
         return parser;

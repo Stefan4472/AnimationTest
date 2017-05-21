@@ -23,8 +23,8 @@ public class GameDriver {
     private Context context;
     // grid of tile ID's instructing which sprites to initialize on screen
     private byte[][] tiles;
-    // used to generate tile-based terrain
-    private TileGenerator tileGenerator;
+    // used to generate tiles based on pre-defined settings
+    private Map map;
     // number of rows of sprites that fit on screen
     private static final int ROWS = 6;
     // number of tiles elapsed since last tiles was generated
@@ -56,7 +56,8 @@ public class GameDriver {
         this.screenH = screenH;
         tileWidth = screenH / ROWS;
         tiles = new byte[ROWS][screenW / tileWidth];
-        tileGenerator = new TileGenerator(ROWS);
+        // todo: take String defining map as a parameter
+        map = Map.parse("loop(3,genObstacles,genAsteroids),genAliens[5]");
     }
 
     // creates new sprites as specified by the tiles
@@ -89,8 +90,8 @@ public class GameDriver {
 
             // generate more sprites todo: only generate if all aliens have been killed, or all bosses, or etc. preventGeneration flag?
             if (mapTileCounter == tiles[0].length) {
-                tiles = tileGenerator.generateTiles(difficulty);
-//                tiles = tileGenerator.generateDebugTiles();
+                tiles = map.genNext(difficulty);
+//                tiles = map.generateDebugTiles();
                 mapTileCounter = 0;
             }
             lastTile = getWTile();
@@ -168,7 +169,7 @@ public class GameDriver {
         aliens.clear();
         alienProjectiles.clear();
         tiles = new byte[ROWS][screenW / tileWidth];
-        tileGenerator = new TileGenerator(ROWS);
+        map.restart();
         mapTileCounter = 0;
         x = 0;
         lastTile = 0;

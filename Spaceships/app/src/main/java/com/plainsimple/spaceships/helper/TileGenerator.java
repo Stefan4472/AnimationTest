@@ -15,68 +15,77 @@ public class TileGenerator {
     public static final int ASTEROID = 5; // asteroid
 
     // chunkTypes, used by GenCommand to tell the Generator what type of chunk to generate
-    public static final String GEN_OBSTACLES = "GENERATE_OBSTACLES";
-    public static final String GEN_COINS = "GENERATE_COINS";
-    public static final String GEN_ALIENS = "GENERATE_ALIENS";
-    public static final String GEN_ASTEROIDS = "GENERATE_ASTEROIDS";
-    public static final String GEN_TUNNEL = "GENERATE_TUNNEL;";
+    public static final String GEN_OBSTACLES = "genObstacles";
+    public static final String GEN_COINS = "genCoins";
+    public static final String GEN_ALIENS = "genAliens";
+    public static final String GEN_ASTEROIDS = "genAsteroids";
+    public static final String GEN_TUNNEL = "genTunnel;";
+    public static final String GEN_RANDOM = "genRandom";
+    public static final String GEN_DEBUG = "genDebug";
 
     // models to simulate probability todo: make less arbitrary
-    private LinearProbability pTunnel = new LinearProbability(0.15f, 0.3f, 1_500, 300);
-    private LinearProbability pAlienSwarm = new LinearProbability(0.05f, 0.3f, 500, 200);
-    private LinearProbability pCoinTrail = new LinearProbability(0.15f, 0.7f, 1_000, 100);
-    private LinearProbability pAsteroid = new LinearProbability(0.10f, 0.25f, 2_000, 250);
+    private static final LinearProbability pTunnel = new LinearProbability(0.15f, 0.3f, 1_500, 300);
+    private static final LinearProbability pAlienSwarm = new LinearProbability(0.05f, 0.3f, 500, 200);
+    private static final LinearProbability pCoinTrail = new LinearProbability(0.15f, 0.7f, 1_000, 100);
+    private static final LinearProbability pAsteroid = new LinearProbability(0.10f, 0.25f, 2_000, 250);
 
-    // length of coin trails
+    // length each coin trail must be
     private static final int COIN_TRAIL_LENGTH = 15;
-    // number of coins remaining in current trail
-    private int coinsLeft;
-    // number of rows of tiles to generate
-    private int rows;
-    // whether or not to generate a buffer
-    private boolean genBuffer;
-    // length of buffer
-    private int bufferLength = 5;
-    // current difficulty
-    private int difficulty;
+    // number of rows of tiles to generate todo: make final? determine by map?
+    private static final int rows = 6;
+    // used for generating random numbers todo: use seed?
+    private static final Random random = new Random();
 
-    // used for generating random numbers
-    private static Random random = new Random();
-
-    public TileGenerator(int rows) {
-        this.rows = rows;
+    // generates a chunk of tiles based on GenCommand given and current difficulty, which might be
+    // used to determine certain probabilities. Throws IllegalArgumentException if GenCommand has an
+    // invalid field.
+    public static byte[][] generateTiles(GenCommand genCommand, int difficulty) throws IllegalArgumentException {
+        byte[][] generated;
+        // determine generating method to call based on ChunkType defined by the command
+        switch (genCommand.getChunkType()) {
+            case GEN_OBSTACLES:
+                generated = generateObstacles(); // todo: size as a parameter
+                break;
+            case GEN_ALIENS:
+                generated = generateAlienSwarm();
+                break;
+            case GEN_ASTEROIDS:
+                generated = generateAsteroid();
+                break;
+            case GEN_TUNNEL:
+                generated = generateTunnel();
+                break;
+            case GEN_RANDOM:
+                generated = generateRandom(difficulty);
+                break;
+            case GEN_DEBUG:
+                return generateDebugTiles();
+            default:
+                throw new IllegalArgumentException("Invalid ChunkType '" + genCommand.getChunkType() + "'");
+        }
+        if (testRandom(pCoinTrail.getP(difficulty))) {
+            generateCoins(generated);
+        }
+        return generated;
     }
 
-    // generates a map of sprites based on difficulty and number of rows
-    // in screen vertically.
-    // difficulty determines probability of certain obstacles, coin
-    // trails, and todo: powerups
-    // between each generated chunk is a buffer, i.e. empty space
-    public byte[][] generateTiles(int difficulty) {
-        this.difficulty = difficulty;
-        genBuffer = !genBuffer;
-        if (genBuffer) {
-            return new byte[rows][bufferLength];
+    // generates a chunk randomly, based on current difficulty
+    private static byte[][] generateRandom(int difficulty) {
+        byte[][] generated;
+        if (testRandom(pTunnel.getP(difficulty))) {
+            generated = generateTunnel();
+        } else if (testRandom(pAlienSwarm.getP(difficulty))) {
+            generated = generateAlienSwarm();
+        } else if (testRandom(pAsteroid.getP(difficulty))) {
+            generated = generateAsteroid();
         } else {
-            byte[][] generated;
-            if (testRandom(pTunnel.getP(difficulty))) {
-                generated = generateTunnel();
-            } else if (testRandom(pAlienSwarm.getP(difficulty))) {
-                generated = generateAlienSwarm();
-            } else if (testRandom(pAsteroid.getP(difficulty))) {
-                generated = generateAsteroid();
-            } else {
-                generated = generateObstacles();
-            }
-            if (testRandom(pCoinTrail.getP(difficulty))) {
-                generateCoins(generated);
-            }
-            return generated;
+            generated = generateObstacles();
         }
+        return generated;
     }
 
     // generates chunk of randomly-placed obstacles
-    private byte[][] generateObstacles() {
+    private static byte[][] generateObstacles() {
         int size = COIN_TRAIL_LENGTH + random.nextInt(5);
         int row = random.nextInt(rows);
         byte[][] generated = new byte[rows][size];
@@ -101,7 +110,7 @@ public class TileGenerator {
     }
 
     // generates tunnel
-    private byte[][] generateTunnel() {
+    private static byte[][] generateTunnel() {
         int tunnel_length = COIN_TRAIL_LENGTH + 3 + random.nextInt(10);
         byte[][] generated = new byte[rows][tunnel_length];
         int row = 1 + random.nextInt(rows - 2);
@@ -159,14 +168,14 @@ public class TileGenerator {
         return generated;
     }
 
-    private byte[][] generateAlien() {
+    private static byte[][] generateAlien() {
         int size = 6 + random.nextInt(10);
         byte[][] generated = new byte[rows][size];
         generated[1 + random.nextInt(6)][size / 2] = ALIEN;
         return generated;
     }
 
-    private byte[][] generateAlienSwarm() {
+    private static byte[][] generateAlienSwarm() {
         int num_aliens = 2 + random.nextInt(3);
         int size = (num_aliens + 1) * 8;
         byte[][] generated = new byte[rows][size];
@@ -176,14 +185,14 @@ public class TileGenerator {
         return generated;
     }
 
-    private byte[][] generateAsteroid() {
+    private static byte[][] generateAsteroid() {
         byte[][] generated = new byte[rows][8];
         generated[2][random.nextInt(6)] = ASTEROID;
         return generated;
     }
 
     // generates a coin trail on map
-    private void generateCoins(byte[][] generated) {
+    private static void generateCoins(byte[][] generated) {
         int col, row, end_col;
         // start coin trail somewhere in chunk making sure there is enough space
         if (generated[0].length <= COIN_TRAIL_LENGTH) {
@@ -192,7 +201,7 @@ public class TileGenerator {
             col = random.nextInt(generated[0].length - COIN_TRAIL_LENGTH);
         }
         end_col = col + COIN_TRAIL_LENGTH;
-        coinsLeft = COIN_TRAIL_LENGTH;
+        int coinsLeft = COIN_TRAIL_LENGTH;
         /* establish empty row to place first coin. trail_distance is the
         length a trail can go without having to change direction. Longer
         trail_distance is preferable */
@@ -259,7 +268,7 @@ public class TileGenerator {
     }
 
     // a class to calculate linear probability for map generation
-    private class LinearProbability {
+    private static class LinearProbability {
         
         // starting probability
         private float initialProbability;
