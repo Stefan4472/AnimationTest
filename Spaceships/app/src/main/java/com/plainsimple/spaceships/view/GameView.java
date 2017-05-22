@@ -51,6 +51,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private static int score = 0;
     // current level of difficulty (used to determine some game mechanics)
     private float difficulty = 0;
+    // defines this game's GameMode
+    private GameMode gameMode;
     // used to store this run's stats
     public static GameStats currentStats;
     // paint object
@@ -284,7 +286,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
             // initialize other required components
             background = new Background(screenW, playScreenH);
-            gameDriver = new GameDriver(c, screenW, playScreenH);
+            gameDriver = new GameDriver(c, screenW, playScreenH, gameMode.getLevelData());
             scoreDisplay = new ScoreDisplay(c, 0);
             currentStats = new GameStats();
             gameFinished = false;
@@ -384,6 +386,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         return scrollSpeed;
     }
 
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
+    }
     //public GameTimer getGameTimer() {
     //    return gameTimer;
     //}

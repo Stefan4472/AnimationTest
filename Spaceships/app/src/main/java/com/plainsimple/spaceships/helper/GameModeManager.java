@@ -26,18 +26,18 @@ public class GameModeManager {
     private static final String ENDLESS_0_STR = ENDLESS_0 + ":" + "Endless:" + GameView.Difficulty.EASY
             + ":" + 0 + ":" + 2000 + ":" + 4000 + ":" + 7000 + ":" + 12000 + ":" + 25000 + ":" +
             "Survive! The farther you go the harder it gets and the more coins and points you'll earn!"
-            + ":" + "GENERATE BABY!";
+            + ":" + "loop(INFINITE,genRandom)";
     private static final String ENDLESS_1_STR = ENDLESS_1 + ":" + "Endless Asteroids:" + GameView.Difficulty.EASY
             + ":" + 0 + ":" + 2000 + ":" + 4000 + ":" + 7000 + ":" + 12000 + ":" + 25000 + ":" +
             "Survive the Astroid storm! The farther you go the harder it gets and the more coins and points you'll earn!"
-            + ":" + "GENERATE ASTEROIDS BABY!";
+            + ":" + "loop(INFINITE,genAsteroid[6])";
     private static final String ENDLESS_2_STR = ENDLESS_2 + ":" + "Endless Aliens:" + GameView.Difficulty.EASY
             + ":" + 0 + ":" + 1000 + ":" + 3000 + ":" + 5000 + ":" + 9000 + ":" + 20000 + ":" +
             "Survive the Alien Appocalypse! The farther you go the harder it gets and the more coins and points you'll earn!"
-            + ":" + "GENERATE ALIENS BABY!";
+            + ":" + "loop(INFINITE,genAlien[8])";
     private static final String CAMPAIGN_0_STR = CAMPAIGN_0 + ":" + "Campaign Lvl 0:" + GameView.Difficulty.EASY
             + ":" + 0 + ":" + 10000 + ":" + 15000 + ":" + 20000 + ":" + 25000 + ":" + 30000 + ":" +
-            "Complete the mission! Survive to the end of the level!" + ":" + "GENERATE WELL-DESIGNED TERRAIN BABY!";
+            "Complete the mission! Survive to the end of the level!" + ":" + "loop(3,genObstacles,genAlien,genAsteroid),END";
 
     // file key where prefs is stored
     private static final String PREFERENCES_FILE_KEY = "com.plainsimple.spaceships.GAMEMODE_FILE_KEY";

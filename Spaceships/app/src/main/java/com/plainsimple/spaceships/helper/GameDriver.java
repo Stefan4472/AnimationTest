@@ -52,14 +52,16 @@ public class GameDriver {
     // width (px) of the side of a tile
     private int tileWidth;
 
-    public GameDriver(Context context, int screenW, int screenH) {
+    // creates GameDriver using a copy of context, the screen dimensions, and a String defining the
+    // map to be used.
+    public GameDriver(Context context, int screenW, int screenH, String mapString) {
         this.context = context;
         this.screenW = screenW;
         this.screenH = screenH;
         tileWidth = screenH / ROWS;
         tiles = new byte[ROWS][screenW / tileWidth];
         // todo: take String defining map as a parameter
-        map = Map.parse("loop(3,genObstacles,genAsteroids),genAliens[5],END");
+        map = Map.parse(mapString);
     }
 
     // creates new sprites as specified by the tiles

@@ -19,7 +19,8 @@ public class TileGenerator {
     public static final String GEN_OBSTACLES = "genObstacles";
     public static final String GEN_COINS = "genCoins";
     public static final String GEN_ALIENS = "genAliens";
-    public static final String GEN_ASTEROIDS = "genAsteroids";
+    public static final String GEN_ALIEN = "genAlien";
+    public static final String GEN_ASTEROID = "genAsteroid";
     public static final String GEN_TUNNEL = "genTunnel;";
     public static final String GEN_RANDOM = "genRandom";
     public static final String GEN_DEBUG = "genDebug";
@@ -48,10 +49,13 @@ public class TileGenerator {
             case GEN_OBSTACLES:
                 generated = generateObstacles(genCommand.getChunkParam()); // todo: size as a parameter
                 break;
+            case GEN_ALIEN:
+                generated = generateAlien(genCommand.getChunkParam());
+                break;
             case GEN_ALIENS:
                 generated = generateAlienSwarm(genCommand.getChunkParam());
                 break;
-            case GEN_ASTEROIDS:
+            case GEN_ASTEROID:
                 generated = generateAsteroid(genCommand.getChunkParam());
                 break;
             case GEN_TUNNEL:
@@ -116,7 +120,7 @@ public class TileGenerator {
         return generated;
     }
 
-    // generates tunnel of the given length
+    // generates tunnel of the given length todo: preceded by five columns of empty?
     private static byte[][] generateTunnel(int tunnelLength) {
         if (tunnelLength == GenCommand.DEFAULT) {
             tunnelLength = COIN_TRAIL_LENGTH + 3 + random.nextInt(10);
@@ -184,7 +188,7 @@ public class TileGenerator {
             chunkLength = 6 + random.nextInt(10);
         }
         byte[][] generated = new byte[ROWS][chunkLength];
-        generated[1 + random.nextInt(6)][chunkLength / 2] = ALIEN;
+        generated[1 + random.nextInt(ROWS - 1)][chunkLength / 2] = ALIEN;
         return generated;
     }
 

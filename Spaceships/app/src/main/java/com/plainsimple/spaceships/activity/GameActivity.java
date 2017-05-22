@@ -109,10 +109,11 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
 
         Bundle args = getIntent().getExtras();
 
-        try {
+        try { // todo: any way to get this data to gameView when it's first initialized?
             gameMode = GameModeManager.retrieve(args.getString(GAMEMODE_KEY));
             difficulty = GameView.Difficulty.valueOf(args.getString(DIFFICULTY_KEY));
             gameView.setDifficultyLevel(difficulty);
+            gameView.setGameMode(gameMode);
             Log.d("GameActivity", "Playing " + gameMode.getName() + " on " + args.getString(DIFFICULTY_KEY));
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("GameActivity requires a Bundle with valid " +
