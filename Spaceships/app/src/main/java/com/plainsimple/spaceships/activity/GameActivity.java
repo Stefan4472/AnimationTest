@@ -247,6 +247,7 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
     // GameOverDialog. Overrided from PauseDialogListener and GameOverDialogListener
     public void onQuitPressed(DialogFragment dialog) { // todo: wouldn't save stats if prematurely exited
         playSound(SoundID.BUTTON_CLICKED);
+        paused = true;
         quit = true;
         Log.d("GameActivity", "Quitting game");
         finish();
@@ -310,11 +311,6 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         d.show(getFragmentManager(), "GameOver");
     }
 
-    @Override // score change triggers update of ScoreView
-    public void onScoreChanged(final int newScore) {
-        // not in use due to large resource-use
-    }
-
     @Override // health changed triggers update of healthBarView
     public void onHealthChanged(final int newHealth) {
         runOnUiThread(new Runnable() {
@@ -364,12 +360,8 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
     public void onPause() {
         super.onPause();
         Log.d("GameActivity", "onPause called");
-        // pause if game is still playing
-        if (!paused && !quit) {
-            Log.d("GameActivity", "Pausing the game");
-            paused = true;
-            Log.d("GameActivity", "Finished pausing the game");
-        }
+        // pause the game to stop rendering
+        paused = true;
         // save volume preferences
         SharedPreferences.Editor editor = preferences.edit();
         editor.putFloat(GAME_VOLUME_KEY, gameVolume);
@@ -378,12 +370,6 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         editor.commit();
         soundPool.release();
         soundPool = null;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d("GameActivity", "onStop called");
     }
 
     @Override

@@ -110,8 +110,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         void onGameStarted();
         // fired when screen come to a halt and it's time to pop up GameOverDialog
         void onGameFinished();
-        // fired when score changes (sends updated score)
-        void onScoreChanged(int newScore);
         // fired when spaceship's health changes
         void onHealthChanged(int healthChange);
     }
