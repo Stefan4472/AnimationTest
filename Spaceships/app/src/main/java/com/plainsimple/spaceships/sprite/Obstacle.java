@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.sprite;
 
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRect;
@@ -23,7 +24,7 @@ public class Obstacle extends Sprite {
     public Obstacle(float x, float y, int width, int height) {
         super(x, y, width, height);
         hitBox = new FloatRect(x, y, x + getWidth(), y + getHeight());
-        hp = 10_000; // todo: some impossible to reach number?
+        hp = 7;
     }
 
     @Override
@@ -47,7 +48,9 @@ public class Obstacle extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage) {
-
+        if (s instanceof Spaceship) {
+            hp += 2;
+        }
     }
 
     // init DrawRect instance with specified color and fill Paint Style

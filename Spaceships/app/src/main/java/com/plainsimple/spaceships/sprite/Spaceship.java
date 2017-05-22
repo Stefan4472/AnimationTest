@@ -125,7 +125,7 @@ public class Spaceship extends Sprite {
         DRAW_EXPLODE = new DrawImage(explode.getBitmapID());
 
         hp = armorType.getHP();
-        hitBox = new FloatRect(x + getWidth() * 0.17f, y + getHeight() * 0.27f, x + getWidth() * 0.7f, y + getHeight() * 0.73f);
+        hitBox = new FloatRect(x + getWidth() * 0.17f, y + getHeight() * 0.2f, x + getWidth() * 0.7f, y + getHeight() * 0.8f);
         rocketManager = RocketManager.newInstance(rocketType);
 
         collides = true;
@@ -216,9 +216,11 @@ public class Spaceship extends Sprite {
     @Override
     public void updateSpeeds() {
         if (direction == UP) {
-            speedY = -0.02f;
+            speedY = -0.015f;
+//            speedY = -0.02f;
         } else if (direction== DOWN){
-            speedY = 0.02f;
+            speedY = 0.015f;
+//            speedY = 0.02f;
         } else {
             speedY /= 1.7;
         }
