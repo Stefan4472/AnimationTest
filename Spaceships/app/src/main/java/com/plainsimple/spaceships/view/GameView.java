@@ -29,7 +29,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private Context c;
     private SurfaceHolder mySurfaceHolder;
-    // todo: make non-static
     // GameView dimensions. screenW and screenH are full dimensions.
     // playScreenH is the height of the "playable" screen. This can be
     // configured (e.g. to remove what's underneath the HealthBarView)
@@ -63,10 +62,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // selected fire mode (bullet or rocket)
     private Spaceship.FireMode selectedFireMode = Spaceship.FireMode.BULLET;
     private GameViewThread thread;
-    // space background (implements parallax scrolling)
+    // scrolling space background (moves at SCROLL_SPEED_CONST of regular sprites)
     private Background background;
-    private GameDriver map;
-    // speed of sprites scrolling across the map (must be negative!)
+    // runs sprite generation and updating
+    private GameDriver gameDriver;
+    // speed of sprites scrolling across the screen (must be negative!)
     private static float scrollSpeed = -0.0025f;
     // spaceship
     private Spaceship spaceship;
@@ -96,9 +96,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     // listener passed in by GameActivity
     private GameEventsListener gameEventsListener;
-
-    // direction Spaceship should move in, as determined by GameActivity
-    private Spaceship.Direction direction;
 
     // interface for events to fire
     public interface GameEventsListener {
@@ -142,10 +139,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             c = context;
         }
 
+        private Canvas canvas;
         @Override
         public void run() {
             while (running) {
-                Canvas canvas = null;
+                canvas = null;
 //                try {
                     canvas = mySurfaceHolder.lockCanvas(null);
                     synchronized (mySurfaceHolder) {
@@ -162,7 +160,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         private void draw(Canvas canvas) {
-            if (!initialized) { // todo: find a better way (putBitmap this in onMeasure? But there were issues with pauseDialog
+            // check if game has been initialized
+            if (!initialized) {
                 Log.d("GameView", "Initializing new game");
                 initialized = true;
                 initNewGame();
@@ -175,7 +174,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             for (Sprite s : spaceship.getProjectiles()) {
                 GameEngineUtil.drawSprite(s, canvas, c);
             }
-            map.draw(canvas, c);
+            gameDriver.draw(canvas, c);
             GameEngineUtil.drawSprite(spaceship, canvas, c);
             scoreDisplay.draw(canvas);
             // fill the area outside of playScreenH but in screenH with black
@@ -195,10 +194,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 background.scroll(-scrollSpeed * screenW * SCROLL_SPEED_CONST);
             }
             updateSpaceship();
-            map.update((int) difficulty, scrollSpeed, spaceship);
+            gameDriver.update((int) difficulty, scrollSpeed, spaceship);
             spaceship.updateAnimations();
             scoreDisplay.update(score);
-//            gameEventsListener.onScoreChanged(score);
         }
 
         private void updateSpaceship() {
@@ -223,7 +221,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         public void updateScrollSpeed() {
             // spaceship destroyed: slow down scrolling to a halt and fire onGameFinished when scrollspeed = 0
             if (spaceshipDestroyed) {
-                scrollSpeed /= 1.02f;
+                scrollSpeed /= 1.03f;
                 if (scrollSpeed > -0.0001f) {
                     gameFinished = true;
                     Log.d("GameView.java", "OnGameFinished()");
@@ -286,7 +284,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
             // initialize other required components
             background = new Background(screenW, playScreenH);
-            map = new GameDriver(c, screenW, playScreenH);
+            gameDriver = new GameDriver(c, screenW, playScreenH);
             scoreDisplay = new ScoreDisplay(c, 0);
             currentStats = new GameStats();
             gameFinished = false;
@@ -345,7 +343,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         spaceship.setX(-spaceship.getWidth());
         spaceship.setY(screenH / 2 - spaceship.getHeight() / 2);
         background.reset();
-        map.reset();
+        gameDriver.reset();
         //gameTimer.reset();
         scoreDisplay.reset();
         spaceshipDestroyed = false;

@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Generates sprites, among other things: basically the game driver
+ * Generates and updates all sprites other than the spaceship. Also does collision detection.
  */
 
 public class GameDriver {
@@ -38,6 +38,8 @@ public class GameDriver {
     private int screenW;
     private int screenH;
 
+    // the spaceship
+    private Spaceship spaceship;
     // active generated obstacles
     private List<Sprite> obstacles = new LinkedList<>();
     // active generated coins
@@ -141,6 +143,9 @@ public class GameDriver {
                 break;
             case TileGenerator.ASTEROID: // todo: separate list for asteroids? could bounce off one another
                 obstacles.add(new Asteroid(x, y, scrollSpeed, difficulty, context));
+                break;
+            case TileGenerator.END_GAME:
+
                 break;
             default:
                 throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
