@@ -46,24 +46,24 @@ public class TileGenerator {
         // determine generating method to call based on ChunkType defined by the command
         switch (genCommand.getChunkType()) {
             case GEN_OBSTACLES:
-                generated = generateObstacles(); // todo: size as a parameter
+                generated = generateObstacles(genCommand.getChunkParam()); // todo: size as a parameter
                 break;
             case GEN_ALIENS:
-                generated = generateAlienSwarm();
+                generated = generateAlienSwarm(genCommand.getChunkParam());
                 break;
             case GEN_ASTEROIDS:
-                generated = generateAsteroid();
+                generated = generateAsteroid(genCommand.getChunkParam());
                 break;
             case GEN_TUNNEL:
-                generated = generateTunnel();
+                generated = generateTunnel(genCommand.getChunkParam());
                 break;
             case GEN_RANDOM:
-                generated = generateRandom(difficulty);
+                generated = generateRandom(difficulty, genCommand.getChunkParam());
                 break;
             case GEN_DEBUG:
                 return generateDebugTiles();
             case GEN_GAMEOVER:
-                return genEndGame();
+                return genEndGame(genCommand.getChunkParam());
             default:
                 throw new IllegalArgumentException("Invalid ChunkType '" + genCommand.getChunkType() + "'");
         }
@@ -73,31 +73,34 @@ public class TileGenerator {
         return generated;
     }
 
-    // generates a chunk randomly, based on current difficulty
-    private static byte[][] generateRandom(int difficulty) {
+    // generates a chunk randomly, based on current difficulty. Takes size as a parameter
+    private static byte[][] generateRandom(int difficulty, int param) {
         byte[][] generated;
         if (testRandom(pTunnel.getP(difficulty))) {
-            generated = generateTunnel();
+            generated = generateTunnel(param);
         } else if (testRandom(pAlienSwarm.getP(difficulty))) {
-            generated = generateAlienSwarm();
+            generated = generateAlienSwarm(param);
         } else if (testRandom(pAsteroid.getP(difficulty))) {
-            generated = generateAsteroid();
+            generated = generateAsteroid(param);
         } else {
-            generated = generateObstacles();
+            generated = generateObstacles(param);
         }
         return generated;
     }
 
     // generates chunk of randomly-placed obstacles
-    private static byte[][] generateObstacles() {
-        int size = COIN_TRAIL_LENGTH + random.nextInt(5);
+    private static byte[][] generateObstacles(int chunkLength) {
+        // calculate default size if desired; else use given size
+        if (chunkLength == GenCommand.DEFAULT) {
+            chunkLength = COIN_TRAIL_LENGTH + random.nextInt(5);
+        }
         int row = random.nextInt(ROWS);
-        byte[][] generated = new byte[ROWS][size];
-        for (int i = 0; i < size; i++) {
+        byte[][] generated = new byte[ROWS][chunkLength];
+        for (int i = 0; i < chunkLength; i++) {
             if (testRandom(0.4f)) {
                 generated[row][i] = OBSTACLE;
                 // generate another obstacle to the right
-                if (i + 1 < size && testRandom(0.3f)) {
+                if (i + 1 < chunkLength && testRandom(0.3f)) {
                     generated[row][i + 1] = OBSTACLE;
                     i++;
                 }
@@ -113,10 +116,12 @@ public class TileGenerator {
         return generated;
     }
 
-    // generates tunnel
-    private static byte[][] generateTunnel() {
-        int tunnel_length = COIN_TRAIL_LENGTH + 3 + random.nextInt(10);
-        byte[][] generated = new byte[ROWS][tunnel_length];
+    // generates tunnel of the given length
+    private static byte[][] generateTunnel(int tunnelLength) {
+        if (tunnelLength == GenCommand.DEFAULT) {
+            tunnelLength = COIN_TRAIL_LENGTH + 3 + random.nextInt(10);
+        }
+        byte[][] generated = new byte[ROWS][tunnelLength];
         int row = 1 + random.nextInt(ROWS - 2);
         // probability tunnel will move up or down
         float change_path = 0.0f;
@@ -126,9 +131,9 @@ public class TileGenerator {
                 generated[i][0] = OBSTACLE;
             }
         }
-        for (int j = 1; j < tunnel_length; j++) {
+        for (int j = 1; j < tunnelLength; j++) {
             // check whether to change direction (based on probability)
-            if (j < tunnel_length - 2 && testRandom(change_path)) {
+            if (j < tunnelLength - 2 && testRandom(change_path)) {
                 change_path = -0.1f;
                 // determine which direction to change in
                 int direction = 0;
@@ -172,26 +177,38 @@ public class TileGenerator {
         return generated;
     }
 
-    private static byte[][] generateAlien() {
-        int size = 6 + random.nextInt(10);
-        byte[][] generated = new byte[ROWS][size];
-        generated[1 + random.nextInt(6)][size / 2] = ALIEN;
+    // generates a single alien at a random row index in a chunk of the given length. Alien will be
+    // placed randomly
+    private static byte[][] generateAlien(int chunkLength) {
+        if (chunkLength == GenCommand.DEFAULT) {
+            chunkLength = 6 + random.nextInt(10);
+        }
+        byte[][] generated = new byte[ROWS][chunkLength];
+        generated[1 + random.nextInt(6)][chunkLength / 2] = ALIEN;
         return generated;
     }
 
-    private static byte[][] generateAlienSwarm() {
-        int num_aliens = 2 + random.nextInt(3);
-        int size = (num_aliens + 1) * 8;
+    // generates numAliens aliens. Each alien is preceded and succeeded by 8 empty tiles.
+    private static byte[][] generateAlienSwarm(int numAliens) {
+        if (numAliens == GenCommand.DEFAULT) {
+            numAliens = 2 + random.nextInt(3);
+        }
+        int size = (numAliens + 1) * 8;
         byte[][] generated = new byte[ROWS][size];
-        for (int i = 0; i < num_aliens; i++) {
+        for (int i = 0; i < numAliens; i++) {
             generated[1 + random.nextInt(4)][8 * (i + 1)] = ALIEN;
         }
         return generated;
     }
 
-    private static byte[][] generateAsteroid() {
-        byte[][] generated = new byte[ROWS][8];
-        generated[2][random.nextInt(6)] = ASTEROID;
+    // generates a single asteroid at a random row index in a chunk of the given length. Asteroid is
+    // placed randomly within the chunk
+    private static byte[][] generateAsteroid(int chunkLength) {
+        if (chunkLength == GenCommand.DEFAULT) {
+            chunkLength = 8;
+        }
+        byte[][] generated = new byte[ROWS][chunkLength];
+        generated[2][random.nextInt(chunkLength)] = ASTEROID;
         return generated;
     }
 
@@ -239,12 +256,15 @@ public class TileGenerator {
         }
     }
 
-    // generates a 5 column chunk of tiles. The first column is filled with END_GAME tiles and the
-    // rest is empty
-    private static byte[][] genEndGame() {
-        byte[][] generated = new byte[ROWS][5];
+    // generates a chunk whose last column is filled with END_GAME tiles. The numEmpty param specifies
+    // how many columns of empty tiles to have before the END_GAME column
+    private static byte[][] genEndGame(int numEmpty) {
+        if (numEmpty == GenCommand.DEFAULT) {
+            numEmpty = 4;
+        }
+        byte[][] generated = new byte[ROWS][numEmpty + 1];
         for (int i = 0; i < ROWS; i++) {
-            generated[i][0] = END_GAME;
+            generated[i][numEmpty] = END_GAME;
         }
         return generated;
     }
@@ -335,26 +355,27 @@ public class TileGenerator {
 
         // key specifying type of chunk to generate. Must be a valid chunkType defined in the class
         private String chunkType;
-        private byte size;
-        // denotes generator to use size it would by default for the tileId
-        public static final byte DEFAULT = 0;
+        // parameter for generation. Chunk-generating methods may interpret it in different ways
+        private int chunkParam;
+        // tells generator to calculate and use a default size for the chunk
+        public static final int DEFAULT = 0;
 
-        public GenCommand(String chunkType, byte size) {
+        public GenCommand(String chunkType, int chunkParam) {
             this.chunkType = chunkType;
-            this.size = size;
+            this.chunkParam = chunkParam;
         }
 
         public String getChunkType() {
             return chunkType;
         }
 
-        public byte getSize() {
-            return size;
+        public int getChunkParam() {
+            return chunkParam;
         }
 
         @Override
         public String toString() {
-            return chunkType + "[" + size + "]";
+            return chunkType + "[" + chunkParam + "]";
         }
     }
 }
