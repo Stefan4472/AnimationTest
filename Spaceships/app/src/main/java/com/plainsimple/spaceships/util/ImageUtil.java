@@ -48,6 +48,19 @@ public class ImageUtil {
         return rendered;
     }
 
+    // returns a new Bitmap of the same size, but with the image rotated 180 degrees about its center
+    public static Bitmap rotate180(Bitmap toRotate) {
+        // create new bitmap with same dimensions
+        Bitmap rotated = Bitmap.createBitmap(toRotate.getWidth(), toRotate.getHeight(), Bitmap.Config.ARGB_8888);
+        // get canvas to draw to it
+        Canvas canvas = new Canvas(rotated);
+        // rotate 180 degrees about center coordinates
+        canvas.rotate(180, toRotate.getWidth(), toRotate.getHeight());
+        // draw toRotate to the canvas
+        canvas.drawBitmap(toRotate, 0, 0, null);
+        return toRotate;
+    }
+
     // creates a linear gradient across the Bitmap from left to right using the specified colors
     public static void drawGradient(Bitmap b, int leftColor, int rightColor) {
         int w = b.getWidth();

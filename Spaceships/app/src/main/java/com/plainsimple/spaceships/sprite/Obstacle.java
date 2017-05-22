@@ -12,9 +12,13 @@ import com.plainsimple.spaceships.view.GameView;
 import java.util.List;
 
 /**
- * The Obstacle is a basic sprite that looks like a regular gray rectangle.
- * The Obstacle has very high hp, because it is meant to automatically destroy
- * the spaceship on impact. It is represented by its hitbox.
+ * The Obstacle is a basic sprite that looks like a regular gray rectangle. Because there it has no
+ * image, its hitbox is used to determine both its collision area as well as drawing bounds.
+ *
+ * The Obstacle only responds to collisions with the Spaceship. In this case it does base damage,
+ * as determined by what it originally was set to. Then, each frame it collides with the spaceship
+ * it does that amount of damage plus a small amount added each frame (so damage increases each frame).
+ * This way if the player reacts quickly enough, the damage may not be too deadly.
  */
 public class Obstacle extends Sprite {
 
@@ -24,7 +28,7 @@ public class Obstacle extends Sprite {
     public Obstacle(float x, float y, int width, int height) {
         super(x, y, width, height);
         hitBox = new FloatRect(x, y, x + getWidth(), y + getHeight());
-        hp = 7;
+        hp = 7; // todo: too high?
     }
 
     @Override
@@ -49,7 +53,7 @@ public class Obstacle extends Sprite {
     @Override
     public void handleCollision(Sprite s, int damage) {
         if (s instanceof Spaceship) {
-            hp += 2;
+            hp += 2; // todo: too high?
         }
     }
 

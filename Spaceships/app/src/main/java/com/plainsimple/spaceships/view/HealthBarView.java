@@ -73,7 +73,7 @@ public class HealthBarView extends View {
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int preferred_width = MeasureSpec.getSize(widthMeasureSpec);
         DisplayMetrics metrics = getResources().getDisplayMetrics();
-        // preferred height is one tenth of screen height
+        // preferred height is 3% of screen height
         int preferred_height = (int) (metrics.heightPixels * 0.03);
         setMeasuredDimension(preferred_width, decideMeasurement(heightMeasureSpec, preferred_height));
     }
