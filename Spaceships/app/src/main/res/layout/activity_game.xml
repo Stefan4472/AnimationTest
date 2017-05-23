@@ -65,7 +65,7 @@
         android:id="@+id/arrow_buttons"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:paddingLeft="5dp"
+        android:paddingLeft="10dp"
         android:layout_alignParentLeft="true"
         android:layout_above="@id/healthbar"/>
 </RelativeLayout>
