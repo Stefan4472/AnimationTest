@@ -89,8 +89,7 @@ public class GameStats { // todo: use enums shared with all StatsContainers?
             case DISTANCE_TRAVELED:
                 return (new DecimalFormat("#0.00")).format(values.get(key)) + " km";
             case TIME_PLAYED:
-                double val = values.get(key);
-                return (int) (val / 3_600_000) + "h" + (int) (val / 60_000) + "m" + (int) (val/1000) + "s";
+                return StatsManager.formatTime(values.get(key));
             default:
                 throw new IllegalArgumentException("The key \'" + key + "\' was not recognized!");
         }

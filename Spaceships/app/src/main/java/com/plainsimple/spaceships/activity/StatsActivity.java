@@ -32,11 +32,12 @@ public class StatsActivity extends Activity {
         listView = (ListView) findViewById(R.id.stats_list_view);
 
         // get String array of StatsManager keys and values
-        String[] keys = new StatsManager().getKeysToDisplay(); // todo: clean up, remove StatsContainer interface
+        String[] keys = StatsManager.getKeysToDisplay();
         String[] vals = new String[keys.length];
         for (int i = 0; i < vals.length; i++) {
-            vals[i] = new StatsManager().getFormatted(keys[i]);
+            vals[i] = StatsManager.getFormatted(keys[i]);
         }
+
         // create adapter instance to display content in each row of ListView
         StatsRowAdapter adapter = new StatsRowAdapter(this, R.layout.statsrow_layout, keys, vals);
         listView.setAdapter(adapter);

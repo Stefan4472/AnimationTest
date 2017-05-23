@@ -11,7 +11,7 @@ import java.util.HashMap;
  * Manages updates.
  */
 
-public class StatsManager implements StatsContainer {
+public class StatsManager {
 
     // name of preferences file where statistics are stored
     private static final String PREFERENCES_FILE_KEY = "com.plainsimple.spaceships.STATS_KEY";
@@ -38,6 +38,10 @@ public class StatsManager implements StatsContainer {
     private static final HashMap<String, Double> defaultVals = getDefaultVals();
     // handle to SharedPreferences
     private static SharedPreferences prefs;
+
+    private StatsManager() {
+
+    }
 
     // get a handle to SharedPreferences using given Context
     public static void init(Context context) {
@@ -107,8 +111,8 @@ public class StatsManager implements StatsContainer {
         }
     }
 
-    @Override // returns keys in a String[] array sorted in display order
-    public String[] getKeysToDisplay() {
+    // returns keys in a String[] array sorted in display order
+    public static String[] getKeysToDisplay() {
         return new String[] {
             HIGH_SCORE,
             LIFETIME_SCORE,
@@ -130,9 +134,9 @@ public class StatsManager implements StatsContainer {
         };
     }
 
-    @Override // retrieves value, formats it into a String and returns.
+    // retrieves value, formats it into a String and returns.
     // different statsCache get formatted differently. These are ready-to-display
-    public String getFormatted(String key) throws IllegalArgumentException {
+    public static String getFormatted(String key) throws IllegalArgumentException {
         switch (key) {
             case GAMES_PLAYED:
             case LIFETIME_SCORE:
@@ -152,12 +156,29 @@ public class StatsManager implements StatsContainer {
             case TOTAL_FLOWN:
                 return (new DecimalFormat("#0.00")).format(retrieve(key)) + " km"; // todo: change unit?
             case TOTAL_TIME_PLAYED:
-            case LONGEST_GAME: // todo: formatting
-                double val = retrieve(key);
-                return (int) (val / 3_600_000) + "h" + (int) (val / 60_000) + "m" + (int) (val/1000) + "s";
+            case LONGEST_GAME:
+                return formatTime(retrieve(key));
             default:
                 throw new IllegalArgumentException("Key '" + key + "' not recognized");
         }
+    }
+
+    // takes the given time in ms and formats into "hh:mm:ss time"
+    public static String formatTime(double ms) {
+        String to_str = "";
+        // add hours field
+        if (ms >= 3_600_000) {
+            to_str += (ms / 3_600_000) + "h";
+            ms %= 3_600_000;
+        }
+        // add minutes field
+        if (ms >= 60_000) {
+            to_str += (ms / 60_000) + "m";
+            ms %= 60_000;
+        }
+        // add seconds field with whatever's left, rounded down
+        to_str += (int) (ms / 1_000) + "s";
+        return to_str;
     }
 
     // generate and return HashMap containing key, default val pairings
