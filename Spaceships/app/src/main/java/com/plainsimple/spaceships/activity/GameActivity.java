@@ -26,6 +26,7 @@ import com.plainsimple.spaceships.stats.StatsManager;
 import com.plainsimple.spaceships.store.RocketType;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
+import com.plainsimple.spaceships.view.ArrowButtonView;
 import com.plainsimple.spaceships.view.GameView;
 import com.plainsimple.spaceships.view.HealthBarView;
 
@@ -37,16 +38,17 @@ import plainsimple.spaceships.R;
  * Created by Stefan on 10/17/2015.
  */
 public class GameActivity extends FragmentActivity implements PauseDialogFragment.PauseDialogListener,
-    GameOverDialogFragment.GameOverDialogListener, GameView.GameEventsListener {
+    GameOverDialogFragment.GameOverDialogListener, GameView.GameEventsListener,
+        ArrowButtonView.OnDirectionChangedListener {
 
+    // view elements
     private GameView gameView;
     private HealthBarView healthBarView;
     private ImageButton pauseButton;
     private ImageButton muteButton;
     private ImageButton toggleBulletButton;
     private ImageButton toggleRocketButton;
-    private ImageButton upArrow;
-    private ImageButton downArrow;
+    private ArrowButtonView arrowButtons;
 
     // GameMode object containing all data required to administer the selected GameMode
     private GameMode gameMode;
@@ -107,6 +109,10 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
 
+        arrowButtons = (ArrowButtonView) findViewById(R.id.arrow_buttons);
+        arrowButtons.setOnDirectionChangedListener(this);
+
+        // todo: fade in arrowButtons
         Bundle args = getIntent().getExtras();
 
         try { // todo: any way to get this data to gameView when it's first initialized?
@@ -119,37 +125,6 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
             throw new IllegalArgumentException("GameActivity requires a Bundle with valid " +
                     "GAMEMODE_KEY and DIFFICULTY_KEY params");
         }
-
-        // initialize listeners
-        upArrow = (ImageButton) findViewById(R.id.up_arrow);
-        upArrow.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-               if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                   findViewById(R.id.down_arrow).setVisibility(View.INVISIBLE);
-                   downArrow.setVisibility(View.INVISIBLE); // todo: why did this stop working?
-                   gameView.updateDirection(Spaceship.Direction.UP);
-               } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                   gameView.updateDirection(Spaceship.Direction.NONE);
-                   downArrow.setVisibility(View.VISIBLE);
-               }
-               return false;
-            }
-        });
-        downArrow = (ImageButton) findViewById(R.id.down_arrow);
-        downArrow.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    upArrow.setVisibility(View.INVISIBLE);
-                    gameView.updateDirection(Spaceship.Direction.DOWN);
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    gameView.updateDirection(Spaceship.Direction.NONE);
-                    upArrow.setVisibility(View.VISIBLE);
-                }
-                return false; // todo: does return matter?
-            }
-        });
 
         // set up GameEventsListener
         gameView.setGameEventsListener(this);
@@ -272,11 +247,16 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         return screenHeight - healthBarView.getHeight();
     }
 
+    @Override // fired when the ArrowButtonView has a change of input. Sends new direction to GameView
+    public void onDirectionChanged(Spaceship.Direction newDirection) {
+        gameView.updateDirection(newDirection);
+    }
+
     @Override // handles the game officially starting (i.e. the spaceship has reached
     // the correct horizontal position for obstacles to start. Overriden from
     // GameEventsListener
     public void onGameStarted() { // todo: this animation was causing arrowbutton visibility change issues
-        final Animation arrow_fade_in = AnimationUtils.loadAnimation(this, R.anim.arrowbutton_fadein);
+        /*final Animation arrow_fade_in = AnimationUtils.loadAnimation(this, R.anim.arrowbutton_fadein);
         // fade in direction arrows once spaceship reaches initial position
         runOnUiThread(new Runnable() {
             @Override
@@ -286,18 +266,18 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
                 //upArrow.startAnimation(arrow_fade_in);
                 //downArrow.startAnimation(arrow_fade_in);
             }
-        });
+        });*/
     }
 
     @Override // pop-up end game dialog when game is over
     public void onGameFinished() {
-        runOnUiThread(new Runnable() {
+        /*runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 upArrow.setVisibility(View.INVISIBLE);
                 downArrow.setVisibility(View.INVISIBLE);
             }
-        });
+        });*/
         // update all stats and display GameOverDialogFragment
         gameView.forceUpdateStats();
         boolean high_score = updateStats();

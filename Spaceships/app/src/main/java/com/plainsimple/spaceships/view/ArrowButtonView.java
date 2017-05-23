@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,7 +16,8 @@ import plainsimple.spaceships.R;
 
 /**
  * The ArrowButton view is essentially a large button that displays two vertical arrows (one pointing
- * up, the other pointing down).
+ * up, the other pointing down). It uses Spaceship.Direction values to keep track of its current
+ * state.
  */
 
 public class ArrowButtonView extends View {
@@ -23,18 +25,30 @@ public class ArrowButtonView extends View {
     // R.drawable id of the arrow to use. Should be oriented upwards
     private static final int UP_ARROW_IMG_ID = R.drawable.up_arrow;
 
-    // possible states
-    private enum State {
-        UP_PRESSED, DOWN_PRESSED, NONE_PRESSED;
-    }
-
     // bitmaps for the upArrow and downArrow
     private Bitmap upArrow, downArrow;
-    // current state of ArrowButtons
-    private State currentState;
+    // current state of ArrowButtons, using a Spaceship.Direction value
+    private Spaceship.Direction currentDirection;
+    // receives events when direction is changed
+    private OnDirectionChangedListener listener;
+
+    // interface to send a callback when state of view is changed
+    public interface OnDirectionChangedListener {
+        void onDirectionChanged(Spaceship.Direction newDirection);
+    }
+
+    public void setOnDirectionChangedListener(OnDirectionChangedListener listener) {
+        this.listener = listener;
+    }
 
     public ArrowButtonView(Context context) {
         super(context);
+        currentDirection = Spaceship.Direction.NONE;
+    }
+
+    public ArrowButtonView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        currentDirection = Spaceship.Direction.NONE;
     }
 
     @Override
@@ -65,21 +79,24 @@ public class ArrowButtonView extends View {
             // ACTION_MOVE (we'd want to detect if the user started pressing the other button)
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
-                State new_state;
+                Spaceship.Direction new_direction;
                 if (event.getY() > getHeight() / 2) {
-                    new_state = State.DOWN_PRESSED;
+                    new_direction = Spaceship.Direction.DOWN;
                 } else {
-                    new_state = State.UP_PRESSED;
+                    new_direction = Spaceship.Direction.UP;
                 }
-                // check if new state is different. If so, redraw
-                if (new_state != currentState) {
-                    currentState = new_state;
+                // check if new state is different. If so, fire OnDirectionChanged and redraw
+                if (new_direction != currentDirection) {
+                    currentDirection = new_direction;
+                    listener.onDirectionChanged(currentDirection);
+                    Log.d("ArrowButtonView", "Input Direction changed to " + currentDirection);
                     invalidate();
                 }
                 break;
-            // user stopped touching buttons: revert to NONE_PRESSED
+            // user stopped touching buttons: revert to Direction.NONE
             case MotionEvent.ACTION_UP: // end of touch
-                currentState = State.NONE_PRESSED;
+                currentDirection = Spaceship.Direction.NONE;
+                listener.onDirectionChanged(currentDirection);
                 break;
         }
         return true;
@@ -89,9 +106,9 @@ public class ArrowButtonView extends View {
     // vertical half. Draws the down arrow so it starts at the vertical half and goes downward
     public void onDraw(Canvas canvas) {
         int half_point = getHeight() / 2;
-        if (currentState == State.DOWN_PRESSED) { // draw only down
+        if (currentDirection == Spaceship.Direction.DOWN) { // draw only down
             canvas.drawBitmap(downArrow, 0, half_point, null);
-        } else if (currentState == State.UP_PRESSED) { // draw only up
+        } else if (currentDirection == Spaceship.Direction.UP) { // draw only up
             canvas.drawBitmap(upArrow, 0, half_point - upArrow.getHeight(), null);
         } else { // draw both
             canvas.drawBitmap(upArrow, 0, half_point - upArrow.getHeight(), null);
