@@ -55,8 +55,6 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
     // difficulty game is being played at
     private GameView.Difficulty difficulty;
 
-    // whether the user selected to quit the game
-    private boolean quit = false;
     private static boolean paused = false;
     private static boolean muted;
 
@@ -170,14 +168,14 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         playSound(SoundID.BUTTON_CLICKED);
         paused = !paused;
         if (paused) {
-            //gameView.getGameTimer().stop();
+            gameView.getGameTimer().pause();
             pauseButton.setBackgroundResource(R.drawable.play);
             soundPool.autoPause();
             // display pause dialog
             DialogFragment d = PauseDialogFragment.newInstance(gameVolume, musicVolume);
             d.show(getFragmentManager(), "Pause");
         } else {
-            //gameView.getGameTimer().start();
+            gameView.getGameTimer().start();
             pauseButton.setBackgroundResource(R.drawable.pause);
             soundPool.autoResume();
         }
@@ -223,7 +221,6 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
     public void onQuitPressed(DialogFragment dialog) { // todo: wouldn't save stats if prematurely exited
         playSound(SoundID.BUTTON_CLICKED);
         paused = true;
-        quit = true;
         Log.d("GameActivity", "Quitting game");
         finish();
     }
@@ -282,8 +279,6 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         gameView.forceUpdateStats();
         boolean high_score = updateStats();
 
-        Log.d("GameActivity", "Testing to make sure GAmeModeManager is initialized");
-        GameModeManager.init(this);
         // query GameMode for number of stars earned, based on currentStats
         int stars_earned = gameMode.calculateStars(GameView.currentStats.getScore().intValue());
         DialogFragment d = GameOverDialogFragment.newInstance(GameView.currentStats, "GameOver",
@@ -312,7 +307,7 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         // add coins collected in game to current available coins (stored in EquipmentManager)
         EquipmentManager.addCoins((int) GameView.currentStats.get(GameStats.COINS_COLLECTED));
         // update GameMode specific data and commit to GameModeManager
-        boolean high_score = GameView.currentStats.getScore().intValue() - gameMode.getHighscore() > 0;
+        boolean high_score = GameView.currentStats.getScore().intValue() > gameMode.getHighscore();
         if (high_score) {
             gameMode.setHighscore(GameView.currentStats.getScore().intValue());
             Log.d("GameActivity", "Highscore!");

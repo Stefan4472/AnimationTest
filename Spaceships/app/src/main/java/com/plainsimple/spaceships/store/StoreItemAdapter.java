@@ -3,6 +3,7 @@ package com.plainsimple.spaceships.store;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,8 @@ public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemAdapter.View
 
     @Override // set itemThumbnail to the right bitmap, bind item to listener
     public void onBindViewHolder(StoreItemAdapter.ViewHolder viewHolder, final int position) {
+//        Log.d("StoreItemAdapter", "Loading " + items.get(position).getId() + " with thumbnail " + items.get(position).getrDrawableId());
+//        Log.d("StoreItemAdapter", "Loaded is " + items.get(position));
         viewHolder.itemThumbnail.setImageBitmap(BitmapFactory.decodeResource(c.getResources(), items.get(position).getrDrawableId()));
         viewHolder.itemThumbnail.setOnClickListener(new View.OnClickListener() {
             @Override

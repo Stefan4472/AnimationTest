@@ -64,6 +64,7 @@ public class EquipmentManager {
     public static void init(Context context) {
         if (data == null) {
             data = context.getSharedPreferences(PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
+            data.edit().clear().commit();
         }
     }
 

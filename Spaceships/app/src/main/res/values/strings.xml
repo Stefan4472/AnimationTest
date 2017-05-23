@@ -29,23 +29,11 @@
     <string name="available_gamemodes">Available GameModes</string>
     <string name="highscore">Congrats! HIGHSCORE!!!</string>
     <string name="highscore_equals">Highscore: %1$s</string>
-    <string name="default_equipped_states">
-        LASER_BULLET:EQUIPPED,ION_BULLET:LOCKED,PLASMA_BULLET:LOCKED,PLUTONIUM_BULLET:LOCKED,ROCKET_DEFAULT:EQUIPPED,ARMOR_DEFAULT:EQUIPPED
-    </string>
-    <string name="default_lifetime_stats">
-        ALIENS_KILLED:INTEGER:0,
-        GAMES_PLAYED:INTEGER:0,
-        TIME_PLAYED:LONG:0,
-        DISTANCE_TRAVELED:LONG:0,
-        HIGH_SCORE:LONG:0,
-        COINS_COLLECTED:LONG:0,
-        POINTS_EARNED:LONG:0
-    </string>
     <!-- Define animations (see AnimCache.java and SpriteAnimation.java) -->
     <string name="SPACESHIP_MOVE">2:5:5:true</string>
     <string name="SPACESHIP_FIRE_ROCKET">3:16:8:8:false</string>
     <string name="SPACESHIP_EXPLODE">8:5:5:5:5:5:5:5:5:false</string>>
-    <string name="COIN_SPIN">6:10:10:10:10:10:10:true</string>
+    <string name="COIN_SPIN">6:7:7:7:7:7:7:true</string>
     <string name="ROCKET_MOVE">2:3:3:true</string>
     <string name="PROJECTILE_EXPLODE">4:1:1:1:1:false</string>
     <string name="EXPLOSION_1">8:2:2:2:2:2:2:2:2:false</string>

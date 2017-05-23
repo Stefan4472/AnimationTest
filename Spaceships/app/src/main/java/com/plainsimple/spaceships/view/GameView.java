@@ -18,6 +18,7 @@ import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.helper.*;
 import com.plainsimple.spaceships.sprite.*;
 import com.plainsimple.spaceships.stats.GameStats;
+import com.plainsimple.spaceships.stats.GameTimer;
 import com.plainsimple.spaceships.util.GameEngineUtil;
 
 import plainsimple.spaceships.R;
@@ -55,10 +56,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private GameMode gameMode;
     // used to store this run's stats
     public static GameStats currentStats;
+    // tracks duration of this game (non-paused). Start/Pause controlled by GameActivity
+    private GameTimer gameTimer = new GameTimer();
     // paint object
     private Paint blackPaint;
-    // used to keep track of how long this run has taken (takes account of pausing the game)
-    //private GameTimer gameTimer = new GameTimer();
     // points a coin is worth
     public static final int COIN_VALUE = 100;
     // selected fire mode (bullet or rocket)
@@ -201,8 +202,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         private void updateSpaceship() {
             // move spaceship to initial position
-            if (spaceship.getX() > screenW / 4) {
-                //gameTimer.start();
+            if (!gameStarted && spaceship.getX() > screenW / 4) {
+                gameTimer.start();
                 gameStarted = true;
                 spaceship.setX(screenW / 4);
                 spaceship.setSpeedX(0);
@@ -344,7 +345,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         spaceship.setY(screenH / 2 - spaceship.getHeight() / 2);
         background.reset();
         gameDriver.reset();
-        //gameTimer.reset();
+        gameTimer.reset();
         scoreDisplay.reset();
         spaceshipDestroyed = false;
         gameStarted = false;
@@ -358,7 +359,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void forceUpdateStats() {
         currentStats.set(GameStats.GAME_SCORE, score);
         currentStats.set(GameStats.DISTANCE_TRAVELED, background.getDistanceTravelled());
-        //currentStats.set(GameStats.TIME_PLAYED, gameTimer.getTotalTime());
+        Log.d("GameView", "GameTimer: " + gameTimer.getMsTracked());
+        currentStats.set(GameStats.TIME_PLAYED, gameTimer.getMsTracked());
     }
 
     // sets difficultyLevel of the game
@@ -387,7 +389,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void setGameMode(GameMode gameMode) {
         this.gameMode = gameMode;
     }
-    //public GameTimer getGameTimer() {
-    //    return gameTimer;
-    //}
+
+    public GameTimer getGameTimer() {
+        return gameTimer;
+    }
 }
