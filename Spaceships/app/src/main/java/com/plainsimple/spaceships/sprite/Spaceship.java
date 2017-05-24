@@ -152,6 +152,7 @@ public class Spaceship extends Sprite {
         move.start();
         frameCount = 0;
         lastFiredCannon = cannonType.getDelay();
+        rocketManager = RocketManager.newInstance(rocketType);
     }
 
     // calls ImageUtil.renderSpaceship() to render a Bitmap of the Spaceship with its current
