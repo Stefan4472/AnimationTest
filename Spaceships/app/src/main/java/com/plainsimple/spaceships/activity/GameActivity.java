@@ -10,12 +10,9 @@ import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 
 import com.plainsimple.spaceships.helper.GameMode;
@@ -90,7 +87,7 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // set content view/layout to gameview layout
-        setContentView(R.layout.activity_game);
+        setContentView(R.layout.game_layout);
 
         // get handle to SharedPreferences
         preferences = getPreferences(Context.MODE_PRIVATE);

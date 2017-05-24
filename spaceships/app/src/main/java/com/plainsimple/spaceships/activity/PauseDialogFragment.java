@@ -1,7 +1,6 @@
 package com.plainsimple.spaceships.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
@@ -78,7 +77,7 @@ public class PauseDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         setCancelable(false);
-        return inflater.inflate(R.layout.pause_layout, container);
+        return inflater.inflate(R.layout.pausedialog_layout, container);
     }
 
     @Override

@@ -103,23 +103,8 @@ public class MainActivity extends Activity {
         soundID = soundPool.load(this, R.raw.button_clicked, 1);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d("MainActivity", "onStop Called");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d("MainActivity", "onDestroy Called");
-    }
-
     // handle user pressing "Play" button
     public void onPlayPressed(View view) {
-        /*// underline text
-        Button button = (Button) findViewById(R.id.playbutton);
-        button.setPaintFlags(button.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);*/
         // play button clicked sound
         soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);
         // launch PlayScreenActivity
