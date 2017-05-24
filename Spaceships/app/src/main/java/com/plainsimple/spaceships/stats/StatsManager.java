@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 
 /**
@@ -150,11 +151,11 @@ public class StatsManager {
             case CANNONS_FIRED:
             case ROCKETS_FIRED:
             case COINS_SPENT:
-            case UPGRADES_BOUGHT:
-                return Integer.toString(retrieve(key).intValue());
+            case UPGRADES_BOUGHT: // todo: better formatting (commas)
+                return NumberFormat.getInstance().format(retrieve(key).intValue());
             case FARTHEST_FLOWN:
             case TOTAL_FLOWN:
-                return (new DecimalFormat("#0.00")).format(retrieve(key)) + " km"; // todo: change unit?
+                return (new DecimalFormat("###,##0.00")).format(retrieve(key)) + " km";
             case TOTAL_TIME_PLAYED:
             case LONGEST_GAME:
                 return formatTime(retrieve(key));
@@ -168,12 +169,12 @@ public class StatsManager {
         String to_str = "";
         // add hours field
         if (ms >= 3_600_000) {
-            to_str += (ms / 3_600_000) + "h";
+            to_str += (int) (ms / 3_600_000) + "h";
             ms %= 3_600_000;
         }
         // add minutes field
         if (ms >= 60_000) {
-            to_str += (ms / 60_000) + "m";
+            to_str += (int) (ms / 60_000) + "m";
             ms %= 60_000;
         }
         // add seconds field with whatever's left, rounded down

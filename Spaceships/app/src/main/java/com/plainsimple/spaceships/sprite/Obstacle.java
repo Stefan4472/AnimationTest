@@ -28,7 +28,7 @@ public class Obstacle extends Sprite {
     public Obstacle(float x, float y, int width, int height) {
         super(x, y, width, height);
         hitBox = new FloatRect(x, y, x + getWidth(), y + getHeight());
-        hp = 7; // todo: too high?
+        hp = 5;
     }
 
     @Override

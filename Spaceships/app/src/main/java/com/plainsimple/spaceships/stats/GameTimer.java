@@ -38,8 +38,12 @@ public class GameTimer {
         msTracked = 0;
     }
 
-    // returns ms tracked so far plus ms since last start time
+    // returns ms tracked
     public long getMsTracked() {
-        return msTracked + System.currentTimeMillis() - startTime;
+        if (recording) {
+            return msTracked + System.currentTimeMillis() - startTime;
+        } else {
+            return msTracked;
+        }
     }
 }

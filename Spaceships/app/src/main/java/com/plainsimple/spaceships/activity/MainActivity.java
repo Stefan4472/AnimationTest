@@ -50,23 +50,26 @@ public class MainActivity extends Activity {
 
         initMedia();
 
-        // fade in view elements todo: update Animations to use AnimatorSet
+        // fade in buttons
+        FontButton play_button = (FontButton) findViewById(R.id.playbutton);
+        AnimatorSet fade_in_1 = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.menubuttons_fadein);
+        fade_in_1.setStartDelay(200);
+        fade_in_1.setTarget(play_button);
+        fade_in_1.start();
+
+        FontButton store_button = (FontButton) findViewById(R.id.storebutton);
+        AnimatorSet fade_in_2 = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.menubuttons_fadein);
+        fade_in_2.setStartDelay(600);
+        fade_in_2.setTarget(store_button);
+        fade_in_2.start();
+
+        FontButton stats_button = (FontButton) findViewById(R.id.statsbutton);
+        AnimatorSet fade_in_3 = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.menubuttons_fadein);
+        fade_in_3.setStartDelay(1000);
+        fade_in_3.setTarget(stats_button);
+        fade_in_3.start();
+
         FontTextView title = (FontTextView) findViewById(R.id.title);
-        Animation fade_in_animation = AnimationUtils.loadAnimation(this, R.anim.fadein);
-        title.startAnimation(fade_in_animation);
-
-        fade_in_animation.setStartOffset(300);
-        FontButton button = (FontButton) findViewById(R.id.playbutton);
-        button.startAnimation(fade_in_animation);
-
-        fade_in_animation.setStartOffset(200);
-        button = (FontButton) findViewById(R.id.storebutton);
-        button.startAnimation(fade_in_animation);
-
-        fade_in_animation.setStartOffset(400);
-        button = (FontButton) findViewById(R.id.statsbutton);
-        button.startAnimation(fade_in_animation);
-
         AnimatorSet title_zoom = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.zoom_in_out);
         title_zoom.setTarget(title);
         title_zoom.start();

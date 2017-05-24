@@ -27,7 +27,7 @@ public class Coin extends Sprite {
         height = spin.getFrameH();
         spin.start();
         DRAW_COIN = new DrawImage(spin.getBitmapID());
-        hitBox = new FloatRect(x + getWidth() * 0.3f, y + getHeight() * 0.1f, x + getWidth() * 0.7f, y + getHeight() * 0.9f);
+        hitBox = new FloatRect(x + getWidth() * 0.15f, y + getHeight() * 0.1f, x + getWidth() * 0.85f, y + getHeight() * 0.9f);
     }
 
     @Override

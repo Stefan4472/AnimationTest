@@ -359,7 +359,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void forceUpdateStats() {
         currentStats.set(GameStats.GAME_SCORE, score);
         currentStats.set(GameStats.DISTANCE_TRAVELED, background.getDistanceTravelled());
-        Log.d("GameView", "GameTimer: " + gameTimer.getMsTracked());
         currentStats.set(GameStats.TIME_PLAYED, gameTimer.getMsTracked());
     }
 

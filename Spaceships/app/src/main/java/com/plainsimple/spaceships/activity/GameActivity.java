@@ -1,5 +1,7 @@
 package com.plainsimple.spaceships.activity;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -250,31 +252,30 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
     }
 
     @Override // handles the game officially starting (i.e. the spaceship has reached
-    // the correct horizontal position for obstacles to start. Overriden from
-    // GameEventsListener
-    public void onGameStarted() { // todo: this animation was causing arrowbutton visibility change issues
-        /*final Animation arrow_fade_in = AnimationUtils.loadAnimation(this, R.anim.arrowbutton_fadein);
+    // the correct horizontal position for obstacles to start. Override from GameEventsListener
+    public void onGameStarted() {
         // fade in direction arrows once spaceship reaches initial position
+        final AnimatorSet fade_in = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.arrowbuttons_fadein);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                upArrow.setVisibility(View.VISIBLE);
-                downArrow.setVisibility(View.VISIBLE);
-                //upArrow.startAnimation(arrow_fade_in);
-                //downArrow.startAnimation(arrow_fade_in);
+                fade_in.setTarget(arrowButtons);
+                fade_in.start();
             }
-        });*/
+        });
+        // start the game timer
+        gameView.getGameTimer().start();
     }
 
     @Override // pop-up end game dialog when game is over
     public void onGameFinished() {
-        /*runOnUiThread(new Runnable() {
+        // hide arrowButtons
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                upArrow.setVisibility(View.INVISIBLE);
-                downArrow.setVisibility(View.INVISIBLE);
+                arrowButtons.setAlpha(0);
             }
-        });*/
+        });
         // update all stats and display GameOverDialogFragment
         gameView.forceUpdateStats();
         boolean high_score = updateStats();
