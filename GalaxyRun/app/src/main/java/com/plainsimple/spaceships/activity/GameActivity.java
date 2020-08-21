@@ -47,8 +47,6 @@ public class GameActivity extends FragmentActivity
     private HealthBarView healthBarView;
     private ImageButton pauseButton;
     private ImageButton muteButton;
-    private ImageButton toggleBulletButton;
-    private ImageButton toggleRocketButton;
     private ArrowButtonView arrowButtons;
 
     // GameMode object containing all data required to administer the selected GameMode
@@ -56,138 +54,115 @@ public class GameActivity extends FragmentActivity
     // difficulty game is being played at
     private GameView.Difficulty difficulty;
 
+    // TODO: MAKE NON-STATIC
     private static boolean paused = false;
     private static boolean muted;
 
-    private static SoundPool soundPool;
-    private static Hashtable<SoundID, Integer> soundIDs;
+//    private static SoundPool soundPool;
+//    private static Hashtable<SoundID, Integer> soundIDs;
 
-    private static CannonType equippedCannon;
-    private static RocketType equippedRocket;
-    private static ArmorType equippedArmor;
+//    private SharedPreferences preferences;
 
-    private SharedPreferences preferences;
-    private float musicVolume;
-    private static float gameVolume;
-
-    // keys for retrieving data relevant to GUI from SharedPreferences
-    private static final String GAME_VOLUME_KEY = "gameVolume";
-    private static final String MUSIC_VOLUME_KEY = "musicVolume";
-    private static final String MUTED_KEY = "MUTED";
-    public static final String DIFFICULTY_KEY = "SELECTED_GAME_DIFFICULTY";
-    public static final String GAMEMODE_KEY = "SELECTED_GAMEMODE";
-
-    @Override // loads everything required and starts the game. Requires a bundle with valid
+    // loads everything required and starts the game. Requires a bundle with valid
     // DIFFICULTY_KEY and GAMEMODE_KEY params. Throws IllegalArgumentException if this is not the
     // case.
+    @Override
     public void onCreate(Bundle savedInstanceState) throws IllegalArgumentException {
         super.onCreate(savedInstanceState);
 
         // go full screen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
 
         // set content view/layout to gameview layout
         setContentView(R.layout.game_layout);
 
         // get handle to SharedPreferences
-        preferences = getPreferences(Context.MODE_PRIVATE);
-        muted = preferences.getBoolean(MUTED_KEY, false);
+//        preferences = getPreferences(Context.MODE_PRIVATE);
+        muted = false;
         paused = false;
 
-        // set up view elements
+        // Set up view elements
         gameView = (GameView) findViewById(R.id.spaceships); // todo: what should go in onResume()?
         healthBarView = (HealthBarView) findViewById(R.id.healthbar);
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         pauseButton.setBackgroundResource(R.drawable.pause);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
         muteButton.setBackgroundResource(muted ? R.drawable.sound_off : R.drawable.sound_on);
-        toggleBulletButton = (ImageButton) findViewById(R.id.toggleBulletButton); // todo: establish whether rockets have been unlocked and which fire mode to start with
-        toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
-        toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
-        toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
 
         // todo: fade in arrowButtons
         arrowButtons = (ArrowButtonView) findViewById(R.id.arrow_buttons);
         arrowButtons.setOnDirectionChangedListener(this);
 
-        Bundle args = getIntent().getExtras();
+        gameMode = GameModeManager.retrieve(GameModeManager.ENDLESS_0);
+        difficulty = GameView.Difficulty.EASY;
 
-        try { // todo: any way to get this data to gameView when it's first initialized?
-//            gameMode = GameModeManager.retrieve(args.getString(GAMEMODE_KEY));
-//            difficulty = GameView.Difficulty.valueOf(args.getString(DIFFICULTY_KEY));
-            gameMode = GameModeManager.retrieve(GameModeManager.ENDLESS_0);
-            difficulty = GameView.Difficulty.EASY;
-
-            gameView.setDifficultyLevel(difficulty);
-            gameView.setGameMode(gameMode);
-            Log.d("GameActivity", "Playing " + gameMode.getName() + " on " + difficulty.toString());
-//            Log.d("GameActivity", "Playing " + gameMode.getName() + " on " + args.getString(DIFFICULTY_KEY));
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("GameActivity requires a Bundle with valid " +
-                    "GAMEMODE_KEY and DIFFICULTY_KEY params");
-        }
+        gameView.setDifficultyLevel(difficulty);
+        gameView.setGameMode(gameMode);
+        Log.d("GameActivity", "Playing " + gameMode.getName() + " on " + difficulty.toString());
 
         // set up GameEventsListener
         gameView.setGameEventsListener(this);
 
         // set volume control to proper stream
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
-
-        // retrieve game and music volume from SharedPreferences
-        gameVolume = preferences.getFloat(GAME_VOLUME_KEY, 1.0f);
-        musicVolume = preferences.getFloat(MUSIC_VOLUME_KEY, 1.0f);
-
-        // retrieve equipped cannon and rocket
-        equippedCannon = EquipmentManager.getEquippedCannon();
-        equippedRocket = EquipmentManager.getEquippedRocket();
-        equippedArmor = EquipmentManager.getEquippedArmor();
+//        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         // initialize healthBarView with correct hp values
-        healthBarView.setFullHealth(equippedArmor.getHP());
-        healthBarView.setCurrentHealth(equippedArmor.getHP());
+        healthBarView.setFullHealth(100);
+        healthBarView.setCurrentHealth(100);
     }
 
     private void initMedia() {
-        Log.d("Activity Class", "Creating SoundPool");
-        soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-        soundIDs = new Hashtable<>();
-        Log.d("Activity Class", "Loading Sounds");
-        soundIDs.put(SoundID.LASER, soundPool.load(this, SoundID.LASER.getId(), 1));
-        soundIDs.put(SoundID.ROCKET, soundPool.load(this, SoundID.ROCKET.getId(), 1));
-        soundIDs.put(SoundID.EXPLOSION, soundPool.load(this, SoundID.EXPLOSION.getId(), 1));
-        soundIDs.put(SoundID.BUTTON_CLICKED, soundPool.load(this, SoundID.BUTTON_CLICKED.getId(), 1));
-        Log.d("Activity Class", soundIDs.size() + " sounds loaded");
+//        Log.d("Activity Class", "Creating SoundPool");
+//        soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+//        soundIDs = new Hashtable<>();
+//        Log.d("Activity Class", "Loading Sounds");
+//        soundIDs.put(SoundID.LASER, soundPool.load(this, SoundID.LASER.getId(), 1));
+//        soundIDs.put(SoundID.ROCKET, soundPool.load(this, SoundID.ROCKET.getId(), 1));
+//        soundIDs.put(SoundID.EXPLOSION, soundPool.load(this, SoundID.EXPLOSION.getId(), 1));
+//        soundIDs.put(SoundID.BUTTON_CLICKED, soundPool.load(this, SoundID.BUTTON_CLICKED.getId(), 1));
+//        Log.d("Activity Class", soundIDs.size() + " sounds loaded");
     }
 
-    // plays a sound using the SoundPool at the correct volume
+    /*
+    Plays the sound specified by the provided `SoundID`. If the game is muted,
+     the sound will be suppressed.
+     */
     public static void playSound(SoundID soundID) {
         if (!muted) {
-            soundPool.play(soundIDs.get(soundID), gameVolume, gameVolume, 1, 0, 1.0f);
+            // TODO: LOGIC FOR PLAYING SOUNDS IS CURRENTLY BEING COMMENTED OUT
+//            soundPool.play(soundIDs.get(soundID), gameVolume, gameVolume, 1, 0, 1.0f);
         }
     }
 
-    // handle user pressing pause button
+    /*
+    Callback fired when the user clicks the "pause" button.
+     */
     public void onPausePressed(View view) {
         playSound(SoundID.BUTTON_CLICKED);
         paused = !paused;
         if (paused) {
-            gameView.getGameTimer().pause();
+//            gameView.getGameTimer().pause();
             pauseButton.setBackgroundResource(R.drawable.play);
-            soundPool.autoPause();
-            // display pause dialog
-            DialogFragment d = PauseDialogFragment.newInstance(gameVolume, musicVolume);
+//            soundPool.autoPause();
+            // Display pause dialog
+            DialogFragment d = PauseDialogFragment.newInstance(1.0f, 1.0f);
             d.show(getFragmentManager(), "Pause");
         } else {
-            gameView.getGameTimer().start();
+//            gameView.getGameTimer().start();
             pauseButton.setBackgroundResource(R.drawable.pause);
-            soundPool.autoResume();
+//            soundPool.autoResume();
         }
     }
 
+    /*
+    Callback fired when the user clicks the "mute" button. Either mutes
+    the game, or unmutes the game, depending on the current state of `muted`.
+    Change the mute button graphic to reflect the new state.
+     */
     public void onMutePressed(View view) {
         muted = !muted;
         if(muted) {
@@ -196,26 +171,14 @@ public class GameActivity extends FragmentActivity
             muteButton.setBackgroundResource(R.drawable.sound_on);
             playSound(SoundID.BUTTON_CLICKED);
         }
-        AudioManager a_manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        a_manager.setStreamMute(AudioManager.STREAM_MUSIC, muted);
+//        AudioManager a_manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+//        a_manager.setStreamMute(AudioManager.STREAM_MUSIC, muted);
     }
 
-    public void onToggleBulletPressed(View view) {
-        playSound(SoundID.BUTTON_CLICKED);
-        gameView.setFiringMode(Spaceship.FireMode.BULLET);
-        toggleBulletButton.setBackgroundResource(R.drawable.bullets_button_pressed);
-        toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
-    }
-
-    public void onToggleRocketPressed(View view) {
-        playSound(SoundID.BUTTON_CLICKED);
-        gameView.setFiringMode(Spaceship.FireMode.ROCKET);
-        toggleRocketButton.setBackgroundResource(R.drawable.rockets_button_pressed);
-        toggleBulletButton.setBackgroundResource(R.drawable.bullets_button);
-    }
-
-    @Override // handles the user resuming the game from the PauseDialog
-    // Overrided from PauseDialogListener
+    /*
+    Callback fired when the user wants to resume the current run (which is paused).
+     */
+    @Override
     public void onResumePressed(DialogFragment dialog) {
         playSound(SoundID.BUTTON_CLICKED);
         Log.d("GameActivity", "Resuming game");
@@ -223,8 +186,10 @@ public class GameActivity extends FragmentActivity
         onPausePressed(gameView);
     }
 
-    @Override // handles the user quitting from the PauseDialog or
-    // GameOverDialog. Overrided from PauseDialogListener and GameOverDialogListener
+    /*
+    Callback fired when the user wants to quit the current run.
+     */
+    @Override
     public void onQuitPressed(DialogFragment dialog) { // todo: wouldn't save stats if prematurely exited
         playSound(SoundID.BUTTON_CLICKED);
         paused = true;
@@ -232,32 +197,44 @@ public class GameActivity extends FragmentActivity
         finish();
     }
 
-    @Override // handles the user restarting the game from the PauseDialog
-    // or GameOverDialog. Overrided from PauseDialogListener and GameOverDialogListener
+    /*
+    Callback fired when the user wants to restart the current run.
+     */
+    @Override
     public void onRestartPressed(DialogFragment dialog) {
         playSound(SoundID.BUTTON_CLICKED);
         dialog.dismiss();
         gameView.restartGame();
-        healthBarView.setCurrentHealth(equippedArmor.getHP());
+        healthBarView.setCurrentHealth(100);
         paused = false;
         pauseButton.setBackgroundResource(R.drawable.pause);
     }
 
-    @Override // handles the GameView's dimensions being set or changed
+    // handles the GameView's dimensions being set or changed
     // returns given screenHeight minus height of HealthBarView (to avoid
     // HealthBarView being drawn over part of the GameView).
     // Overriden from GameEventsListener.
+    // TODO: THIS SHOULDN'T RETURN ANYTHING
+    @Override
     public int onGameViewSurfaced(int screenHeight) {
         return screenHeight - healthBarView.getHeight();
     }
 
-    @Override // fired when the ArrowButtonView has a change of input. Sends new direction to GameView
+    /*
+    Callback fired when the user changes the input direction via ArrowButtonView.
+    Send the new direction to the GameView.
+     */
+    @Override
     public void onDirectionChanged(Spaceship.Direction newDirection) {
         gameView.updateDirection(newDirection);
     }
 
-    @Override // handles the game officially starting (i.e. the spaceship has reached
-    // the correct horizontal position for obstacles to start. Override from GameEventsListener
+    /*
+    Callback fired when the current run has officially started (i.e. the
+    spaceship has reached the correct horizontal position for obstacles
+    to start spawning.
+     */
+    @Override
     public void onGameStarted() {
         // fade in direction arrows once spaceship reaches initial position
         final AnimatorSet fade_in = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.arrowbuttons_fadein);
@@ -272,27 +249,37 @@ public class GameActivity extends FragmentActivity
         gameView.getGameTimer().start();
     }
 
-    @Override // pop-up end game dialog when game is over
+    /*
+    Callback fired when the current run is completely over.
+    Check for high-score (TODO) and show the game-over dialog.
+     */
+    @Override
     public void onGameFinished() {
-        // hide arrowButtons
+        // Hide arrowButtons
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 arrowButtons.setAlpha(0);
             }
         });
-        // update all stats and display GameOverDialogFragment
-        gameView.forceUpdateStats();
-        boolean high_score = updateStats();
 
-        // query GameMode for number of stars earned, based on currentStats
-        int stars_earned = gameMode.calculateStars(GameView.currentStats.getScore().intValue());
-        DialogFragment d = GameOverDialogFragment.newInstance(GameView.currentStats, "GameOver",
-                high_score, stars_earned);
+        boolean is_highscore = false;
+        int stars_earned = 0;
+        // Show the GameOver dialog
+        DialogFragment d = GameOverDialogFragment.newInstance(
+                GameView.currentStats,
+                "GameOver",
+                is_highscore,
+                stars_earned
+        );
         d.show(getFragmentManager(), "GameOver");
     }
 
-    @Override // health changed triggers update of healthBarView
+    /*
+    Callback fired when the player's health changes.
+    Trigger an update of the healthBarView.
+     */
+    @Override
     public void onHealthChanged(final int newHealth) {
         runOnUiThread(new Runnable() {
             @Override
@@ -302,67 +289,48 @@ public class GameActivity extends FragmentActivity
         });
     }
 
-    // updates all necessary statistics using data from GameView's current run. This includes
-    // StatsManager, Coins, and GameMode-specific stats. Returns whether this run was a highscore
-    // for the GameMode
-    private boolean updateStats() { // todo: improve
-        // ensure gameView's stats are up to date
-        gameView.forceUpdateStats();
-        // update lifetime stats with this game's collected stats
-        StatsManager.update(GameView.currentStats);
-        // add coins collected in game to current available coins (stored in EquipmentManager)
-        EquipmentManager.addCoins((int) GameView.currentStats.get(GameStats.COINS_COLLECTED));
-        // update GameMode specific data and commit to GameModeManager
-        boolean high_score = GameView.currentStats.getScore().intValue() > gameMode.getHighscore();
-        if (high_score) {
-            gameMode.setHighscore(GameView.currentStats.getScore().intValue());
-            Log.d("GameActivity", "Highscore!");
-        }
-        // ensure GameMode is set to correct difficulty
-        gameMode.setLastDifficulty(difficulty);
-        GameModeManager.put(gameMode.getKey(), gameMode);
-        return high_score;
-    }
-
-    @Override // we do not restore game state here--only in onCreate
-    public void onResume() {
-        super.onResume();
-        Log.d("GameActivity", "onResume called");
-        initMedia();
-        Log.d("Activity Class", "Media Initialized");
-        if (paused) {
-            // display pause dialog
-            DialogFragment d = PauseDialogFragment.newInstance(gameVolume, musicVolume);
-            d.show(getFragmentManager(), "Pause");
-        }
-    }
-
+    /*
+    Callback fired when the activity is paused.
+     */
     @Override
     public void onPause() {
         super.onPause();
         Log.d("GameActivity", "onPause called");
         // pause the game to stop rendering
         paused = true;
-        // save volume preferences
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putFloat(GAME_VOLUME_KEY, gameVolume);
-        editor.putFloat(MUSIC_VOLUME_KEY, musicVolume);
-        editor.putBoolean(MUTED_KEY, muted);
-        editor.commit();
-        soundPool.release();
-        soundPool = null;
+
+//        soundPool.release();
+//        soundPool = null;
     }
 
+    /*
+    Callback fired when the activity is resumed.
+    TODO: HANDLE ACTIVITY LIFECYCLE CORRECTLY
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("GameActivity", "onResume called");
+        initMedia();
+        if (paused) {
+            // display pause dialog
+            DialogFragment d = PauseDialogFragment.newInstance(1.0f, 1.0f);
+            d.show(getFragmentManager(), "Pause");
+        }
+    }
+
+    // TODO: REMOVE
     @Override
     public void onGameVolumeChanged(DialogFragment dialog, float gameVolume) {
-        GameActivity.gameVolume = gameVolume;
+//        GameActivity.gameVolume = gameVolume;
         Log.d("GameActivity.java", "New Game Volume set to " + gameVolume);
         playSound(SoundID.BUTTON_CLICKED);
     }
 
+    // TODO: REMOVE
     @Override
     public void onMusicVolumeChanged(DialogFragment dialog, float musicVolume) {
-        this.musicVolume = musicVolume;
+//        this.musicVolume = musicVolume;
         Log.d("GameActivity.java", "New Music Volume set to " + musicVolume);
     }
 
@@ -372,17 +340,5 @@ public class GameActivity extends FragmentActivity
 
     public static boolean isMuted() {
         return muted;
-    }
-
-    public static CannonType getEquippedCannon() {
-        return equippedCannon;
-    }
-
-    public static RocketType getEquippedRocket() {
-        return equippedRocket;
-    }
-
-    public static ArmorType getEquippedArmor() {
-        return equippedArmor;
     }
 }

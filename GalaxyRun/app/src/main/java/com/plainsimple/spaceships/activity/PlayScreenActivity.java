@@ -67,10 +67,10 @@ public class PlayScreenActivity extends Activity implements StartGameDialogFragm
     @Override // launch the game with selected GameMode and difficulty
     public void onPlayPressed(DialogFragment dialog) {
         Intent game_intent = new Intent(this, GameActivity.class);
-        Bundle b = new Bundle();
-        b.putString(GameActivity.DIFFICULTY_KEY, selectedGameMode.getLastDifficulty().toString());
-        b.putString(GameActivity.GAMEMODE_KEY, selectedGameMode.getKey());
-        game_intent.putExtras(b);
+//        Bundle b = new Bundle();
+//        b.putString(GameActivity.DIFFICULTY_KEY, selectedGameMode.getLastDifficulty().toString());
+//        b.putString(GameActivity.GAMEMODE_KEY, selectedGameMode.getKey());
+//        game_intent.putExtras(b);
         startActivity(game_intent);
     }
 

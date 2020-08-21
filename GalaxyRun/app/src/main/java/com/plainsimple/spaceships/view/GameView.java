@@ -19,6 +19,9 @@ import com.plainsimple.spaceships.helper.*;
 import com.plainsimple.spaceships.sprite.*;
 import com.plainsimple.spaceships.stats.GameStats;
 import com.plainsimple.spaceships.stats.GameTimer;
+import com.plainsimple.spaceships.store.ArmorType;
+import com.plainsimple.spaceships.store.CannonType;
+import com.plainsimple.spaceships.store.RocketType;
 import com.plainsimple.spaceships.util.GameEngineUtil;
 
 import plainsimple.spaceships.R;
@@ -277,9 +280,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             // initialize spaceship just off the screen centered vertically
             spaceship = new Spaceship(-ship_data.getWidth(), playScreenH / 2 - ship_data.getHeight() / 2, c);
             // set spaceship equipment based on settings in GameActivity
-            spaceship.setCannonType(GameActivity.getEquippedCannon());
-            spaceship.setRocketType(GameActivity.getEquippedRocket());
-            spaceship.setArmorType(GameActivity.getEquippedArmor());
+            spaceship.setCannonType(CannonType.CANNON_0);
+            spaceship.setRocketType(RocketType.ROCKET_0);
+            spaceship.setArmorType(ArmorType.ARMOR_0);
             // set this class to receive Spaceship events
             spaceship.setListener(this);
 
