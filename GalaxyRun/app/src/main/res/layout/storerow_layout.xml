@@ -1,0 +1,21 @@
+<!-- used to display each row of StoreActivity's ListView -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="10dp"
+    android:orientation="vertical">
+    <!-- upgrade row label -->
+    <com.plainsimple.spaceships.view.FontTextView
+        android:id="@+id/label"
+        style="@style/GalaxyMonkey.TextStyle"
+        android:layout_width="match_parent"
+        android:layout_gravity="start"
+        android:gravity="start"
+        android:textSize="25dp"/>
+    <!-- displays images of possible upgrades -->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:scrollbars="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
