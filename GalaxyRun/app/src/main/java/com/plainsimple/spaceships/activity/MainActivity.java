@@ -39,8 +39,10 @@ public class MainActivity extends Activity {
         Log.d("MainActivity", "onCreate Called");
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        );
         setContentView(R.layout.mainscreen_layout);
 
         // initialize classes requiring Context to access SharedPreferences
@@ -50,29 +52,31 @@ public class MainActivity extends Activity {
 
         initMedia();
 
-        // fade in buttons
+        // Animate the Title to "inflate"/zoom in on start
+        FontTextView title = (FontTextView) findViewById(R.id.title);
+        AnimatorSet title_zoom = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.zoom_in_out);
+        title_zoom.setTarget(title);
+        title_zoom.start();
+
+        // Animate the PlayButton to fade in after slight delay
         FontButton play_button = (FontButton) findViewById(R.id.playbutton);
         AnimatorSet fade_in_1 = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.menubuttons_fadein);
         fade_in_1.setStartDelay(200);
         fade_in_1.setTarget(play_button);
         fade_in_1.start();
 
-        FontButton store_button = (FontButton) findViewById(R.id.storebutton);
-        AnimatorSet fade_in_2 = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.menubuttons_fadein);
-        fade_in_2.setStartDelay(600);
-        fade_in_2.setTarget(store_button);
-        fade_in_2.start();
+//        FontButton store_button = (FontButton) findViewById(R.id.storebutton);
+//        AnimatorSet fade_in_2 = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.menubuttons_fadein);
+//        fade_in_2.setStartDelay(600);
+//        fade_in_2.setTarget(store_button);
+//        fade_in_2.start();
+//
+//        FontButton stats_button = (FontButton) findViewById(R.id.statsbutton);
+//        AnimatorSet fade_in_3 = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.menubuttons_fadein);
+//        fade_in_3.setStartDelay(1000);
+//        fade_in_3.setTarget(stats_button);
+//        fade_in_3.start();
 
-        FontButton stats_button = (FontButton) findViewById(R.id.statsbutton);
-        AnimatorSet fade_in_3 = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.menubuttons_fadein);
-        fade_in_3.setStartDelay(1000);
-        fade_in_3.setTarget(stats_button);
-        fade_in_3.start();
-
-        FontTextView title = (FontTextView) findViewById(R.id.title);
-        AnimatorSet title_zoom = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.zoom_in_out);
-        title_zoom.setTarget(title);
-        title_zoom.start();
     }
 
     @Override
@@ -107,24 +111,28 @@ public class MainActivity extends Activity {
     public void onPlayPressed(View view) {
         // play button clicked sound
         soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);
-        // launch PlayScreenActivity
-        Intent playscreen_intent = new Intent(this, PlayScreenActivity.class);
-        startActivity(playscreen_intent);
+        // Launch the GameActivity
+        Intent game_intent = new Intent(this, GameActivity.class);
+        startActivity(game_intent);
+
+//        // launch PlayScreenActivity
+//        Intent playscreen_intent = new Intent(this, PlayScreenActivity.class);
+//        startActivity(playscreen_intent);
     }
 
-    // handle user pressing "Store" button
-    public void onStorePressed(View view) {
-        soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);
-        // launch StoreActivity
-        Intent store_intent = new Intent(this, StoreActivity.class);
-        startActivity(store_intent);
-    }
-
-    // handle user pressing "Stats" button
-    public void onStatsPressed(View view) {
-        soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);
-        // launch StatsActivity
-        Intent stats_intent = new Intent(this, StatsActivity.class);
-        startActivity(stats_intent);
-    }
+//    // handle user pressing "Store" button
+//    public void onStorePressed(View view) {
+//        soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);
+//        // launch StoreActivity
+//        Intent store_intent = new Intent(this, StoreActivity.class);
+//        startActivity(store_intent);
+//    }
+//
+//    // handle user pressing "Stats" button
+//    public void onStatsPressed(View view) {
+//        soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);
+//        // launch StatsActivity
+//        Intent stats_intent = new Intent(this, StatsActivity.class);
+//        startActivity(stats_intent);
+//    }
 }

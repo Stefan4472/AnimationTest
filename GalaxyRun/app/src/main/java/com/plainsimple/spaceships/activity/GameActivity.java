@@ -36,9 +36,11 @@ import plainsimple.spaceships.R;
 /**
  * Created by Stefan on 10/17/2015.
  */
-public class GameActivity extends FragmentActivity implements PauseDialogFragment.PauseDialogListener,
-    GameOverDialogFragment.GameOverDialogListener, GameView.GameEventsListener,
-        ArrowButtonView.OnDirectionChangedListener {
+public class GameActivity extends FragmentActivity
+        implements PauseDialogFragment.PauseDialogListener,
+            GameOverDialogFragment.GameOverDialogListener,
+            GameView.GameEventsListener,
+            ArrowButtonView.OnDirectionChangedListener {
 
     // view elements
     private GameView gameView;
@@ -83,8 +85,10 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
 
         // go full screen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        );
 
         // set content view/layout to gameview layout
         setContentView(R.layout.game_layout);
@@ -106,18 +110,22 @@ public class GameActivity extends FragmentActivity implements PauseDialogFragmen
         toggleRocketButton = (ImageButton) findViewById(R.id.toggleRocketButton);
         toggleRocketButton.setBackgroundResource(R.drawable.rockets_button);
 
+        // todo: fade in arrowButtons
         arrowButtons = (ArrowButtonView) findViewById(R.id.arrow_buttons);
         arrowButtons.setOnDirectionChangedListener(this);
 
-        // todo: fade in arrowButtons
         Bundle args = getIntent().getExtras();
 
         try { // todo: any way to get this data to gameView when it's first initialized?
-            gameMode = GameModeManager.retrieve(args.getString(GAMEMODE_KEY));
-            difficulty = GameView.Difficulty.valueOf(args.getString(DIFFICULTY_KEY));
+//            gameMode = GameModeManager.retrieve(args.getString(GAMEMODE_KEY));
+//            difficulty = GameView.Difficulty.valueOf(args.getString(DIFFICULTY_KEY));
+            gameMode = GameModeManager.retrieve(GameModeManager.ENDLESS_0);
+            difficulty = GameView.Difficulty.EASY;
+
             gameView.setDifficultyLevel(difficulty);
             gameView.setGameMode(gameMode);
-            Log.d("GameActivity", "Playing " + gameMode.getName() + " on " + args.getString(DIFFICULTY_KEY));
+            Log.d("GameActivity", "Playing " + gameMode.getName() + " on " + difficulty.toString());
+//            Log.d("GameActivity", "Playing " + gameMode.getName() + " on " + args.getString(DIFFICULTY_KEY));
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("GameActivity requires a Bundle with valid " +
                     "GAMEMODE_KEY and DIFFICULTY_KEY params");

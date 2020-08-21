@@ -33,23 +33,23 @@
         android:onClick="onPlayPressed"/>
     <!-- Store Button -->
     <!-- or style="?android:attr/borderlessButtonStyle" ? -->
-    <com.plainsimple.spaceships.view.FontButton
-        style="@style/Andromeda.MenuStyle"
-        android:id="@+id/storebutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/playbutton"
-        android:alpha="0"
-        android:text="@string/button_store"
-        android:onClick="onStorePressed"/>
+    <!--<com.plainsimple.spaceships.view.FontButton-->
+        <!--style="@style/Andromeda.MenuStyle"-->
+        <!--android:id="@+id/storebutton"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/playbutton"-->
+        <!--android:alpha="0"-->
+        <!--android:text="@string/button_store"-->
+        <!--android:onClick="onStorePressed"/>-->
     <!-- Stats Button -->
-    <com.plainsimple.spaceships.view.FontButton
-        style="@style/Andromeda.MenuStyle"
-        android:id="@+id/statsbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/storebutton"
-        android:alpha="0"
-        android:text="@string/button_stats"
-        android:onClick="onStatsPressed"/>
+    <!--<com.plainsimple.spaceships.view.FontButton-->
+        <!--style="@style/Andromeda.MenuStyle"-->
+        <!--android:id="@+id/statsbutton"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/storebutton"-->
+        <!--android:alpha="0"-->
+        <!--android:text="@string/button_stats"-->
+        <!--android:onClick="onStatsPressed"/>-->
 </RelativeLayout>
