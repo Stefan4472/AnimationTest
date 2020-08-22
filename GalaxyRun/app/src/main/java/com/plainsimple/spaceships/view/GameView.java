@@ -40,11 +40,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public static int playScreenH;
     private static int screenH;
     private boolean running = false;
-    private boolean onTitle = true;
+    private boolean isPaused;
     // wehther game components have been initialized
     private boolean initialized;
-    // whether to restore the default save game
-    private boolean restoreGameState;
     // whether game has started (spaceship has reached starting position)
     private boolean gameStarted;
     // whether the spaceship has been destroyed
@@ -98,6 +96,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     // score display in top left of screen
+    // TODO: THIS SHOULD REALLY BE A UI ELEMENT IN GAMEACTIVITY
     private ScoreDisplay scoreDisplay;
 
     // listener passed in by GameActivity
@@ -147,6 +146,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         @Override
         public void run() {
             while (running) {
+                // TODO: THIS IS NOT THE CORRECT WAY TO DO IT
                 canvas = null;
 //                try {
                     canvas = mySurfaceHolder.lockCanvas(null);
@@ -171,7 +171,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 initNewGame();
             }
             background.draw(canvas);
-            if (!GameActivity.getPaused() && !gameFinished) {
+            if (!isPaused && !gameFinished) {
                 update();
             }
             // todo: how to draw bullets and rockets? drawparams in spaceship?
@@ -319,8 +319,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         return thread.doTouchEvent(motionEvent);
     }
 
-    public void updateDirection(Spaceship.Direction newDirection) {
+    public void setDirectionInput(Spaceship.Direction newDirection) {
         spaceship.updateInput(newDirection);
+    }
+
+    public void pauseGame() {
+        isPaused = true;
+    }
+
+    public void resumeGame() {
+        isPaused = false;
+    }
+
+    public int getPlayerStartingHealth() {
+        return 100;  // TODO
+    }
+
+    public int getPlayerHealth() {
+        return 100; // TODO
     }
 
     @Override
@@ -358,22 +374,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         currentStats = new GameStats();
     }
 
-    // updates this run's currentStats which aren't necessarily constantly updated
-    public void forceUpdateStats() {
-        currentStats.set(GameStats.GAME_SCORE, score);
-        currentStats.set(GameStats.DISTANCE_TRAVELED, background.getDistanceTravelled());
-        currentStats.set(GameStats.TIME_PLAYED, gameTimer.getMsTracked());
-    }
-
     // sets difficultyLevel of the game
     public void setDifficultyLevel(Difficulty difficultyLevel) {
         this.difficultyLevel = difficultyLevel;
         Log.d("GameView", "Difficulty Level set to " + difficultyLevel);
-    }
-
-    // sets spaceship's firing mode
-    public void setFiringMode(Spaceship.FireMode fireMode) {
-        selectedFireMode = fireMode;
     }
 
     public void setGameEventsListener(GameEventsListener gameEventsListener) {

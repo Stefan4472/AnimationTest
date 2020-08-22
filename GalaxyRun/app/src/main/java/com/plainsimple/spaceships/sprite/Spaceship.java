@@ -187,7 +187,7 @@ public class Spaceship extends Sprite {
             // play sound and start animation if at least one rocket was fired
             if (instructions.fireLeft() || instructions.fireRight()) {
                 fireRocket.start();
-                GameActivity.playSound(ROCKET_SOUND);
+//                GameActivity.playSound(ROCKET_SOUND);
             }
         }
 
@@ -205,7 +205,7 @@ public class Spaceship extends Sprite {
     public void fireCannons() {
         projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.28f * getHeight(), context, cannonType));
         projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.66f * getHeight(), context, cannonType));
-        GameActivity.playSound(BULLET_SOUND);
+//        GameActivity.playSound(BULLET_SOUND);
         GameView.currentStats.addTo(GameStats.CANNONS_FIRED, 2);
     }
 
@@ -276,7 +276,7 @@ public class Spaceship extends Sprite {
 
             // start explode animation under proper conditions
             if (hp == 0 && !explode.isPlaying()) {
-                GameActivity.playSound(EXPLODE_SOUND);
+//                GameActivity.playSound(EXPLODE_SOUND);
                 explode.start();
             }
         }
