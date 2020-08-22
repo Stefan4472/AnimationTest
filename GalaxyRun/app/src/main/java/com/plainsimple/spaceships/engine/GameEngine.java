@@ -52,15 +52,6 @@ public class GameEngine implements IGameController {
         setScreenSize(screenWidth, screenHeight);
     }
 
-    public void setScreenSize(
-            int screenWidth,
-            int screenHeight
-    ) {
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
-        // TODO: SCALING
-    }
-
     /* Start implementation of IGameController interface. */
     @Override
     public void inputStartShooting() {
@@ -96,4 +87,17 @@ public class GameEngine implements IGameController {
     public void inputResume() {
 
     }
+
+    @Override
+    public void inputRestart() {
+
+    }
+
+    @Override
+    public void setScreenSize(int width, int height) {
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
+        // TODO: SCALING LOGIC
+    }
+
 }
