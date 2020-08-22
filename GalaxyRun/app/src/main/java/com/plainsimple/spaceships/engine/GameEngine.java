@@ -42,15 +42,15 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     private Context context;
 
     // Playable screen dimensions
-    private int screenWidth;
-    private int screenHeight;
+    public int screenWidth;
+    public int screenHeight;
 
     // Represents the level of difficulty. Increases non-linearly over time
     private double currDifficulty;
 
     private boolean isPaused;
     private GameState currState;
-    private int score;
+    public int score;
     // Score gained per second of survival. Calculated as a function
     // of `currDifficulty`
     private double scorePerSecond;
@@ -91,12 +91,12 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     }
 
     @Override
-    public void inputMoveUp() {
+    public void inputStartMoveUp() {
 
     }
 
     @Override
-    public void inputMoveDown() {
+    public void inputStartMoveDown() {
 
     }
 
@@ -127,6 +127,14 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         // TODO: SCALING LOGIC
     }
 
+    public int getPlayerStartingHealth() {
+        return 100; // TODO
+    }
+
+    public int getPlayerHealth() {
+        return 100; // TODO
+    }
+
     /* Start old logic, which will be gradually refactored/rewritten */
     private float difficulty;
     // whether game components have been initialized
@@ -144,15 +152,15 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     // selected fire mode (bullet or rocket)
     private Spaceship.FireMode selectedFireMode = Spaceship.FireMode.BULLET;
     // runs sprite generation and updating
-    private GameDriver gameDriver;
+    public GameDriver gameDriver;
     // speed of sprites scrolling across the screen (must be negative!)
     public static float scrollSpeed = -0.0025f;
     // spaceship
-    private Spaceship spaceship;
+    public Spaceship spaceship;
     // relative speed of background scrolling to foreground scrolling
-    private static final float SCROLL_SPEED_CONST = 0.4f;
+    public static final float SCROLL_SPEED_CONST = 0.4f;
     // number of frames that must pass before score per frame is increased
-    private static final float SCORING_CONST = 800;
+    public static final float SCORING_CONST = 800;
 
     // this game's level of difficulty (default to EASY)
     private Difficulty difficultyLevel = Difficulty.EASY;

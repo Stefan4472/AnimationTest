@@ -14,9 +14,11 @@ import android.widget.ImageButton;
 import com.plainsimple.spaceships.helper.GameModeManager;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
+import com.plainsimple.spaceships.stats.GameStats;
 import com.plainsimple.spaceships.view.ArrowButtonView;
 import com.plainsimple.spaceships.view.GameView;
 import com.plainsimple.spaceships.view.HealthBarView;
+import com.plainsimple.spaceships.view.IGameViewListener;
 
 import plainsimple.spaceships.R;
 
@@ -26,8 +28,9 @@ import plainsimple.spaceships.R;
 public class GameActivity extends FragmentActivity
         implements PauseDialogFragment.PauseDialogListener,
             GameOverDialogFragment.GameOverDialogListener,
-            GameView.GameEventsListener,
-            ArrowButtonView.OnDirectionChangedListener {
+            IGameViewListener,
+            ArrowButtonView.OnDirectionChangedListener,
+            IGameActivity {
 
     // View elements
     private GameView gameView;
@@ -75,14 +78,13 @@ public class GameActivity extends FragmentActivity
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
         arrowButtons = (ArrowButtonView) findViewById(R.id.arrow_buttons);
 
+
         initUI();
 
-        // TODO: REMOVE THE FOLLOWING
-        gameView.setDifficultyLevel(GameView.Difficulty.EASY);
-        gameView.setGameMode(GameModeManager.retrieve(GameModeManager.ENDLESS_0));
-
+        // Provide GameView with a reference to our IGameActivity interface.
+        gameView.setGameActivityInterface(this);
         // Register ourselves for needed listeners
-        gameView.setGameEventsListener(this);
+        gameView.setGameViewListener(this);
         arrowButtons.setOnDirectionChangedListener(this);
 
         // set volume control to proper stream
@@ -215,10 +217,20 @@ public class GameActivity extends FragmentActivity
     // returns given screenHeight minus height of HealthBarView (to avoid
     // HealthBarView being drawn over part of the GameView).
     // Overriden from GameEventsListener.
-    // TODO: THIS SHOULDN'T RETURN ANYTHING
+    /*
+    Callback fired when the GameView's surface dimensions are set or changed.
+    Returns given surfaceHeight minus height of HealthBarView. This way,
+    we make sure that the GameView does not draw itself under the HealthBarView.
+    TODO: COULD WE MAKE IT SO THAT THIS IS NOT NECESSARY?
+     */
     @Override
-    public int onGameViewSurfaced(int screenHeight) {
-        return screenHeight - healthBarView.getHeight();
+    public int calcPlayableHeight(int surfaceHeight) {
+        return surfaceHeight - healthBarView.getHeight();
+    }
+
+    @Override
+    public int calcPlayableWidth(int surfaceWidth) {
+        return surfaceWidth;
     }
 
     /*
@@ -227,7 +239,20 @@ public class GameActivity extends FragmentActivity
      */
     @Override
     public void onDirectionChanged(Spaceship.Direction newDirection) {
-        gameView.setDirectionInput(newDirection);
+        switch (newDirection) {
+            case Spaceship.Direction.DOWN: {
+                gameView.startPlayerMovingDown();
+                break;
+            }
+            case Spaceship.Direction.UP: {
+                gameView.startPlayerMovingUp();
+                break;
+            }
+            case Spaceship.Direction.NONE: {
+                gameView.stopPlayerMoving();
+                break;
+            }
+        }
     }
 
     /*
@@ -269,7 +294,7 @@ public class GameActivity extends FragmentActivity
         int stars_earned = 0;
         // Show the GameOver dialog
         DialogFragment d = GameOverDialogFragment.newInstance(
-                GameView.currentStats,
+                new GameStats(),
                 "GameOver",
                 is_highscore,
                 stars_earned
