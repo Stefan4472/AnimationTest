@@ -42,7 +42,7 @@ public class Obstacle extends Sprite {
     @Override // speedX is set to the game's scrollspeed to ensure
     // smooth acceleration and decelleration with the game
     public void updateSpeeds() {
-        speedX = GameView.getScrollSpeed();
+//        speedX = GameView.getScrollSpeed();
     }
 
     @Override

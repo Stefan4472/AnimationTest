@@ -240,15 +240,15 @@ public class GameActivity extends FragmentActivity
     @Override
     public void onDirectionChanged(Spaceship.Direction newDirection) {
         switch (newDirection) {
-            case Spaceship.Direction.DOWN: {
+            case DOWN: {
                 gameView.startPlayerMovingDown();
                 break;
             }
-            case Spaceship.Direction.UP: {
+            case UP: {
                 gameView.startPlayerMovingUp();
                 break;
             }
-            case Spaceship.Direction.NONE: {
+            case NONE: {
                 gameView.stopPlayerMoving();
                 break;
             }

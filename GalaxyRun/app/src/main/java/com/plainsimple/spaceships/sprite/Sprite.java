@@ -87,22 +87,23 @@ public abstract class Sprite { // todo: figure out public vs. protected
     // moves sprite using speedX and speedY, updates hitbox,
     // and checks if sprite is still visible
     public void move() {
-        x += GameView.screenW * speedX;
-        y += GameView.playScreenH * speedY;
-        hitBox.offset(GameView.screenW * speedX, GameView.playScreenH * speedY);
+//        x += GameView.screenW * speedX;
+//        y += GameView.playScreenH * speedY;
+//        hitBox.offset(GameView.screenW * speedX, GameView.playScreenH * speedY);
     }
 
     // checks whether sprite's image is partially within the screen bounds
     // returns false when sprite's width and height are fully off-screen
     // keep in mind sprites are generated past the screen
     public boolean isInBounds() {
-        if (x > GameView.screenW + width || x < -width) {
-            return false;
-        } else if (y > GameView.playScreenH || y < -height) {
-            return false;
-        } else {
-            return true;
-        }
+//        if (x > GameView.screenW + width || x < -width) {
+//            return false;
+//        } else if (y > GameView.playScreenH || y < -height) {
+//            return false;
+//        } else {
+//            return true;
+//        }
+        return true;
     }
 
     // subtracts specified damage from sprite's hp and
@@ -123,8 +124,9 @@ public abstract class Sprite { // todo: figure out public vs. protected
 
     // returns distance between centers of sprite hitboxes, as portion of screen width
     public double distanceTo(Sprite s) {
-        return Math.sqrt(Math.pow((s.getHitboxCenter().getX() - getHitboxCenter().getX()), 2)
-                + Math.pow((s.getHitboxCenter().getY() - getHitboxCenter().getY()), 2)) / GameView.screenW;
+//        return Math.sqrt(Math.pow((s.getHitboxCenter().getX() - getHitboxCenter().getX()), 2)
+//                + Math.pow((s.getHitboxCenter().getY() - getHitboxCenter().getY()), 2)) / GameView.screenW;
+        return 1.0;
     }
 
     // returns coordinates of center of sprite's hitbox

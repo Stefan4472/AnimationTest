@@ -15,6 +15,7 @@ import android.view.SurfaceView;
 
 import com.plainsimple.spaceships.activity.IGameActivity;
 import com.plainsimple.spaceships.engine.GameEngine;
+import com.plainsimple.spaceships.engine.IGameServiceProvider;
 import com.plainsimple.spaceships.helper.*;
 import com.plainsimple.spaceships.sprite.*;
 import com.plainsimple.spaceships.util.GameEngineUtil;
@@ -22,7 +23,9 @@ import com.plainsimple.spaceships.util.GameEngineUtil;
 /**
  * Created by Stefan on 10/17/2015.
  */
-public class GameView extends SurfaceView implements SurfaceHolder.Callback {
+public class GameView extends SurfaceView implements
+        SurfaceHolder.Callback,
+        IGameServiceProvider {
 
 //    private Context context;
     private SurfaceHolder mySurfaceHolder;
@@ -104,6 +107,23 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceDestroyed(SurfaceHolder holder) {
         Log.d("GameView", "surfaceDestroyed() called");
         thread.setRunning(false);
+    }
+
+    /* Begin IGameServiceProvider overriedes */
+    public Context getActivityContext() {
+        return getContext();
+    }
+
+    public void playSound() {
+        // TODO
+    }
+
+    public int getScreenWidth() {
+        return 0;
+    }
+
+    public int getScreenHeight() {
+        return 0;
     }
 
     /* Begin utility functions for GameActivity to use */

@@ -15,7 +15,7 @@ public class GameMode {
     // GameMode's name (e.g. "Asteroid Survival"
     private String name;
     // level of difficulty GameMode was last played on
-    private GameView.Difficulty lastDifficulty;
+//    private GameView.Difficulty lastDifficulty;
     // highest score achieved by the player
     private int highscore;
     // points required for 1, 2, 3, 4, and 5 stars respectively
@@ -31,7 +31,7 @@ public class GameMode {
 
     @Override
     public String toString() {
-        return key + ":" + name + ":" + lastDifficulty.toString() + ":" + highscore + ":"
+        return key + ":" + name + ":" + highscore + ":"
                 + oneStarPoints + ":" + twoStarPoints + ":" + threeStarPoints + ":" + fourStarPoints
                 + ":" + fiveStarPoints + ":" + instructions + ":" + levelData;
     }
@@ -49,7 +49,7 @@ public class GameMode {
         try {
             initialized.key = args[0];
             initialized.name = args[1];
-            initialized.lastDifficulty = GameView.Difficulty.valueOf(args[2]);
+//            initialized.lastDifficulty = GameView.Difficulty.valueOf(args[2]);
             initialized.highscore = Integer.parseInt(args[3]);
             initialized.oneStarPoints = Integer.parseInt(args[4]);
             initialized.twoStarPoints = Integer.parseInt(args[5]);
@@ -92,13 +92,13 @@ public class GameMode {
         return name;
     }
 
-    public GameView.Difficulty getLastDifficulty() {
-        return lastDifficulty;
-    }
+//    public GameView.Difficulty getLastDifficulty() {
+//        return lastDifficulty;
+//    }
 
-    public void setLastDifficulty(GameView.Difficulty lastDifficulty) {
-        this.lastDifficulty = lastDifficulty;
-    }
+//    public void setLastDifficulty(GameView.Difficulty lastDifficulty) {
+//        this.lastDifficulty = lastDifficulty;
+//    }
 
     public int getHighscore() {
         return highscore;

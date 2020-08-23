@@ -64,9 +64,9 @@ public class Asteroid extends Sprite {
     @Override
     public void updateSpeeds() {
         // reverse speedY if it is nearly headed off a screen edge
-        if ((y <= 0 && speedY < 0) || (y >= GameView.playScreenH - getHeight() && speedY > 0)) {
-            speedY *= -1;
-        }
+//        if ((y <= 0 && speedY < 0) || (y >= GameView.playScreenH - getHeight() && speedY > 0)) {
+//            speedY *= -1;
+//        }
     }
 
     @Override
@@ -81,7 +81,7 @@ public class Asteroid extends Sprite {
         // increment score and start HealthBarAnimation and LoseHealthAnimations
         // if Asteroid took damage and isn't dead.
         if (!dead && damage > 0) {
-            GameView.incrementScore(damage);
+//            GameView.incrementScore(damage);
             healthBarAnimation.start();
             loseHealthAnimations.add(new LoseHealthAnimation(getWidth(), getHeight(),
                     s.getX() - x, s.getY() - y, damage));
@@ -92,7 +92,7 @@ public class Asteroid extends Sprite {
         if (hp == 0 && !dead) {
             dead = true;
             // update current GameStats to reflect an Asteroid kill
-            GameView.currentStats.addTo(GameStats.ASTEROIDS_KILLED, 1);
+//            GameView.currentStats.addTo(GameStats.ASTEROIDS_KILLED, 1);
         }
     }
 

@@ -28,7 +28,6 @@ import java.util.List;
 
 import static com.plainsimple.spaceships.sprite.Spaceship.Direction.DOWN;
 import static com.plainsimple.spaceships.sprite.Spaceship.Direction.UP;
-import static com.plainsimple.spaceships.view.GameView.playScreenH;
 
 /**
  * Created by Stefan on 8/13/2015.
@@ -177,12 +176,12 @@ public class Spaceship extends Sprite {
             // fire left if allowed and increment ROCKETS_FIRED stat
             if (instructions.fireLeft()) {
                 projectiles.add(Rocket.newInstance(context, x + getWidth() * 0.80f, y + 0.29f * getHeight(), rocketType));
-                GameView.currentStats.addTo(GameStats.ROCKETS_FIRED, 1);
+//                GameView.currentStats.addTo(GameStats.ROCKETS_FIRED, 1);
             }
             // fire right if allowed and increment ROCKETS_FIRED stat
             if (instructions.fireRight()) {
                 projectiles.add(Rocket.newInstance(context, x + getWidth() * 0.80f, y + 0.65f * getHeight(), rocketType));
-                GameView.currentStats.addTo(GameStats.ROCKETS_FIRED, 1);
+//                GameView.currentStats.addTo(GameStats.ROCKETS_FIRED, 1);
             }
             // play sound and start animation if at least one rocket was fired
             if (instructions.fireLeft() || instructions.fireRight()) {
@@ -206,7 +205,7 @@ public class Spaceship extends Sprite {
         projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.28f * getHeight(), context, cannonType));
         projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.66f * getHeight(), context, cannonType));
 //        GameActivity.playSound(BULLET_SOUND);
-        GameView.currentStats.addTo(GameStats.CANNONS_FIRED, 2);
+//        GameView.currentStats.addTo(GameStats.CANNONS_FIRED, 2);
     }
 
     // updates the direction the Spaceship is moving in
@@ -231,11 +230,11 @@ public class Spaceship extends Sprite {
     public void move() {
         super.move();
         // prevent spaceship from going off-screen
-        if (y < 0) {
-            setY(0);
-        } else if (y > playScreenH - getHeight()) {
-            setY(playScreenH - getHeight());
-        }
+//        if (y < 0) {
+//            setY(0);
+//        } else if (y > playScreenH - getHeight()) {
+//            setY(playScreenH - getHeight());
+//        }
     }
 
     @Override
@@ -260,8 +259,8 @@ public class Spaceship extends Sprite {
         takeDamage(damage);
 
         if (s instanceof Coin) { // todo: play sound
-            GameView.incrementScore(GameView.COIN_VALUE);
-            GameView.currentStats.addTo(GameStats.COINS_COLLECTED, 1);
+//            GameView.incrementScore(GameView.COIN_VALUE);
+//            GameView.currentStats.addTo(GameStats.COINS_COLLECTED, 1);
         } else {
             // trigger onHealthChanged event under proper conditions
             if (damage != 0 && !explode.isPlaying()) {

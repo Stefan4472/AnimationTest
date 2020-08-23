@@ -1,7 +1,7 @@
 package com.plainsimple.spaceships.view;
 
 /**
- * Created by Stefan on 8/22/2020.
+ * Event callbacks triggered by GameView.
  */
 
 public interface IGameViewListener {

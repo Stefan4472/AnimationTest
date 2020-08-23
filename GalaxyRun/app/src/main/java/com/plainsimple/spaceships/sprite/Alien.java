@@ -107,19 +107,19 @@ public class Alien extends Sprite {
         if (explodeAnimation.hasPlayed() || !isInBounds()) {
             terminate = true;
             // update current GameStats to reflect an Alien Kill
-            GameView.currentStats.addTo(GameStats.ALIENS_KILLED, 1);
+//            GameView.currentStats.addTo(GameStats.ALIENS_KILLED, 1);
         } else {
             framesSinceLastBullet++;
             // rules for firing: alien has waited long enough, spaceship is alive, alien
             // has bullets left to fire, and alien is on right half of the screen.
             // To slightly randomize fire rate there is also only a 30% chance it will fire
             // in this frame, even if all conditions are met
-            if (framesSinceLastBullet >= bulletDelay && !spaceship.terminate() && bulletsLeft > 0 && getP(0.3f)
-                    && x > GameView.screenW / 2) {
-                fireBullet(spaceship);
-                framesSinceLastBullet = 0;
-                bulletsLeft--;
-            }
+//            if (framesSinceLastBullet >= bulletDelay && !spaceship.terminate() && bulletsLeft > 0 && getP(0.3f)
+//                    && x > GameView.screenW / 2) {
+//                fireBullet(spaceship);
+//                framesSinceLastBullet = 0;
+//                bulletsLeft--;
+//            }
         }
     }
 
@@ -157,7 +157,7 @@ public class Alien extends Sprite {
         // increment score and start HealthBarAnimation and LoseHealthAnimations
         // if Alien took damage and isn't dead.
         if (!dead && damage > 0) {
-            GameView.incrementScore(damage);
+//            GameView.incrementScore(damage);
             healthBarAnimation.start();
             loseHealthAnimations.add(new LoseHealthAnimation(getWidth(), getHeight(),
                     s.getX() - x, s.getY() - y, damage));

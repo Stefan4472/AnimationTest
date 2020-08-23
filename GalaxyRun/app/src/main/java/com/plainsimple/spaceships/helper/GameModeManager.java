@@ -23,19 +23,19 @@ public class GameModeManager {
 
     // todo: better way? where to define them?
     // Strings defining default GameMode objects
-    private static final String ENDLESS_0_STR = ENDLESS_0 + ":" + "Endless:" + GameView.Difficulty.EASY
+    private static final String ENDLESS_0_STR = ENDLESS_0 + ":" + "Endless:" + "EASY"
             + ":" + 0 + ":" + 2000 + ":" + 4000 + ":" + 7000 + ":" + 12000 + ":" + 25000 + ":" +
             "Survive! The farther you go the harder it gets and the more coins and points you'll earn!"
             + ":" + "loop(INFINITE,genRandom)";
-    private static final String ENDLESS_1_STR = ENDLESS_1 + ":" + "Endless Asteroids:" + GameView.Difficulty.EASY
+    private static final String ENDLESS_1_STR = ENDLESS_1 + ":" + "Endless Asteroids:" + "EASY"
             + ":" + 0 + ":" + 2000 + ":" + 4000 + ":" + 7000 + ":" + 12000 + ":" + 25000 + ":" +
             "Survive the Astroid storm! The farther you go the harder it gets and the more coins and points you'll earn!"
             + ":" + "loop(INFINITE,genAsteroid[6])";
-    private static final String ENDLESS_2_STR = ENDLESS_2 + ":" + "Endless Aliens:" + GameView.Difficulty.EASY
+    private static final String ENDLESS_2_STR = ENDLESS_2 + ":" + "Endless Aliens:" + "EASY"
             + ":" + 0 + ":" + 1000 + ":" + 3000 + ":" + 5000 + ":" + 9000 + ":" + 20000 + ":" +
             "Survive the Alien Appocalypse! The farther you go the harder it gets and the more coins and points you'll earn!"
             + ":" + "loop(INFINITE,genAlien[8])";
-    private static final String CAMPAIGN_0_STR = CAMPAIGN_0 + ":" + "Campaign Lvl 0:" + GameView.Difficulty.EASY
+    private static final String CAMPAIGN_0_STR = CAMPAIGN_0 + ":" + "Campaign Lvl 0:" + "EASY"
             + ":" + 0 + ":" + 10000 + ":" + 15000 + ":" + 20000 + ":" + 25000 + ":" + 30000 + ":" +
             "Complete the mission! Survive to the end of the level!" + ":" + "loop(3,genObstacles,genAlien,genAsteroid),END";
 

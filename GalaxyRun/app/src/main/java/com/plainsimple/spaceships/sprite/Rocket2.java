@@ -89,7 +89,7 @@ public class Rocket2 extends Rocket {
             hp = (hp >= HP_LOSS_RATE ? hp - HP_LOSS_RATE : hp);
         }
         // update obstacleHitbox
-        obstacleHitbox.offset(GameView.screenW * speedX, GameView.playScreenH * speedY);
+//        obstacleHitbox.offset(GameView.screenW * speedX, GameView.playScreenH * speedY);
     }
 
     @Override

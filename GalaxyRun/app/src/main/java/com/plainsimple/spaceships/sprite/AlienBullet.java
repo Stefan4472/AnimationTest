@@ -44,8 +44,8 @@ public class AlienBullet extends Sprite {
         fireAngle = (float) Math.toDegrees(Math.atan(dist_y / dist_x));
 
         // calculate speedY using relative screen dimensions
-        float frames_to_impact = Math.abs(dist_x / GameView.screenW / speedX);
-        speedY = -dist_y / GameView.playScreenH / frames_to_impact;
+//        float frames_to_impact = Math.abs(dist_x / GameView.screenW / speedX);
+//        speedY = -dist_y / GameView.playScreenH / frames_to_impact;
 
         // cap speedY if abs. value greater than 0.012f
         speedY = (Math.abs(speedY) > 0.012f ? Math.signum(speedY) * 0.012f : speedY);
