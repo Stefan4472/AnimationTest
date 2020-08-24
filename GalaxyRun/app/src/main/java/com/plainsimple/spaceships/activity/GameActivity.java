@@ -1,7 +1,5 @@
 package com.plainsimple.spaceships.activity;
 
-import android.animation.AnimatorInflater;
-import android.animation.AnimatorSet;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,12 +11,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 
+import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.GameEngine;
 import com.plainsimple.spaceships.engine.GameRunner;
+import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
-import com.plainsimple.spaceships.stats.GameStats;
 import com.plainsimple.spaceships.view.ArrowButtonView;
 import com.plainsimple.spaceships.view.GameView;
 import com.plainsimple.spaceships.view.HealthBarView;
@@ -39,8 +38,12 @@ public class GameActivity extends FragmentActivity implements
         GameOverDialogFragment.GameOverDialogListener,
         ArrowButtonView.OnDirectionChangedListener {
 
+    // TODO: LOOKUP JAVA CODING GUIDELINES
+    private boolean initialized;
     private GameEngine gameEngine;
+    private GameContext gameContext;
     private GameRunner mGameRunner;
+    private BitmapCache bitmapCache;
     private long startTime;
     private long numUpdates;
 
@@ -90,16 +93,6 @@ public class GameActivity extends FragmentActivity implements
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
         arrowButtons = (ArrowButtonView) findViewById(R.id.arrow_buttons);
 
-        gameEngine = new GameEngine(getApplicationContext(), 800, 600);
-
-        mGameRunner = new GameRunner(new Handler(), this, gameEngine);
-        mGameRunner.start();
-        mGameRunner.prepareHandler();
-        startTime = System.currentTimeMillis();
-        mGameRunner.queueUpdate();
-
-        initUI();
-
         // Provide GameView with a reference to our IGameActivity interface.
         gameView.setGameActivityInterface(this);
         // Register ourselves for needed listeners
@@ -145,7 +138,41 @@ public class GameActivity extends FragmentActivity implements
         }
     }
 
-    private void initMedia() {
+    /*
+    IGameViewListener--handle dimensions determined.
+     */
+    @Override
+    public void onSizeSet(int widthPx, int heightPx) {
+        initialize(widthPx, heightPx);
+    }
+
+    private void initialize(int playableWidthPx, int playableHeightPx) {
+        Log.d("GameActivity", String.format(
+                "initialize() called w/width %d, height %d", playableWidthPx, playableHeightPx
+        ));
+        // Create BitmapCache
+        bitmapCache = new BitmapCache(
+                getApplicationContext(), playableWidthPx, playableHeightPx);
+
+        // Create GameContext
+        gameContext = new GameContext();
+        gameContext.appContext = getApplicationContext();
+        gameContext.bitmapCache = bitmapCache;
+        gameContext.gameWidthPx = playableWidthPx;
+        gameContext.gameHeightPx = playableHeightPx;
+
+        // Create GameEngine
+        gameEngine = new GameEngine(gameContext);
+        // Setup UI
+        resetUI();
+        // Create GameRunner background thread
+        mGameRunner = new GameRunner(new Handler(), this, gameEngine);
+        mGameRunner.start();
+        mGameRunner.prepareHandler();
+        startTime = System.currentTimeMillis();
+        // Call the first game update
+        mGameRunner.queueUpdate();
+        initialized = true;
 //        Log.d("Activity Class", "Creating SoundPool");
 //        soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
 //        soundIDs = new Hashtable<>();
@@ -157,49 +184,52 @@ public class GameActivity extends FragmentActivity implements
 //        Log.d("Activity Class", soundIDs.size() + " sounds loaded");
     }
 
-    private void initUI() {
+    private void resetUI() {
+        assert(gameEngine != null);
         // Initialize healthbarView with the correct hp values
-//        healthbarView.setFullHealth(gameView.getPlayerStartingHealth());
-//        healthbarView.setCurrentHealth(gameView.getPlayerHealth());
-        healthbarView.setFullHealth(100);
-
+        healthbarView.setFullHealth(gameEngine.getPlayerStartingHealth());
+        healthbarView.setCurrentHealth(gameEngine.getPlayerHealth());
     }
 
     private void setGamePaused(boolean isPaused) {
+        assert(gameEngine != null);
+
         // Do nothing if this does not change the state
         if (this.isPaused == isPaused) {
             return;
         }
 
-//        this.isPaused = isPaused;
-//        if (this.isPaused) {
-//            Log.d("GameActivity", "Pausing game");
-//            gameView.pauseGame();
-//            pauseButton.setBackgroundResource(R.drawable.play);
-////            soundPool.autoPause();
-//            // Display pause dialog
-//            DialogFragment d = PauseDialogFragment.newInstance(1.0f, 1.0f);
-//            d.show(getFragmentManager(), "Pause");
-//        } else {
-//            Log.d("GameActivity", "Resuming game");
-//            gameView.resumeGame();
-//            pauseButton.setBackgroundResource(R.drawable.pause);
-////            soundPool.autoResume();
-//        }
+        this.isPaused = isPaused;
+        if (this.isPaused) {
+            Log.d("GameActivity", "Pausing game");
+            gameEngine.inputPause();
+            pauseButton.setBackgroundResource(R.drawable.play);
+//            soundPool.autoPause();
+            // Display pause dialog
+            DialogFragment d = PauseDialogFragment.newInstance(1.0f, 1.0f);
+            d.show(getFragmentManager(), "Pause");
+        } else {
+            Log.d("GameActivity", "Resuming game");
+            gameEngine.inputResume();
+            pauseButton.setBackgroundResource(R.drawable.pause);
+//            soundPool.autoResume();
+        }
     }
 
     private void setGameMuted(boolean isMuted) {
+        assert(gameEngine != null);
+
         // Do nothing if this does not change the state
-//        if (this.isMuted == isMuted) {
-//            return;
-//        }
-//
-//        this.isMuted = isMuted;
-//        if(this.isMuted) {
-//            muteButton.setBackgroundResource(R.drawable.sound_off);
-//        } else {
-//            muteButton.setBackgroundResource(R.drawable.sound_on);
-//        }
+        if (this.isMuted == isMuted) {
+            return;
+        }
+
+        this.isMuted = isMuted;
+        if(this.isMuted) {
+            muteButton.setBackgroundResource(R.drawable.sound_off);
+        } else {
+            muteButton.setBackgroundResource(R.drawable.sound_on);
+        }
 //        AudioManager a_manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 //        a_manager.setStreamMute(AudioManager.STREAM_MUSIC, isMuted);
     }
@@ -263,17 +293,13 @@ public class GameActivity extends FragmentActivity implements
         playSound(SoundID.BUTTON_CLICKED);
         dialog.dismiss();
 
-//        gameView.restartGame();
-        initUI();
+        gameEngine.inputRestart();
+        resetUI();
         setGamePaused(false);
     }
 
-    // handles the GameView's dimensions being set or changed
-    // returns given screenHeight minus height of HealthBarView (to avoid
-    // HealthBarView being drawn over part of the GameView).
-    // Overriden from GameEventsListener.
     /*
-    Callback fired when the GameView's surface dimensions are set or changed.
+    Callbacks fired when the GameView's surface dimensions are set or changed.
     Returns given surfaceHeight minus height of HealthBarView. This way,
     we make sure that the GameView does not draw itself under the HealthBarView.
     TODO: COULD WE MAKE IT SO THAT THIS IS NOT NECESSARY?
@@ -282,7 +308,6 @@ public class GameActivity extends FragmentActivity implements
     public int calcPlayableHeight(int surfaceHeight) {
         return surfaceHeight - healthbarView.getHeight();
     }
-
     @Override
     public int calcPlayableWidth(int surfaceWidth) {
         return surfaceWidth;
@@ -379,7 +404,7 @@ public class GameActivity extends FragmentActivity implements
         super.onPause();
         Log.d("GameActivity", "onPause called");
         isPaused = true;
-//        gameView.pauseGame();
+        gameEngine.inputPause();
 
 //        soundPool.release();
 //        soundPool = null;
@@ -393,7 +418,7 @@ public class GameActivity extends FragmentActivity implements
     public void onResume() {
         super.onResume();
         Log.d("GameActivity", "onResume called");
-        initMedia();
+//        initMedia();
         if (isPaused) {
             // display pause dialog
             DialogFragment d = PauseDialogFragment.newInstance(1.0f, 1.0f);

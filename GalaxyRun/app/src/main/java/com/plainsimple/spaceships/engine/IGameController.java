@@ -13,6 +13,4 @@ public interface IGameController {
     void inputPause();
     void inputResume();
     void inputRestart();
-    // TODO: MAKE THIS A FRIEND OF GAMEVIEW?
-    void setScreenSize(int width, int height);
 }

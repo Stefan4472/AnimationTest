@@ -10,99 +10,95 @@ import com.plainsimple.spaceships.util.ImageUtil;
 import java.util.Hashtable;
 import java.util.NoSuchElementException;
 
+import plainsimple.spaceships.R;
+
 /**
  * Bitmap cache for R.drawables. Retrieved using BitmapID.getDebugString()
  */
 public class BitmapCache {
 
+    // Reference to application context
+    private Context context;
+
     // stores bitmaps
-    private static Hashtable<String, Bitmap> bmpCache = new Hashtable<>();
+    private Hashtable<BitmapID, Bitmap> bmpCache = new Hashtable<>();
     // stores bitmap data
-    private static Hashtable<String, BitmapData> bmpData = new Hashtable<>();
+    private Hashtable<BitmapID, BitmapData> bmpData = new Hashtable<>();
 
-    private static float scalingFactor = 1.0f;
+    private double scalingFactor = 1.0f;
 
-    public static void setScalingFactor(float scalingFactor) {
-        BitmapCache.scalingFactor = scalingFactor;
+    /*
+    Create cache with specified scaling factor.
+     */
+    public BitmapCache(Context context, double scalingFactor) {
+        assert(context != null);
+        this.context = context;
+        this.scalingFactor = scalingFactor;
     }
 
-    // looks up the Bitmap with the given BitmapID. Will attempt to load the corresponding Bitmap
-    // from storage if not found (using the BitmapID's rId field)
-    public static Bitmap getBitmap(BitmapID key, Context context) throws NoSuchElementException {
-        // attempts to get the bitmap from the Hashtable
-        Bitmap bmp = bmpCache.get(key.toString());
+    /*
+    Create cache, auto-determining the scaling factor to use based on
+    game dimensions.
+     */
+    public BitmapCache(Context context, int gameWidthPx, int gameHeightPx) {
+        assert(context != null);
+        this.context = context;
+        scalingFactor = calcScalingFactor(gameWidthPx, gameHeightPx);
+    }
+
+    /*
+     Determines proper image scaling factor, based on the screen dimensions
+     We want the spaceship's height to be 1/6 of the screen height.
+      */
+    private double calcScalingFactor(int gameWidthPx, int gameHeightPx) {
+        Bitmap spaceship = BitmapFactory.decodeResource(
+                context.getResources(), R.drawable.spaceship);
+        return (gameHeightPx / 6.0f) / (float) spaceship.getHeight();
+    }
+
+    /*
+    Looks up the Bitmap with the given BitmapID. Will attempt to load the
+    corresponding Bitmap from storage if not found (using the BitmapID's rId field).
+
+    May throw [TODO: WHAT KIND OF EXCEPTION?]
+     */
+    public Bitmap getBitmap(BitmapID key) throws NoSuchElementException {
+        // Lookup ID in Hashtable
+        Bitmap bmp = bmpCache.get(key);
+        // Bitmap not in cache: load, scale, and add to cache
         if (bmp == null) {
-            // loads in the bitmap if it hasn't already been loaded
-            try {
-                bmp = BitmapFactory.decodeResource(context.getResources(), key.getrId());
-                bmp = Bitmap.createScaledBitmap(bmp,
-                        (int) (bmp.getWidth() * scalingFactor),
-                        (int) (bmp.getHeight() * scalingFactor), true);
-            } catch (Exception e) {
-                throw e;
-            }
-            if (bmp == null) {
-                throw new NoSuchElementException("No bitmap found with given key " + key);
-            } else {
-                bmpCache.put(key.toString(), bmp);
-//                Log.d("Bitmap Cache", "Width is " + bmp.getWidth() + " and height is " + bmp.getHeight());
-                bmpData.put(key.toString(), new BitmapData(key, bmp.getWidth(), bmp.getHeight()));
-            }
+            bmp = BitmapFactory.decodeResource(context.getResources(), key.getrId());
+            bmp = Bitmap.createScaledBitmap(
+                    bmp,
+                    (int) (bmp.getWidth() * scalingFactor),
+                    (int) (bmp.getHeight() * scalingFactor),
+                    true
+            );
+
+            bmpCache.put(key, bmp);
+            bmpData.put(key, new BitmapData(key, bmp.getWidth(), bmp.getHeight()));
         }
         return bmp;
     }
 
-    // looks up the BitmapData for the given BitmapID. Will attempt to load the corresponding Bitmap
-    // from storage if not found (using the BitmapID's rId field)
-    public static BitmapData getData(BitmapID key, Context context) throws NoSuchElementException {
-        // attempts to get the data from the Hashtable
-        BitmapData data = bmpData.get(key.toString());
+    /*
+    Looks up the BitmapData for the given BitmapID. Will attempt to load the
+    corresponding Bitmap from storage if not found (using the BitmapID's rId field).
+
+    TODO: WHAT KIND OF EXCEPTION WOULD BE THROWN?
+    */
+    public BitmapData getData(BitmapID key) throws NoSuchElementException {
+        BitmapData data = bmpData.get(key);
+        // Not found in cache
         if (data == null) {
-            // loads in the bitmap if it hasn't already been loaded
-            try {
-                Bitmap bmp = BitmapFactory.decodeResource(context.getResources(), key.getrId());
-                bmp = Bitmap.createScaledBitmap(bmp,
-                        (int) (bmp.getWidth() * scalingFactor),
-                        (int) (bmp.getHeight() * scalingFactor), true);
-                data = new BitmapData(key, bmp.getWidth(), bmp.getHeight());
-                bmpData.put(key.toString(), data);
-                bmpCache.put(key.toString(), bmp);
-            } catch (Exception e) {
-                throw new NoSuchElementException("Error with the given key: " + key);
-            }
+            // Add to cache
+            getBitmap(key);  // TODO: NOTE: METHOD SHOULD BE SPLIT INTO `GET()`, AND `LOAD/CACHE()`
+            data = bmpData.get(key);
         }
         return data;
     }
 
-    // looks up and returns the Bitmap stored under the given key. Throws NoSuchElementException
-    // if not found. Makes no attempt to load the image
-    public static Bitmap getBitmap(String key) throws NoSuchElementException {
-        if (!bmpCache.containsKey(key)) {
-            throw new NoSuchElementException("Error: Key not found (\"" + key + "\")");
-        } else {
-            return bmpCache.get(key);
-        }
-    }
-
-    // looks up and returns the BitmapData stored under the given key. Throws NoSuchElementException
-    // if not found. Makes no attempt to load the image
-    public static BitmapData getData(String key) throws NoSuchElementException {
-        if (!bmpData.containsKey(key)) {
-            throw new NoSuchElementException("Error: Key not found (\"" + key + "\")");
-        } else {
-            return bmpData.get(key);
-        }
-    }
-
-    // puts the given Bitmap under the given key for future use
-    public static void putBitmap(String key, Bitmap bitmap) {
-        bmpCache.put(key, bitmap);
-        bmpData.put(key, new BitmapData(null, bitmap.getWidth(), bitmap.getHeight()));
-    }
-
-    public static void destroyBitmaps() {
-        for (String key : bmpCache.keySet()) {
-            bmpCache.remove(key);
-        }
+    public void setScalingFactor(double scalingFactor) {
+        this.scalingFactor = scalingFactor;
     }
 }

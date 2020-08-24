@@ -83,7 +83,6 @@ public class GameView extends SurfaceView implements
         int playable_width = gameActivityInterface.calcPlayableWidth(width);
         int playable_height = gameActivityInterface.calcPlayableHeight(height);
         thread.setSurfaceSize(playable_width, playable_height);
-        thread.setSurfaceSize(width, height);
     }
 
     @Override
@@ -167,16 +166,18 @@ public class GameView extends SurfaceView implements
         // updates all game logic
         // adds any new sprites and generates a new set of sprites if needed
         public void update() {
-//            background.scroll(-gameEngine.scrollSpeed * gameEngine.screenWidth * gameEngine.SCROLL_SPEED_CONST);
+//            background.scroll(-gameEngine.scrollSpeed * gameEngine.gameWidthPx * gameEngine.SCROLL_SPEED_CONST);
 //            scoreDisplay.update(gameEngine.score);
         }
 
         public void setSurfaceSize(int width, int height) {
+            Log.d("GameView", String.format("setSurfaceSize() called %d, %d", width, height));
             synchronized (mySurfaceHolder) {
 //                gameEngine = new GameEngine(context, width, height);
                 background = new Background(width, height);
                 scoreDisplay = new ScoreDisplay(context, 0);
             }
+            gameActivityInterface.onSizeSet(width, height);
         }
 
         public void setRunning(boolean isRunning) {
