@@ -24,28 +24,18 @@ import com.plainsimple.spaceships.util.GameEngineUtil;
  * Created by Stefan on 10/17/2015.
  */
 public class GameView extends SurfaceView implements
-        SurfaceHolder.Callback,
-        IGameServiceProvider {
+        SurfaceHolder.Callback {
 
-//    private Context context;
+    // SurfaceHolder to the View's canvas
     private SurfaceHolder mySurfaceHolder;
-    // GameView dimensions. screenW and screenH are full dimensions.
-    // playScreenH is the height of the "playable" screen. This can be
-    // configured (e.g. to remove what's underneath the HealthBarView)
-//    public static int screenW;
-//    public static int playScreenH;
-//    private static int screenH;
-
     // Internal thread that runs the GameEngine and draws to the screen
     private GameViewThread thread;
 
-    // Runs game logic, which is then drawn to screen by this view
-    public GameEngine gameEngine;
+    // TODO: THIS SHOULD REALLY BE A UI ELEMENT IN GAMEACTIVITY--BUT THAT WOULD LIKELY IMPACT PERFORMANCE DUE TO RUNONUITHREAD()
+    // Score display in top left of screen
+    private ScoreDisplay scoreDisplay;
     // Scrolling space background (moves at SCROLL_SPEED_CONST of regular sprites)
     private Background background;
-    // Score display in top left of screen
-    // TODO: THIS SHOULD REALLY BE A UI ELEMENT IN GAMEACTIVITY--BUT THAT WOULD LIKELY IMPACT PERFORMANCE DUE TO RUNONUITHREAD()
-    private ScoreDisplay scoreDisplay;
 
     // Interface to the GameActivity. Provides a couple utility methods.
     private IGameActivity gameActivityInterface;
@@ -54,7 +44,6 @@ public class GameView extends SurfaceView implements
 
     public GameView(Context context, AttributeSet attributes) {
         super(context, attributes);
-        gameEngine = new GameEngine(context, 0, 0);  // TODO: HOW TO SET SCREEN SIZE? WE DON'T KNOW IT YET
 
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
@@ -80,17 +69,21 @@ public class GameView extends SurfaceView implements
     /* Begin SurfaceHolder overrides */
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-        return thread.doTouchEvent(motionEvent);
+        assert(gameViewListener != null);
+        gameViewListener.handleScreenTouch(motionEvent);
+        return true;
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        assert(gameActivityInterface != null);
         // Ask the GameActivity what dimensions should be used by the game
         // TODO: more elegant way? using layout?
         Log.d("GameView", String.format("surfaceChanged() called with %d, %d", width, height));
         int playable_width = gameActivityInterface.calcPlayableWidth(width);
         int playable_height = gameActivityInterface.calcPlayableHeight(height);
         thread.setSurfaceSize(playable_width, playable_height);
+        thread.setSurfaceSize(width, height);
     }
 
     @Override
@@ -107,66 +100,6 @@ public class GameView extends SurfaceView implements
     public void surfaceDestroyed(SurfaceHolder holder) {
         Log.d("GameView", "surfaceDestroyed() called");
         thread.setRunning(false);
-    }
-
-    /* Begin IGameServiceProvider overriedes */
-    public Context getActivityContext() {
-        return getContext();
-    }
-
-    public void playSound() {
-        // TODO
-    }
-
-    public int getScreenWidth() {
-        return 0;
-    }
-
-    public int getScreenHeight() {
-        return 0;
-    }
-
-    /* Begin utility functions for GameActivity to use */
-    public void startPlayerMovingUp() {
-        gameEngine.inputStartMoveUp();
-    }
-
-    public void startPlayerMovingDown() {
-        gameEngine.inputStartMoveDown();
-    }
-
-    public void stopPlayerMoving() {
-        gameEngine.inputStopMoving();
-    }
-
-    public void pauseGame() {
-        gameEngine.inputPause();
-    }
-
-    public void resumeGame() {
-        gameEngine.inputResume();
-    }
-
-    public void startGame() {
-
-    }
-
-    public void restartGame() {
-        gameEngine.inputRestart();
-        background.reset();
-        scoreDisplay.reset();
-    }
-
-    private void initGame() {
-
-    }
-
-    public int getPlayerStartingHealth() {
-        return gameEngine.getPlayerStartingHealth();
-    }
-
-    public int getPlayerHealth() {
-        return gameEngine.getPlayerHealth();
     }
 
     /*
@@ -200,7 +133,6 @@ public class GameView extends SurfaceView implements
 //                try {
                     canvas = mySurfaceHolder.lockCanvas(null);
                     synchronized (mySurfaceHolder) {
-                        gameEngine.update();
                         draw();
                     }
 //                } catch (NullPointerException e) {
@@ -213,19 +145,21 @@ public class GameView extends SurfaceView implements
             }
         }
 
-        // TODO: OUTSIDE METHOD NEEDS TO CALL INITNEWGAME()
-        // TODO: CAN WE MOVE THIS OUT TO THE GAMEVIEW OUTER CLASS?
         private void draw() {
-            // TODO: MAKE SURE GAME HAS BEEN STARTED/INITIALIZED
-            background.draw(canvas);
+            if (background != null) {
+                background.draw(canvas);
+            }
 
             // todo: how to draw bullets and rockets? drawparams in spaceship?
-            for (Sprite s : gameEngine.spaceship.getProjectiles()) {
-                GameEngineUtil.drawSprite(s, canvas, context);
+//            for (Sprite s : gameEngine.spaceship.getProjectiles()) {
+//                GameEngineUtil.drawSprite(s, canvas, context);
+//            }
+//            gameEngine.gameDriver.draw(canvas, context);
+//            GameEngineUtil.drawSprite(gameEngine.spaceship, canvas, context);
+            if (scoreDisplay != null) {
+                scoreDisplay.update(100);
+                scoreDisplay.draw(canvas);
             }
-            gameEngine.gameDriver.draw(canvas, context);
-            GameEngineUtil.drawSprite(gameEngine.spaceship, canvas, context);
-            scoreDisplay.draw(canvas);
             // fill the area outside of playScreenH but in screenH with black
 //            canvas.drawRect(0, playScreenH, screenW, screenH, blackPaint);
         }
@@ -233,32 +167,15 @@ public class GameView extends SurfaceView implements
         // updates all game logic
         // adds any new sprites and generates a new set of sprites if needed
         public void update() {
-            background.scroll(-gameEngine.scrollSpeed * gameEngine.screenWidth * gameEngine.SCROLL_SPEED_CONST);
-            scoreDisplay.update(gameEngine.score);
-        }
-
-        // handle user touching screen
-        boolean doTouchEvent(MotionEvent motionEvent) {
-            synchronized (mySurfaceHolder) {
-                switch (motionEvent.getAction()) {
-                    // Start of touch
-                    case MotionEvent.ACTION_DOWN:
-                        gameEngine.inputStartShooting();
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        break;
-                    // End of touch
-                    case MotionEvent.ACTION_UP:
-                        gameEngine.inputEndShooting();
-                        break;
-                }
-            }
-            return true;
+//            background.scroll(-gameEngine.scrollSpeed * gameEngine.screenWidth * gameEngine.SCROLL_SPEED_CONST);
+//            scoreDisplay.update(gameEngine.score);
         }
 
         public void setSurfaceSize(int width, int height) {
             synchronized (mySurfaceHolder) {
-                gameEngine = new GameEngine(context, width, height);
+//                gameEngine = new GameEngine(context, width, height);
+                background = new Background(width, height);
+                scoreDisplay = new ScoreDisplay(context, 0);
             }
         }
 

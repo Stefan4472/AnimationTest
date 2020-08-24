@@ -4,14 +4,18 @@ import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 
-import com.plainsimple.spaceships.helper.GameModeManager;
+import com.plainsimple.spaceships.engine.GameEngine;
+import com.plainsimple.spaceships.engine.GameRunner;
+import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.stats.GameStats;
@@ -20,21 +24,29 @@ import com.plainsimple.spaceships.view.GameView;
 import com.plainsimple.spaceships.view.HealthBarView;
 import com.plainsimple.spaceships.view.IGameViewListener;
 
+import java.util.List;
+
 import plainsimple.spaceships.R;
 
 /**
  * Created by Stefan on 10/17/2015.
  */
-public class GameActivity extends FragmentActivity
-        implements PauseDialogFragment.PauseDialogListener,
-            GameOverDialogFragment.GameOverDialogListener,
-            IGameViewListener,
-            ArrowButtonView.OnDirectionChangedListener,
-            IGameActivity {
+public class GameActivity extends FragmentActivity implements
+        GameRunner.Callback,
+        IGameViewListener,
+        IGameActivity,
+        PauseDialogFragment.PauseDialogListener,
+        GameOverDialogFragment.GameOverDialogListener,
+        ArrowButtonView.OnDirectionChangedListener {
+
+    private GameEngine gameEngine;
+    private GameRunner mGameRunner;
+    private long startTime;
+    private long numUpdates;
 
     // View elements
     private GameView gameView;
-    private HealthBarView healthBarView;
+    private HealthBarView healthbarView;
     private ImageButton pauseButton;
     private ImageButton muteButton;
     private ArrowButtonView arrowButtons;
@@ -73,11 +85,18 @@ public class GameActivity extends FragmentActivity
 
         // Get handles to the view elements
         gameView = (GameView) findViewById(R.id.spaceships);
-        healthBarView = (HealthBarView) findViewById(R.id.healthbar);
+        healthbarView = (HealthBarView) findViewById(R.id.healthbar);
         pauseButton = (ImageButton) findViewById(R.id.pausebutton);
         muteButton = (ImageButton) findViewById(R.id.mutebutton);
         arrowButtons = (ArrowButtonView) findViewById(R.id.arrow_buttons);
 
+        gameEngine = new GameEngine(getApplicationContext(), 800, 600);
+
+        mGameRunner = new GameRunner(new Handler(), this, gameEngine);
+        mGameRunner.start();
+        mGameRunner.prepareHandler();
+        startTime = System.currentTimeMillis();
+        mGameRunner.queueUpdate();
 
         initUI();
 
@@ -89,6 +108,41 @@ public class GameActivity extends FragmentActivity
 
         // set volume control to proper stream
 //        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+    }
+
+    /*
+    GameRunner.Callback. Called when the next game update has been run.
+     */
+    @Override
+    public void onGameStateUpdated(List<DrawParams> drawCalls, List<String> events) {
+//        Log.d("GameActivity", "Got latest game update");
+        if (numUpdates != 0 && numUpdates % 100 == 0) {
+            long curr_time = System.currentTimeMillis();
+            Log.d("GameActivity", "fps: " + numUpdates / ((curr_time - startTime) / 1000));
+        }
+        numUpdates++;
+        healthbarView.setMovingToHealth((int) (numUpdates % 100));
+
+        mGameRunner.queueUpdate();
+    }
+
+    /*
+    IGameViewListener--handle touch event.
+     */
+    @Override
+    public void handleScreenTouch(MotionEvent motionEvent) {
+        switch (motionEvent.getAction()) {
+            // Start of touch
+            case MotionEvent.ACTION_DOWN:
+                gameEngine.inputStartShooting();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+            // End of touch
+            case MotionEvent.ACTION_UP:
+                gameEngine.inputEndShooting();
+                break;
+        }
     }
 
     private void initMedia() {
@@ -104,9 +158,10 @@ public class GameActivity extends FragmentActivity
     }
 
     private void initUI() {
-        // Initialize healthBarView with the correct hp values
-        healthBarView.setFullHealth(gameView.getPlayerStartingHealth());
-        healthBarView.setCurrentHealth(gameView.getPlayerHealth());
+        // Initialize healthbarView with the correct hp values
+//        healthbarView.setFullHealth(gameView.getPlayerStartingHealth());
+//        healthbarView.setCurrentHealth(gameView.getPlayerHealth());
+        healthbarView.setFullHealth(100);
 
     }
 
@@ -116,35 +171,35 @@ public class GameActivity extends FragmentActivity
             return;
         }
 
-        this.isPaused = isPaused;
-        if (this.isPaused) {
-            Log.d("GameActivity", "Pausing game");
-            gameView.pauseGame();
-            pauseButton.setBackgroundResource(R.drawable.play);
-//            soundPool.autoPause();
-            // Display pause dialog
-            DialogFragment d = PauseDialogFragment.newInstance(1.0f, 1.0f);
-            d.show(getFragmentManager(), "Pause");
-        } else {
-            Log.d("GameActivity", "Resuming game");
-            gameView.resumeGame();
-            pauseButton.setBackgroundResource(R.drawable.pause);
-//            soundPool.autoResume();
-        }
+//        this.isPaused = isPaused;
+//        if (this.isPaused) {
+//            Log.d("GameActivity", "Pausing game");
+//            gameView.pauseGame();
+//            pauseButton.setBackgroundResource(R.drawable.play);
+////            soundPool.autoPause();
+//            // Display pause dialog
+//            DialogFragment d = PauseDialogFragment.newInstance(1.0f, 1.0f);
+//            d.show(getFragmentManager(), "Pause");
+//        } else {
+//            Log.d("GameActivity", "Resuming game");
+//            gameView.resumeGame();
+//            pauseButton.setBackgroundResource(R.drawable.pause);
+////            soundPool.autoResume();
+//        }
     }
 
     private void setGameMuted(boolean isMuted) {
         // Do nothing if this does not change the state
-        if (this.isMuted == isMuted) {
-            return;
-        }
-
-        this.isMuted = isMuted;
-        if(this.isMuted) {
-            muteButton.setBackgroundResource(R.drawable.sound_off);
-        } else {
-            muteButton.setBackgroundResource(R.drawable.sound_on);
-        }
+//        if (this.isMuted == isMuted) {
+//            return;
+//        }
+//
+//        this.isMuted = isMuted;
+//        if(this.isMuted) {
+//            muteButton.setBackgroundResource(R.drawable.sound_off);
+//        } else {
+//            muteButton.setBackgroundResource(R.drawable.sound_on);
+//        }
 //        AudioManager a_manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 //        a_manager.setStreamMute(AudioManager.STREAM_MUSIC, isMuted);
     }
@@ -208,7 +263,7 @@ public class GameActivity extends FragmentActivity
         playSound(SoundID.BUTTON_CLICKED);
         dialog.dismiss();
 
-        gameView.restartGame();
+//        gameView.restartGame();
         initUI();
         setGamePaused(false);
     }
@@ -225,7 +280,7 @@ public class GameActivity extends FragmentActivity
      */
     @Override
     public int calcPlayableHeight(int surfaceHeight) {
-        return surfaceHeight - healthBarView.getHeight();
+        return surfaceHeight - healthbarView.getHeight();
     }
 
     @Override
@@ -241,15 +296,15 @@ public class GameActivity extends FragmentActivity
     public void onDirectionChanged(Spaceship.Direction newDirection) {
         switch (newDirection) {
             case DOWN: {
-                gameView.startPlayerMovingDown();
+                gameEngine.inputStartMoveDown();
                 break;
             }
             case UP: {
-                gameView.startPlayerMovingUp();
+                gameEngine.inputStartMoveUp();
                 break;
             }
             case NONE: {
-                gameView.stopPlayerMoving();
+                gameEngine.inputStopMoving();
                 break;
             }
         }
@@ -260,61 +315,61 @@ public class GameActivity extends FragmentActivity
     spaceship has reached the correct horizontal position for obstacles
     to start spawning.
      */
-    @Override
-    public void onGameStarted() {
-        // Fade in direction arrows
-        final AnimatorSet fade_in =
-                (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.arrowbuttons_fadein);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                fade_in.setTarget(arrowButtons);
-                fade_in.start();
-            }
-        });
-        // start the game timer
-//        gameView.getGameTimer().start();
-    }
-
-    /*
-    Callback fired when the current run is completely over.
-    Check for high-score (TODO) and show the game-over dialog.
-     */
-    @Override
-    public void onGameFinished() {
-        // Hide arrowButtons
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                arrowButtons.setAlpha(0);
-            }
-        });
-
-        boolean is_highscore = false;
-        int stars_earned = 0;
-        // Show the GameOver dialog
-        DialogFragment d = GameOverDialogFragment.newInstance(
-                new GameStats(),
-                "GameOver",
-                is_highscore,
-                stars_earned
-        );
-        d.show(getFragmentManager(), "GameOver");
-    }
+//    @Override
+//    public void onGameStarted() {
+//        // Fade in direction arrows
+//        final AnimatorSet fade_in =
+//                (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.arrowbuttons_fadein);
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                fade_in.setTarget(arrowButtons);
+//                fade_in.start();
+//            }
+//        });
+//        // start the game timer
+////        gameView.getGameTimer().start();
+//    }
+//
+//    /*
+//    Callback fired when the current run is completely over.
+//    Check for high-score (TODO) and show the game-over dialog.
+//     */
+//    @Override
+//    public void onGameFinished() {
+//        // Hide arrowButtons
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                arrowButtons.setAlpha(0);
+//            }
+//        });
+//
+//        boolean is_highscore = false;
+//        int stars_earned = 0;
+//        // Show the GameOver dialog
+//        DialogFragment d = GameOverDialogFragment.newInstance(
+//                new GameStats(),
+//                "GameOver",
+//                is_highscore,
+//                stars_earned
+//        );
+//        d.show(getFragmentManager(), "GameOver");
+//    }
 
     /*
     Callback fired when the player's health changes.
-    Trigger an update of the healthBarView.
+    Trigger an update of the healthbarView.
      */
-    @Override
-    public void onHealthChanged(final int newHealth) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                healthBarView.setMovingToHealth(newHealth);
-            }
-        });
-    }
+//    @Override
+//    public void onHealthChanged(final int newHealth) {
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                healthbarView.setMovingToHealth(newHealth);
+//            }
+//        });
+//    }
 
     /*
     Callback fired when the activity is paused.
@@ -324,7 +379,7 @@ public class GameActivity extends FragmentActivity
         super.onPause();
         Log.d("GameActivity", "onPause called");
         isPaused = true;
-        gameView.pauseGame();
+//        gameView.pauseGame();
 
 //        soundPool.release();
 //        soundPool = null;

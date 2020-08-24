@@ -39,6 +39,7 @@ public class GameActivity2 extends FragmentActivity
     private long startTime;
     private long numUpdates;
     HealthBarView healthbar;
+
     /*
     Callback fired when the activity is created. Loads everything required and
     starts the game.
@@ -55,7 +56,8 @@ public class GameActivity2 extends FragmentActivity
         );
 
         // Set content view/layout
-        setContentView(R.layout.game_layout2);
+        setContentView(R.layout.game_layout);
+//        gameView = (GameView) findViewById(R.id.spaceships);
         healthbar = (HealthBarView) findViewById(R.id.healthbar);
         gameEngine = new GameEngine(getApplicationContext(), 800, 600);
 
