@@ -112,7 +112,7 @@ public class MainActivity extends Activity {
         // play button clicked sound
         soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);
         // Launch the GameActivity
-        Intent game_intent = new Intent(this, GameActivity.class);
+        Intent game_intent = new Intent(this, GameActivity2.class);
         startActivity(game_intent);
 
 //        // launch PlayScreenActivity

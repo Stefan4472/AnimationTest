@@ -30,6 +30,8 @@ import com.plainsimple.spaceships.util.GameEngineUtil;
 import com.plainsimple.spaceships.view.GameView;
 import com.plainsimple.spaceships.view.ScoreDisplay;
 
+import java.util.concurrent.TimeUnit;
+
 import plainsimple.spaceships.R;
 
 /**
@@ -80,6 +82,8 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     }
 
     /* Start implementation of IGameController interface. */
+    // TODO: CONCURRENT QUEUE INPUT
+    // COLLECT DRAWCALLS, EVENTS ON CONCURRENT QUEUE
     @Override
     public void inputStartShooting() {
 
@@ -184,17 +188,22 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     // updates all game logic
     // adds any new sprites and generates a new set of sprites if needed
     public void update() {
-        if (gameStarted) {
-            if (!spaceshipDestroyed) {
-                // increment difficulty by amount specified in difficultyLevel
-                difficulty += difficultyLevel.getPerFrameIncrease();
-                score += 1 + difficulty / SCORING_CONST;
-            }
-            updateScrollSpeed();
+        try {
+            TimeUnit.MILLISECONDS.sleep(15);
+        } catch (InterruptedException e) {
+
         }
-        updateSpaceship();
-        gameDriver.update((int) difficulty, scrollSpeed, spaceship);
-        spaceship.updateAnimations();
+//        if (gameStarted) {
+//            if (!spaceshipDestroyed) {
+//                // increment difficulty by amount specified in difficultyLevel
+//                difficulty += difficultyLevel.getPerFrameIncrease();
+//                score += 1 + difficulty / SCORING_CONST;
+//            }
+//            updateScrollSpeed();
+//        }
+//        updateSpaceship();
+//        gameDriver.update((int) difficulty, scrollSpeed, spaceship);
+//        spaceship.updateAnimations();
     }
 
     private void updateSpaceship() {
