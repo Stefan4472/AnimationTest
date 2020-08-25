@@ -42,10 +42,9 @@ public class GameActivity extends FragmentActivity implements
     // TODO: LOOKUP JAVA CODING GUIDELINES
     private boolean initialized;
     private GameEngine gameEngine;
-    private GameContext gameContext;
+
     private GameRunner mGameRunner;
-    private BitmapCache bitmapCache;
-    private AnimCache animCache;
+
     private long startTime;
     private long numUpdates;
 
@@ -153,22 +152,9 @@ public class GameActivity extends FragmentActivity implements
                 "initialize() called w/width %d, height %d", playableWidthPx, playableHeightPx
         ));
         // TODO: ACTUALLY, GAMEENGINE SHOULD CREATE THE GAMECONTEXT!
-        // Create BitmapCache
-        bitmapCache = new BitmapCache(
-                getApplicationContext(), playableWidthPx, playableHeightPx);
-        animCache = new AnimCache(getApplicationContext(), bitmapCache);
-        // Create GameContext
-        gameContext = new GameContext(
-                getApplicationContext(),
-                bitmapCache,
-                animCache,
-                playableWidthPx,
-                playableHeightPx
-        );
 
         // Create GameEngine
-        gameEngine = new GameEngine(gameContext);
-
+        gameEngine = new GameEngine(getApplicationContext(), playableWidthPx, playableHeightPx);
 //        gameContext.setSpaceship(gameEngine.getSpaceship());
 
         // Setup UI

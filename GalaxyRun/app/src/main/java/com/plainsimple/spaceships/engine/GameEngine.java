@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
@@ -28,6 +29,12 @@ import plainsimple.spaceships.R;
 public class GameEngine implements IGameController, Spaceship.SpaceshipListener {
 
     private GameContext gameContext;
+    private BitmapCache bitmapCache;
+    private AnimCache animCache;
+
+    // Data for calculating FPS (TODO)
+    private long startTime;
+    private long numUpdates;
 
     // Represents the level of difficulty. Increases non-linearly over time
     private double currDifficulty;
@@ -53,8 +60,39 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         FINISHED
     }
 
-    public GameEngine(GameContext gameContext) {
-        this.gameContext = gameContext;
+    public GameEngine(Context appContext, int gameWidthPx, int gameHeightPx) {
+        // Create BitmapCache
+        bitmapCache = new BitmapCache(
+                appContext, gameWidthPx, gameHeightPx);
+        animCache = new AnimCache(appContext, bitmapCache);
+
+        // Create Spaceship and init just off the screen, centered vertically
+        BitmapData ship_data = gameContext.getBitmapCache().getData(BitmapID.SPACESHIP);
+        spaceship = new Spaceship(
+                -ship_data.getWidth(),
+                gameContext.getGameHeightPx() / 2 - ship_data.getHeight() / 2,
+                gameContext
+        );
+        // Set this class to receive Spaceship events
+        spaceship.setListener(this);
+
+        gameDriver = new GameDriver(
+                gameContext,
+                gameContext.getGameWidthPx(),
+                gameContext.getGameHeightPx(),
+                gameMode.getLevelData()
+        );
+
+        // Create GameContext
+        gameContext = new GameContext(
+                appContext,
+                bitmapCache,
+                animCache,
+                spaceship,
+                gameWidthPx,
+                gameHeightPx
+        );
+
         // TODO: INITIALIZATION LOGIC?
     }
 
@@ -220,30 +258,6 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     public void onInvisible() {
         Log.d("GameView.java", "Received onInvisible");
         spaceshipDestroyed = true;
-    }
-
-    // initializes all objects required to start a new game
-    private void initNewGame() {
-        // Get spaceship image data from cache
-        BitmapData ship_data = gameContext.getBitmapCache().getData(BitmapID.SPACESHIP);
-
-        // initialize spaceship just off the screen centered vertically
-        spaceship = new Spaceship(
-                -ship_data.getWidth(),
-                gameContext.getGameHeightPx() / 2 - ship_data.getHeight() / 2,
-                gameContext
-        );
-        // set this class to receive Spaceship events
-        spaceship.setListener(this);
-
-        gameDriver = new GameDriver(
-                gameContext,
-                gameContext.getGameWidthPx(),
-                gameContext.getGameHeightPx(),
-                gameMode.getLevelData()
-        );
-        gameFinished = false;
-        score = 0;
     }
 
     // resets all elements and fields so that a new game can begin
