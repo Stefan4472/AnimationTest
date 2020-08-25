@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.GameEngine;
 import com.plainsimple.spaceships.engine.GameRunner;
+import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.SoundID;
@@ -44,6 +45,7 @@ public class GameActivity extends FragmentActivity implements
     private GameContext gameContext;
     private GameRunner mGameRunner;
     private BitmapCache bitmapCache;
+    private AnimCache animCache;
     private long startTime;
     private long numUpdates;
 
@@ -150,19 +152,25 @@ public class GameActivity extends FragmentActivity implements
         Log.d("GameActivity", String.format(
                 "initialize() called w/width %d, height %d", playableWidthPx, playableHeightPx
         ));
+        // TODO: ACTUALLY, GAMEENGINE SHOULD CREATE THE GAMECONTEXT!
         // Create BitmapCache
         bitmapCache = new BitmapCache(
                 getApplicationContext(), playableWidthPx, playableHeightPx);
-
+        animCache = new AnimCache(getApplicationContext(), bitmapCache);
         // Create GameContext
-        gameContext = new GameContext();
-        gameContext.appContext = getApplicationContext();
-        gameContext.bitmapCache = bitmapCache;
-        gameContext.gameWidthPx = playableWidthPx;
-        gameContext.gameHeightPx = playableHeightPx;
+        gameContext = new GameContext(
+                getApplicationContext(),
+                bitmapCache,
+                animCache,
+                playableWidthPx,
+                playableHeightPx
+        );
 
         // Create GameEngine
         gameEngine = new GameEngine(gameContext);
+
+//        gameContext.setSpaceship(gameEngine.getSpaceship());
+
         // Setup UI
         resetUI();
         // Create GameRunner background thread

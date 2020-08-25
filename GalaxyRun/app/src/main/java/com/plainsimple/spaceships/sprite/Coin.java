@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.sprite;
 
 import android.content.Context;
 
+import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
@@ -20,9 +21,9 @@ public class Coin extends Sprite {
     private SpriteAnimation spin;
     private DrawImage DRAW_COIN;
 
-    public Coin(float x, float y, Context context) {
-        super(x, y);
-        spin = AnimCache.get(BitmapID.COIN_SPIN, context);
+    public Coin(float x, float y, GameContext gameContext) {
+        super(x, y, gameContext);
+        spin = gameContext.getAnimCache().get(BitmapID.COIN_SPIN);
         width = spin.getFrameW();
         height = spin.getFrameH();
         spin.start();

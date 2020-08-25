@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.sprite;
 
 import android.content.Context;
 
+import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
@@ -35,8 +36,8 @@ public class Asteroid extends Sprite {
     // stores any running animations showing Asteroid taking damage
     private List<LoseHealthAnimation> loseHealthAnimations = new LinkedList<>();
 
-    public Asteroid(float x, float y, float scrollSpeed, int difficulty, Context context) {
-        super(x, y, BitmapCache.getData(BITMAP_ID, context));
+    public Asteroid(float x, float y, float scrollSpeed, int difficulty, GameContext gameContext) {
+        super(x, y, BITMAP_ID, gameContext);
         // speedX: slower than scrollspeed: give the player a chance to destroy it
         speedX = scrollSpeed * 0.6f;
         // speedY: randomized positive/negative and up to |0.03| or so

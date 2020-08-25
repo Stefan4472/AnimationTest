@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.plainsimple.spaceships.engine.GameContext;
+
 /**
  * Stores instructions for drawing text
  */
@@ -33,7 +35,7 @@ public class DrawText implements DrawParams {
     }
 
     @Override
-    public void draw(Canvas canvas, Context context) { // todo: should paint be static? should it be passed as a parameter?
+    public void draw(Canvas canvas, GameContext gameContext) { // todo: should paint be static? should it be passed as a parameter?
         paint.setColor(textColor);
         paint.setTextSize(textSize);
         canvas.drawText(text, x, y, paint);

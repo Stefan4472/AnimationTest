@@ -7,8 +7,10 @@ import android.graphics.ColorMatrix;
 import android.util.Log;
 
 import com.plainsimple.spaceships.activity.GameActivity;
+import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
+import com.plainsimple.spaceships.helper.ColorMatrixAnimator;
 import com.plainsimple.spaceships.helper.RocketManager;
 import com.plainsimple.spaceships.store.ArmorType;
 import com.plainsimple.spaceships.helper.BitmapID;
@@ -34,7 +36,7 @@ import static com.plainsimple.spaceships.sprite.Spaceship.Direction.UP;
  */
 public class Spaceship extends Sprite {
 
-    private Context context;
+    private GameContext gameContext;
 
     // SpriteAnimations used
     private SpriteAnimation move;
@@ -46,9 +48,6 @@ public class Spaceship extends Sprite {
     private DrawImage DRAW_EXHAUST;
     private DrawImage DRAW_ROCKET_FIRED;
     private DrawImage DRAW_EXPLODE;
-
-    // key used to register the image of the rendered spaceship in BitmapCache
-    private String RENDERED_BMP_KEY = "SPACESHIP_RENDERED";
 
     // used to create the spaceship flash animation when hit
     private ColorMatrixAnimator colorMatrixAnimator = new ColorMatrixAnimator(3, 4, 2);
@@ -82,7 +81,9 @@ public class Spaceship extends Sprite {
 
     // available directions Spaceship can move in (up, down, or continue straight horizontally)
     public enum Direction {
-        UP, DOWN, NONE;
+        UP,
+        DOWN,
+        NONE
     }
 
     // Spaceship's current direction
@@ -104,21 +105,17 @@ public class Spaceship extends Sprite {
     // listener that receives Spaceship events
     private SpaceshipListener listener;
 
-    public Spaceship(float x, float y, Context context) {
-        super(x, y, BitmapCache.getData(BitmapID.SPACESHIP, context));
-        this.context = context;
+    public Spaceship(float x, float y, GameContext gameContext) {
+        super(x, y, BitmapID.SPACESHIP, gameContext);
+        this.gameContext = gameContext;
 
         // load animations from AnimCache
-        move = AnimCache.get(BitmapID.SPACESHIP_MOVE, context);
-        fireRocket = AnimCache.get(BitmapID.SPACESHIP_FIRE, context);
-        explode = AnimCache.get(BitmapID.SPACESHIP_EXPLODE, context);
-
-        // render spaceship using current Cannon and Rocket Types and register rendered image under
-        // RENDERED_BMP_KEY in BitmapCache.java
-        BitmapCache.putBitmap(RENDERED_BMP_KEY, render());
+        move = gameContext.getAnimCache().get(BitmapID.SPACESHIP_MOVE);
+        fireRocket = gameContext.getAnimCache().get(BitmapID.SPACESHIP_FIRE);
+        explode = gameContext.getAnimCache().get(BitmapID.SPACESHIP_EXPLODE);
 
         // init DrawParams with correct bitmap keys
-        DRAW_SHIP = new DrawImage(RENDERED_BMP_KEY);
+        DRAW_SHIP = new DrawImage(BitmapID.SPACESHIP);
         DRAW_EXHAUST = new DrawImage(move.getBitmapID());
         DRAW_ROCKET_FIRED = new DrawImage(fireRocket.getBitmapID());
         DRAW_EXPLODE = new DrawImage(explode.getBitmapID());
@@ -156,9 +153,9 @@ public class Spaceship extends Sprite {
 
     // calls ImageUtil.renderSpaceship() to render a Bitmap of the Spaceship with its current
     // cannonType and rocketType
-    private Bitmap render() {
-        return ImageUtil.renderSpaceship(context, getWidth(), getHeight(), cannonType, rocketType);
-    }
+//    private Bitmap render() {
+//        return ImageUtil.renderSpaceship(context, getWidth(), getHeight(), cannonType, rocketType);
+//    }
 
     @Override
     public void updateActions() {
@@ -175,12 +172,12 @@ public class Spaceship extends Sprite {
 
             // fire left if allowed and increment ROCKETS_FIRED stat
             if (instructions.fireLeft()) {
-                projectiles.add(Rocket.newInstance(context, x + getWidth() * 0.80f, y + 0.29f * getHeight(), rocketType));
+                projectiles.add(Rocket.newInstance(gameContext, x + getWidth() * 0.80f, y + 0.29f * getHeight(), rocketType));
 //                GameView.currentStats.addTo(GameStats.ROCKETS_FIRED, 1);
             }
             // fire right if allowed and increment ROCKETS_FIRED stat
             if (instructions.fireRight()) {
-                projectiles.add(Rocket.newInstance(context, x + getWidth() * 0.80f, y + 0.65f * getHeight(), rocketType));
+                projectiles.add(Rocket.newInstance(gameContext, x + getWidth() * 0.80f, y + 0.65f * getHeight(), rocketType));
 //                GameView.currentStats.addTo(GameStats.ROCKETS_FIRED, 1);
             }
             // play sound and start animation if at least one rocket was fired
@@ -202,8 +199,8 @@ public class Spaceship extends Sprite {
 
     // fires both cannons. Adds new instances of Bullet to projectiles, plays sound, and updates GameStats
     public void fireCannons() {
-        projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.28f * getHeight(), context, cannonType));
-        projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.66f * getHeight(), context, cannonType));
+        projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.28f * getHeight(), gameContext, cannonType));
+        projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.66f * getHeight(), gameContext, cannonType));
 //        GameActivity.playSound(BULLET_SOUND);
 //        GameView.currentStats.addTo(GameStats.CANNONS_FIRED, 2);
     }
@@ -326,110 +323,8 @@ public class Spaceship extends Sprite {
         this.controllable = controllable;
     }
 
-    public void setFireMode(FireMode fireMode) {
-        this.fireMode = fireMode;
-    }
-
-    // set CannonType and updates rendered image in BitmapCache
-    public void setCannonType(CannonType cannonType) {
-        this.cannonType = cannonType;
-        // render updated spaceship with given cannonType and register it with BitmapCache
-        BitmapCache.putBitmap(RENDERED_BMP_KEY, render());
-    }
-
-    // set RocketType, get correct RocketManager, and update rendered image in BitmapCache
-    public void setRocketType(RocketType rocketType) {
-        this.rocketType = rocketType;
-        rocketManager = RocketManager.newInstance(rocketType);
-        // render updated spaceship with given rocketType and register it with BitmapCache
-        BitmapCache.putBitmap(RENDERED_BMP_KEY, render());
-    }
-
-    // set ArmorType and corresponding hp
-    public void setArmorType(ArmorType armorType) {
-        this.armorType = armorType;
-        hp = armorType.getHP();
-    }
-
     // set listener to receive events
     public void setListener(SpaceshipListener listener) {
         this.listener = listener;
-    }
-
-    // class used by the Spaceship to animate its ColorMatrix. Currently the only supported animation
-    // is a flash, where every pixel's Red/Green/Blue values are briefly jacked up to 255 before coming
-    // back down to what they originally were.
-    // The ColorMatrix uses a 20-element float[], visualized as a 4x5 matrix. The 5th column of each row
-    // tells by how much to increase each Red/Green/Blue/Alpha value. So, to transition to full white,
-    // we want to change elems 4, 9, and 14 to 255, before bringing them back down to zero.
-    private class ColorMatrixAnimator {
-
-        // used to count frames in an animation sequence
-        private int frameCount;
-        // whether the animation is currently running
-        private boolean flashing;
-        // number of frames it takes for sprite to reach completely white
-        private int flashIn;
-        // number of frames sprite will stay completely white
-        private int flashStay;
-        // number of frames it takes for sprite to go back to normal after being
-        // completely white.
-        private int flashOut;
-        // total frame count for an animation
-        private int totalFrames;
-        // current calculated vals for ColorMatrix
-        private float[] currentVals;
-        // the actual ColorMatrix
-        private ColorMatrix colorMatrix = new ColorMatrix();
-
-        public ColorMatrixAnimator(int flashIn, int flashStay, int flashOut) {
-            // set params
-            this.flashIn = flashIn;
-            this.flashStay = flashStay;
-            this.flashOut = flashOut;
-            totalFrames = flashIn + flashStay + flashOut;
-            // set currentVals to default
-            currentVals = colorMatrix.getArray();
-        }
-
-        // begins a flash animation sequence
-        public void flash() {
-            // if not currently flashing, set flashing to true and reset frameCount
-            if (!flashing) {
-                flashing = true;
-                frameCount = 0;
-            }
-        }
-
-        // updates the matrix by one frame
-        public void update() {
-            // check if frameCount has hit total frames, in which case stop flashing
-            if (frameCount == totalFrames) {
-                flashing = false;
-            }
-            // if currently flashing, update the matrix
-            if (flashing) {
-                frameCount++;
-                int add_const = 0;
-                // determine value to add to color chanel. We want it to go up to 255 over flashIn,
-                // stay at 255 during flashStay, and go back to zero over flashOut
-                if (frameCount <= flashIn) {
-                    add_const = 255 / flashIn;
-                } else if (frameCount > flashIn + flashStay) {
-                    add_const = -255 / flashOut;
-                }
-                // update the 5th column of each color value
-                for (int i = 0; i < 3; i++) {
-                    currentVals[4 + 5 * i] += add_const;
-                }
-                // update the matrix
-                colorMatrix.set(currentVals);
-            }
-        }
-
-        // returns ColorMatrix with calculated values
-        public ColorMatrix getMatrix() {
-            return colorMatrix;
-        }
     }
 }

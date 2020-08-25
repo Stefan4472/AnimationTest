@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.sprite;
 
 import android.content.Context;
 
+import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.store.RocketType;
 
@@ -18,23 +19,23 @@ public abstract class Rocket extends Sprite {
     // to determine which subclass to instantiate. This allows the spaceship
     // to get the Rocket instance without needing to know which subclass to
     // call.
-    public static Rocket newInstance(Context context, float x, float y, RocketType rocketType) {
+    public static Rocket newInstance(GameContext gameContext, float x, float y, RocketType rocketType) {
         switch (rocketType) {
             case ROCKET_0:
-                return new Rocket0(context, x, y);
+                return new Rocket0(gameContext, x, y);
             case ROCKET_1:
-                return new Rocket1(context, x, y);
+                return new Rocket1(gameContext, x, y);
             case ROCKET_2:
-                return new Rocket2(context, x, y);
+                return new Rocket2(gameContext, x, y);
             case ROCKET_3:
-                return new Rocket3(context, x, y);
+                return new Rocket3(gameContext, x, y);
             default:
                 throw new NoSuchElementException("Did not recognize RocketType " + rocketType);
         }
     }
 
-    protected Rocket(BitmapData bitmapData, float x, float y) {
-        super(x, y, bitmapData);
+    protected Rocket(BitmapData bitmapData, float x, float y, GameContext gameContext) {
+        super(x, y, bitmapData, gameContext);
     }
 
 

@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.sprite;
 
 import android.content.Context;
 
+import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
@@ -71,13 +72,14 @@ public class Alien extends Sprite {
     // stores any running animations showing health leaving alien
     private List<LoseHealthAnimation> loseHealthAnimations = new LinkedList<>();
 
-    public Alien(float x, float y, float scrollSpeed, Spaceship spaceship, int difficulty, Context context) {
-        super(x, y, BitmapCache.getData(BITMAP_ID, context));
+    public Alien(float x, float y, float scrollSpeed, Spaceship spaceship,
+            int difficulty, GameContext gameContext) {
+        super(x, y, BITMAP_ID, gameContext);
         speedX = scrollSpeed / 2.5f;
         this.spaceship = spaceship;
 
-        bulletBitmapData = BitmapCache.getData(BitmapID.ALIEN_BULLET, context);
-        explodeAnimation = AnimCache.get(BitmapID.SPACESHIP_EXPLODE, context);
+        bulletBitmapData = gameContext.getBitmapCache().getData(BitmapID.ALIEN_BULLET);
+        explodeAnimation = gameContext.getAnimCache().get(BitmapID.SPACESHIP_EXPLODE);
 
         DRAW_ALIEN = new DrawImage(BITMAP_ID);
         DRAW_EXPLOSION = new DrawImage(explodeAnimation.getBitmapID());
@@ -126,9 +128,14 @@ public class Alien extends Sprite {
     // fires bullet at sprite with small randomized inaccuracy, based on
     // current coordinates. Bullet initialized halfway down the alien on the left side
     public void fireBullet(Sprite s) {
-        projectiles.add(new AlienBullet(bulletBitmapData, x, y + (int) (getHeight() * 0.5),
+        projectiles.add(new AlienBullet(
+                bulletBitmapData,
+                x,
+                y + (int) (getHeight() * 0.5),
                 s.getHitboxCenter().getX(),
-                s.getHitboxCenter().getY() + (random.nextBoolean() ? -1 : +1) * random.nextInt(50)));
+                s.getHitboxCenter().getY() + (random.nextBoolean() ? -1 : +1) * random.nextInt(50),
+                gameContext
+        ));
     }
 
     @Override

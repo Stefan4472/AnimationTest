@@ -27,13 +27,7 @@ import plainsimple.spaceships.R;
 
 public class GameEngine implements IGameController, Spaceship.SpaceshipListener {
 
-    // Reference to app context
-    private Context context;
     private GameContext gameContext;
-
-    // Playable screen dimensions
-    public int gameWidthPx;
-    public int gameHeightPx;
 
     // Represents the level of difficulty. Increases non-linearly over time
     private double currDifficulty;
@@ -47,8 +41,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     // Stores the amount of time the current run has lasted
 //    private GameTimer gameTimer;
 
-    // Number of points that a coin is worth
-    public static final int COIN_VALUE = 100;
+
     // The player's spaceship
 //    private Spaceship spaceship;
 
@@ -185,10 +178,10 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
 
     private void updateSpaceship() {
         // move spaceship to initial position
-        if (!gameStarted && spaceship.getX() > gameWidthPx / 4) {
+        if (!gameStarted && spaceship.getX() > gameContext.getGameWidthPx() / 4) {
             gameTimer.start();
             gameStarted = true;
-            spaceship.setX(gameWidthPx / 4);
+            spaceship.setX(gameContext.getGameWidthPx() / 4);
             spaceship.setSpeedX(0);
             spaceship.setControllable(true);
             if (gameEventsListener != null) {
@@ -231,19 +224,24 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
 
     // initializes all objects required to start a new game
     private void initNewGame() {
-        // get spaceship image data from cache
-        BitmapData ship_data = gameContext.bitmapCache.getData(BitmapID.SPACESHIP);
+        // Get spaceship image data from cache
+        BitmapData ship_data = gameContext.getBitmapCache().getData(BitmapID.SPACESHIP);
 
         // initialize spaceship just off the screen centered vertically
-        spaceship = new Spaceship(-ship_data.getWidth(), gameHeightPx / 2 - ship_data.getHeight() / 2, context);
-        // set spaceship equipment based on settings in GameActivity
-        spaceship.setCannonType(CannonType.CANNON_0);
-        spaceship.setRocketType(RocketType.ROCKET_0);
-        spaceship.setArmorType(ArmorType.ARMOR_0);
+        spaceship = new Spaceship(
+                -ship_data.getWidth(),
+                gameContext.getGameHeightPx() / 2 - ship_data.getHeight() / 2,
+                gameContext
+        );
         // set this class to receive Spaceship events
         spaceship.setListener(this);
 
-        gameDriver = new GameDriver(context, gameWidthPx, gameHeightPx, gameMode.getLevelData());
+        gameDriver = new GameDriver(
+                gameContext,
+                gameContext.getGameWidthPx(),
+                gameContext.getGameHeightPx(),
+                gameMode.getLevelData()
+        );
         gameFinished = false;
         score = 0;
     }
@@ -252,7 +250,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     public void restartGame() {
         spaceship.reset();
         spaceship.setX(-spaceship.getWidth());
-        spaceship.setY(gameHeightPx / 2 - spaceship.getHeight() / 2);
+        spaceship.setY(gameContext.getGameHeightPx() / 2 - spaceship.getHeight() / 2);
         gameDriver.reset();
         gameTimer.reset();
         spaceshipDestroyed = false;

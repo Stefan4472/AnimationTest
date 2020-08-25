@@ -3,6 +3,7 @@ package com.plainsimple.spaceships.helper;
 import android.content.Context;
 import android.graphics.Canvas;
 
+import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.sprite.Alien;
 import com.plainsimple.spaceships.sprite.Asteroid;
 import com.plainsimple.spaceships.sprite.Coin;
@@ -20,7 +21,8 @@ import java.util.List;
 
 public class GameDriver {
 
-    private Context context;
+    private GameContext gameContext;
+
     // grid of tile ID's instructing which sprites to initialize on screen
     private byte[][] tiles;
     // used to generate tiles based on pre-defined settings
@@ -54,8 +56,8 @@ public class GameDriver {
 
     // creates GameDriver using a copy of context, the screen dimensions, and a String defining the
     // map to be used.
-    public GameDriver(Context context, int screenW, int screenH, String mapString) {
-        this.context = context;
+    public GameDriver(GameContext gameContext, int screenW, int screenH, String mapString) {
+        this.gameContext = gameContext;
         this.screenW = screenW;
         this.screenH = screenH;
         tileWidth = screenH / ROWS;
@@ -84,7 +86,7 @@ public class GameDriver {
                         num_cols++;
                         tiles[i][col] = TileGenerator.EMPTY;
                     }
-                    obstacles.add(new Obstacle(screenW + getWOffset(), i * tileWidth, num_cols * tileWidth, tileWidth));
+                    obstacles.add(new Obstacle(screenW + getWOffset(), i * tileWidth, num_cols * tileWidth, tileWidth, gameContext));
 
                 } else if (tiles[i][mapTileCounter] != TileGenerator.EMPTY) {
                     addMapTile(tiles[i][mapTileCounter], screenW + getWOffset(), i * tileWidth, (float) scrollSpeed, spaceship);
@@ -138,13 +140,13 @@ public class GameDriver {
     private void addMapTile(int tileID, float x, float y, float scrollSpeed, Spaceship spaceship) throws IndexOutOfBoundsException {
         switch (tileID) {
             case TileGenerator.COIN:
-                coins.add(new Coin(x, y, context));
+                coins.add(new Coin(x, y, gameContext));
                 break;
             case TileGenerator.ALIEN:
-                aliens.add(new Alien(x, y,scrollSpeed, spaceship, difficulty, context));
+                aliens.add(new Alien(x, y,scrollSpeed, spaceship, difficulty, gameContext));
                 break;
             case TileGenerator.ASTEROID: // todo: separate list for asteroids? could bounce off one another
-                obstacles.add(new Asteroid(x, y, scrollSpeed, difficulty, context));
+                obstacles.add(new Asteroid(x, y, scrollSpeed, difficulty, gameContext));
                 break;
             case TileGenerator.END_GAME:
 
@@ -154,18 +156,18 @@ public class GameDriver {
         }
     }
 
-    public void draw(Canvas canvas, Context context) { // todo: causes concurrentmodificationexception on game restart. Use iterators?
+    public void draw(Canvas canvas, GameContext gameContext) { // todo: causes concurrentmodificationexception on game restart. Use iterators?
         for (Sprite o : obstacles) {
-            GameEngineUtil.drawSprite(o, canvas, context);
+            GameEngineUtil.drawSprite(o, canvas, gameContext);
         }
         for (Sprite c : coins) {
-            GameEngineUtil.drawSprite(c, canvas, context);
+            GameEngineUtil.drawSprite(c, canvas, gameContext);
         }
         for (Sprite a : aliens) {
-            GameEngineUtil.drawSprite(a, canvas, context);
+            GameEngineUtil.drawSprite(a, canvas, gameContext);
         }
         for (Sprite a : alienProjectiles) {
-            GameEngineUtil.drawSprite(a, canvas, context);
+            GameEngineUtil.drawSprite(a, canvas, gameContext);
         }
     }
 

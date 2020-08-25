@@ -1,5 +1,6 @@
 package com.plainsimple.spaceships.sprite;
 
+import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
@@ -25,8 +26,8 @@ public class AlienBullet extends Sprite {
     // DrawParam used to draw the AlienBullet
     private DrawImage DRAW_BULLET;
 
-    public AlienBullet(BitmapData bitmapData, float x, float y, float targetX, float targetY) { // todo: damage as a parameter?
-        super(x, y, bitmapData);
+    public AlienBullet(BitmapData bitmapData, float x, float y, float targetX, float targetY, GameContext gameContext) { // todo: damage as a parameter?
+        super(x, y, bitmapData, gameContext);
         bitmapId = bitmapData.getId();
         // DrawParam used to draw the AlienBullet
         DRAW_BULLET = new DrawImage(bitmapId);

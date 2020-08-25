@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+import com.plainsimple.spaceships.engine.GameContext;
+
 /**
  * Stores instructions for drawing a Rectangle
  */
@@ -47,7 +49,7 @@ public class DrawRect implements DrawParams {
         this.color = color;
     }
     @Override
-    public void draw(Canvas canvas, Context context) {
+    public void draw(Canvas canvas, GameContext gameContext) {
         paint.setColor(color);
         paint.setStyle(style);
         paint.setStrokeWidth(strokeWidth);

@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRect;
 import com.plainsimple.spaceships.sprite.Alien;
@@ -61,15 +62,15 @@ public class GameEngineUtil {
     private static List<DrawParams> drawParams;
     private static DrawRect DRAW_HITBOX = new DrawRect(debugPaintRed.getColor(), debugPaintRed.getStyle(), debugPaintRed.getStrokeWidth());
     // draws sprite onto canvas using sprite drawing params and BitmapCache
-    public static void drawSprite(Sprite sprite, Canvas canvas, Context context) {
+    public static void drawSprite(Sprite sprite, Canvas canvas, GameContext gameContext) {
         drawParams = sprite.getDrawParams();
         for (DrawParams p : drawParams) {
-            p.draw(canvas, context);
+            p.draw(canvas, gameContext);
         }
         // draw hitbox (debugging)
         if (sprite.collides()) {
             DRAW_HITBOX.setBounds(sprite.getHitBox());
-            DRAW_HITBOX.draw(canvas, context);
+            DRAW_HITBOX.draw(canvas, gameContext);
         }
     }
 

@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 
+import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRect;
 import com.plainsimple.spaceships.helper.FloatRect;
@@ -25,8 +26,8 @@ public class Obstacle extends Sprite {
     // color of obstacle
     private int color = Color.rgb(103, 103, 103);
 
-    public Obstacle(float x, float y, int width, int height) {
-        super(x, y, width, height);
+    public Obstacle(float x, float y, int width, int height, GameContext gameContext) {
+        super(x, y, width, height, gameContext);
         hitBox = new FloatRect(x, y, x + getWidth(), y + getHeight());
         hp = 5;
     }

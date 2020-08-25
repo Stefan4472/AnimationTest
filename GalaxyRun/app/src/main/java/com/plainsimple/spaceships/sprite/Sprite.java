@@ -4,7 +4,9 @@ package com.plainsimple.spaceships.sprite;
 
 import android.util.Log;
 
+import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.helper.BitmapData;
+import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.helper.Point2D;
@@ -16,6 +18,8 @@ import java.util.*;
  * Sprite parent class.
  */
 public abstract class Sprite { // todo: figure out public vs. protected
+
+    protected GameContext gameContext;
 
     // coordinates of sprite
     protected float x;
@@ -52,22 +56,26 @@ public abstract class Sprite { // todo: figure out public vs. protected
     // random number generator
     protected static final Random random = new Random();
 
-    public Sprite(float x, float y) {
-        this(x, y, 0, 0);
-    }
-
-    public Sprite(float x, float y, int width, int height) {
+    public Sprite(float x, float y, int width, int height, GameContext gameContext) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.gameContext = gameContext;
         hitBox = new FloatRect(0, 0, 0, 0);
     }
 
-    public Sprite(float x, float y, BitmapData bitmapData) {
-        this(x, y, bitmapData.getWidth(), bitmapData.getHeight());
+    public Sprite(float x, float y, GameContext gameContext) {
+        this(x, y, 0, 0, gameContext);
     }
 
+    public Sprite(float x, float y, BitmapData bitmapData, GameContext gameContext) {
+        this(x, y, bitmapData.getWidth(), bitmapData.getHeight(), gameContext);
+    }
+
+    public Sprite(float x, float y, BitmapID bitmapID, GameContext gameContext) {
+        this(x, y, gameContext.getBitmapCache().getData(bitmapID), gameContext);
+    }
     // update/handle any actions sprite takes
     public abstract void updateActions();
 

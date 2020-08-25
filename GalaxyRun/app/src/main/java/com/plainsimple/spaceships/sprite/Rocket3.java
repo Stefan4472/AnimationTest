@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.sprite;
 
 import android.content.Context;
 
+import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapID;
@@ -26,14 +27,14 @@ public class Rocket3 extends Rocket {
     private DrawImage DRAW_EXHAUST;
     private DrawImage DRAW_EXPLOSION;
 
-    protected Rocket3(Context context, float x, float y) {
-        super(BitmapCache.getData(BITMAP_ID, context), x, y);
+    protected Rocket3(GameContext gameContext, float x, float y) {
+        super(gameContext.getBitmapCache().getData(BITMAP_ID), x, y, gameContext);
         speedX = 0.015f;
         hp = 20;
         hitBox = new FloatRect(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
 
-        move = AnimCache.get(BitmapID.ROCKET_MOVE, context);
-        explode = AnimCache.get(BitmapID.EXPLOSION_1, context);
+        move = gameContext.getAnimCache().get(BitmapID.ROCKET_MOVE);
+        explode = gameContext.getAnimCache().get(BitmapID.EXPLOSION_1);
 
         DRAW_ROCKET = new DrawImage(BITMAP_ID);
         DRAW_EXHAUST = new DrawImage(move.getBitmapID());
