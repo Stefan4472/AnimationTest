@@ -40,12 +40,27 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     // Score gained per second of survival. Calculated as a function
     // of `currDifficulty`
     private double scorePerSecond;
-    // Stores the amount of time the current run has lasted
-//    private GameTimer gameTimer;
 
+    // TODO: NOTE: IN PROGRESS OF REWRITING OLD LOGIC
+    // defines this game's GameMode  TODO: SIMPLIFY
+    private static final String ENDLESS_0_STR = "ENDLESS_0" + ":" + "Endless:" + "EASY"
+            + ":" + 0 + ":" + 2000 + ":" + 4000 + ":" + 7000 + ":" + 12000 + ":" + 25000 + ":" +
+            "Survive! The farther you go the harder it gets and the more coins and points you'll earn!"
+            + ":" + "loop(INFINITE,genRandom)";
+    private GameMode gameMode = GameMode.fromString(ENDLESS_0_STR);
+    // tracks duration of this game (non-paused)
+    private GameTimer gameTimer = new GameTimer();
+    // runs sprite generation and updating
+    private GameDriver gameDriver;
+    // speed of sprites scrolling across the screen (must be negative!)
+    private double scrollSpeed = -0.0025f;
+    // The player's paceship
+    private Spaceship spaceship;
+    // relative speed of background scrolling to foreground scrolling
+    public static final float SCROLL_SPEED_CONST = 0.4f;
+    // number of frames that must pass before score per frame is increased
+    public static final float SCORING_CONST = 800;
 
-    // The player's spaceship
-//    private Spaceship spaceship;
 
     // Represents the possible states that the game can be in
     private enum GameState {
@@ -65,15 +80,22 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
                 appContext, gameWidthPx, gameHeightPx);
         animCache = new AnimCache(appContext, bitmapCache);
 
-        // Create Spaceship and init just off the screen, centered vertically
-        BitmapData ship_data = gameContext.getBitmapCache().getData(BitmapID.SPACESHIP);
-        spaceship = new Spaceship(
-                -ship_data.getWidth(),
-                gameContext.getGameHeightPx() / 2 - ship_data.getHeight() / 2,
-                gameContext
+        // Create GameContext
+        gameContext = new GameContext(
+                appContext,
+                bitmapCache,
+                animCache,
+                gameWidthPx,
+                gameHeightPx
         );
+
+        // Create Spaceship and init just off the screen, centered vertically
+        spaceship = new Spaceship(0, 0, gameContext);  // TODO: START OFF INVISIBLE
         // Set this class to receive Spaceship events
         spaceship.setListener(this);
+
+        // TODO: ANY WAY WE CAN PUT THE SPACESHIP INTO THE CONTEXT CONSTRUCTOR?
+        gameContext.setPlayerSprite(spaceship);
 
         gameDriver = new GameDriver(
                 gameContext,
@@ -82,15 +104,21 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
                 gameMode.getLevelData()
         );
 
-        // Create GameContext
-        gameContext = new GameContext(
-                appContext,
-                bitmapCache,
-                animCache,
-                spaceship,
-                gameWidthPx,
-                gameHeightPx
-        );
+        // Set state for new, un-started game
+        currState = GameState.FINISHED;
+    }
+
+//    private void initializeGame() {
+//
+//
+//    }
+
+    private void resetGame() {
+        startGame();
+    }
+
+    public void startGame() {
+        enterStartingState();
     }
 
     /* Start implementation of IGameController interface. */
@@ -137,149 +165,159 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     }
 
     public int getPlayerHealth() {
-        return 100; // TODO
+        return spaceship.getHP();
     }
-
-    /* Start old logic, which will be gradually refactored/rewritten */
-    private float difficulty;
-    // whether game components have been initialized
-    private boolean initialized;
-    // whether game has started (spaceship has reached starting position)
-    private boolean gameStarted;
-    // whether the spaceship has been destroyed
-    private boolean spaceshipDestroyed;
-    // whether game is completely finished and screen has come to a halt
-    private boolean gameFinished;
-    // defines this game's GameMode
-    private GameMode gameMode;
-    // tracks duration of this game (non-paused)
-    private GameTimer gameTimer = new GameTimer();
-    // runs sprite generation and updating
-    public GameDriver gameDriver;
-    // speed of sprites scrolling across the screen (must be negative!)
-    public static float scrollSpeed = -0.0025f;
-    // spaceship
-    public Spaceship spaceship;
-    // relative speed of background scrolling to foreground scrolling
-    public static final float SCROLL_SPEED_CONST = 0.4f;
-    // number of frames that must pass before score per frame is increased
-    public static final float SCORING_CONST = 800;
-
-    // this game's level of difficulty (default to EASY)
-    private Difficulty difficultyLevel = Difficulty.EASY;
-
-    // available difficulty levels with their difficulty increments per frame
-    public enum Difficulty {
-        EASY(0.6f), MEDIUM(1.0f), HARD(1.4f);
-
-        private float perFrameIncrease;
-        public float getPerFrameIncrease() {
-            return perFrameIncrease;
-        }
-        Difficulty(float perFrameIncrease) {
-            this.perFrameIncrease = perFrameIncrease;
-        }
-    }
-
-    // listener passed in by GameActivity
-    private IGameEventListener gameEventsListener;
 
     // updates all game logic
     // adds any new sprites and generates a new set of sprites if needed
     public void update() {
-        try {
-            TimeUnit.MILLISECONDS.sleep(15);
-        } catch (InterruptedException e) {
+        // Do nothing if paused
+        if (isPaused) {
+            return;
+        }
+
+        // TODO: USE TIME, NOT NUMBER OF FRAMES, FOR EVERYTHING!
+        // TODO: DETERMINE MS SINCE LAST UPDATE
+
+        long run_time = gameTimer.getMsTracked();
+        currDifficulty = calcDifficulty(run_time);
+        scrollSpeed = calcScrollSpeed();
+
+        // Debug prints, every 100 frames
+        if (numUpdates != 0 && numUpdates % 100 == 0) {
+            Log.d("GameEngine", String.format(
+                    "Spaceship at %f, %f", spaceship.getX(), spaceship.getY()
+            ));
+            Log.d("GameEngine", String.format(
+                    "Game runtime = %d ms", run_time
+            ));
+        }
+
+        // TODO: THIS IS WHERE WE RUN OUR STATE-CHANGE-DETECTION LOGIC
+        switch (currState) {
+            case STARTING: {
+                // Starting position reached
+                if (spaceship.getX() > gameContext.getGameWidthPx() / 4) {
+                    enterInProgressState();
+                }
+            }
+            case IN_PROGRESS: {
+                // Increment score
+                score += 1 + currDifficulty / SCORING_CONST;
+            }
+            case PLAYER_KILLED: {
+                // TODO: DON'T WE NEED TO CHECK FOR PLAYER_INVISIBLE FIRST, THEN SLOW DOWN, THEN MARK FINISHED?
+                // TODO: I THINK WE NEED A 'SLOWING_DOWN` STATE
+                // As soon as the Player is killed, the scrollSpeed
+                // slows down to zero.
+                // Go to `FINISHED` once scrollSpeed hits near-zero.
+                if (scrollSpeed > -0.0001f) {
+                    setState(GameState.FINISHED);
+                }
+            }
+            case FINISHED: {
+
+            }
 
         }
-//        if (gameStarted) {
-//            if (!spaceshipDestroyed) {
-//                // increment difficulty by amount specified in difficultyLevel
-//                difficulty += difficultyLevel.getPerFrameIncrease();
-//                score += 1 + difficulty / SCORING_CONST;
-//            }
-//            updateScrollSpeed();
+
+        updateSpaceship();
+        gameDriver.update((int) currDifficulty, scrollSpeed, spaceship);
+        spaceship.updateAnimations();
+        numUpdates++;
+
+    }
+
+    private void enterStartingState() {
+        currDifficulty = 0;
+        score = 0;
+        scorePerSecond = 0.0;
+
+        spaceship.reset();
+        gameDriver.reset();
+        gameTimer.reset();
+
+        // Move spaceship just off the left of the screen, centered vertically
+        BitmapData ship_data = gameContext.getBitmapCache().getData(BitmapID.SPACESHIP);
+        spaceship.setX(-ship_data.getWidth());
+        spaceship.setY(gameContext.getGameHeightPx() / 2 - ship_data.getHeight() / 2);
+
+        // Make non-controllable
+        spaceship.setControllable(false);
+        // Set speed to slowly fly onto screen
+        spaceship.setSpeedX(0.01f);
+
+        gameTimer.start();
+        setState(GameState.STARTING);
+    }
+
+    private void enterInProgressState() {
+        spaceship.setControllable(true);
+        spaceship.setSpeedX(0);
+        spaceship.setX(gameContext.getGameWidthPx() / 4);
+        setState(GameState.IN_PROGRESS);
+        // TODO: START OBSTACLE GENERATION?
+    }
+
+    private void enterKilledState() {
+        setState(GameState.PLAYER_KILLED);
+    }
+
+    private void enterFinishedState() {
+        setState(GameState.FINISHED);
+    }
+
+    private void setState(GameState newState) {
+        Log.d("GameEngine", String.format("Entering state %s", newState.toString()));
+        // TODO: ENQUEUE EVENT via SETSTATE() METHOD
+//        if (gameEventsListener != null) {
+//            gameEventsListener.onGameStarted();
 //        }
-//        updateSpaceship();
-//        gameDriver.update((int) difficulty, scrollSpeed, spaceship);
-//        spaceship.updateAnimations();
     }
 
     private void updateSpaceship() {
-        // move spaceship to initial position
-        if (!gameStarted && spaceship.getX() > gameContext.getGameWidthPx() / 4) {
-            gameTimer.start();
-            gameStarted = true;
-            spaceship.setX(gameContext.getGameWidthPx() / 4);
-            spaceship.setSpeedX(0);
-            spaceship.setControllable(true);
-            if (gameEventsListener != null) {
-                gameEventsListener.onGameStarted();
-            }
-        }
         spaceship.updateSpeeds();
         spaceship.move();
         spaceship.updateActions();
+        spaceship.updateAnimations();
         GameEngineUtil.updateSprites(spaceship.getProjectiles());
     }
 
-    // calculates scrollspeed based on difficulty
-    public void updateScrollSpeed() {
-        // spaceship destroyed: slow down scrolling to a halt and fire onGameFinished when scrollspeed = 0
-        if (spaceshipDestroyed) {
-            scrollSpeed /= 1.03f;
-            if (scrollSpeed > -0.0001f) {
-                gameFinished = true;
-                Log.d("GameView.java", "OnGameFinished()");
-                gameEventsListener.onGameFinished();
-            }
-        } else { // normal scrolling progression
+    /*
+    Calculate difficulty "magic number" based on how long the game
+    has run.
+     */
+    private static double calcDifficulty(long gameRuntimeMs) {
+        // TODO: THIS IS JUST A PLACEHOLDER
+        return gameRuntimeMs / 1000;
+//        difficulty += 0.6;
+    }
+
+    /*
+    Calculates "scrollspeed" based on current scroll speed, game state,
+    and difficulty.
+    TODO: AGAIN, NEED TO BASE ON TIME PASSED, NOT NUMBER OF FRAMES
+     */
+    private double calcScrollSpeed() {
+        // Spaceship destroyed: slow down scrolling to a halt.
+        if (currState == GameState.PLAYER_KILLED) {
+            return scrollSpeed / 1.03f;
+        } else { // Normal scrolling progression
             //scrollSpeed = MAX_SCROLL_SPEED * Math.atan(difficulty / 500.0f) * 2 / Math.PI;
-            scrollSpeed = (float) (-Math.log(difficulty + 1) / 600);
+//            scrollSpeed = (float) (-Math.log(difficulty + 1) / 600);
+            return currDifficulty / 10;
         }
     }
 
-    @Override // handle spaceship changing health (send back to GameEventsListener)
+    // TODO: REMOVE
+    @Override
     public void onHealthChanged(int change) {
         Log.d("GameView.java", "Received onHealthChanged for " + change);
-        gameEventsListener.onHealthChanged(change);
     }
 
     @Override // handle spaceship becoming invisible
     public void onInvisible() {
         Log.d("GameView.java", "Received onInvisible");
-        spaceshipDestroyed = true;
-    }
-
-    // resets all elements and fields so that a new game can begin
-    public void restartGame() {
-        spaceship.reset();
-        spaceship.setX(-spaceship.getWidth());
-        spaceship.setY(gameContext.getGameHeightPx() / 2 - spaceship.getHeight() / 2);
-        gameDriver.reset();
-        gameTimer.reset();
-        spaceshipDestroyed = false;
-        gameStarted = false;
-        gameFinished = false;
-        difficulty = 0;
-        score = 0;
-    }
-
-    // sets difficultyLevel of the game
-    public void setDifficultyLevel(Difficulty difficultyLevel) {
-        this.difficultyLevel = difficultyLevel;
-        Log.d("GameView", "Difficulty Level set to " + difficultyLevel);
-    }
-
-    public void setGameEventsListener(IGameEventListener gameEventsListener) {
-        this.gameEventsListener = gameEventsListener;
-    }
-
-    public void incrementScore(int toAdd) {
-        score += toAdd;
-    }
-
-    public static float getScrollSpeed() {
-        return scrollSpeed;
+        enterFinishedState();
     }
 }

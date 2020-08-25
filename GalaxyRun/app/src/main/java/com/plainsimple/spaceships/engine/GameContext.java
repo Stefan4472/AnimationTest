@@ -23,13 +23,11 @@ public class GameContext {
             Context appContext,
             BitmapCache bitmapCache,
             AnimCache animCache,
-            Sprite playerSprite,
             int gameWidthPx,
             int gameHeightPx) {
         this.appContext = appContext;
         this.bitmapCache = bitmapCache;
         this.animCache = animCache;
-        this.playerSprite = playerSprite;
         this.gameWidthPx = gameWidthPx;
         this.gameHeightPx = gameHeightPx;
     }
@@ -48,6 +46,10 @@ public class GameContext {
 
     public Sprite getPlayerSprite() {
         return playerSprite;
+    }
+
+    public void setPlayerSprite(Sprite playerSprite) {
+        this.playerSprite = playerSprite;
     }
 
     public int getGameWidthPx() {

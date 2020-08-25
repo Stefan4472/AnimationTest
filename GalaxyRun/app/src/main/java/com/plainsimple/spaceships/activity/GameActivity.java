@@ -164,6 +164,7 @@ public class GameActivity extends FragmentActivity implements
         mGameRunner.start();
         mGameRunner.prepareHandler();
         startTime = System.currentTimeMillis();
+        gameEngine.startGame();
         // Call the first game update
         mGameRunner.queueUpdate();
         initialized = true;

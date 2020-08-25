@@ -23,8 +23,6 @@ import static com.plainsimple.spaceships.sprite.Spaceship.Direction.UP;
  */
 public class Spaceship extends Sprite {
 
-    private GameContext gameContext;
-
     // SpriteAnimations used
     private SpriteAnimation move;
     private SpriteAnimation fireRocket;
