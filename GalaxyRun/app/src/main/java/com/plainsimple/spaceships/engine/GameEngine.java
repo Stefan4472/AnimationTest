@@ -60,6 +60,10 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         FINISHED
     }
 
+    // Number of points that a coin is worth
+    public static final int COIN_VALUE = 100;
+    public static final int STARTING_PLAYER_HEALTH = 100;
+
     public GameEngine(Context appContext, int gameWidthPx, int gameHeightPx) {
         // Create BitmapCache
         bitmapCache = new BitmapCache(
@@ -92,8 +96,6 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
                 gameWidthPx,
                 gameHeightPx
         );
-
-        // TODO: INITIALIZATION LOGIC?
     }
 
     /* Start implementation of IGameController interface. */
@@ -139,10 +141,6 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
 
     }
 
-    public int getPlayerStartingHealth() {
-        return 100; // TODO
-    }
-
     public int getPlayerHealth() {
         return 100; // TODO
     }
@@ -161,8 +159,6 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     private GameMode gameMode;
     // tracks duration of this game (non-paused)
     private GameTimer gameTimer = new GameTimer();
-    // selected fire mode (bullet or rocket)
-    private Spaceship.FireMode selectedFireMode = Spaceship.FireMode.BULLET;
     // runs sprite generation and updating
     public GameDriver gameDriver;
     // speed of sprites scrolling across the screen (must be negative!)

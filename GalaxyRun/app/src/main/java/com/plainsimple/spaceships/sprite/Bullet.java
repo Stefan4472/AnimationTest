@@ -1,9 +1,6 @@
 package com.plainsimple.spaceships.sprite;
 
-import android.content.Context;
-
 import com.plainsimple.spaceships.engine.GameContext;
-import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.store.CannonType;
 import com.plainsimple.spaceships.helper.DrawImage;
@@ -17,16 +14,19 @@ import java.util.List;
  */
 public class Bullet extends Sprite {
 
-    private BitmapID bitmapID;
+    private static final BitmapID BITMAP_ID = BitmapID.BULLET_0;
     private DrawImage DRAW_BULLET;
 
-    public Bullet(float x, float y, GameContext gameContext, CannonType cannonType) {
-        super(x, y, cannonType.getDrawableId(), gameContext);
+    public static final int DAMAGE = 5;
+    public static final int DELAY_FRAMES = 12;  // TODO: USE MILLISECOND DELAY INSTEAD
+    public static final float TRAVEL_SPEED = 0.01f;  // TODO: MAKE DOUBLE
+
+    public Bullet(float x, float y, GameContext gameContext) {
+        super(x, y, BITMAP_ID, gameContext);
         hitBox = new FloatRect(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
-        hp = cannonType.getDamage();
-        speedX = cannonType.getSpeedX();
-        bitmapID = cannonType.getDrawableId();
-        DRAW_BULLET = new DrawImage(bitmapID);
+        hp = DAMAGE;
+        speedX = TRAVEL_SPEED;
+        DRAW_BULLET = new DrawImage(BITMAP_ID);
     }
 
     @Override

@@ -181,7 +181,7 @@ public class GameActivity extends FragmentActivity implements
     private void resetUI() {
         assert(gameEngine != null);
         // Initialize healthbarView with the correct hp values
-        healthbarView.setFullHealth(gameEngine.getPlayerStartingHealth());
+        healthbarView.setFullHealth(GameEngine.STARTING_PLAYER_HEALTH);
         healthbarView.setCurrentHealth(gameEngine.getPlayerHealth());
     }
 

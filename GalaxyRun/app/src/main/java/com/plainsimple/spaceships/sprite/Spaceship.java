@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.engine.GameEngine;
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.ColorMatrixAnimator;
@@ -20,7 +21,6 @@ import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.stats.GameStats;
 import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.helper.SoundID;
-import com.plainsimple.spaceships.store.RocketType;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.util.ImageUtil;
 import com.plainsimple.spaceships.view.GameView;
@@ -55,27 +55,10 @@ public class Spaceship extends Sprite {
     // whether user has control over spaceship
     private boolean controllable;
 
-    // type of cannon Spaceship has (default to CANNON_0)
-    private CannonType cannonType = CannonType.CANNON_0;
-    // type of rocket Spaceship has (default to ROCKET_0)
-    private RocketType rocketType = RocketType.ROCKET_0;
-    // type of armor Spaceship has (default to ARMOR_0
-    private ArmorType armorType = ArmorType.ARMOR_0;
-
-    // available modes for Spaceship to fire (firing cannons, rockets, or nothing)
-    public enum FireMode {
-        BULLET, ROCKET, NONE;
-    }
-
-    // current setting Spaceship is in (defalut to not shooting)
-    private FireMode fireMode = FireMode.NONE;
-    // enforces Rocket firing pattern
-    private RocketManager rocketManager;
-    // number of frames spaceship has been in existence (used to determine when rockets can be fired)
-    private int frameCount;
     // number of frames elapsed since cannon was last fired
     private int lastFiredCannon;
-
+    // Is the player in the processes of shooting the cannons?
+    private boolean isShooting;
     // keeps track of fired bullets and rockets
     private List<Sprite> projectiles = new LinkedList<>();
 
@@ -120,14 +103,13 @@ public class Spaceship extends Sprite {
         DRAW_ROCKET_FIRED = new DrawImage(fireRocket.getBitmapID());
         DRAW_EXPLODE = new DrawImage(explode.getBitmapID());
 
-        hp = armorType.getHP();
+        hp = GameEngine.STARTING_PLAYER_HEALTH;
         hitBox = new FloatRect(x + getWidth() * 0.17f, y + getHeight() * 0.2f, x + getWidth() * 0.7f, y + getHeight() * 0.8f);
-        rocketManager = RocketManager.newInstance(rocketType);
 
         collides = true;
         speedX = 0.003f;
         move.start();
-        lastFiredCannon = cannonType.getDelay();
+        lastFiredCannon = Bullet.DELAY_FRAMES;
     }
 
     // resets spaceship to initial values
@@ -138,7 +120,7 @@ public class Spaceship extends Sprite {
         collides = true;
         controllable = false;
         terminate = false;
-        hp = armorType.getHP();
+        hp = GameEngine.STARTING_PLAYER_HEALTH;
         if (listener != null) {
             listener.onHealthChanged(hp);
         }
@@ -146,45 +128,17 @@ public class Spaceship extends Sprite {
         speedY = 0;
         projectiles.clear();
         move.start();
-        frameCount = 0;
-        lastFiredCannon = cannonType.getDelay();
-        rocketManager = RocketManager.newInstance(rocketType);
+        lastFiredCannon = Bullet.DELAY_FRAMES;
     }
-
-    // calls ImageUtil.renderSpaceship() to render a Bitmap of the Spaceship with its current
-    // cannonType and rocketType
-//    private Bitmap render() {
-//        return ImageUtil.renderSpaceship(context, getWidth(), getHeight(), cannonType, rocketType);
-//    }
 
     @Override
     public void updateActions() {
         lastFiredCannon++;
-        frameCount++;
 
         // fires cannons if in correct FireMode, has waited long enough, and is still alive
-        if (fireMode == FireMode.BULLET && lastFiredCannon >= cannonType.getDelay() && hp != 0) {
+        if (isShooting && lastFiredCannon >= Bullet.DELAY_FRAMES && hp != 0) {
             fireCannons();
             lastFiredCannon = 0;
-        } else if (fireMode == FireMode.ROCKET && hp != 0) {
-            // queue RocketManager for permission to fire
-            RocketManager.FireInstructions instructions = rocketManager.attemptFire(frameCount); // todo: force spaceship to fire on schedule in certain cases?
-
-            // fire left if allowed and increment ROCKETS_FIRED stat
-            if (instructions.fireLeft()) {
-                projectiles.add(Rocket.newInstance(gameContext, x + getWidth() * 0.80f, y + 0.29f * getHeight(), rocketType));
-//                GameView.currentStats.addTo(GameStats.ROCKETS_FIRED, 1);
-            }
-            // fire right if allowed and increment ROCKETS_FIRED stat
-            if (instructions.fireRight()) {
-                projectiles.add(Rocket.newInstance(gameContext, x + getWidth() * 0.80f, y + 0.65f * getHeight(), rocketType));
-//                GameView.currentStats.addTo(GameStats.ROCKETS_FIRED, 1);
-            }
-            // play sound and start animation if at least one rocket was fired
-            if (instructions.fireLeft() || instructions.fireRight()) {
-                fireRocket.start();
-//                GameActivity.playSound(ROCKET_SOUND);
-            }
         }
 
         // checks if explosion has played, in which case terminate should be set to true and onInvisible() called
@@ -199,8 +153,9 @@ public class Spaceship extends Sprite {
 
     // fires both cannons. Adds new instances of Bullet to projectiles, plays sound, and updates GameStats
     public void fireCannons() {
-        projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.28f * getHeight(), gameContext, cannonType));
-        projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.66f * getHeight(), gameContext, cannonType));
+        // TODO: DON'T WE NEED TO CHECK THAT WE CAN FIRE?
+        projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.28f * getHeight(), gameContext));
+        projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.66f * getHeight(), gameContext));
 //        GameActivity.playSound(BULLET_SOUND);
 //        GameView.currentStats.addTo(GameStats.CANNONS_FIRED, 2);
     }

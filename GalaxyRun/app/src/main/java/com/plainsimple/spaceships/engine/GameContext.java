@@ -18,9 +18,7 @@ public class GameContext {
     private int gameWidthPx;
     private int gameHeightPx;
 
-    // Number of points that a coin is worth
-    public static final int COIN_VALUE = 100;
-
+    // TODO: PROVIDE `ISINBOUNDS()` METHOD?
     public GameContext(
             Context appContext,
             BitmapCache bitmapCache,
