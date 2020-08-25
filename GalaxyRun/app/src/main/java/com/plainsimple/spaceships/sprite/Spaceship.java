@@ -1,29 +1,16 @@
 package com.plainsimple.spaceships.sprite;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.ColorMatrix;
 import android.util.Log;
 
-import com.plainsimple.spaceships.activity.GameActivity;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.GameEngine;
-import com.plainsimple.spaceships.helper.AnimCache;
-import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.ColorMatrixAnimator;
-import com.plainsimple.spaceships.helper.RocketManager;
-import com.plainsimple.spaceships.store.ArmorType;
 import com.plainsimple.spaceships.helper.BitmapID;
-import com.plainsimple.spaceships.store.CannonType;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
-import com.plainsimple.spaceships.stats.GameStats;
 import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
-import com.plainsimple.spaceships.util.ImageUtil;
-import com.plainsimple.spaceships.view.GameView;
 
 import java.util.LinkedList;
 import java.util.List;

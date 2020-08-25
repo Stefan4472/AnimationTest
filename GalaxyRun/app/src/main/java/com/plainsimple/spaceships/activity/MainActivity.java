@@ -17,7 +17,6 @@ import android.view.animation.AnimationUtils;
 
 import com.plainsimple.spaceships.helper.GameModeManager;
 import com.plainsimple.spaceships.stats.StatsManager;
-import com.plainsimple.spaceships.store.EquipmentManager;
 import com.plainsimple.spaceships.view.FontButton;
 import com.plainsimple.spaceships.view.FontTextView;
 
@@ -46,7 +45,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.mainscreen_layout);
 
         // initialize classes requiring Context to access SharedPreferences
-        EquipmentManager.init(this);
         GameModeManager.init(this);
         StatsManager.init(this);
 

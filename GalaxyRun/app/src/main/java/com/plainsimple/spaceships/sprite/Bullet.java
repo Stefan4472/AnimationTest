@@ -2,7 +2,6 @@ package com.plainsimple.spaceships.sprite;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.helper.BitmapID;
-import com.plainsimple.spaceships.store.CannonType;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.FloatRect;

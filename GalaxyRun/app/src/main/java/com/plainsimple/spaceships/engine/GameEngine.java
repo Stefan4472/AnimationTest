@@ -1,8 +1,6 @@
 package com.plainsimple.spaceships.engine;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.plainsimple.spaceships.helper.AnimCache;
@@ -13,9 +11,6 @@ import com.plainsimple.spaceships.helper.GameDriver;
 import com.plainsimple.spaceships.helper.GameMode;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.stats.GameTimer;
-import com.plainsimple.spaceships.store.ArmorType;
-import com.plainsimple.spaceships.store.CannonType;
-import com.plainsimple.spaceships.store.RocketType;
 import com.plainsimple.spaceships.util.GameEngineUtil;
 
 import java.util.concurrent.TimeUnit;
