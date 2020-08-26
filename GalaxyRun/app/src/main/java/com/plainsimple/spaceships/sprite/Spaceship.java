@@ -2,8 +2,10 @@ package com.plainsimple.spaceships.sprite;
 
 import android.util.Log;
 
+import com.plainsimple.spaceships.engine.EventID;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.GameEngine;
+import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.helper.ColorMatrixAnimator;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
@@ -45,8 +47,6 @@ public class Spaceship extends Sprite {
     private int lastFiredCannon;
     // Is the player in the processes of shooting the cannons?
     private boolean isShooting;
-    // keeps track of fired bullets and rockets
-    private List<Sprite> projectiles = new LinkedList<>();
 
     // available directions Spaceship can move in (up, down, or continue straight horizontally)
     public enum Direction {
@@ -112,18 +112,17 @@ public class Spaceship extends Sprite {
         }
         speedX = 0.003f;
         speedY = 0;
-        projectiles.clear();
         move.start();
         lastFiredCannon = Bullet.DELAY_FRAMES;
     }
 
     @Override
-    public void updateActions() {
+    public void updateActions(UpdateContext updateContext) {
         lastFiredCannon++;
 
         // fires cannons if in correct FireMode, has waited long enough, and is still alive
         if (isShooting && lastFiredCannon >= Bullet.DELAY_FRAMES && hp != 0) {
-            fireCannons();
+            fireCannons(updateContext);
             lastFiredCannon = 0;
         }
 
@@ -137,19 +136,19 @@ public class Spaceship extends Sprite {
         }
     }
 
-    // fires both cannons. Adds new instances of Bullet to projectiles, plays sound, and updates GameStats
-    public void fireCannons() {
+    private void fireCannons(UpdateContext updateContext) {
         // TODO: DON'T WE NEED TO CHECK THAT WE CAN FIRE?
-        projectiles.add(gameContext.createBullet(
+        updateContext.createdChildren.push(gameContext.createBullet(
                 x + getWidth() * 0.78f,
                 y + 0.28f * getHeight()
         ));
-        projectiles.add(gameContext.createBullet(
+        updateContext.createdChildren.push(gameContext.createBullet(
                 x + getWidth() * 0.78f,
                 y + 0.66f * getHeight()
         ));
-//        GameActivity.playSound(BULLET_SOUND);
-//        GameView.currentStats.addTo(GameStats.CANNONS_FIRED, 2);
+        updateContext.createdSounds.push(BULLET_SOUND);
+        updateContext.createdEvents.push(EventID.BULLET_FIRED);
+        updateContext.createdEvents.push(EventID.BULLET_FIRED);
     }
 
     // updates the direction the Spaceship is moving in
@@ -257,10 +256,6 @@ public class Spaceship extends Sprite {
                 drawQueue.push(DRAW_EXPLODE);
             }
         }
-    }
-
-    public List<Sprite> getProjectiles() {
-        return projectiles;
     }
 
     public void setControllable(boolean controllable) {

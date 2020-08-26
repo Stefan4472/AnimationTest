@@ -2,7 +2,9 @@ package com.plainsimple.spaceships.sprite;
 
 import android.content.Context;
 
+import com.plainsimple.spaceships.engine.EventID;
 import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
@@ -40,8 +42,6 @@ public class Alien extends Sprite {
     private int framesSinceLastBullet = 0;
     // number of bullets left alien can fire
     private int bulletsLeft;
-
-    private List<Sprite> projectiles = new LinkedList<>();
 
     // frames since alien was constructed
     // used for calculating trajectory
@@ -105,31 +105,36 @@ public class Alien extends Sprite {
     }
 
     @Override
-    public void updateActions() {
+    public void updateActions(UpdateContext updateContext) {
         // terminate after explosion or if out of bounds
         if (explodeAnimation.hasPlayed() || !isInBounds()) {
             terminate = true;
-            // update current GameStats to reflect an Alien Kill
-//            GameView.currentStats.addTo(GameStats.ALIENS_KILLED, 1);
+            updateContext.createdEvents.push(EventID.ALIEN_DIED);
         } else {
             framesSinceLastBullet++;
             // rules for firing: alien has waited long enough, spaceship is alive, alien
             // has bullets left to fire, and alien is on right half of the screen.
             // To slightly randomize fire rate there is also only a 30% chance it will fire
             // in this frame, even if all conditions are met
-//            if (framesSinceLastBullet >= bulletDelay && !spaceship.terminate() && bulletsLeft > 0 && getP(0.3f)
-//                    && x > GameView.screenW / 2) {
-//                fireBullet(spaceship);
-//                framesSinceLastBullet = 0;
-//                bulletsLeft--;
-//            }
+            if (canFire()) {
+                fireBullet(spaceship, updateContext);
+                framesSinceLastBullet = 0;
+                bulletsLeft--;
+            }
         }
     }
 
+    private boolean canFire() {
+        return framesSinceLastBullet >= bulletDelay && !
+                spaceship.terminate() &&
+                bulletsLeft > 0 &&
+                getP(0.3f) &&
+                x > gameContext.getGameWidthPx() / 2;
+    }
     // fires bullet at sprite with small randomized inaccuracy, based on
     // current coordinates. Bullet initialized halfway down the alien on the left side
-    public void fireBullet(Sprite s) {
-        projectiles.add(gameContext.createAlienBullet(
+    public void fireBullet(Sprite s, UpdateContext updateContext) {
+        updateContext.createdChildren.push(gameContext.createAlienBullet(
                 bulletBitmapData,
                 x,
                 y + (int) (getHeight() * 0.5),
@@ -206,18 +211,4 @@ public class Alien extends Sprite {
             drawQueue.push(DRAW_EXPLOSION);
         }
     }
-
-    public List<Sprite> getProjectiles() {
-        return projectiles;
-    }
-
-    public List<Sprite> getAndClearProjectiles() {
-        List<Sprite> copy = new LinkedList<>();
-        for(Sprite p : projectiles) {
-            copy.add(p);
-        }
-        projectiles.clear();
-        return copy;
-    }
-
 }

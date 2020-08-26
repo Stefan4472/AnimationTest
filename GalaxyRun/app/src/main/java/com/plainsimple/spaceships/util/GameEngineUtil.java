@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRect;
 import com.plainsimple.spaceships.sprite.Alien;
@@ -45,20 +46,23 @@ public class GameEngineUtil {
     // if terminate = true after all updating. Note: sprites
     // must take care of their own terminate logic. Collisions
     // are not tested in this method.
-    public static void updateSprites(List<Sprite> toUpdate) {
+    public static void updateSprites(List<Sprite> toUpdate, UpdateContext updateContext) {
         Iterator<Sprite> i = toUpdate.iterator(); // todo: get all sprites together, collisions, etc.
         while(i.hasNext()) {
-            Sprite s = i.next();
-            s.updateActions();
-            s.updateSpeeds();
-            s.move();
-            s.updateAnimations();
-            if(s.terminate()) {
+            Sprite sprite = i.next();
+            updateSprite(sprite, updateContext);
+            if(sprite.terminate()) {
                 i.remove();
             }
         }
     }
 
+    public static void updateSprite(Sprite sprite, UpdateContext updateContext) {
+        sprite.updateSpeeds();
+        sprite.move();
+        sprite.updateActions(updateContext);
+        sprite.updateAnimations();
+    }
     private static List<DrawParams> drawParams;
     private static DrawRect DRAW_HITBOX = new DrawRect(debugPaintRed.getColor(), debugPaintRed.getStyle(), debugPaintRed.getStrokeWidth());
     // draws sprite onto canvas using sprite drawing params and BitmapCache
@@ -73,15 +77,6 @@ public class GameEngineUtil {
 //            DRAW_HITBOX.draw(canvas, gameContext);
 //        }
 //    }
-
-    // goes through sprites, casts each to Alien and uses getAndClearProjectiles
-    // to get their projectiles and add them to the given list.
-    // WARNING! do not use this method on non-Aliens
-    public static void getAlienBullets(List<Sprite> projectiles, List<Sprite> sprites) {
-        for(Sprite s : sprites) {
-            projectiles.addAll(((Alien) s).getAndClearProjectiles());
-        }
-    }
 
     // checks sprite against each sprite in list
     // calls handleCollision method if a collision is detected

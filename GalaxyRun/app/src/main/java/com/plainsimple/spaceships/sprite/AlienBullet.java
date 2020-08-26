@@ -1,6 +1,7 @@
 package com.plainsimple.spaceships.sprite;
 
 import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
@@ -54,7 +55,7 @@ public class AlienBullet extends Sprite {
     }
 
     @Override
-    public void updateActions() {
+    public void updateActions(UpdateContext updateContext) {
         if (!isInBounds()) {
             terminate = true;
         }

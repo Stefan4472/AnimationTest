@@ -10,6 +10,7 @@ import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.GameMode;
 import com.plainsimple.spaceships.helper.Map;
+import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.helper.TileGenerator;
 import com.plainsimple.spaceships.sprite.Alien;
 import com.plainsimple.spaceships.sprite.Asteroid;
@@ -18,6 +19,7 @@ import com.plainsimple.spaceships.sprite.Obstacle;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.stats.GameTimer;
+import com.plainsimple.spaceships.util.FastQueue;
 import com.plainsimple.spaceships.util.GameEngineUtil;
 
 import java.util.LinkedList;
@@ -92,14 +94,12 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     private long lastTile = 0;
     // coordinates of upper-left of "window" being shown
     private float x = 0;  // TODO: MAKE DOUBLE
-    // active generated obstacles
-    private List<Sprite> obstacles = new LinkedList<>();
-    // active generated coins
+    /* Store sprites according to type. TODO: GENERALIZE */
     private List<Sprite> coins = new LinkedList<>();
-    // active generated aliens
+    private List<Sprite> obstacles = new LinkedList<>();
     private List<Sprite> aliens = new LinkedList<>();
-    // active projectiles on screen fired by aliens
     private List<Sprite> alienProjectiles = new LinkedList<>();
+    private List<Sprite> playerProjectiles = new LinkedList<>();
     // width (px) of the side of a tile
     private int tileWidth;
 
@@ -150,6 +150,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         coins.clear();
         aliens.clear();
         alienProjectiles.clear();
+        playerProjectiles.clear();
         tiles = new byte[ROWS][gameContext.getGameWidthPx() / tileWidth];
         map.restart();
         mapTileCounter = 0;
@@ -261,8 +262,6 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
 
         }
 
-        updateSpaceship();
-
         /* Start GameDriver logic */
         // update x
         x += gameContext.getGameWidthPx() * scrollSpeed;
@@ -301,11 +300,17 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
             lastTile = getWTile();
         }
 
-        // todo: improve
-        GameEngineUtil.getAlienBullets(alienProjectiles, aliens);
+        UpdateContext update_context = new UpdateContext(
+                30,
+                new FastQueue<Sprite>(),
+                new FastQueue<EventID>(),
+                new FastQueue<SoundID>()
+        );
+
+        GameEngineUtil.updateSprite(spaceship, update_context);
 
         // check collisions between user-fired projectiles and relevant sprites
-        for(Sprite projectile : spaceship.getProjectiles()) {
+        for(Sprite projectile : playerProjectiles) {
             GameEngineUtil.checkCollisions(projectile, aliens);
             GameEngineUtil.checkCollisions(projectile, obstacles);
             //GameEngineUtil.checkCollisions(projectile, alienProjectiles);
@@ -318,10 +323,11 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
             GameEngineUtil.checkCollisions(spaceship, alienProjectiles);
         }
         // update all other sprites
-        GameEngineUtil.updateSprites(obstacles);
-        GameEngineUtil.updateSprites(aliens);
-        GameEngineUtil.updateSprites(coins);
-        GameEngineUtil.updateSprites(alienProjectiles);
+        GameEngineUtil.updateSprites(obstacles, update_context);
+        GameEngineUtil.updateSprites(aliens, update_context);
+        GameEngineUtil.updateSprites(coins, update_context);
+        GameEngineUtil.updateSprites(alienProjectiles, update_context);
+        GameEngineUtil.updateSprites(playerProjectiles, update_context);
 
         // TODO: COLLECT DRAWPARAMS DURING THE SAME PASS AS THE UPDATES
         for (Sprite obstacle : obstacles) {
@@ -386,14 +392,6 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
 //        if (gameEventsListener != null) {
 //            gameEventsListener.onGameStarted();
 //        }
-    }
-
-    private void updateSpaceship() {
-        spaceship.updateSpeeds();
-        spaceship.move();
-        spaceship.updateActions();
-        spaceship.updateAnimations();
-        GameEngineUtil.updateSprites(spaceship.getProjectiles());
     }
 
     // current horizontal tile

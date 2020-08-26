@@ -3,6 +3,7 @@ package com.plainsimple.spaceships.sprite;
 import android.content.Context;
 
 import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
@@ -57,7 +58,7 @@ public class Asteroid extends Sprite {
     }
 
     @Override
-    public void updateActions() {
+    public void updateActions(UpdateContext updateContext) {
         if (!isInBounds() || hp <= 0) {
             terminate = true;
         }

@@ -3,6 +3,7 @@ package com.plainsimple.spaceships.sprite;
 import android.content.Context;
 
 import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
@@ -33,7 +34,7 @@ public class Coin extends Sprite {
     }
 
     @Override
-    public void updateActions() {
+    public void updateActions(UpdateContext updateContext) {
         if (!isInBounds()) {
             terminate = true;
         }

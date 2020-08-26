@@ -5,11 +5,13 @@ package com.plainsimple.spaceships.sprite;
 import android.util.Log;
 
 import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.helper.Point2D;
+import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 import com.plainsimple.spaceships.view.GameView;
 
@@ -70,8 +72,15 @@ public abstract class Sprite { // todo: figure out public vs. protected
     protected static final Random random = new Random();
 
     // TODO: ADD OPTIONAL `PARENT` PARAM
-    public Sprite(int spriteId, SpriteType spriteType, float x,
-            float y, int width, int height, GameContext gameContext) {
+    public Sprite(
+            int spriteId,
+            SpriteType spriteType,
+            float x,
+            float y,
+            int width,
+            int height,
+            GameContext gameContext
+    ) {
         this.spriteId = spriteId;
         this.x = x;
         this.y = y;
@@ -81,23 +90,40 @@ public abstract class Sprite { // todo: figure out public vs. protected
         hitBox = new FloatRect(0, 0, 0, 0);
     }
 
-    public Sprite(int spriteId, SpriteType spriteType, float x,
-            float y, GameContext gameContext) {
+    public Sprite(
+            int spriteId,
+            SpriteType spriteType,
+            float x,
+            float y,
+            GameContext gameContext
+    ) {
         this(spriteId, spriteType, x, y, 0, 0, gameContext);
     }
 
-    public Sprite(int spriteId, SpriteType spriteType, float x,
-            float y, BitmapData bitmapData, GameContext gameContext) {
+    public Sprite(
+            int spriteId,
+            SpriteType spriteType,
+            float x,
+            float y,
+            BitmapData bitmapData,
+            GameContext gameContext
+    ) {
         this(spriteId, spriteType, x, y, bitmapData.getWidth(), bitmapData.getHeight(), gameContext);
     }
 
-    public Sprite(int spriteId, SpriteType spriteType, float x,
-            float y, BitmapID bitmapID, GameContext gameContext) {
+    public Sprite(
+            int spriteId,
+            SpriteType spriteType,
+            float x,
+            float y,
+            BitmapID bitmapID,
+            GameContext gameContext
+    ) {
         this(spriteId, spriteType, x, y, gameContext.getBitmapCache().getData(bitmapID), gameContext);
     }
 
     // update/handle any actions sprite takes
-    public abstract void updateActions();
+    public abstract void updateActions(UpdateContext updateContext);
 
     // update speedX and speedY
     public abstract void updateSpeeds();

@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.util.Log;
 
 import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRect;
 import com.plainsimple.spaceships.helper.FloatRect;
@@ -34,7 +35,7 @@ public class Obstacle extends Sprite {
     }
 
     @Override
-    public void updateActions() {
+    public void updateActions(UpdateContext updateContext) {
         // terminate when hitBox is out of bounds to the left of the screen
         if (x < -hitBox.getWidth()) {
             terminate = true;
