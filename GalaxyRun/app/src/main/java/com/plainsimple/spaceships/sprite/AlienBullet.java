@@ -6,6 +6,7 @@ import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.FloatRect;
+import com.plainsimple.spaceships.util.ProtectedQueue;
 import com.plainsimple.spaceships.view.GameView;
 
 import java.util.List;
@@ -76,12 +77,10 @@ public class AlienBullet extends Sprite {
     }
 
     @Override
-    public List<DrawParams> getDrawParams() {
-        drawParams.clear();
+    public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         DRAW_BULLET.setCanvasX0(x);
         DRAW_BULLET.setCanvasY0(y);
         DRAW_BULLET.setRotation((int) fireAngle);
-        drawParams.add(DRAW_BULLET);
-        return drawParams;
+        drawQueue.push(DRAW_BULLET);
     }
 }

@@ -11,6 +11,7 @@ import com.plainsimple.spaceships.helper.HealthBarAnimation;
 import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.helper.LoseHealthAnimation;
 import com.plainsimple.spaceships.stats.GameStats;
+import com.plainsimple.spaceships.util.ProtectedQueue;
 import com.plainsimple.spaceships.view.GameView;
 
 import java.util.LinkedList;
@@ -100,26 +101,25 @@ public class Asteroid extends Sprite {
     private DrawImage DRAW_ASTEROID = new DrawImage(BITMAP_ID);
 
     @Override
-    public List<DrawParams> getDrawParams() {
-        drawParams.clear();
-
+    public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         // update DRAW_ASTEROID params with new coordinates and rotation
         DRAW_ASTEROID.setCanvasX0(x);
         DRAW_ASTEROID.setCanvasY0(y);
         DRAW_ASTEROID.setRotation((int) currentRotation);
-        drawParams.add(DRAW_ASTEROID);
+        drawQueue.push(DRAW_ASTEROID);
 
-        // draw loseHealthAnimations
-        for (int i = 0; i < loseHealthAnimations.size(); i++) {
-            if (!loseHealthAnimations.get(i).isFinished()) {
-                loseHealthAnimations.get(i).updateAndDraw(x, y, drawParams);
+        // Update and draw loseHealthAnimations
+        for (LoseHealthAnimation anim : loseHealthAnimations) {
+            if (!anim.isFinished()) {
+                anim.update();
+                anim.getDrawParams(x, y, drawQueue);
             }
         }
 
         // update and draw healthBarAnimation if showing
         if (healthBarAnimation.isShowing()) {
-            healthBarAnimation.updateAndDraw(x, y, hp, drawParams);
+            healthBarAnimation.update();
+            healthBarAnimation.getDrawParams(x, y, hp, drawQueue);
         }
-        return drawParams;
     }
 }

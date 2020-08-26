@@ -209,9 +209,11 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     // updates all game logic
     // adds any new sprites and generates a new set of sprites if needed
     public GameUpdateMessage update() {
+        GameUpdateMessage update_msg = new GameUpdateMessage();
+
         // Do nothing if paused
         if (isPaused) {
-            return new GameUpdateMessage();
+            return update_msg;
         }
 
         // TODO: USE TIME, NOT NUMBER OF FRAMES, FOR EVERYTHING!
@@ -316,8 +318,23 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         GameEngineUtil.updateSprites(coins);
         GameEngineUtil.updateSprites(alienProjectiles);
 
+        // TODO: COLLECT DRAWPARAMS DURING THE SAME PASS AS THE UPDATES
+        for (Sprite obstacle : obstacles) {
+            obstacle.getDrawParams(update_msg.drawParams);
+        }
+        for (Sprite coin : coins) {
+            coin.getDrawParams(update_msg.drawParams);
+        }
+        for (Sprite alien : aliens) {
+            alien.getDrawParams(update_msg.drawParams);
+        }
+        for (Sprite alien_projectile : alienProjectiles) {
+            alien_projectile.getDrawParams(update_msg.drawParams);
+        }
+        spaceship.getDrawParams(update_msg.drawParams);
+        
         numUpdates++;
-        return new GameUpdateMessage();
+        return update_msg;
     }
 
     private void enterStartingState() {
@@ -401,22 +418,6 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
                 break;
             default:
                 throw new IndexOutOfBoundsException("Invalid tileID (" + tileID + ")");
-        }
-    }
-
-    public void draw(Canvas canvas, GameContext gameContext) {
-        // todo: causes concurrentmodificationexception on game restart. Use iterators?
-        for (Sprite o : obstacles) {
-            GameEngineUtil.drawSprite(o, canvas, gameContext);
-        }
-        for (Sprite c : coins) {
-            GameEngineUtil.drawSprite(c, canvas, gameContext);
-        }
-        for (Sprite a : aliens) {
-            GameEngineUtil.drawSprite(a, canvas, gameContext);
-        }
-        for (Sprite a : alienProjectiles) {
-            GameEngineUtil.drawSprite(a, canvas, gameContext);
         }
     }
 

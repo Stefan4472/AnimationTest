@@ -62,17 +62,17 @@ public class GameEngineUtil {
     private static List<DrawParams> drawParams;
     private static DrawRect DRAW_HITBOX = new DrawRect(debugPaintRed.getColor(), debugPaintRed.getStyle(), debugPaintRed.getStrokeWidth());
     // draws sprite onto canvas using sprite drawing params and BitmapCache
-    public static void drawSprite(Sprite sprite, Canvas canvas, GameContext gameContext) {
-        drawParams = sprite.getDrawParams();
-        for (DrawParams p : drawParams) {
-            p.draw(canvas, gameContext);
-        }
-        // draw hitbox (debugging)
-        if (sprite.collides()) {
-            DRAW_HITBOX.setBounds(sprite.getHitBox());
-            DRAW_HITBOX.draw(canvas, gameContext);
-        }
-    }
+//    public static void drawSprite(Sprite sprite, Canvas canvas, GameContext gameContext) {
+//        drawParams = sprite.getDrawParams();
+//        for (DrawParams p : drawParams) {
+//            p.draw(canvas, gameContext);
+//        }
+//        // draw hitbox (debugging)
+//        if (sprite.collides()) {
+//            DRAW_HITBOX.setBounds(sprite.getHitBox());
+//            DRAW_HITBOX.draw(canvas, gameContext);
+//        }
+//    }
 
     // goes through sprites, casts each to Alien and uses getAndClearProjectiles
     // to get their projectiles and add them to the given list.

@@ -10,6 +10,7 @@ import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.helper.Point2D;
+import com.plainsimple.spaceships.util.ProtectedQueue;
 import com.plainsimple.spaceships.view.GameView;
 
 import java.util.*;
@@ -50,9 +51,6 @@ public abstract class Sprite { // todo: figure out public vs. protected
     // hitbox for collision detection todo: complex shapes?
     protected FloatRect hitBox;
 
-    // list of DrawParams (instructions on how to draw the sprite)
-    protected List<DrawParams> drawParams = new LinkedList<>();
-
     // random number generator
     protected static final Random random = new Random();
 
@@ -89,8 +87,11 @@ public abstract class Sprite { // todo: figure out public vs. protected
     // (hp's are cross-subtracted simultaneously; see GameEngineUtil)
     public abstract void handleCollision(Sprite s, int damage);
 
-    // draws sprite onto given canvas
-    public abstract List<DrawParams> getDrawParams();
+    /*
+    Sprite should push its DrawParams onto the provided queue.
+    Draw calls are executed in the order of addition to the queue (FIFO).
+     */
+    public abstract void getDrawParams(ProtectedQueue<DrawParams> drawQueue);
 
     // moves sprite using speedX and speedY, updates hitbox,
     // and checks if sprite is still visible

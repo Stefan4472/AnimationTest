@@ -11,6 +11,7 @@ import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
+import com.plainsimple.spaceships.util.ProtectedQueue;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -219,22 +220,20 @@ public class Spaceship extends Sprite {
     }
 
     @Override
-    public List<DrawParams> getDrawParams() {
-        drawParams.clear();
-
+    public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         if (!explode.hasPlayed()) {
             // draw the Spaceship itself
             DRAW_SHIP.setCanvasX0(x);
             DRAW_SHIP.setCanvasY0(y);
             DRAW_SHIP.setFilter(colorMatrixAnimator.getMatrix());
-            drawParams.add(DRAW_SHIP);
+            drawQueue.push(DRAW_SHIP);
 
             // draw moving animation behind it
             DRAW_EXHAUST.setCanvasX0(x);
             DRAW_EXHAUST.setCanvasY0(y);
             DRAW_EXHAUST.setDrawRegion(move.getCurrentFrameSrc());
             DRAW_EXHAUST.setFilter(colorMatrixAnimator.getMatrix());
-            drawParams.add(DRAW_EXHAUST);
+            drawQueue.push(DRAW_EXHAUST);
 
             // draw fireRocket animation if it is in progress
             if (fireRocket.isPlaying()) {
@@ -242,17 +241,16 @@ public class Spaceship extends Sprite {
                 DRAW_ROCKET_FIRED.setCanvasY0(y);
                 DRAW_ROCKET_FIRED.setDrawRegion(fireRocket.getCurrentFrameSrc());
                 DRAW_ROCKET_FIRED.setFilter(colorMatrixAnimator.getMatrix());
-                drawParams.add(DRAW_ROCKET_FIRED);
+                drawQueue.push(DRAW_ROCKET_FIRED);
             }
             // draw explode animation if it is in progress
             if (explode.isPlaying()) {
                 DRAW_EXPLODE.setCanvasX0(x);
                 DRAW_EXPLODE.setCanvasY0(y);
                 DRAW_EXPLODE.setDrawRegion(explode.getCurrentFrameSrc());
-                drawParams.add(DRAW_EXPLODE);
+                drawQueue.push(DRAW_EXPLODE);
             }
         }
-        return drawParams;
     }
 
     public List<Sprite> getProjectiles() {

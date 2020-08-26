@@ -114,6 +114,9 @@ public class GameActivity extends FragmentActivity implements
         if (numUpdates != 0 && numUpdates % 100 == 0) {
             long curr_time = System.currentTimeMillis();
             Log.d("GameActivity", "fps: " + numUpdates / ((curr_time - startTime) / 1000));
+            Log.d("GameActivity", String.format(
+                    "Got %d drawParams", message.drawParams.getSize()
+            ));
         }
         numUpdates++;
         healthbarView.setMovingToHealth((int) (numUpdates % 100));

@@ -3,6 +3,8 @@ package com.plainsimple.spaceships.helper;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.plainsimple.spaceships.util.ProtectedQueue;
+
 import java.util.List;
 
 /**
@@ -77,14 +79,20 @@ public class HealthBarAnimation {
     private DrawRect DRAW_OUTLINE = new DrawRect(Color.GRAY, Paint.Style.STROKE, innerPadding);
     private DrawRect DRAW_FILL = new DrawRect(Color.GREEN, Paint.Style.FILL, innerPadding);
 
+    // TODO: MOVE MORE LOGIC INTO `UPDATE()`
     // updates the animation if it is playing, including shifting it to the given sprite coordinates.
-    // Adds the animation's DrawParams to the given list.
-    public void updateAndDraw(float spriteX, float spriteY, int spriteHP, List<DrawParams> spriteParams) {
+    public void update() {
         if (frameCounter == TOTAL_FRAMES) { // reset
             frameCounter = 0;
             isShowing = false;
         } else if (isShowing) {
             frameCounter++;
+        }
+    }
+
+    public void getDrawParams(float spriteX, float spriteY,
+            int spriteHP, ProtectedQueue<DrawParams> drawQueue) {
+        if (isShowing) {
             this.currentHP = spriteHP;
 
             // top-left drawing coordinates of healthbar
@@ -96,7 +104,7 @@ public class HealthBarAnimation {
             // draw healthbar outline
             DRAW_OUTLINE.setBounds(new FloatRect(x0, y0, x0 + healthBarWidth, y0 + healthBarHeight));
             DRAW_OUTLINE.setColor(outline_color);
-            spriteParams.add(DRAW_OUTLINE);
+            drawQueue.push(DRAW_OUTLINE);
 
             // draw healthbar fill
             float width = (healthBarWidth - 2 * innerPadding) * ((float) currentHP / maxHP);
@@ -104,7 +112,7 @@ public class HealthBarAnimation {
             DRAW_FILL.setBounds(new FloatRect(x0 + innerPadding, y0 + innerPadding,
                     x0 + innerPadding + width, y0 + healthBarHeight - innerPadding));
             DRAW_FILL.setColor(fill_color);
-            spriteParams.add(DRAW_FILL);
+            drawQueue.push(DRAW_FILL);
         }
     }
 

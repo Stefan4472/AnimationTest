@@ -10,7 +10,7 @@ import com.plainsimple.spaceships.util.FastQueue;
  */
 
 public class GameUpdateMessage {
-    FastQueue<DrawParams> drawParams;
+    public FastQueue<DrawParams> drawParams;
 
     GameUpdateMessage() {
         drawParams = new FastQueue<>();

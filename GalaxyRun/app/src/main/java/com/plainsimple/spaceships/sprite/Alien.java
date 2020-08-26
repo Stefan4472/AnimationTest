@@ -14,6 +14,7 @@ import com.plainsimple.spaceships.helper.LoseHealthAnimation;
 import com.plainsimple.spaceships.stats.GameStats;
 import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
+import com.plainsimple.spaceships.util.ProtectedQueue;
 import com.plainsimple.spaceships.view.GameView;
 
 import java.util.LinkedList;
@@ -179,32 +180,32 @@ public class Alien extends Sprite {
     }
 
     @Override
-    public List<DrawParams> getDrawParams() {
-        drawParams.clear();
+    public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         // only draw alien if it is not in last frame of explode animation
         if (explodeAnimation.getFramesLeft() >= 1) {
             DRAW_ALIEN.setCanvasX0(x);
             DRAW_ALIEN.setCanvasY0(y);
-            drawParams.add(DRAW_ALIEN);
+            drawQueue.push(DRAW_ALIEN);
         }
-        // draw loseHealthAnimations todo: cleanup
-        for (int i = 0; i < loseHealthAnimations.size(); i++) {
-            if (!loseHealthAnimations.get(i).isFinished()) {
-                loseHealthAnimations.get(i).updateAndDraw(x, y, drawParams);
+        // Update and draw loseHealthAnimations
+        for (LoseHealthAnimation anim : loseHealthAnimations) {
+            if (!anim.isFinished()) {
+                anim.update();
+                anim.getDrawParams(x, y, drawQueue);
             }
         }
         // update and draw healthBarAnimation if showing
         if (healthBarAnimation.isShowing()) {
-            healthBarAnimation.updateAndDraw(x, y, hp, drawParams);
+            healthBarAnimation.update();
+            healthBarAnimation.getDrawParams(x, y, hp, drawQueue);
         }
         // add explodeAnimation params if showing
         if (explodeAnimation.isPlaying()) {
             DRAW_EXPLOSION.setCanvasX0(x);
             DRAW_EXPLOSION.setCanvasY0(y);
             DRAW_EXPLOSION.setDrawRegion(explodeAnimation.getCurrentFrameSrc());
-            drawParams.add(DRAW_EXPLOSION);
+            drawQueue.push(DRAW_EXPLOSION);
         }
-        return drawParams;
     }
 
     public List<Sprite> getProjectiles() {

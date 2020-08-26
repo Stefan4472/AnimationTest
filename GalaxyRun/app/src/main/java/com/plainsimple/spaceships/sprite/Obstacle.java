@@ -8,6 +8,7 @@ import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRect;
 import com.plainsimple.spaceships.helper.FloatRect;
+import com.plainsimple.spaceships.util.ProtectedQueue;
 import com.plainsimple.spaceships.view.GameView;
 
 import java.util.List;
@@ -61,10 +62,9 @@ public class Obstacle extends Sprite {
     // init DrawRect instance with specified color and fill Paint Style
     private DrawRect DRAW_OBSTACLE = new DrawRect(color, Paint.Style.FILL, 1);
     @Override
-    public List<DrawParams> getDrawParams() { // todo: only draw what's on screen
-        drawParams.clear();
+    public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
+        // todo: only draw what's on screen
         DRAW_OBSTACLE.setBounds(hitBox);
-        drawParams.add(DRAW_OBSTACLE);
-        return drawParams;
+        drawQueue.push(DRAW_OBSTACLE);
     }
 }

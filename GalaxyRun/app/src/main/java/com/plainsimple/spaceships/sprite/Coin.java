@@ -9,6 +9,7 @@ import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.FloatRect;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
+import com.plainsimple.spaceships.util.ProtectedQueue;
 import com.plainsimple.spaceships.view.GameView;
 
 import java.util.List;
@@ -57,12 +58,10 @@ public class Coin extends Sprite {
     }
 
     @Override
-    public List<DrawParams> getDrawParams() {
-        drawParams.clear();
+    public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         DRAW_COIN.setCanvasX0(x);
         DRAW_COIN.setCanvasY0(y);
         DRAW_COIN.setDrawRegion(spin.getCurrentFrameSrc());
-        drawParams.add(DRAW_COIN);
-        return drawParams;
+        drawQueue.push(DRAW_COIN);
     }
 }
