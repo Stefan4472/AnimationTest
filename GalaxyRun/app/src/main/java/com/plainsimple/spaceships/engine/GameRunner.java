@@ -22,7 +22,7 @@ public class GameRunner extends HandlerThread {
     private GameEngine mGameEngine;
 
     public interface Callback {
-        void onGameStateUpdated(List<DrawParams> drawCalls, List<String> events);
+        void onGameStateUpdated(GameUpdateMessage message);
     }
 
     public GameRunner(Handler responseHandler, Callback callback, GameEngine gameEngine) {
@@ -33,6 +33,9 @@ public class GameRunner extends HandlerThread {
         mGameEngine = gameEngine;
     }
 
+    /*
+    Queues a call to `mGameEngine.update()` on the worker thread.
+     */
     public void queueUpdate() {
 //        Log.d(TAG, "Queued update()");
         mWorkerHandler.obtainMessage().sendToTarget();
@@ -42,16 +45,13 @@ public class GameRunner extends HandlerThread {
         mWorkerHandler = new Handler(getLooper(), new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
-                mGameEngine.update();
+                final GameUpdateMessage m = mGameEngine.update();
 //                Log.d(TAG, "Ran game update");
                 // Report results back
                 mResponseHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mCallback.onGameStateUpdated(
-                                new LinkedList<DrawParams>(),
-                                new LinkedList<String>()
-                        );
+                        mCallback.onGameStateUpdated(m);
                     }
                 });
 //                msg.recycle();  TODO: DO WE NEED THIS? IS IT AUTO-RECYCLED?

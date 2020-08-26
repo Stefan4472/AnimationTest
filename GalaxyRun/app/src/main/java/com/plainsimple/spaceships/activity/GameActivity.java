@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.GameEngine;
 import com.plainsimple.spaceships.engine.GameRunner;
+import com.plainsimple.spaceships.engine.GameUpdateMessage;
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.DrawParams;
@@ -108,7 +109,7 @@ public class GameActivity extends FragmentActivity implements
     GameRunner.Callback. Called when the next game update has been run.
      */
     @Override
-    public void onGameStateUpdated(List<DrawParams> drawCalls, List<String> events) {
+    public void onGameStateUpdated(GameUpdateMessage message) {
 //        Log.d("GameActivity", "Got latest game update");
         if (numUpdates != 0 && numUpdates % 100 == 0) {
             long curr_time = System.currentTimeMillis();

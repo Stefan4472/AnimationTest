@@ -208,10 +208,10 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
 
     // updates all game logic
     // adds any new sprites and generates a new set of sprites if needed
-    public void update() {
+    public GameUpdateMessage update() {
         // Do nothing if paused
         if (isPaused) {
-            return;
+            return new GameUpdateMessage();
         }
 
         // TODO: USE TIME, NOT NUMBER OF FRAMES, FOR EVERYTHING!
@@ -317,6 +317,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         GameEngineUtil.updateSprites(alienProjectiles);
 
         numUpdates++;
+        return new GameUpdateMessage();
     }
 
     private void enterStartingState() {
