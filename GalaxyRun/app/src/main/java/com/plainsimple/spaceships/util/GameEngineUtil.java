@@ -72,8 +72,8 @@ public class GameEngineUtil {
 //            p.draw(canvas, gameContext);
 //        }
 //        // draw hitbox (debugging)
-//        if (sprite.collides()) {
-//            DRAW_HITBOX.setBounds(sprite.getHitBox());
+//        if (sprite.canCollide()) {
+//            DRAW_HITBOX.setBounds(sprite.getHitbox());
 //            DRAW_HITBOX.draw(canvas, gameContext);
 //        }
 //    }

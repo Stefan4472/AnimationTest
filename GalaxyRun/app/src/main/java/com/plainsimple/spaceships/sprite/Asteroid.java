@@ -1,19 +1,14 @@
 package com.plainsimple.spaceships.sprite;
 
-import android.content.Context;
-
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.HealthBarAnimation;
-import com.plainsimple.spaceships.helper.FloatRect;
+import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.helper.LoseHealthAnimation;
-import com.plainsimple.spaceships.stats.GameStats;
 import com.plainsimple.spaceships.util.ProtectedQueue;
-import com.plainsimple.spaceships.view.GameView;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -47,7 +42,7 @@ public class Asteroid extends Sprite {
         // hp: high
         hp = 40 + difficulty / 100;
         // make hitbox 20% smaller than sprite
-        hitBox = new FloatRect(x + getWidth() * 0.1f, y + getHeight() * 0.1f, x + getWidth() * 0.9f, y + getHeight() * 0.9f);
+        hitBox = new Rectangle(x + getWidth() * 0.1f, y + getHeight() * 0.1f, x + getWidth() * 0.9f, y + getHeight() * 0.9f);
         // set the current rotation to a random angle
         currentRotation = random.nextInt(360);
         // random rotation rate. function of speedY (faster speed = faster rotation)

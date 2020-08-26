@@ -1,23 +1,17 @@
 package com.plainsimple.spaceships.sprite;
 
-import android.content.Context;
-
 import com.plainsimple.spaceships.engine.EventID;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.helper.AnimCache;
-import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.HealthBarAnimation;
 import com.plainsimple.spaceships.helper.LoseHealthAnimation;
-import com.plainsimple.spaceships.stats.GameStats;
-import com.plainsimple.spaceships.helper.FloatRect;
+import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.util.ProtectedQueue;
-import com.plainsimple.spaceships.view.GameView;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -100,7 +94,7 @@ public class Alien extends Sprite {
         bulletDelay = 20;
         framesSinceLastBullet = -bulletDelay;
         bulletsLeft = 4; // todo: implement AlienBullet FireManager?
-        hitBox = new FloatRect(x + getWidth() * 0.2f, y + getHeight() * 0.2f, x + getWidth() * 0.8f, y + getHeight() * 0.8f);
+        hitBox = new Rectangle(x + getWidth() * 0.2f, y + getHeight() * 0.2f, x + getWidth() * 0.8f, y + getHeight() * 0.8f);
         healthBarAnimation = new HealthBarAnimation(getWidth(), getHeight(), hp);
     }
 

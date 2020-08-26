@@ -1,19 +1,13 @@
 package com.plainsimple.spaceships.sprite;
 
-import android.content.Context;
-
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
-import com.plainsimple.spaceships.helper.FloatRect;
+import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.util.ProtectedQueue;
-import com.plainsimple.spaceships.view.GameView;
-
-import java.util.List;
 
 /**
  * Created by Stefan on 8/28/2015.
@@ -30,7 +24,7 @@ public class Coin extends Sprite {
         height = spin.getFrameH();
         spin.start();
         DRAW_COIN = new DrawImage(spin.getBitmapID());
-        hitBox = new FloatRect(x + getWidth() * 0.15f, y + getHeight() * 0.1f, x + getWidth() * 0.85f, y + getHeight() * 0.9f);
+        hitBox = new Rectangle(x + getWidth() * 0.15f, y + getHeight() * 0.1f, x + getWidth() * 0.85f, y + getHeight() * 0.9f);
     }
 
     @Override

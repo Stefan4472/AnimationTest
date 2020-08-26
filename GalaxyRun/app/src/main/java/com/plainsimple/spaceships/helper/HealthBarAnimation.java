@@ -5,8 +5,6 @@ import android.graphics.Paint;
 
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
-import java.util.List;
-
 /**
  * Animates a sprite's healthbar fading in and out above a sprite.
  * Meant to be played when a sprite loses health.
@@ -102,14 +100,14 @@ public class HealthBarAnimation {
             int outline_color = Color.argb(alpha, outlineR, outlineG, outlineB);
 
             // draw healthbar outline
-            DRAW_OUTLINE.setBounds(new FloatRect(x0, y0, x0 + healthBarWidth, y0 + healthBarHeight));
+            DRAW_OUTLINE.setBounds(new Rectangle(x0, y0, x0 + healthBarWidth, y0 + healthBarHeight));
             DRAW_OUTLINE.setColor(outline_color);
             drawQueue.push(DRAW_OUTLINE);
 
             // draw healthbar fill
             float width = (healthBarWidth - 2 * innerPadding) * ((float) currentHP / maxHP);
             int fill_color = getFillColor(currentHP, maxHP, alpha);
-            DRAW_FILL.setBounds(new FloatRect(x0 + innerPadding, y0 + innerPadding,
+            DRAW_FILL.setBounds(new Rectangle(x0 + innerPadding, y0 + innerPadding,
                     x0 + innerPadding + width, y0 + healthBarHeight - innerPadding));
             DRAW_FILL.setColor(fill_color);
             drawQueue.push(DRAW_FILL);

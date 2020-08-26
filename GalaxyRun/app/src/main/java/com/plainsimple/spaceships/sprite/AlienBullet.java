@@ -6,11 +6,8 @@ import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
-import com.plainsimple.spaceships.helper.FloatRect;
+import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
-import com.plainsimple.spaceships.view.GameView;
-
-import java.util.List;
 
 /**
  * An AlienBullet is a projectile fired by an Alien at a
@@ -33,7 +30,7 @@ public class AlienBullet extends Sprite {
         bitmapId = bitmapData.getId();
         // DrawParam used to draw the AlienBullet
         DRAW_BULLET = new DrawImage(bitmapId);
-        hitBox = new FloatRect(x, y, x + getWidth(), y + getHeight());
+        hitBox = new Rectangle(x, y, x + getWidth(), y + getHeight());
         hp = 10;
 
         // speedX is fixed
@@ -73,7 +70,7 @@ public class AlienBullet extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage) {
-        collides = false;
+        canCollide = false;
         terminate = true;
     }
 

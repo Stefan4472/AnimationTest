@@ -10,13 +10,10 @@ import com.plainsimple.spaceships.helper.ColorMatrixAnimator;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
-import com.plainsimple.spaceships.helper.FloatRect;
+import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.util.ProtectedQueue;
-
-import java.util.LinkedList;
-import java.util.List;
 
 import static com.plainsimple.spaceships.sprite.Spaceship.Direction.DOWN;
 import static com.plainsimple.spaceships.sprite.Spaceship.Direction.UP;
@@ -90,20 +87,21 @@ public class Spaceship extends Sprite {
         DRAW_EXPLODE = new DrawImage(explode.getBitmapID());
 
         hp = GameEngine.STARTING_PLAYER_HEALTH;
-        hitBox = new FloatRect(x + getWidth() * 0.17f, y + getHeight() * 0.2f, x + getWidth() * 0.7f, y + getHeight() * 0.8f);
+        hitBox = new Rectangle(x + getWidth() * 0.17f, y + getHeight() * 0.2f, x + getWidth() * 0.7f, y + getHeight() * 0.8f);
 
-        collides = true;
+        canCollide = true;
         speedX = 0.003f;
         move.start();
         lastFiredCannon = Bullet.DELAY_FRAMES;
     }
 
     // resets spaceship to initial values
+    // TODO: REMOVE
     public void reset() {
         move.reset();
         fireRocket.reset();
         explode.reset();
-        collides = true;
+        canCollide = true;
         controllable = false;
         terminate = false;
         hp = GameEngine.STARTING_PLAYER_HEALTH;
@@ -129,7 +127,7 @@ public class Spaceship extends Sprite {
         // checks if explosion has played, in which case terminate should be set to true and onInvisible() called
         if (explode.hasPlayed() && !terminate) {
             terminate = true;
-            collides = false;
+            canCollide = false;
             if (listener != null) {
                 listener.onInvisible();
             }
@@ -199,7 +197,7 @@ public class Spaceship extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage) {
-        takeDamage(damage);
+        takeDamage(damage);  // TODO: MOVE THAT OUT TO THE GAME-ENGINE
 
         if (s instanceof Coin) { // todo: play sound
 //            GameView.incrementScore(GameView.COIN_VALUE);

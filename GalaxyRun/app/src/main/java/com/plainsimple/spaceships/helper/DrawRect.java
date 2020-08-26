@@ -1,9 +1,7 @@
 package com.plainsimple.spaceships.helper;
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 
 import com.plainsimple.spaceships.engine.GameContext;
 
@@ -37,8 +35,8 @@ public class DrawRect implements DrawParams {
         this.strokeWidth = strokeWidth;
     }
 
-    // sets bounds of rectangle to those specified by given FloatRect
-    public void setBounds(FloatRect bounds) {
+    // sets bounds of rectangle to those specified by given Rectangle
+    public void setBounds(Rectangle bounds) {
         x = bounds.getX();
         y = bounds.getY();
         x1 = bounds.getX() + bounds.getWidth();

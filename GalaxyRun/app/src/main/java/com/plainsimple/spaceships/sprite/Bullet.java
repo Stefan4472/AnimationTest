@@ -5,10 +5,8 @@ import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
-import com.plainsimple.spaceships.helper.FloatRect;
+import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
-
-import java.util.List;
 
 /**
  * Created by Stefan on 8/17/2015.
@@ -24,7 +22,7 @@ public class Bullet extends Sprite {
 
     public Bullet(int spriteId, float x, float y, GameContext gameContext) {
         super(spriteId, SpriteType.BULLET, x, y, BITMAP_ID, gameContext);
-        hitBox = new FloatRect(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
+        hitBox = new Rectangle(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
         hp = DAMAGE;
         speedX = TRAVEL_SPEED;
         DRAW_BULLET = new DrawImage(BITMAP_ID);
@@ -49,7 +47,7 @@ public class Bullet extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage) {
-        collides = false;
+        canCollide = false;
         terminate = true;
     }
 

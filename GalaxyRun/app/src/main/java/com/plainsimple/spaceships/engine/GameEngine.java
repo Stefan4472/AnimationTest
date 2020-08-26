@@ -388,6 +388,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
 
     private void setState(GameState newState) {
         Log.d("GameEngine", String.format("Entering state %s", newState.toString()));
+        currState = newState;
         // TODO: ENQUEUE EVENT via SETSTATE() METHOD
 //        if (gameEventsListener != null) {
 //            gameEventsListener.onGameStarted();
