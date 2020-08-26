@@ -27,8 +27,8 @@ public class Obstacle extends Sprite {
     // color of obstacle
     private int color = Color.rgb(103, 103, 103);
 
-    public Obstacle(float x, float y, int width, int height, GameContext gameContext) {
-        super(x, y, width, height, gameContext);
+    public Obstacle(int spriteId, float x, float y, int width, int height, GameContext gameContext) {
+        super(spriteId, SpriteType.OBSTACLE, x, y, width, height, gameContext);
         hitBox = new FloatRect(x, y, x + getWidth(), y + getHeight());
         hp = 5;
     }

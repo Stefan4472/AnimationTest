@@ -73,9 +73,9 @@ public class Alien extends Sprite {
     // stores any running animations showing health leaving alien
     private List<LoseHealthAnimation> loseHealthAnimations = new LinkedList<>();
 
-    public Alien(float x, float y, float scrollSpeed, Spaceship spaceship,
+    public Alien(int spriteId, float x, float y, float scrollSpeed, Spaceship spaceship,
             int difficulty, GameContext gameContext) {
-        super(x, y, BITMAP_ID, gameContext);
+        super(spriteId, SpriteType.ALIEN, x, y, BITMAP_ID, gameContext);
         speedX = scrollSpeed / 2.5f;
         this.spaceship = spaceship;
 
@@ -129,13 +129,12 @@ public class Alien extends Sprite {
     // fires bullet at sprite with small randomized inaccuracy, based on
     // current coordinates. Bullet initialized halfway down the alien on the left side
     public void fireBullet(Sprite s) {
-        projectiles.add(new AlienBullet(
+        projectiles.add(gameContext.createAlienBullet(
                 bulletBitmapData,
                 x,
                 y + (int) (getHeight() * 0.5),
                 s.getHitboxCenter().getX(),
-                s.getHitboxCenter().getY() + (random.nextBoolean() ? -1 : +1) * random.nextInt(50),
-                gameContext
+                s.getHitboxCenter().getY() + (random.nextBoolean() ? -1 : +1) * random.nextInt(50)
         ));
     }
 

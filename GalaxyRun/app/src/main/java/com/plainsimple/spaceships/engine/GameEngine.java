@@ -120,7 +120,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         );
 
         // Create Spaceship and init just off the screen, centered vertically
-        spaceship = new Spaceship(0, 0, gameContext);  // TODO: START OFF INVISIBLE
+        spaceship = gameContext.createSpaceship(0, 0);  // TODO: START OFF INVISIBLE
         // Set this class to receive Spaceship events
         spaceship.setListener(this);
 
@@ -279,7 +279,12 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
                         num_cols++;
                         tiles[i][col] = TileGenerator.EMPTY;
                     }
-                    obstacles.add(new Obstacle(gameContext.getGameWidthPx() + getWOffset(), i * tileWidth, num_cols * tileWidth, tileWidth, gameContext));
+                    obstacles.add(gameContext.createObstacle(
+                            gameContext.getGameWidthPx() + getWOffset(),
+                            i * tileWidth,
+                            num_cols * tileWidth,
+                            tileWidth
+                    ));
 
                 } else if (tiles[i][mapTileCounter] != TileGenerator.EMPTY) {
                     addMapTile(tiles[i][mapTileCounter], gameContext.getGameWidthPx() + getWOffset(), i * tileWidth, (float) scrollSpeed, spaceship);
@@ -332,7 +337,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
             alien_projectile.getDrawParams(update_msg.drawParams);
         }
         spaceship.getDrawParams(update_msg.drawParams);
-        
+
         numUpdates++;
         return update_msg;
     }
@@ -405,13 +410,27 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     private void addMapTile(int tileID, float x, float y, float scrollSpeed, Spaceship spaceship) throws IndexOutOfBoundsException {
         switch (tileID) {
             case TileGenerator.COIN:
-                coins.add(new Coin(x, y, gameContext));
+                coins.add(gameContext.createCoin(
+                        x,
+                        y
+                ));
                 break;
             case TileGenerator.ALIEN:
-                aliens.add(new Alien(x, y, scrollSpeed, spaceship, (int) currDifficulty, gameContext));
+                aliens.add(gameContext.createAlien(
+                        x,
+                        y,
+                        scrollSpeed,
+                        spaceship,
+                        (int) currDifficulty
+                ));
                 break;
             case TileGenerator.ASTEROID: // todo: separate list for asteroids? could bounce off one another
-                obstacles.add(new Asteroid(x, y, scrollSpeed, (int) currDifficulty, gameContext));
+                obstacles.add(gameContext.createAsteroid(
+                        x,
+                        y,
+                        scrollSpeed,
+                        (int) currDifficulty
+                ));
                 break;
             case TileGenerator.END_GAME:
 

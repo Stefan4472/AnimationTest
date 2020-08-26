@@ -22,8 +22,8 @@ public class Coin extends Sprite {
     private SpriteAnimation spin;
     private DrawImage DRAW_COIN;
 
-    public Coin(float x, float y, GameContext gameContext) {
-        super(x, y, gameContext);
+    public Coin(int spriteId, float x, float y, GameContext gameContext) {
+        super(spriteId, SpriteType.COIN, x, y, gameContext);
         spin = gameContext.getAnimCache().get(BitmapID.COIN_SPIN);
         width = spin.getFrameW();
         height = spin.getFrameH();

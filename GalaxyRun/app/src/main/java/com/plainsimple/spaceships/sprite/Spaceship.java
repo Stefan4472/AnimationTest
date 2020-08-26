@@ -74,8 +74,8 @@ public class Spaceship extends Sprite {
     // listener that receives Spaceship events
     private SpaceshipListener listener;
 
-    public Spaceship(float x, float y, GameContext gameContext) {
-        super(x, y, BitmapID.SPACESHIP, gameContext);
+    public Spaceship(int spriteId, float x, float y, GameContext gameContext) {
+        super(spriteId, SpriteType.SPACESHIP, x, y, BitmapID.SPACESHIP, gameContext);
         this.gameContext = gameContext;
 
         // load animations from AnimCache
@@ -140,8 +140,14 @@ public class Spaceship extends Sprite {
     // fires both cannons. Adds new instances of Bullet to projectiles, plays sound, and updates GameStats
     public void fireCannons() {
         // TODO: DON'T WE NEED TO CHECK THAT WE CAN FIRE?
-        projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.28f * getHeight(), gameContext));
-        projectiles.add(new Bullet(x + getWidth() * 0.78f, y + 0.66f * getHeight(), gameContext));
+        projectiles.add(gameContext.createBullet(
+                x + getWidth() * 0.78f,
+                y + 0.28f * getHeight()
+        ));
+        projectiles.add(gameContext.createBullet(
+                x + getWidth() * 0.78f,
+                y + 0.66f * getHeight()
+        ));
 //        GameActivity.playSound(BULLET_SOUND);
 //        GameView.currentStats.addTo(GameStats.CANNONS_FIRED, 2);
     }

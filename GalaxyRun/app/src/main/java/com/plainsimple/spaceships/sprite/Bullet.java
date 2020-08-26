@@ -21,8 +21,8 @@ public class Bullet extends Sprite {
     public static final int DELAY_FRAMES = 12;  // TODO: USE MILLISECOND DELAY INSTEAD
     public static final float TRAVEL_SPEED = 0.01f;  // TODO: MAKE DOUBLE
 
-    public Bullet(float x, float y, GameContext gameContext) {
-        super(x, y, BITMAP_ID, gameContext);
+    public Bullet(int spriteId, float x, float y, GameContext gameContext) {
+        super(spriteId, SpriteType.BULLET, x, y, BITMAP_ID, gameContext);
         hitBox = new FloatRect(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
         hp = DAMAGE;
         speedX = TRAVEL_SPEED;

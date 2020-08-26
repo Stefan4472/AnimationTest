@@ -22,6 +22,21 @@ public abstract class Sprite { // todo: figure out public vs. protected
 
     protected GameContext gameContext;
 
+    // Enumeration of implemented Sprite types
+    enum SpriteType {
+        ALIEN,
+        ALIEN_BULLET,
+        ASTEROID,
+        BULLET,
+        COIN,
+        OBSTACLE,
+        SPACESHIP
+    };
+
+    // Unique identifier assigned to this sprite
+    protected int spriteId;
+    protected SpriteType spriteType;
+
     // coordinates of sprite
     protected float x;
     protected float y;
@@ -54,7 +69,10 @@ public abstract class Sprite { // todo: figure out public vs. protected
     // random number generator
     protected static final Random random = new Random();
 
-    public Sprite(float x, float y, int width, int height, GameContext gameContext) {
+    // TODO: ADD OPTIONAL `PARENT` PARAM
+    public Sprite(int spriteId, SpriteType spriteType, float x,
+            float y, int width, int height, GameContext gameContext) {
+        this.spriteId = spriteId;
         this.x = x;
         this.y = y;
         this.width = width;
@@ -63,17 +81,21 @@ public abstract class Sprite { // todo: figure out public vs. protected
         hitBox = new FloatRect(0, 0, 0, 0);
     }
 
-    public Sprite(float x, float y, GameContext gameContext) {
-        this(x, y, 0, 0, gameContext);
+    public Sprite(int spriteId, SpriteType spriteType, float x,
+            float y, GameContext gameContext) {
+        this(spriteId, spriteType, x, y, 0, 0, gameContext);
     }
 
-    public Sprite(float x, float y, BitmapData bitmapData, GameContext gameContext) {
-        this(x, y, bitmapData.getWidth(), bitmapData.getHeight(), gameContext);
+    public Sprite(int spriteId, SpriteType spriteType, float x,
+            float y, BitmapData bitmapData, GameContext gameContext) {
+        this(spriteId, spriteType, x, y, bitmapData.getWidth(), bitmapData.getHeight(), gameContext);
     }
 
-    public Sprite(float x, float y, BitmapID bitmapID, GameContext gameContext) {
-        this(x, y, gameContext.getBitmapCache().getData(bitmapID), gameContext);
+    public Sprite(int spriteId, SpriteType spriteType, float x,
+            float y, BitmapID bitmapID, GameContext gameContext) {
+        this(spriteId, spriteType, x, y, gameContext.getBitmapCache().getData(bitmapID), gameContext);
     }
+
     // update/handle any actions sprite takes
     public abstract void updateActions();
 
@@ -146,6 +168,10 @@ public abstract class Sprite { // todo: figure out public vs. protected
 
     public boolean getP(float probability) {
         return random.nextFloat() <= probability;
+    }
+
+    public int getSpriteId() {
+        return spriteId;
     }
 
     public float getX() {

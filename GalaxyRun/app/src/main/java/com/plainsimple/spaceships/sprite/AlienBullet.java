@@ -27,8 +27,8 @@ public class AlienBullet extends Sprite {
     // DrawParam used to draw the AlienBullet
     private DrawImage DRAW_BULLET;
 
-    public AlienBullet(BitmapData bitmapData, float x, float y, float targetX, float targetY, GameContext gameContext) { // todo: damage as a parameter?
-        super(x, y, bitmapData, gameContext);
+    public AlienBullet(int spriteId, BitmapData bitmapData, float x, float y, float targetX, float targetY, GameContext gameContext) { // todo: damage as a parameter?
+        super(spriteId, SpriteType.ALIEN_BULLET, x, y, bitmapData, gameContext);
         bitmapId = bitmapData.getId();
         // DrawParam used to draw the AlienBullet
         DRAW_BULLET = new DrawImage(bitmapId);

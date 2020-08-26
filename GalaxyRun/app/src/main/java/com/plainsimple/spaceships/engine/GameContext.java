@@ -4,6 +4,14 @@ import android.content.Context;
 
 import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
+import com.plainsimple.spaceships.helper.BitmapData;
+import com.plainsimple.spaceships.sprite.Alien;
+import com.plainsimple.spaceships.sprite.AlienBullet;
+import com.plainsimple.spaceships.sprite.Asteroid;
+import com.plainsimple.spaceships.sprite.Bullet;
+import com.plainsimple.spaceships.sprite.Coin;
+import com.plainsimple.spaceships.sprite.Obstacle;
+import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.sprite.Sprite;
 
 /**
@@ -17,6 +25,7 @@ public class GameContext {
     private Sprite playerSprite;
     private int gameWidthPx;
     private int gameHeightPx;
+    private int nextSpriteId = 1;
 
     // TODO: PROVIDE `ISINBOUNDS()` METHOD?
     public GameContext(
@@ -58,5 +67,36 @@ public class GameContext {
 
     public int getGameHeightPx() {
         return gameHeightPx;
+    }
+
+    /* Begin Sprite creation factory methods */
+    // NOTE: UNFORTUNATELY WE CAN'T JUST PASS IN A `VARARGS`, LIKE IN PYTHON :(
+//    Sprite createSprite()
+    public Alien createAlien(float x, float y, float scrollSpeed, Spaceship spaceship, int difficulty) {
+        return new Alien(nextSpriteId++, x, y, scrollSpeed, spaceship, difficulty, this);
+    }
+
+    public AlienBullet createAlienBullet(BitmapData bitmapData, float x, float y, float targetX, float targetY) {
+        return new AlienBullet(nextSpriteId++, bitmapData, x, y, targetX, targetY, this);
+    }
+
+    public Asteroid createAsteroid(float x, float y, float scrollSpeed, int difficulty) {
+        return new Asteroid(nextSpriteId++, x, y, scrollSpeed, difficulty, this);
+    }
+
+    public Bullet createBullet(float x, float y) {
+        return new Bullet(nextSpriteId++, x, y, this);
+    }
+
+    public Coin createCoin(float x, float y) {
+        return new Coin(nextSpriteId++, x, y, this);
+    }
+
+    public Obstacle createObstacle(float x, float y, int width, int height) {
+        return new Obstacle(nextSpriteId++, x, y, width, height, this);
+    }
+
+    public Spaceship createSpaceship(float x, float y) {
+        return new Spaceship(nextSpriteId++, x, y, this);
     }
 }
