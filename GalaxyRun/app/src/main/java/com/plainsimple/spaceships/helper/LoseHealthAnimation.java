@@ -37,8 +37,13 @@ public class LoseHealthAnimation {
     private float frameDx, frameDy;
 
     // constructs and starts animation
-    public LoseHealthAnimation(int spriteWidth, int spriteHeight, float offsetX,
-                               float offsetY, int healthLost) {
+    public LoseHealthAnimation(
+            int spriteWidth,
+            int spriteHeight,
+            float offsetX,
+            float offsetY,
+            int healthLost
+    ) {
         // calculate px text should move in x and y each frame
         frameDx = spriteWidth * REL_MVMNT_X / NUM_FRAMES;
         frameDy = spriteHeight * REL_MVMNT_Y / NUM_FRAMES;

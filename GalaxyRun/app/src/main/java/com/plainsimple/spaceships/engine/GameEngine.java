@@ -204,7 +204,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     }
 
     public int getPlayerHealth() {
-        return spaceship.getHP();
+        return spaceship.getHealth();
     }
 
     // updates all game logic
@@ -300,8 +300,10 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
             lastTile = getWTile();
         }
 
+        // TODO: WAY OF CALCULATING TIME SINCE PREVIOUS UPDATE (WHILE ACCOUNTING FOR PAUSE/RESUME)
         UpdateContext update_context = new UpdateContext(
                 30,
+                currDifficulty,
                 new FastQueue<Sprite>(),
                 new FastQueue<EventID>(),
                 new FastQueue<SoundID>()
@@ -316,7 +318,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
             //GameEngineUtil.checkCollisions(projectile, alienProjectiles);
         }
         // check collisions with spaceship only if terminate = false
-        if (!spaceship.terminate()) {
+        if (!spaceship.shouldTerminate()) {
             GameEngineUtil.checkCollisions(spaceship, aliens);
             GameEngineUtil.checkCollisions(spaceship, obstacles);
             GameEngineUtil.checkCollisions(spaceship, coins);

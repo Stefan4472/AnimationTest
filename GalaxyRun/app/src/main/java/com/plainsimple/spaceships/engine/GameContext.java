@@ -72,31 +72,31 @@ public class GameContext {
     /* Begin Sprite creation factory methods */
     // NOTE: UNFORTUNATELY WE CAN'T JUST PASS IN A `VARARGS`, LIKE IN PYTHON :(
 //    Sprite createSprite()
-    public Alien createAlien(float x, float y, float scrollSpeed, Spaceship spaceship, int difficulty) {
-        return new Alien(nextSpriteId++, x, y, scrollSpeed, spaceship, difficulty, this);
+    public Alien createAlien(double x, double y, int difficulty) {
+        return new Alien(nextSpriteId++, x, y, difficulty, this);
     }
 
-    public AlienBullet createAlienBullet(BitmapData bitmapData, float x, float y, float targetX, float targetY) {
+    public AlienBullet createAlienBullet(BitmapData bitmapData, double x, double y, float targetX, float targetY) {
         return new AlienBullet(nextSpriteId++, bitmapData, x, y, targetX, targetY, this);
     }
 
-    public Asteroid createAsteroid(float x, float y, float scrollSpeed, int difficulty) {
+    public Asteroid createAsteroid(double x, double y, float scrollSpeed, int difficulty) {
         return new Asteroid(nextSpriteId++, x, y, scrollSpeed, difficulty, this);
     }
 
-    public Bullet createBullet(float x, float y) {
+    public Bullet createBullet(double x, double y) {
         return new Bullet(nextSpriteId++, x, y, this);
     }
 
-    public Coin createCoin(float x, float y) {
+    public Coin createCoin(double x, double y) {
         return new Coin(nextSpriteId++, x, y, this);
     }
 
-    public Obstacle createObstacle(float x, float y, int width, int height) {
+    public Obstacle createObstacle(double x, double y, int width, int height) {
         return new Obstacle(nextSpriteId++, x, y, width, height, this);
     }
 
-    public Spaceship createSpaceship(float x, float y) {
+    public Spaceship createSpaceship(double x, double y) {
         return new Spaceship(nextSpriteId++, x, y, this);
     }
 }

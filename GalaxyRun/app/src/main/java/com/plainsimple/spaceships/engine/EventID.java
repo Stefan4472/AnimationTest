@@ -6,5 +6,9 @@ package com.plainsimple.spaceships.engine;
 
 public enum EventID {
     BULLET_FIRED,
-    ALIEN_DIED
+    ALIEN_DIED,
+    COIN_COLLECTED,
+    SPACESHIP_DAMAGED,
+    ALIEN_FIRED_BULLET,
+    ALIEN_SHOT
 }

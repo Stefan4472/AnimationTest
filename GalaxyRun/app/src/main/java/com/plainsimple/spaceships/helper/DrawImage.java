@@ -103,8 +103,7 @@ public class DrawImage implements DrawParams {
                 gameContext.getBitmapCache().getBitmap(bitmapID),
                 drawRegion,
                 destination,
-                paint
-        );
+                paint);
 
         // restore canvas if it was previously rotated
         if (degreesRotation != 0) {

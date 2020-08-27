@@ -10,7 +10,6 @@ import com.plainsimple.spaceships.helper.ColorMatrixAnimator;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
-import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.util.ProtectedQueue;
@@ -24,9 +23,9 @@ import static com.plainsimple.spaceships.sprite.Spaceship.Direction.UP;
 public class Spaceship extends Sprite {
 
     // SpriteAnimations used
-    private SpriteAnimation move;
-    private SpriteAnimation fireRocket;
-    private SpriteAnimation explode;
+    private SpriteAnimation moveAnim;
+    private SpriteAnimation fireRocketAnim;
+    private SpriteAnimation explodeAnim;
 
     // DrawParam objects that specify how to draw the Spaceship
     private DrawImage DRAW_SHIP;
@@ -45,7 +44,7 @@ public class Spaceship extends Sprite {
     // Is the player in the processes of shooting the cannons?
     private boolean isShooting;
 
-    // available directions Spaceship can move in (up, down, or continue straight horizontally)
+    // available directions Spaceship can moveAnim in (up, down, or continue straight horizontally)
     public enum Direction {
         UP,
         DOWN,
@@ -71,46 +70,47 @@ public class Spaceship extends Sprite {
     // listener that receives Spaceship events
     private SpaceshipListener listener;
 
-    public Spaceship(int spriteId, float x, float y, GameContext gameContext) {
+    public Spaceship(
+            int spriteId,
+            double x,
+            double y,
+            GameContext gameContext
+    ) {
         super(spriteId, SpriteType.SPACESHIP, x, y, BitmapID.SPACESHIP, gameContext);
         this.gameContext = gameContext;
 
-        // load animations from AnimCache
-        move = gameContext.getAnimCache().get(BitmapID.SPACESHIP_MOVE);
-        fireRocket = gameContext.getAnimCache().get(BitmapID.SPACESHIP_FIRE);
-        explode = gameContext.getAnimCache().get(BitmapID.SPACESHIP_EXPLODE);
+        // Position hitbox
+        setHitboxOffsetX(getWidth() * 0.17);
+        setHitboxOffsetY(getHeight() * 0.2f);
 
-        // init DrawParams with correct bitmap keys
+        // Load animations from AnimCache
+        moveAnim = gameContext.getAnimCache().get(BitmapID.SPACESHIP_MOVE);
+        fireRocketAnim = gameContext.getAnimCache().get(BitmapID.SPACESHIP_FIRE);
+        explodeAnim = gameContext.getAnimCache().get(BitmapID.SPACESHIP_EXPLODE);
+
+        // Init DrawParams
         DRAW_SHIP = new DrawImage(BitmapID.SPACESHIP);
-        DRAW_EXHAUST = new DrawImage(move.getBitmapID());
-        DRAW_ROCKET_FIRED = new DrawImage(fireRocket.getBitmapID());
-        DRAW_EXPLODE = new DrawImage(explode.getBitmapID());
+        DRAW_EXHAUST = new DrawImage(moveAnim.getBitmapID());
+        DRAW_ROCKET_FIRED = new DrawImage(fireRocketAnim.getBitmapID());
+        DRAW_EXPLODE = new DrawImage(explodeAnim.getBitmapID());
 
-        hp = GameEngine.STARTING_PLAYER_HEALTH;
-        hitBox = new Rectangle(x + getWidth() * 0.17f, y + getHeight() * 0.2f, x + getWidth() * 0.7f, y + getHeight() * 0.8f);
-
-        canCollide = true;
-        speedX = 0.003f;
-        move.start();
-        lastFiredCannon = Bullet.DELAY_FRAMES;
+        // Call initialization logic
+        reset();
     }
 
-    // resets spaceship to initial values
-    // TODO: REMOVE
     public void reset() {
-        move.reset();
-        fireRocket.reset();
-        explode.reset();
-        canCollide = true;
-        controllable = false;
-        terminate = false;
-        hp = GameEngine.STARTING_PLAYER_HEALTH;
-        if (listener != null) {
-            listener.onHealthChanged(hp);
-        }
-        speedX = 0.003f;
-        speedY = 0;
-        move.start();
+        setHealth(GameEngine.STARTING_PLAYER_HEALTH);
+        setCurrState(SpriteState.ALIVE);
+        setCollidable(true);
+        setControllable(false);  // TODO: REMOVE?
+        setSpeedX(0.0);
+        setSpeedY(0.0);
+
+        moveAnim.reset();
+        fireRocketAnim.reset();
+        explodeAnim.reset();
+
+        moveAnim.start();
         lastFiredCannon = Bullet.DELAY_FRAMES;
     }
 
@@ -119,30 +119,38 @@ public class Spaceship extends Sprite {
         lastFiredCannon++;
 
         // fires cannons if in correct FireMode, has waited long enough, and is still alive
-        if (isShooting && lastFiredCannon >= Bullet.DELAY_FRAMES && hp != 0) {
+        if (canShoot()) {
             fireCannons(updateContext);
             lastFiredCannon = 0;
         }
 
-        // checks if explosion has played, in which case terminate should be set to true and onInvisible() called
-        if (explode.hasPlayed() && !terminate) {
-            terminate = true;
-            canCollide = false;
+        // Checks if explosion has played, in which case terminate should be set to true and onInvisible() called
+        if (getCurrState() == SpriteState.DEAD && explodeAnim.hasPlayed()) {
+            setCurrState(SpriteState.TERMINATED);
+            setCollidable(false);
+            setVisible(false);
+
             if (listener != null) {
                 listener.onInvisible();
             }
         }
     }
 
+    private boolean canShoot() {
+        return isShooting &&
+                lastFiredCannon >= Bullet.DELAY_FRAMES &&
+                getCurrState() == SpriteState.ALIVE;
+    }
+
     private void fireCannons(UpdateContext updateContext) {
         // TODO: DON'T WE NEED TO CHECK THAT WE CAN FIRE?
         updateContext.createdChildren.push(gameContext.createBullet(
-                x + getWidth() * 0.78f,
-                y + 0.28f * getHeight()
+                getX() + getWidth() * 0.78f,
+                getY() + 0.28f * getHeight()
         ));
         updateContext.createdChildren.push(gameContext.createBullet(
-                x + getWidth() * 0.78f,
-                y + 0.66f * getHeight()
+                getX() + getWidth() * 0.78f,
+                getY() + 0.66f * getHeight()
         ));
         updateContext.createdSounds.push(BULLET_SOUND);
         updateContext.createdEvents.push(EventID.BULLET_FIRED);
@@ -155,102 +163,102 @@ public class Spaceship extends Sprite {
     }
 
     @Override
-    public void updateSpeeds() {
+    public void updateSpeeds(long msSincePrevUpdate) {
         if (direction == UP) {
-            speedY = -0.015f;
-//            speedY = -0.02f;
+            setSpeedY(-0.015 * gameContext.getGameHeightPx());
         } else if (direction== DOWN){
-            speedY = 0.015f;
-//            speedY = 0.02f;
+            setSpeedY(0.015 * gameContext.getGameWidthPx());
         } else {
-            speedY /= 1.7;
+            // Slow down
+            setSpeedY(getSpeedY() / 1.7);
         }
     }
 
     @Override
-    public void move() {
-        super.move();
+    public void move(long msSincePrevUpdate) {
+        super.move(msSincePrevUpdate);
         // prevent spaceship from going off-screen
-//        if (y < 0) {
-//            setY(0);
-//        } else if (y > playScreenH - getHeight()) {
-//            setY(playScreenH - getHeight());
-//        }
+        if (getY() < 0) {
+            setY(0);
+        } else if (getY() > gameContext.getGameHeightPx() - getHeight()) {
+            setY(gameContext.getGameHeightPx() - getHeight());
+        }
     }
 
     @Override
-    public void updateAnimations() {
+    public void updateAnimations(long msSincePrevUpdate) {
         // update ColorMatrixAnimator
         colorMatrixAnimator.update();
 
         // update the other animations
-        if (move.isPlaying()) {
-            move.incrementFrame();
+        if (moveAnim.isPlaying()) {
+            moveAnim.incrementFrame();
         }
-        if (fireRocket.isPlaying()) {
-            fireRocket.incrementFrame();
+        if (fireRocketAnim.isPlaying()) {
+            fireRocketAnim.incrementFrame();
         }
-        if (explode.isPlaying()) {
-            explode.incrementFrame();
+        if (explodeAnim.isPlaying()) {
+            explodeAnim.incrementFrame();
         }
     }
 
     @Override
-    public void handleCollision(Sprite s, int damage) {
-        takeDamage(damage);  // TODO: MOVE THAT OUT TO THE GAME-ENGINE
+    public void handleCollision(
+            Sprite otherSprite,
+            int damage,
+            UpdateContext updateContext
+    ) {
+        takeDamage(damage, updateContext);
 
-        if (s instanceof Coin) { // todo: play sound
-//            GameView.incrementScore(GameView.COIN_VALUE);
-//            GameView.currentStats.addTo(GameStats.COINS_COLLECTED, 1);
-        } else {
-            // trigger onHealthChanged event under proper conditions
-            if (damage != 0 && !explode.isPlaying()) {
-                // trigger sprite flash using ColorMatrixAnimator
-                colorMatrixAnimator.flash();
-
-                if (listener != null) {
-                    Log.d("Spaceship.java", "Firing onHealthChanged");
-                    listener.onHealthChanged(hp);
-                }
-            }
-
-            // start explode animation under proper conditions
-            if (hp == 0 && !explode.isPlaying()) {
-//                GameActivity.playSound(EXPLODE_SOUND);
-                explode.start();
-            }
+        // Handle coin collision
+        if (otherSprite.getSpriteType() == SpriteType.COIN) {
+            updateContext.createdEvents.push(EventID.COIN_COLLECTED);
+            updateContext.createdSounds.push(SoundID.COIN_COLLECTED);
         }
+
+        // Trigger flash if we are alive and took damage
+        if (getCurrState() == SpriteState.ALIVE && damage > 0) {
+            updateContext.createdEvents.push(EventID.SPACESHIP_DAMAGED);
+            colorMatrixAnimator.flash();
+        }
+    }
+
+    @Override
+    public void die(UpdateContext updateContext) {
+        updateContext.createdSounds.push(EXPLODE_SOUND);
+        explodeAnim.start();
+        setCurrState(SpriteState.DEAD);
     }
 
     @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
-        if (!explode.hasPlayed()) {
+        if (!explodeAnim.hasPlayed()) {
             // draw the Spaceship itself
-            DRAW_SHIP.setCanvasX0(x);
-            DRAW_SHIP.setCanvasY0(y);
+            DRAW_SHIP.setCanvasX0((float) getX());
+            DRAW_SHIP.setCanvasY0((float) getY());
             DRAW_SHIP.setFilter(colorMatrixAnimator.getMatrix());
             drawQueue.push(DRAW_SHIP);
 
             // draw moving animation behind it
-            DRAW_EXHAUST.setCanvasX0(x);
-            DRAW_EXHAUST.setCanvasY0(y);
-            DRAW_EXHAUST.setDrawRegion(move.getCurrentFrameSrc());
+            DRAW_EXHAUST.setCanvasX0((float) getX());
+            DRAW_EXHAUST.setCanvasY0((float) getY());
+            DRAW_EXHAUST.setDrawRegion(moveAnim.getCurrentFrameSrc());
             DRAW_EXHAUST.setFilter(colorMatrixAnimator.getMatrix());
             drawQueue.push(DRAW_EXHAUST);
 
-            // draw fireRocket animation if it is in progress
-            if (fireRocket.isPlaying()) {
-                DRAW_ROCKET_FIRED.setCanvasX0(x + getWidth() / 2);
-                DRAW_ROCKET_FIRED.setCanvasY0(y);
-                DRAW_ROCKET_FIRED.setDrawRegion(fireRocket.getCurrentFrameSrc());
+            // draw fireRocketAnim animation if it is in progress
+            if (fireRocketAnim.isPlaying()) {
+                DRAW_ROCKET_FIRED.setCanvasX0((float) getX() + getWidth() / 2);
+                DRAW_ROCKET_FIRED.setCanvasY0((float) getY());
+                DRAW_ROCKET_FIRED.setDrawRegion(fireRocketAnim.getCurrentFrameSrc());
                 DRAW_ROCKET_FIRED.setFilter(colorMatrixAnimator.getMatrix());
                 drawQueue.push(DRAW_ROCKET_FIRED);
             }
-            // draw explode animation if it is in progress
-            if (explode.isPlaying()) {
-                DRAW_EXPLODE.setCanvasX0(x);
-                DRAW_EXPLODE.setCanvasY0(y);
-                DRAW_EXPLODE.setDrawRegion(explode.getCurrentFrameSrc());
+            // draw explodeAnim animation if it is in progress
+            if (explodeAnim.isPlaying()) {
+                DRAW_EXPLODE.setCanvasX0((float) getX());
+                DRAW_EXPLODE.setCanvasY0((float) getY());
+                DRAW_EXPLODE.setDrawRegion(explodeAnim.getCurrentFrameSrc());
                 drawQueue.push(DRAW_EXPLODE);
             }
         }

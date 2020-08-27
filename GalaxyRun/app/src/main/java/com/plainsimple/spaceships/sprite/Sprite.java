@@ -64,10 +64,11 @@ public abstract class Sprite {
     // Hitbox for collision detection
     private Rectangle hitbox;
     // Offset from Sprite's coordinates to hitbox coordinates
-    private int hitboxOffsetX, hitboxOffsetY;
+    private double hitboxOffsetX, hitboxOffsetY;
 
     // Random number generator
-    private static final Random random = new Random();
+    // TODO: PUT IN GAMECONTEXT?
+    protected static final Random random = new Random();
 
     // TODO: ADD OPTIONAL `PARENT` PARAM
     public Sprite(
@@ -133,23 +134,24 @@ public abstract class Sprite {
     public abstract void updateActions(UpdateContext updateContext);
 
     // Update speedX and speedY (optional)
-    public void updateSpeeds() {
+    public void updateSpeeds(long msSincePrevUpdate) {
 
     }
 
     // Start/stop/update any animations
-    public abstract void updateAnimations();
+    public abstract void updateAnimations(long msSincePrevUpdate);
 
     // Handles collision with another sprite. Also passes damage taken
     // (health's are cross-subtracted simultaneously; see GameEngineUtil)
     public abstract void handleCollision(
             Sprite s,
-            int damage
+            int damage,
+            UpdateContext updateContext
     );
 
     // Called to tell the sprite to die.
     // TODO: SHOULD THE SPRITE DECIDE WHEN IT TAKES DAMAGE/HOW MUCH DAMAGE IT TAKES?
-    protected abstract void die();
+    protected abstract void die(UpdateContext updateContext);
 
     /*
     Sprite should push its DrawParams onto the provided queue.
@@ -191,12 +193,17 @@ public abstract class Sprite {
     // Subtracts specified damage from sprite's health and floors
     // its health at 0. Calls `die()` if the sprite's health is now
     // zero or below zero.
-    public void takeDamage(int damage) {
-        if (damage > health) {
-            health = 0;
-            die();
-        } else {
-            health -= damage;
+    // NOTE: This method will call `die()` if health drops below 1
+    // TODO: REMOVE? SHOULD IT CALL `DIE()`?
+    public void takeDamage(int damage, UpdateContext updateContext) {
+        // Do nothing if sprite is dead
+        if (currState == SpriteState.ALIVE) {
+            if (damage > health) {
+                health = 0;
+                die(updateContext);
+            } else {
+                health -= damage;
+            }
         }
     }
 
@@ -231,7 +238,7 @@ public abstract class Sprite {
     }
 
     // Set x and update hitbox
-    protected void setX(double x) {
+    public void setX(double x) {
         this.x = x;
         this.hitbox.setX(this.x + hitboxOffsetX);
     }
@@ -241,7 +248,7 @@ public abstract class Sprite {
     }
 
     // Set y and update hitbox
-    protected void setY(double y) {
+    public void setY(double y) {
         this.y = y;
         this.hitbox.setY(this.y + hitboxOffsetY);
     }
@@ -268,7 +275,7 @@ public abstract class Sprite {
         return speedX;
     }
 
-    protected void setSpeedX(double speedX) {
+    public void setSpeedX(double speedX) {
         this.speedX = speedX;
     }
 
@@ -276,7 +283,7 @@ public abstract class Sprite {
         return speedY;
     }
 
-    protected void setSpeedY(double speedY) {
+    public void setSpeedY(double speedY) {
         this.speedY = speedY;
     }
 
@@ -290,6 +297,10 @@ public abstract class Sprite {
 
     public int getHealth() {
         return health;
+    }
+
+    protected void setHealth(int health) {
+        this.health = health;
     }
 
     public boolean canCollide() {
@@ -316,19 +327,35 @@ public abstract class Sprite {
         this.hitbox = hitbox;
     }
 
-    public int getHitboxOffsetX() {
+    public double getHitboxOffsetX() {
         return hitboxOffsetX;
     }
 
-    protected void setHitboxOffsetX(int hitboxOffsetX) {
+    protected void setHitboxOffsetX(double hitboxOffsetX) {
         this.hitboxOffsetX = hitboxOffsetX;
     }
 
-    public int getHitboxOffsetY() {
+    public double getHitboxOffsetY() {
         return hitboxOffsetY;
     }
 
-    protected void setHitboxOffsetY(int hitboxOffsetY) {
+    protected void setHitboxOffsetY(double hitboxOffsetY) {
         this.hitboxOffsetY = hitboxOffsetY;
+    }
+
+    protected void setHitboxWidth(double width) {
+        hitbox.setWidth(width);
+    }
+
+    protected void setHitboxHeight(double height) {
+        hitbox.setHeight(height);
+    }
+
+    public boolean isAlive() {
+        return this.currState == SpriteState.ALIVE;
+    }
+
+    public boolean shouldTerminate() {
+        return this.currState == SpriteState.TERMINATED;
     }
 }
