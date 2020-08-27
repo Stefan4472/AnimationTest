@@ -313,16 +313,16 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
 
         // check collisions between user-fired projectiles and relevant sprites
         for(Sprite projectile : playerProjectiles) {
-            GameEngineUtil.checkCollisions(projectile, aliens);
-            GameEngineUtil.checkCollisions(projectile, obstacles);
+            GameEngineUtil.checkCollisions(projectile, aliens, update_context);
+            GameEngineUtil.checkCollisions(projectile, obstacles, update_context);
             //GameEngineUtil.checkCollisions(projectile, alienProjectiles);
         }
         // check collisions with spaceship only if terminate = false
         if (!spaceship.shouldTerminate()) {
-            GameEngineUtil.checkCollisions(spaceship, aliens);
-            GameEngineUtil.checkCollisions(spaceship, obstacles);
-            GameEngineUtil.checkCollisions(spaceship, coins);
-            GameEngineUtil.checkCollisions(spaceship, alienProjectiles);
+            GameEngineUtil.checkCollisions(spaceship, aliens, update_context);
+            GameEngineUtil.checkCollisions(spaceship, obstacles, update_context);
+            GameEngineUtil.checkCollisions(spaceship, coins, update_context);
+            GameEngineUtil.checkCollisions(spaceship, alienProjectiles, update_context);
         }
         // update all other sprites
         GameEngineUtil.updateSprites(obstacles, update_context);

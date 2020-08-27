@@ -37,15 +37,16 @@ public class DrawRect implements DrawParams {
 
     // sets bounds of rectangle to those specified by given Rectangle
     public void setBounds(Rectangle bounds) {
-        x = bounds.getX();
-        y = bounds.getY();
-        x1 = bounds.getX() + bounds.getWidth();
-        y1 = bounds.getY() + bounds.getHeight();
+        x = (float) bounds.getX();
+        y = (float) bounds.getY();
+        x1 = (float) (bounds.getX() + bounds.getWidth());
+        y1 = (float) (bounds.getY() + bounds.getHeight());
     }
 
     public void setColor(int color) {
         this.color = color;
     }
+
     @Override
     public void draw(Canvas canvas, GameContext gameContext) {
         paint.setColor(color);

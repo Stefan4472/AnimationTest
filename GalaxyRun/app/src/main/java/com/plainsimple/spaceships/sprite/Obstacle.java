@@ -21,47 +21,61 @@ import com.plainsimple.spaceships.util.ProtectedQueue;
  */
 public class Obstacle extends Sprite {
 
-    // color of obstacle
+    // Obstacle color
     private int color = Color.rgb(103, 103, 103);
+    private DrawRect DRAW_OBSTACLE;
 
-    public Obstacle(int spriteId, float x, float y, int width, int height, GameContext gameContext) {
+    public static final int OBSTACLE_DAMAGE = 5;
+
+    public Obstacle(
+            int spriteId,
+            double x,
+            double y,
+            int width,
+            int height,
+            GameContext gameContext
+    ) {
         super(spriteId, SpriteType.OBSTACLE, x, y, width, height, gameContext);
-        hitBox = new Rectangle(x, y, x + getWidth(), y + getHeight());
-        hp = 5;
+        setHealth(OBSTACLE_DAMAGE);
+        // Init DrawRect instance with specified color and fill Paint Style
+        DRAW_OBSTACLE = new DrawRect(color, Paint.Style.FILL, 1);
     }
 
     @Override
     public void updateActions(UpdateContext updateContext) {
         // terminate when hitBox is out of bounds to the left of the screen
-        if (x < -hitBox.getWidth()) {
-            terminate = true;
+        if (getX() < -getWidth()) {
+            setCurrState(SpriteState.TERMINATED);
         }
     }
 
     @Override // speedX is set to the game's scrollspeed to ensure
     // smooth acceleration and decelleration with the game
-    public void updateSpeeds() {
+    public void updateSpeeds(long msSincePrevUpdate) {
 //        speedX = GameView.getScrollSpeed();
     }
 
     @Override
-    public void updateAnimations() {
+    public void updateAnimations(long msSincePrevUpdate) {
 
     }
 
     @Override
-    public void handleCollision(Sprite s, int damage) {
-        if (s instanceof Spaceship) {
-            hp += 2; // todo: too high?
+    public void handleCollision(Sprite s, int damage, UpdateContext updateContext) {
+        if (s.getSpriteType() == SpriteType.SPACESHIP) {
+//            hp += 2; // todo: too high?
         }
     }
 
-    // init DrawRect instance with specified color and fill Paint Style
-    private DrawRect DRAW_OBSTACLE = new DrawRect(color, Paint.Style.FILL, 1);
+    @Override
+    public void die(UpdateContext updateContext) {
+
+    }
+
     @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         // todo: only draw what's on screen
-        DRAW_OBSTACLE.setBounds(hitBox);
+        DRAW_OBSTACLE.setBounds(getHitbox());
         drawQueue.push(DRAW_OBSTACLE);
     }
 }

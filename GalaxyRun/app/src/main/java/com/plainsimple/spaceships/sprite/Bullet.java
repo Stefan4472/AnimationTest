@@ -20,41 +20,52 @@ public class Bullet extends Sprite {
     public static final int DELAY_FRAMES = 12;  // TODO: USE MILLISECOND DELAY INSTEAD
     public static final float TRAVEL_SPEED = 0.01f;  // TODO: MAKE DOUBLE
 
-    public Bullet(int spriteId, float x, float y, GameContext gameContext) {
+    public Bullet(int spriteId, double x, double y, GameContext gameContext) {
         super(spriteId, SpriteType.BULLET, x, y, BITMAP_ID, gameContext);
-        hitBox = new Rectangle(x + getWidth() * 0.7f, y - getHeight() * 0.2f, x + getWidth() * 1.5f, y + getHeight() * 1.2f);
-        hp = DAMAGE;
-        speedX = TRAVEL_SPEED;
+
+        setHitboxOffsetX(getWidth() * 0.7);
+        setHitboxOffsetY(-getHeight() * 0.2);
+        setHitboxWidth(getWidth() * 0.45);
+        setHitboxHeight(getHeight() * 1.4);
+
+        setHealth(DAMAGE);
+        setSpeedX(TRAVEL_SPEED);
+
         DRAW_BULLET = new DrawImage(BITMAP_ID);
     }
 
     @Override
     public void updateActions(UpdateContext updateContext) {
-        if (!isInBounds()) {
-            terminate = true;
+        if (!isVisibleInBounds()) {
+            setCurrState(SpriteState.TERMINATED);
         }
     }
 
     @Override
-    public void updateSpeeds() {
+    public void updateSpeeds(long msSincePrevUpdate) {
 
     }
 
     @Override
-    public void updateAnimations() {
+    public void updateAnimations(long msSincePrevUpdate) {
 
     }
 
     @Override
-    public void handleCollision(Sprite s, int damage) {
-        canCollide = false;
-        terminate = true;
+    public void handleCollision(Sprite s, int damage, UpdateContext updateContext) {
+        setCollidable(false);
+        setCurrState(SpriteState.TERMINATED);
+    }
+
+    @Override
+    public void die(UpdateContext updateContext) {
+
     }
 
     @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
-        DRAW_BULLET.setCanvasX0(x);
-        DRAW_BULLET.setCanvasY0(y);
+        DRAW_BULLET.setCanvasX0((float) getX());
+        DRAW_BULLET.setCanvasY0((float) getY());
         drawQueue.push(DRAW_BULLET);
     }
 }

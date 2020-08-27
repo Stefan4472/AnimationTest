@@ -1,5 +1,7 @@
 package com.plainsimple.spaceships.sprite;
 
+import android.icu.lang.UProperty;
+
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.helper.BitmapID;
@@ -17,45 +19,55 @@ public class Coin extends Sprite {
     private SpriteAnimation spin;
     private DrawImage DRAW_COIN;
 
-    public Coin(int spriteId, float x, float y, GameContext gameContext) {
+    public Coin(int spriteId, double x, double y, GameContext gameContext) {
         super(spriteId, SpriteType.COIN, x, y, gameContext);
+
+        setHitboxOffsetX(getWidth() * 0.15);
+        setHitboxOffsetY(getHeight() * 0.1);
+        setHitboxWidth(getWidth() * 0.7);
+        setHitboxHeight(getHeight() * 0.8);
+
         spin = gameContext.getAnimCache().get(BitmapID.COIN_SPIN);
-        width = spin.getFrameW();
-        height = spin.getFrameH();
+        setWidth(spin.getFrameW());
+        setHeight(spin.getFrameH());
         spin.start();
         DRAW_COIN = new DrawImage(spin.getBitmapID());
-        hitBox = new Rectangle(x + getWidth() * 0.15f, y + getHeight() * 0.1f, x + getWidth() * 0.85f, y + getHeight() * 0.9f);
     }
 
     @Override
     public void updateActions(UpdateContext updateContext) {
-        if (!isInBounds()) {
-            terminate = true;
+        if (!isVisibleInBounds()) {
+            setCurrState(SpriteState.TERMINATED);
         }
     }
 
     @Override // speed tracks with game's scrollspeed for
     // smooth acceleration and decelleration
-    public void updateSpeeds() {
+    public void updateSpeeds(long msSincePrevUpdate) {
 //        speedX = GameView.getScrollSpeed();
     }
 
     @Override
-    public void updateAnimations() {
+    public void updateAnimations(long msSincePrevUpdate) {
         spin.incrementFrame();
     }
 
     @Override
-    public void handleCollision(Sprite s, int damage) {
-        if (s instanceof Spaceship) {
-            terminate = true;
+    public void handleCollision(Sprite s, int damage, UpdateContext updateContext) {
+        if (s.getSpriteType() == SpriteType.SPACESHIP) {
+            setCurrState(SpriteState.TERMINATED);
         }
     }
 
     @Override
+    public void die(UpdateContext updateContext) {
+
+    }
+
+    @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
-        DRAW_COIN.setCanvasX0(x);
-        DRAW_COIN.setCanvasY0(y);
+        DRAW_COIN.setCanvasX0((float) getX());
+        DRAW_COIN.setCanvasY0((float) getY());
         DRAW_COIN.setDrawRegion(spin.getCurrentFrameSrc());
         drawQueue.push(DRAW_COIN);
     }
