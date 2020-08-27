@@ -133,10 +133,8 @@ public abstract class Sprite {
     // Update/handle any actions sprite takes
     public abstract void updateActions(UpdateContext updateContext);
 
-    // Update speedX and speedY (optional)
-    public void updateSpeeds(long msSincePrevUpdate) {
-
-    }
+    // Update speedX and speedY
+    public abstract void updateSpeeds(long msSincePrevUpdate);
 
     // Start/stop/update any animations
     public abstract void updateAnimations(long msSincePrevUpdate);
@@ -151,6 +149,7 @@ public abstract class Sprite {
 
     // Called to tell the sprite to die.
     // TODO: SHOULD THE SPRITE DECIDE WHEN IT TAKES DAMAGE/HOW MUCH DAMAGE IT TAKES?
+    // TODO: PROVIDE "KILLER" SPRITE?
     protected abstract void die(UpdateContext updateContext);
 
     /*

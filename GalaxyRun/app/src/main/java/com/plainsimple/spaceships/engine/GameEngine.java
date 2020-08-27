@@ -420,17 +420,14 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
                 aliens.add(gameContext.createAlien(
                         x,
                         y,
-                        scrollSpeed,
-                        spaceship,
-                        (int) currDifficulty
+                        currDifficulty
                 ));
                 break;
             case TileGenerator.ASTEROID: // todo: separate list for asteroids? could bounce off one another
                 obstacles.add(gameContext.createAsteroid(
                         x,
                         y,
-                        scrollSpeed,
-                        (int) currDifficulty
+                        currDifficulty
                 ));
                 break;
             case TileGenerator.END_GAME:

@@ -1,5 +1,6 @@
 package com.plainsimple.spaceships.sprite;
 
+import com.plainsimple.spaceships.engine.EventID;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.helper.BitmapData;
@@ -18,66 +19,81 @@ import com.plainsimple.spaceships.util.ProtectedQueue;
  */
 public class AlienBullet extends Sprite {
 
-    private BitmapID bitmapId;
-    // angle that bullet travels
-    private float fireAngle;
-
+    // Angle at which bullet travels
+    private double fireAngle;
     // DrawParam used to draw the AlienBullet
     private DrawImage DRAW_BULLET;
 
-    public AlienBullet(int spriteId, BitmapData bitmapData, float x, float y, float targetX, float targetY, GameContext gameContext) { // todo: damage as a parameter?
-        super(spriteId, SpriteType.ALIEN_BULLET, x, y, bitmapData, gameContext);
-        bitmapId = bitmapData.getId();
+    private static final BitmapID BITMAP_ID = BitmapID.ALIEN_BULLET;
+
+
+    public AlienBullet(
+            int spriteId,
+            double x,
+            double y,
+            double targetX,
+            double targetY,
+            GameContext gameContext
+    ) { // todo: damage as a parameter?
+        super(spriteId, SpriteType.ALIEN_BULLET, x, y, BITMAP_ID, gameContext);
+
         // DrawParam used to draw the AlienBullet
-        DRAW_BULLET = new DrawImage(bitmapId);
-        hitBox = new Rectangle(x, y, x + getWidth(), y + getHeight());
-        hp = 10;
+        DRAW_BULLET = new DrawImage(BITMAP_ID);
+        setHealth(10);
 
-        // speedX is fixed
-        speedX = -0.008f;
+        // SpeedX is fixed
+        setSpeedX(-0.008f * gameContext.getGameWidthPx());
 
-        // calculate fireAngle based on distance to target in x and y
-        // keep in mind this gets tricky because we're in canvas coordinates
-        float dist_x = x - targetX;
-        float dist_y = y - targetY;
+        // Calculate fireAngle based on distance to target in x and y.
+        // Keep in mind this gets tricky because we're in canvas coordinates
+        double dist_x = x - targetX;
+        double dist_y = y - targetY;
+        fireAngle = Math.toDegrees(Math.atan(dist_y / dist_x));
 
-        fireAngle = (float) Math.toDegrees(Math.atan(dist_y / dist_x));
-
-        // calculate speedY using relative screen dimensions
-//        float frames_to_impact = Math.abs(dist_x / GameView.screenW / speedX);
-//        speedY = -dist_y / GameView.playScreenH / frames_to_impact;
-
-        // cap speedY if abs. value greater than 0.012f
-        speedY = (Math.abs(speedY) > 0.012f ? Math.signum(speedY) * 0.012f : speedY);
-    }
-
-    @Override
-    public void updateActions(UpdateContext updateContext) {
-        if (!isInBounds()) {
-            terminate = true;
+        // TODO: UPDATE
+        // Calculate speedY using relative screen dimensions
+        double frames_to_impact = Math.abs(dist_x / gameContext.getGameWidthPx() / getSpeedX());
+        setSpeedY(-dist_y / gameContext.getGameHeightPx() / frames_to_impact);
+        // Cap speedY if abs. value greater than 0.012f
+        if (Math.abs(getSpeedY()) > 0.012) {
+            setSpeedY(Math.signum(getSpeedY()) * 0.012);
         }
     }
 
     @Override
-    public void updateSpeeds() {
-
+    public void updateActions(UpdateContext updateContext) {
+        if (!isVisibleInBounds()) {
+            updateContext.createdEvents.push(EventID.ALIEN_BULLET_OFF_SCREEN);
+            setCurrState(SpriteState.TERMINATED);
+        }
     }
 
     @Override
-    public void updateAnimations() {
-
+    public void updateSpeeds(long msSincePrevUpdate) {
+        // Do nothing
     }
 
     @Override
-    public void handleCollision(Sprite s, int damage) {
-        canCollide = false;
-        terminate = true;
+    public void updateAnimations(long msSincePrevUpdate) {
+        // Do nothing
+    }
+
+    @Override
+    public void handleCollision(Sprite s, int damage, UpdateContext updateContext) {
+        updateContext.createdEvents.push(EventID.ALIEN_BULLET_COLLIDED);
+        setCollidable(false);
+        setCurrState(SpriteState.TERMINATED);
+    }
+
+    @Override
+    public void die(UpdateContext updateContext) {
+        // Do nothing (already handled in collision)
     }
 
     @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
-        DRAW_BULLET.setCanvasX0(x);
-        DRAW_BULLET.setCanvasY0(y);
+        DRAW_BULLET.setCanvasX0((float) getX());
+        DRAW_BULLET.setCanvasY0((float) getY());
         DRAW_BULLET.setRotation((int) fireAngle);
         drawQueue.push(DRAW_BULLET);
     }

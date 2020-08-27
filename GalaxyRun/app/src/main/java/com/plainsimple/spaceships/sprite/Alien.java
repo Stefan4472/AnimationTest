@@ -144,7 +144,6 @@ public class Alien extends Sprite {
     public void fireBullet(Sprite s, UpdateContext updateContext) {
         Point2D target_center = s.getHitbox().getCenter();
         updateContext.createdChildren.push(gameContext.createAlienBullet(
-                bulletBitmapData,
                 getX(),
                 getY() + getHeight() * 0.5,
                 (float) target_center.getX(),

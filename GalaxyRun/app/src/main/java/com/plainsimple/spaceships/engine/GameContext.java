@@ -72,16 +72,16 @@ public class GameContext {
     /* Begin Sprite creation factory methods */
     // NOTE: UNFORTUNATELY WE CAN'T JUST PASS IN A `VARARGS`, LIKE IN PYTHON :(
 //    Sprite createSprite()
-    public Alien createAlien(double x, double y, int difficulty) {
+    public Alien createAlien(double x, double y, double difficulty) {
         return new Alien(nextSpriteId++, x, y, difficulty, this);
     }
 
-    public AlienBullet createAlienBullet(BitmapData bitmapData, double x, double y, float targetX, float targetY) {
-        return new AlienBullet(nextSpriteId++, bitmapData, x, y, targetX, targetY, this);
+    public AlienBullet createAlienBullet(double x, double y, double targetX, double targetY) {
+        return new AlienBullet(nextSpriteId++, x, y, targetX, targetY, this);
     }
 
-    public Asteroid createAsteroid(double x, double y, float scrollSpeed, int difficulty) {
-        return new Asteroid(nextSpriteId++, x, y, scrollSpeed, difficulty, this);
+    public Asteroid createAsteroid(double x, double y, double difficulty) {
+        return new Asteroid(nextSpriteId++, x, y, difficulty, this);
     }
 
     public Bullet createBullet(double x, double y) {
