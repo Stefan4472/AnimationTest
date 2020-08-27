@@ -1,6 +1,7 @@
 package com.plainsimple.spaceships.engine;
 
 import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.util.FastQueue;
 
 /**
@@ -11,8 +12,12 @@ import com.plainsimple.spaceships.util.FastQueue;
 
 public class GameUpdateMessage {
     public FastQueue<DrawParams> drawParams;
+    public FastQueue<EventID> events;
+    public FastQueue<SoundID> sounds;
 
     GameUpdateMessage() {
         drawParams = new FastQueue<>();
+        events = new FastQueue<>();
+        sounds = new FastQueue<>();
     }
 }

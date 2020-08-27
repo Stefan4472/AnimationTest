@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 
+import com.plainsimple.spaceships.engine.EventID;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.GameEngine;
 import com.plainsimple.spaceships.engine.GameRunner;
@@ -56,6 +57,9 @@ public class GameActivity extends FragmentActivity implements
     private ImageButton muteButton;
     private ArrowButtonView arrowButtons;
 
+    // TODO: MANAGE THE ACTIVITY LIFECYCLE PROPERLY!!!!!
+    private boolean isRunning = true;
+
     private boolean isPaused;
     private boolean isMuted;
 
@@ -78,6 +82,7 @@ public class GameActivity extends FragmentActivity implements
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
+//        getSupportActionBar().hide();
 
         // Set content view/layout
         setContentView(R.layout.game_layout);
@@ -118,10 +123,16 @@ public class GameActivity extends FragmentActivity implements
                     "Got %d drawParams", message.drawParams.getSize()
             ));
         }
+        for (EventID event : message.events) {
+            Log.d("GameActivity", event.toString());
+        }
         numUpdates++;
         healthbarView.setMovingToHealth((int) (numUpdates % 100));
 
-        mGameRunner.queueUpdate();
+        // Call the next update
+        if (isRunning) {
+            mGameRunner.queueUpdate();
+        }
     }
 
     /*
@@ -155,7 +166,6 @@ public class GameActivity extends FragmentActivity implements
         Log.d("GameActivity", String.format(
                 "initialize() called w/width %d, height %d", playableWidthPx, playableHeightPx
         ));
-        // TODO: ACTUALLY, GAMEENGINE SHOULD CREATE THE GAMECONTEXT!
 
         // Create GameEngine
         gameEngine = new GameEngine(getApplicationContext(), playableWidthPx, playableHeightPx);
@@ -404,6 +414,8 @@ public class GameActivity extends FragmentActivity implements
         Log.d("GameActivity", "onPause called");
         isPaused = true;
         gameEngine.inputPause();
+        gameView.stopThread();
+        isRunning = false;
 
 //        soundPool.release();
 //        soundPool = null;
@@ -417,6 +429,7 @@ public class GameActivity extends FragmentActivity implements
     public void onResume() {
         super.onResume();
         Log.d("GameActivity", "onResume called");
+        gameView.startThread();
 //        initMedia();
         if (isPaused) {
             // display pause dialog

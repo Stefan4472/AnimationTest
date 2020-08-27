@@ -252,9 +252,9 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
                 // As soon as the Player is killed, the scrollSpeed
                 // slows down to zero.
                 // Go to `FINISHED` once scrollSpeed hits near-zero.
-                if (scrollSpeed > -0.0001f) {
-                    setState(GameState.FINISHED);
-                }
+//                if (scrollSpeed > -0.0001f) {
+//                    setState(GameState.FINISHED);
+//                }
             }
             case FINISHED: {
 
@@ -301,12 +301,13 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         }
 
         // TODO: WAY OF CALCULATING TIME SINCE PREVIOUS UPDATE (WHILE ACCOUNTING FOR PAUSE/RESUME)
+        // TODO: PROVIDE IGAMEENGINE INTERFACE REFERENCE?
         UpdateContext update_context = new UpdateContext(
                 30,
                 currDifficulty,
                 new FastQueue<Sprite>(),
-                new FastQueue<EventID>(),
-                new FastQueue<SoundID>()
+                update_msg.events,
+                update_msg.sounds
         );
 
         GameEngineUtil.updateSprite(spaceship, update_context);
@@ -366,7 +367,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         // Make non-controllable
         spaceship.setControllable(false);
         // Set speed to slowly fly onto screen
-        spaceship.setSpeedX(0.01f);
+        spaceship.setSpeedX(gameContext.getGameWidthPx() * 0.05);
 
         gameTimer.start();
         setState(GameState.STARTING);
