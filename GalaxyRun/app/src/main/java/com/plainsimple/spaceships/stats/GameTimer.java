@@ -1,5 +1,7 @@
 package com.plainsimple.spaceships.stats;
 
+import com.plainsimple.spaceships.engine.GameTime;
+
 /**
  * Keeps track of the time something takes in milliseconds using System.time
  */
@@ -8,44 +10,53 @@ public class GameTimer {
 
     // last time the timer was started (ms)
     private long startTime;
+    private long lastUpdateMs;
+    private long carriedUpdateTimeMs;
+    private boolean isPaused;
     // number of milliseconds this timer has in total tracked
     private long msTracked;
-    // whether timer is currently recording
-    private boolean recording;
 
-    public GameTimer() {
-
-    }
-
-    // starts the timer. No effect unless previously paused
+    // Starts the timer. Doesn't do anything if the timer isn't paused.
     public void start() {
-        if (!recording) {
+        if (isPaused) {
             startTime = System.currentTimeMillis();
-            recording = true;
+            lastUpdateMs = startTime;
+            isPaused = false;
         }
     }
 
-    // stops recording and adds to msTracked from last startTime
+    // Adds to msTracked from last startTime
     public void pause() {
-        if (recording) {
-            msTracked += System.currentTimeMillis() - startTime;
-            recording = false;
+        if (!isPaused) {
+            carriedUpdateTimeMs = System.currentTimeMillis() - startTime;
+            msTracked += carriedUpdateTimeMs;
+            isPaused = true;
         }
     }
 
-    // reset time recorded to zero
-    public void reset() {
-        msTracked = 0;
-    }
-
-    // returns ms tracked
-    public long getMsTracked() {
-        if (recording) {
-            return msTracked + System.currentTimeMillis() - startTime;
+    // MAKE SOME IMPROVEMENTS TO UPDATECONTEXT
+    // REVISE MAP GENERATION
+    // GET DIFFICULTY AND SCROLLSPEED WORKING AS DESIRED
+    public GameTime recordUpdate() {
+        if (isPaused) {
+            throw new IllegalStateException("Can't record update while paused");
         } else {
-            return msTracked;
+            long curr_time = System.currentTimeMillis();
+            // TODO: NOT SURE IF THIS WORKS CORRECTLY (THE TRICKY THING IS TO WORK OVER PAUSE()/RESUME())
+            long ms_this_update = curr_time - lastUpdateMs + carriedUpdateTimeMs;
+            long run_time = msTracked + curr_time - startTime;
+
+            lastUpdateMs = System.currentTimeMillis();
+            carriedUpdateTimeMs = 0;
+            return new GameTime(curr_time, ms_this_update, run_time);
         }
     }
 
-//    public long getMsTracked(long currTime)
+    public long getRunTimeMs() {
+        if (isPaused) {
+            return msTracked;
+        } else {
+            return msTracked + System.currentTimeMillis() - startTime;
+        }
+    }
 }

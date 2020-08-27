@@ -44,8 +44,8 @@ public class GameActivity extends FragmentActivity implements
     // TODO: LOOKUP JAVA CODING GUIDELINES
     private boolean initialized;
     private GameEngine gameEngine;
-
     private GameRunner mGameRunner;
+    private BitmapCache bitmapCache;
 
     private long startTime;
     private long numUpdates;
@@ -127,10 +127,19 @@ public class GameActivity extends FragmentActivity implements
             Log.d("GameActivity", event.toString());
         }
         numUpdates++;
-        healthbarView.setMovingToHealth((int) (numUpdates % 100));
+
+        // Update views
+        gameView.queueDrawFrame(message.drawParams);
+//        healthbarView.setMovingToHealth((int) (numUpdates % 100));
 
         // Call the next update
         if (isRunning) {
+            // Sleep--for testing
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+
+            }
             mGameRunner.queueUpdate();
         }
     }
@@ -167,8 +176,20 @@ public class GameActivity extends FragmentActivity implements
                 "initialize() called w/width %d, height %d", playableWidthPx, playableHeightPx
         ));
 
+        bitmapCache = new BitmapCache(
+                getApplicationContext(),
+                playableWidthPx,
+                playableHeightPx
+        );
+        gameView.setBitmapCache(bitmapCache);
+
         // Create GameEngine
-        gameEngine = new GameEngine(getApplicationContext(), playableWidthPx, playableHeightPx);
+        gameEngine = new GameEngine(
+                getApplicationContext(),
+                bitmapCache,
+                playableWidthPx,
+                playableHeightPx
+        );
 //        gameContext.setSpaceship(gameEngine.getSpaceship());
 
         // Setup UI

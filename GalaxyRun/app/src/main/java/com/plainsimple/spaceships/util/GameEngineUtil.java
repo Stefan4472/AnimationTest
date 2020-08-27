@@ -58,10 +58,10 @@ public class GameEngineUtil {
     }
 
     public static void updateSprite(Sprite sprite, UpdateContext updateContext) {
-        sprite.updateSpeeds(updateContext.getMsSincePrevUpdate());
-        sprite.move(updateContext.getMsSincePrevUpdate());
+        sprite.updateSpeeds(updateContext);
+        sprite.move(updateContext);
         sprite.updateActions(updateContext);
-        sprite.updateAnimations(updateContext.getMsSincePrevUpdate());
+        sprite.updateAnimations(updateContext);
     }
     private static List<DrawParams> drawParams;
     private static DrawRect DRAW_HITBOX = new DrawRect(debugPaintRed.getColor(), debugPaintRed.getStyle(), debugPaintRed.getStrokeWidth());

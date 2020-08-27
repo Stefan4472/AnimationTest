@@ -14,6 +14,9 @@ import android.view.SurfaceView;
 
 import com.plainsimple.spaceships.activity.IGameActivity;
 import com.plainsimple.spaceships.helper.*;
+import com.plainsimple.spaceships.util.FastQueue;
+
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by Stefan on 10/17/2015.
@@ -28,6 +31,8 @@ public class GameView extends SurfaceView implements Runnable {
     private BitmapCache bitmapCache;
     private SurfaceHolder surfaceHolder;
     private int viewWidth, viewHeight;
+    // Queue of game frames to draw
+    private ConcurrentLinkedQueue<FastQueue<DrawParams>> drawFramesQueue;
 
     // TODO: THIS SHOULD REALLY BE A UI ELEMENT IN GAMEACTIVITY--BUT THAT WOULD LIKELY IMPACT PERFORMANCE DUE TO RUNONUITHREAD()
     // Score display in top left of screen
@@ -44,6 +49,7 @@ public class GameView extends SurfaceView implements Runnable {
         super(context, attributes);
         this.context = context;
         surfaceHolder = getHolder();
+        drawFramesQueue = new ConcurrentLinkedQueue<>();
         // TODO: HOW TO GET BITMAPCACHE?
     }
 
@@ -53,6 +59,14 @@ public class GameView extends SurfaceView implements Runnable {
 
     public void setGameViewListener(IGameViewListener gameViewListener) {
         this.gameViewListener = gameViewListener;
+    }
+
+    public void setBitmapCache(BitmapCache bitmapCache) {
+        this.bitmapCache = bitmapCache;
+    }
+
+    public void queueDrawFrame(FastQueue<DrawParams> drawParams) {
+        drawFramesQueue.add(drawParams);
     }
 
     /*
@@ -88,16 +102,20 @@ public class GameView extends SurfaceView implements Runnable {
         Canvas canvas;
         // TODO: THIS IS NOT THE CORRECT WAY TO DO IT
         while (isRunning) {
-            if (surfaceHolder.getSurface().isValid()) {
-                canvas = surfaceHolder.lockCanvas();
-                updateSubViews();
-                drawGame(canvas);
-                surfaceHolder.unlockCanvasAndPost(canvas);
+            // TODO: MAKE SURE THAT THERE ISN'T A BUILD-UP OF DRAW FRAMES
+            if (!drawFramesQueue.isEmpty()) {
+                FastQueue<DrawParams> draw_params = drawFramesQueue.poll();
+                if (surfaceHolder.getSurface().isValid()) {
+                    canvas = surfaceHolder.lockCanvas();
+                    updateSubViews();
+                    drawFrame(canvas, draw_params);
+                    surfaceHolder.unlockCanvasAndPost(canvas);
+                }
             }
         }
     }
 
-    private void drawGame(Canvas canvas) {
+    private void drawFrame(Canvas canvas, FastQueue<DrawParams> drawParams) {
         if (background != null) {
             background.draw(canvas);
         }
@@ -106,6 +124,11 @@ public class GameView extends SurfaceView implements Runnable {
             scoreDisplay.update(100);
             scoreDisplay.draw(canvas);
         }
+        Log.d("GameView", String.format("drawFrame() got %d DrawParams", drawParams.getSize()));
+        for (DrawParams draw_param : drawParams) {
+            draw_param.draw(canvas, bitmapCache);
+        }
+        Log.d("GameView", "finished drawing");
         // fill the area outside of playScreenH but in screenH with black
 //            canvas.drawRect(0, playScreenH, screenW, screenH, blackPaint);
     }

@@ -134,10 +134,10 @@ public abstract class Sprite {
     public abstract void updateActions(UpdateContext updateContext);
 
     // Update speedX and speedY
-    public abstract void updateSpeeds(long msSincePrevUpdate);
+    public abstract void updateSpeeds(UpdateContext updateContext);
 
     // Start/stop/update any animations
-    public abstract void updateAnimations(long msSincePrevUpdate);
+    public abstract void updateAnimations(UpdateContext updateContext);
 
     // Handles collision with another sprite. Also passes damage taken
     // (health's are cross-subtracted simultaneously; see GameEngineUtil)
@@ -163,9 +163,9 @@ public abstract class Sprite {
     /* Begin utility methods */
     // Moves the sprite based on current speeds and the number of
     // milliseconds since the previous update.
-    public void move(long msSincePrevUpdate) {
-        x += speedX * msSincePrevUpdate / 1000;
-        y += speedY * msSincePrevUpdate / 1000;
+    public void move(UpdateContext updateContext) {
+        x += speedX * updateContext.getGameTime().getMsSincePrevUpdate() / 1000;
+        y += speedY * updateContext.getGameTime().getMsSincePrevUpdate() / 1000;
         hitbox.setX(x + hitboxOffsetX);
         hitbox.setY(y + hitboxOffsetY);
     }

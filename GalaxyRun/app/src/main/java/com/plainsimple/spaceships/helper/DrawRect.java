@@ -48,7 +48,7 @@ public class DrawRect implements DrawParams {
     }
 
     @Override
-    public void draw(Canvas canvas, GameContext gameContext) {
+    public void draw(Canvas canvas, BitmapCache bitmapCache) {
         paint.setColor(color);
         paint.setStyle(style);
         paint.setStrokeWidth(strokeWidth);

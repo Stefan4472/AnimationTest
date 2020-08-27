@@ -64,13 +64,13 @@ public class DrawImage implements DrawParams {
     }
 
     @Override
-    public void draw(Canvas canvas, GameContext gameContext) {
+    public void draw(Canvas canvas, BitmapCache bitmapCache) {
         // todo: refine so data is called once and not every time. Also, set DrawRegion on init
         // reset the paint object
         paint.reset();
 
         // get bitmapData for the image to be drawn
-        BitmapData data = gameContext.getBitmapCache().getData(bitmapID);
+        BitmapData data = bitmapCache.getData(bitmapID);
 
         // set drawRegion to the full image if none was specified
         if (drawRegion == null) {
@@ -100,7 +100,7 @@ public class DrawImage implements DrawParams {
 
         // draw command
         canvas.drawBitmap(
-                gameContext.getBitmapCache().getBitmap(bitmapID),
+                bitmapCache.getBitmap(bitmapID),
                 drawRegion,
                 destination,
                 paint);

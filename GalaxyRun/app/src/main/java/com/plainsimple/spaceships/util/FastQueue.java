@@ -76,20 +76,21 @@ public class FastQueue<T> implements ProtectedQueue<T>, Iterable<T> {
      */
     class FastQueueIterator implements Iterator<T> {
         private FastQueue<T> queue;
-        private int nextIndex;
+        private int currIndex;
 
         FastQueueIterator(FastQueue<T> queue) {
             this.queue = queue;
-            nextIndex = 0;
+            currIndex = -1;
         }
 
         public boolean hasNext() {
-            return nextIndex < queue.getSize();
+            return currIndex + 1 < queue.getSize();
         }
 
         public T next() throws NoSuchElementException {
             if (hasNext()) {
-                return queue.get(nextIndex);
+                currIndex++;
+                return queue.get(currIndex);
             }
             else {
                 throw new NoSuchElementException();

@@ -57,7 +57,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
             + ":" + "loop(INFINITE,genRandom)";
     private GameMode gameMode = GameMode.fromString(ENDLESS_0_STR);
     // tracks duration of this game (non-paused)
-    private GameTimer gameTimer = new GameTimer();
+    private GameTimer gameTimer;
     // speed of sprites scrolling across the screen (must be negative!)
     private double scrollSpeed = -0.0025f;
     // The player's spaceship
@@ -104,16 +104,20 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     private int tileWidth;
 
     /* Start GameEngine logic */
-    public GameEngine(Context appContext, int gameWidthPx, int gameHeightPx) {
+    public GameEngine(
+            Context appContext,
+            BitmapCache bitmapCache,
+            int gameWidthPx,
+            int gameHeightPx
+    ) {
         // Create BitmapCache
-        bitmapCache = new BitmapCache(
-                appContext, gameWidthPx, gameHeightPx);
-        animCache = new AnimCache(appContext, bitmapCache);
+        this.bitmapCache = bitmapCache;
+        animCache = new AnimCache(appContext, this.bitmapCache);
 
         // Create GameContext
         gameContext = new GameContext(
                 appContext,
-                bitmapCache,
+                this.bitmapCache,
                 animCache,
                 gameWidthPx,
                 gameHeightPx
@@ -136,28 +140,41 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         currState = GameState.FINISHED;
     }
 
-//    private void initializeGame() {
-//
-//
-//    }
-
     private void resetGame() {
         startGame();
     }
 
     public void startGame() {
+        currDifficulty = 0;
+        score = 0;
+        scorePerSecond = 0.0;
+
+        spaceship.reset();
         obstacles.clear();
         coins.clear();
         aliens.clear();
         alienProjectiles.clear();
         playerProjectiles.clear();
+
         tiles = new byte[ROWS][gameContext.getGameWidthPx() / tileWidth];
         map.restart();
         mapTileCounter = 0;
         x = 0;
         lastTile = 0;
 
-        enterStartingState();
+        // Move spaceship just off the left of the screen, centered vertically
+        BitmapData ship_data = gameContext.getBitmapCache().getData(BitmapID.SPACESHIP);
+        spaceship.setX(-ship_data.getWidth());
+        spaceship.setY(gameContext.getGameHeightPx() / 2 - ship_data.getHeight() / 2);
+        // Make non-controllable
+        spaceship.setControllable(false);
+        // Set speed to slowly fly onto screen
+        spaceship.setSpeedX(gameContext.getGameWidthPx() * 0.05);
+
+        gameTimer = new GameTimer();
+        gameTimer.start();
+
+        setState(GameState.STARTING);
     }
 
     /* Start implementation of IGameController interface. */
@@ -217,11 +234,8 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
             return update_msg;
         }
 
-        // TODO: USE TIME, NOT NUMBER OF FRAMES, FOR EVERYTHING!
-        // TODO: DETERMINE MS SINCE LAST UPDATE
-
-        long run_time = gameTimer.getMsTracked();
-        currDifficulty = calcDifficulty(run_time);
+        GameTime game_time = gameTimer.recordUpdate();
+        currDifficulty = calcDifficulty(game_time.getRunTimeMs());
         scrollSpeed = calcScrollSpeed();
 
         // Debug prints, every 100 frames
@@ -230,7 +244,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
                     "Spaceship at %f, %f", spaceship.getX(), spaceship.getY()
             ));
             Log.d("GameEngine", String.format(
-                    "Game runtime = %d ms", run_time
+                    "Game runtime = %d ms", game_time.getRunTimeMs() / 1000
             ));
         }
 
@@ -259,8 +273,20 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
             case FINISHED: {
 
             }
-
         }
+
+        FastQueue<Sprite> created_sprites = new FastQueue<>();
+
+        // TODO: WAY OF CALCULATING TIME SINCE PREVIOUS UPDATE (WHILE ACCOUNTING FOR PAUSE/RESUME)
+        // TODO: PROVIDE IGAMEENGINE INTERFACE REFERENCE?
+        UpdateContext update_context = new UpdateContext(
+                game_time,
+                currDifficulty,
+                scrollSpeed,
+                created_sprites,
+                update_msg.events,
+                update_msg.sounds
+        );
 
         /* Start GameDriver logic */
         // update x
@@ -278,6 +304,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
                         num_cols++;
                         tiles[i][col] = TileGenerator.EMPTY;
                     }
+                    update_msg.events.push(EventID.SPRITE_SPAWNED);
                     obstacles.add(gameContext.createObstacle(
                             gameContext.getGameWidthPx() + getWOffset(),
                             i * tileWidth,
@@ -286,7 +313,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
                     ));
 
                 } else if (tiles[i][mapTileCounter] != TileGenerator.EMPTY) {
-                    addMapTile(tiles[i][mapTileCounter], gameContext.getGameWidthPx() + getWOffset(), i * tileWidth, (float) scrollSpeed, spaceship);
+                    addMapTile(tiles[i][mapTileCounter], gameContext.getGameWidthPx() + getWOffset(), i * tileWidth, update_context);
                 }
             }
             mapTileCounter++;
@@ -299,16 +326,6 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
             }
             lastTile = getWTile();
         }
-
-        // TODO: WAY OF CALCULATING TIME SINCE PREVIOUS UPDATE (WHILE ACCOUNTING FOR PAUSE/RESUME)
-        // TODO: PROVIDE IGAMEENGINE INTERFACE REFERENCE?
-        UpdateContext update_context = new UpdateContext(
-                30,
-                currDifficulty,
-                new FastQueue<Sprite>(),
-                update_msg.events,
-                update_msg.sounds
-        );
 
         GameEngineUtil.updateSprite(spaceship, update_context);
 
@@ -351,28 +368,6 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         return update_msg;
     }
 
-    private void enterStartingState() {
-        currDifficulty = 0;
-        score = 0;
-        scorePerSecond = 0.0;
-
-        spaceship.reset();
-        gameTimer.reset();
-
-        // Move spaceship just off the left of the screen, centered vertically
-        BitmapData ship_data = gameContext.getBitmapCache().getData(BitmapID.SPACESHIP);
-        spaceship.setX(-ship_data.getWidth());
-        spaceship.setY(gameContext.getGameHeightPx() / 2 - ship_data.getHeight() / 2);
-
-        // Make non-controllable
-        spaceship.setControllable(false);
-        // Set speed to slowly fly onto screen
-        spaceship.setSpeedX(gameContext.getGameWidthPx() * 0.05);
-
-        gameTimer.start();
-        setState(GameState.STARTING);
-    }
-
     private void enterInProgressState() {
         spaceship.setControllable(true);
         spaceship.setSpeedX(0);
@@ -409,13 +404,14 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     }
 
     // initializes sprite and adds to the proper list, given parameters
-    private void addMapTile(int tileID, float x, float y, float scrollSpeed, Spaceship spaceship) throws IndexOutOfBoundsException {
+    private void addMapTile(int tileID, float x, float y, UpdateContext updateContext) throws IndexOutOfBoundsException {
         switch (tileID) {
             case TileGenerator.COIN:
                 coins.add(gameContext.createCoin(
                         x,
                         y
                 ));
+                updateContext.createEvent(EventID.SPRITE_SPAWNED);
                 break;
             case TileGenerator.ALIEN:
                 aliens.add(gameContext.createAlien(
@@ -423,6 +419,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
                         y,
                         currDifficulty
                 ));
+                updateContext.createEvent(EventID.SPRITE_SPAWNED);
                 break;
             case TileGenerator.ASTEROID: // todo: separate list for asteroids? could bounce off one another
                 obstacles.add(gameContext.createAsteroid(
@@ -430,6 +427,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
                         y,
                         currDifficulty
                 ));
+                updateContext.createEvent(EventID.SPRITE_SPAWNED);
                 break;
             case TileGenerator.END_GAME:
 

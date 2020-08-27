@@ -43,12 +43,12 @@ public class Coin extends Sprite {
 
     @Override // speed tracks with game's scrollspeed for
     // smooth acceleration and decelleration
-    public void updateSpeeds(long msSincePrevUpdate) {
+    public void updateSpeeds(UpdateContext updateContext) {
 //        speedX = GameView.getScrollSpeed();
     }
 
     @Override
-    public void updateAnimations(long msSincePrevUpdate) {
+    public void updateAnimations(UpdateContext updateContext) {
         spin.incrementFrame();
     }
 

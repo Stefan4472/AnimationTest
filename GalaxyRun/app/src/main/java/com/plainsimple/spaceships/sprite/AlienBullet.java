@@ -63,24 +63,24 @@ public class AlienBullet extends Sprite {
     @Override
     public void updateActions(UpdateContext updateContext) {
         if (!isVisibleInBounds()) {
-            updateContext.createdEvents.push(EventID.ALIEN_BULLET_OFF_SCREEN);
+            updateContext.createEvent(EventID.ALIEN_BULLET_OFF_SCREEN);
             setCurrState(SpriteState.TERMINATED);
         }
     }
 
     @Override
-    public void updateSpeeds(long msSincePrevUpdate) {
+    public void updateSpeeds(UpdateContext updateContext) {
         // Do nothing
     }
 
     @Override
-    public void updateAnimations(long msSincePrevUpdate) {
+    public void updateAnimations(UpdateContext updateContext) {
         // Do nothing
     }
 
     @Override
     public void handleCollision(Sprite s, int damage, UpdateContext updateContext) {
-        updateContext.createdEvents.push(EventID.ALIEN_BULLET_COLLIDED);
+        updateContext.createEvent(EventID.ALIEN_BULLET_COLLIDED);
         setCollidable(false);
         setCurrState(SpriteState.TERMINATED);
     }

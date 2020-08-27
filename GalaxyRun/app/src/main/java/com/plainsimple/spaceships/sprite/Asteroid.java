@@ -77,7 +77,7 @@ public class Asteroid extends Sprite {
     }
 
     @Override
-    public void updateSpeeds(long msSincePrevUpdate) {
+    public void updateSpeeds(UpdateContext updateContext) {
         // Reverse speedY if it is nearly headed off a screen edge (i.e. "bounce")
         boolean leaving_above =
                 getY() >= (gameContext.getGameHeightPx() - getHeight()) &&
@@ -91,7 +91,7 @@ public class Asteroid extends Sprite {
     }
 
     @Override
-    public void updateAnimations(long msSincePrevUpdate) {
+    public void updateAnimations(UpdateContext updateContext) {
         // Increment currentRotation to create the rotating animation
         currentRotation += rotationRate;
     }
@@ -101,7 +101,7 @@ public class Asteroid extends Sprite {
         takeDamage(damage, updateContext);
 
         if (s.getSpriteType() == SpriteType.BULLET) {
-            updateContext.createdEvents.push(EventID.ASTEROID_SHOT);
+            updateContext.createEvent(EventID.ASTEROID_SHOT);
         }
 
         // Start HealthBarAnimation and LoseHealthAnimations
@@ -120,7 +120,7 @@ public class Asteroid extends Sprite {
 
     @Override
     public void die(UpdateContext updateContext) {
-        updateContext.createdEvents.push(EventID.ASTEROID_DIED);
+        updateContext.createEvent(EventID.ASTEROID_DIED);
         setCurrState(SpriteState.TERMINATED);
     }
 

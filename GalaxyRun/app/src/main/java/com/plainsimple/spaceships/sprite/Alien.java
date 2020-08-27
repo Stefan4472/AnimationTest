@@ -105,13 +105,13 @@ public class Alien extends Sprite {
         framesSinceLastBullet++;
 
         if (shouldTerminate(updateContext)) {
-            updateContext.createdEvents.push(EventID.ALIEN_DIED);
+            updateContext.createEvent(EventID.ALIEN_DIED);
             setCurrState(SpriteState.TERMINATED);
         }
 
         if (canFire(updateContext)) {
-            updateContext.createdEvents.push(EventID.ALIEN_FIRED_BULLET);
-            updateContext.createdSounds.push(SoundID.ALIEN_FIRED_BULLET);
+            updateContext.createEvent(EventID.ALIEN_FIRED_BULLET);
+            updateContext.createSound(SoundID.ALIEN_FIRED_BULLET);
             fireBullet(gameContext.getPlayerSprite(), updateContext);
             framesSinceLastBullet = 0;
             bulletsLeft--;
@@ -143,7 +143,7 @@ public class Alien extends Sprite {
     // current coordinates. Bullet initialized halfway down the alien on the left side
     public void fireBullet(Sprite s, UpdateContext updateContext) {
         Point2D target_center = s.getHitbox().getCenter();
-        updateContext.createdChildren.push(gameContext.createAlienBullet(
+        updateContext.registerChild(gameContext.createAlienBullet(
                 getX(),
                 getY() + getHeight() * 0.5,
                 (float) target_center.getX(),
@@ -152,7 +152,7 @@ public class Alien extends Sprite {
     }
 
     @Override
-    public void updateSpeeds(long msSincePrevUpdate) {
+    public void updateSpeeds(UpdateContext updateContext) {
         // TODO: comment, improve
 //        double projected_y;
 //        // if sprite in top half of screen, start flying down. Else start flying up
@@ -166,7 +166,7 @@ public class Alien extends Sprite {
     }
 
     @Override
-    public void updateAnimations(long msSincePrevUpdate) {
+    public void updateAnimations(UpdateContext updateContext) {
         if (explodeAnim.isPlaying()) {
             explodeAnim.incrementFrame();
         }
@@ -177,7 +177,7 @@ public class Alien extends Sprite {
         takeDamage(damage, updateContext);
 
         if (s.getSpriteType() == SpriteType.SPACESHIP) {
-            updateContext.createdEvents.push(EventID.ALIEN_SHOT);
+            updateContext.createEvent(EventID.ALIEN_SHOT);
         }
 
         // Start HealthBarAnimation and LoseHealthAnimations

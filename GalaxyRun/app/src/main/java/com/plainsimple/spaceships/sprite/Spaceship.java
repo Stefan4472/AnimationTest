@@ -144,17 +144,17 @@ public class Spaceship extends Sprite {
 
     private void fireCannons(UpdateContext updateContext) {
         // TODO: DON'T WE NEED TO CHECK THAT WE CAN FIRE?
-        updateContext.createdChildren.push(gameContext.createBullet(
+        updateContext.registerChild(gameContext.createBullet(
                 getX() + getWidth() * 0.78f,
                 getY() + 0.28f * getHeight()
         ));
-        updateContext.createdChildren.push(gameContext.createBullet(
+        updateContext.registerChild(gameContext.createBullet(
                 getX() + getWidth() * 0.78f,
                 getY() + 0.66f * getHeight()
         ));
-        updateContext.createdSounds.push(BULLET_SOUND);
-        updateContext.createdEvents.push(EventID.BULLET_FIRED);
-        updateContext.createdEvents.push(EventID.BULLET_FIRED);
+        updateContext.createSound(BULLET_SOUND);
+        updateContext.createEvent(EventID.BULLET_FIRED);
+        updateContext.createEvent(EventID.BULLET_FIRED);
     }
 
     // updates the direction the Spaceship is moving in
@@ -163,7 +163,7 @@ public class Spaceship extends Sprite {
     }
 
     @Override
-    public void updateSpeeds(long msSincePrevUpdate) {
+    public void updateSpeeds(UpdateContext updateContext) {
         if (direction == UP) {
             setSpeedY(-0.015 * gameContext.getGameHeightPx());
         } else if (direction== DOWN){
@@ -175,8 +175,8 @@ public class Spaceship extends Sprite {
     }
 
     @Override
-    public void move(long msSincePrevUpdate) {
-        super.move(msSincePrevUpdate);
+    public void move(UpdateContext updateContext) {
+        super.move(updateContext);
         // prevent spaceship from going off-screen
         if (getY() < 0) {
             setY(0);
@@ -186,7 +186,7 @@ public class Spaceship extends Sprite {
     }
 
     @Override
-    public void updateAnimations(long msSincePrevUpdate) {
+    public void updateAnimations(UpdateContext updateContext) {
         // update ColorMatrixAnimator
         colorMatrixAnimator.update();
 
@@ -212,20 +212,20 @@ public class Spaceship extends Sprite {
 
         // Handle coin collision
         if (otherSprite.getSpriteType() == SpriteType.COIN) {
-            updateContext.createdEvents.push(EventID.COIN_COLLECTED);
-            updateContext.createdSounds.push(SoundID.COIN_COLLECTED);
+            updateContext.createEvent(EventID.COIN_COLLECTED);
+            updateContext.createSound(SoundID.COIN_COLLECTED);
         }
 
         // Trigger flash if we are alive and took damage
         if (getCurrState() == SpriteState.ALIVE && damage > 0) {
-            updateContext.createdEvents.push(EventID.SPACESHIP_DAMAGED);
+            updateContext.createEvent(EventID.SPACESHIP_DAMAGED);
             colorMatrixAnimator.flash();
         }
     }
 
     @Override
     public void die(UpdateContext updateContext) {
-        updateContext.createdSounds.push(EXPLODE_SOUND);
+        updateContext.createSound(EXPLODE_SOUND);
         explodeAnim.start();
         setCurrState(SpriteState.DEAD);
     }

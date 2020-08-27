@@ -42,12 +42,12 @@ public class Bullet extends Sprite {
     }
 
     @Override
-    public void updateSpeeds(long msSincePrevUpdate) {
+    public void updateSpeeds(UpdateContext updateContext) {
 
     }
 
     @Override
-    public void updateAnimations(long msSincePrevUpdate) {
+    public void updateAnimations(UpdateContext updateContext) {
 
     }
 

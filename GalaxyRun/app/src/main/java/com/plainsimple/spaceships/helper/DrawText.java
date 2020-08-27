@@ -35,7 +35,7 @@ public class DrawText implements DrawParams {
     }
 
     @Override
-    public void draw(Canvas canvas, GameContext gameContext) { // todo: should paint be static? should it be passed as a parameter?
+    public void draw(Canvas canvas, BitmapCache bitmapCache) { // todo: should paint be static? should it be passed as a parameter?
         paint.setColor(textColor);
         paint.setTextSize(textSize);
         canvas.drawText(text, x, y, paint);
