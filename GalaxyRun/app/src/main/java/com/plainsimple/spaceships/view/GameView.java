@@ -124,11 +124,11 @@ public class GameView extends SurfaceView implements Runnable {
             scoreDisplay.update(100);
             scoreDisplay.draw(canvas);
         }
-        Log.d("GameView", String.format("drawFrame() got %d DrawParams", drawParams.getSize()));
+//        Log.d("GameView", String.format("drawFrame() got %d DrawParams", drawParams.getSize()));
         for (DrawParams draw_param : drawParams) {
             draw_param.draw(canvas, bitmapCache);
         }
-        Log.d("GameView", "finished drawing");
+//        Log.d("GameView", "finished drawing");
         // fill the area outside of playScreenH but in screenH with black
 //            canvas.drawRect(0, playScreenH, screenW, screenH, blackPaint);
     }

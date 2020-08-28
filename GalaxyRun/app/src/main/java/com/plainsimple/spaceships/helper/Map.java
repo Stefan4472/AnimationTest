@@ -2,152 +2,195 @@ package com.plainsimple.spaceships.helper;
 
 import android.util.Log;
 
-import java.util.LinkedList;
-import java.util.List;
+import com.plainsimple.spaceships.engine.EventID;
+import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.engine.UpdateContext;
+
+import java.util.Random;
+
+import static com.plainsimple.spaceships.helper.TileGenerator.NUM_ROWS;
+import static com.plainsimple.spaceships.helper.TileGenerator.TileID.OBSTACLE;
 
 /**
- * The Map class manages the generation of tiles. This is done with a list of GenCommands, which are
- * used by the TileGenerator methods to create byte[] arrays defining the sprites that get genCommands
- * by GameDriver. A Map is constructed by parsing from a String, which must be in the proper format.
- * The Map uses an integer pointer to keep track of where it is in its list of GenCommands, so that
- * each subsequent GenCommand simply increments the pointer and gets the next GenCommand in the list.
- * When the Map is reset, this pointer is simply reset to -1.
+ * The Map class manages the creation of non-playing sprites on the screen.
+ * Internally, it makes calls to TileGenerator. It generates one "chunk"
+ * of non-playing sprites at a time.
  *
- * Format for defining a Map:
+ * Types of "chunks":
+ * - Empty: P(0.10)
+ * - Obstacles: P(0.25)
+ * - Tunnel: P(0.10)
+ * - Alien: P(0.15)
+ * - Alien Swarm: P(0.10)
+ * - Asteroid: P(0.30)
+ *
+ * Each chunk has some leading "buffer" without any sprites, which gives
+ * the player a chance to reset their position.
  */
 
 public class Map {
 
-    // infinite keyword
-    private static final String INFINITE = "INFINITE";
+    private GameContext gameContext;
+    private Random random;
 
-    // list of GenCommands parsed from the String
-    private List<TileGenerator.GenCommand> genCommands = new LinkedList<>();
-    // index of next GenCommand to be requested
-    private int pointer = -1;
-    // whether chunks will be generated endlessly
-    private boolean endless;
-    // index on genCommands to start looping from if endless = true
-    private int endlessLoopIndex;
+    // Grid of tile IDs specifying which sprites will be generated where.
+    // A "tile-based map".
+    private TileGenerator.TileID[][] tiles;
+    // Number of tiles elapsed since last tiles was generated
+    private int mapTileCounter;
+    // Keeps track of the tile spaceship was on the previous update
+    private int prevTile;
+    // width (px) of the side of a tile
+    private int tileWidth;
+    // Set the number of columns of empty space before each created chunk
+    private static final int LEADING_BUFFER_LENGTH = 3;
 
-    private Map() {
 
-    }
-
-    // returns the next chunk of the Map. Does this by making a call to TileGenerator with the next
-    // genCommand. Throws IndexOutOfBoundsException if there are no more chunks left to be generated.
-    public byte[][] genNext(int difficulty) throws IndexOutOfBoundsException {
-        pointer++;
-        // if we've reached the end of genCommands and endless is true, revert to endlessLoopIndex
-        if (pointer == genCommands.size() && endless) {
-            pointer = endlessLoopIndex;
-        } else if (pointer == genCommands.size() && !endless) { // throw exception
-            throw new IndexOutOfBoundsException("Can't generate any more");
-        }
-        return TileGenerator.generateTiles(genCommands.get(pointer), difficulty);
-
+    // TODO: ALLOW PASSING IN A "SEED"?
+    public Map(GameContext gameContext) {
+        this.gameContext = gameContext;
+        random = new Random();  // TODO: DO WE NEED TO INIT WITH TIME AS A SEED?
+        tileWidth = gameContext.getGameHeightPx() / NUM_ROWS;
+        init();
     }
 
     public void restart() {
-        pointer = -1;
+        mapTileCounter = 0;
+        prevTile = 0;
+        init();
     }
 
-    public boolean isEndless() {
-        return endless;
+    private void init() {
+        // Generate a short stretch of EMPTY
+        tiles = TileGenerator.generateEmpty(5);
     }
 
-    protected List<TileGenerator.GenCommand> getGenCommands() {
-        return genCommands;
-    }
-
-    // adds a Map to this map. Checks to see if it is Endless, in which case it sets this one to
-    // Endless and sets endlessLoopIndex to the current number of genCommands.
-    // In either case the genCommands from other are added to the end of the list of genCommands
-    protected void addMap(Map other) {
-        if (other.isEndless()) {
-            endless = true;
-            endlessLoopIndex = genCommands.size();
-        }
-        genCommands.addAll(other.getGenCommands());
-    }
-
-    //  creates a Map object from the given String. Uses evalLoop() and evalCommand() as helpers.
-    // Returns the parsed Map object
-    public static Map parse(String toParse) {
-        Log.d("Map", "Parsing '" + toParse + "'");
-        toParse = toParse.trim();
-        Map parser = new Map();
-        while (!toParse.isEmpty()) {
-            // evaluate loop
-            if (toParse.startsWith("loop(")) { // todo: nested loops
-                parser.addMap(evalLoop(toParse.substring(5, toParse.indexOf(')'))));
-                toParse = toParse.substring(toParse.indexOf(')') + 1);
-                // remove the comma afterward, if it exists
-                if (toParse.startsWith(",")) {
-                    toParse = toParse.substring(1);
+    public void update(
+            UpdateContext updateContext,
+            double scrollDistance
+    ) {
+        int curr_tile = getWTile(scrollDistance);
+        Log.d("Map", TileGenerator.mapToString(tiles));
+        // Check if screen has progressed far enough to render the next column of tiles
+        if (curr_tile != prevTile) {
+            // Add any non-empty tiles in the current column to the edge of the screen
+            for (int i = 0; i < tiles.length; i++) {
+                // process for adding Obstacles: count the number of adjacent obstacles in the row.
+                // Set them all to EMPTY in the array. Construct the obstacle using this data
+                if (tiles[i][mapTileCounter] == OBSTACLE) {
+                    int num_cols = 0;
+                    for (int col = mapTileCounter; col < tiles[0].length && tiles[i][col] == OBSTACLE; col++) {
+                        num_cols++;
+                        tiles[i][col] = TileGenerator.TileID.EMPTY;
+                    }
+                    updateContext.createEvent(EventID.SPRITE_SPAWNED);
+                    updateContext.registerChild(gameContext.createObstacle(
+                            gameContext.getGameWidthPx() + getWOffset(scrollDistance),
+                            i * tileWidth,
+                            num_cols * tileWidth,
+                            tileWidth
+                    ));
+                } else if (tiles[i][mapTileCounter] != TileGenerator.TileID.EMPTY) {
+                    addMapTile(
+                            tiles[i][mapTileCounter],
+                            gameContext.getGameWidthPx() + getWOffset(scrollDistance),
+                            i * tileWidth,
+                            updateContext
+                    );
                 }
-            } else if (toParse.contains(",")){ // at least one more command
-                parser.genCommands.add(evalCommand(toParse.substring(0, toParse.indexOf(','))));
-                toParse = toParse.substring(toParse.indexOf(',') + 1);
-            } else { // one more command
-                parser.genCommands.add(evalCommand(toParse));
-                toParse = "";
+            }
+            mapTileCounter++;
+
+            // Generate more sprites if we've reached the end of this set
+            if (mapTileCounter == tiles[0].length) {
+                TileGenerator.ChunkType next_chunk_type =
+                        determineNextChunkType(updateContext.getDifficulty());
+                boolean should_generate_coins =
+                        determineGenerateCoins(updateContext.getDifficulty());
+                tiles = TileGenerator.generateChunk(
+                        next_chunk_type,
+                        LEADING_BUFFER_LENGTH,
+                        updateContext.getDifficulty(),
+                        should_generate_coins
+                );
+//                tiles = map.generateDebugTiles();
+                mapTileCounter = 0;
+            }
+            prevTile = curr_tile;
+        }
+    }
+
+    // current horizontal tile
+    private int getWTile(double scrollDistance) {
+        return ((int) scrollDistance) / tileWidth;
+    }
+
+    // number of pixels from start of current tile
+    private int getWOffset(double scrollDistance) {
+        return ((int) scrollDistance) % tileWidth;
+    }
+
+    // initializes sprite and adds to the proper list, given parameters
+    private void addMapTile(
+            TileGenerator.TileID tileID,
+            double x,
+            double y,
+            UpdateContext updateContext
+    ) throws IndexOutOfBoundsException {
+        switch (tileID) {
+            case COIN: {
+                updateContext.registerChild(gameContext.createCoin(
+                        x,
+                        y
+                ));
+                updateContext.createEvent(EventID.SPRITE_SPAWNED);
+                break;
+            }
+            case ALIEN: {
+                updateContext.registerChild(gameContext.createAlien(
+                        x,
+                        y,
+                        updateContext.getDifficulty()
+                ));
+                updateContext.createEvent(EventID.SPRITE_SPAWNED);
+                break;
+            }
+            case ASTEROID: {
+                updateContext.registerChild(gameContext.createAsteroid(
+                        x,
+                        y,
+                        updateContext.getDifficulty()
+                ));
+                updateContext.createEvent(EventID.SPRITE_SPAWNED);
+                break;
+            }
+            default: {
+                throw new IllegalArgumentException(String.format(
+                        "Unsupported tileID %s", tileID.toString())
+                );
             }
         }
-        Log.d("Map", "Parsed to " + parser);
-        return parser;
     }
 
-    // takes the params of a loop and creates a Map object from it, which contains a list of
-    // the GenCommands as well as instructions for dealing with infinite loops.
-    // format: number of times to loop other arguments, followed by comma-separated commandStrings
-    private static Map evalLoop(String loopStr) {
-        Log.d("Map", "Evaluating loop " + loopStr);
-        Map evaluated = new Map();
-        // split into params
-        String[] args = loopStr.split(",");
-        // first param is number of times to loop sequence of following commands
-        int num_loops;
-        if (args[0].equals(INFINITE)) {
-            evaluated.endless = true;
-            evaluated.endlessLoopIndex = 0;
-            num_loops = 1;
+    TileGenerator.ChunkType determineNextChunkType(double difficulty) {
+        double random_decimal = random.nextDouble();
+        Log.d("Map", String.format("%f", random_decimal));
+        if (random_decimal >= 0.7) {
+            return TileGenerator.ChunkType.ASTEROID;
+        } else if (random_decimal >= 0.6) {
+            return TileGenerator.ChunkType.ALIEN_SWARM;
+        } else if (random_decimal >= 0.45) {
+            return TileGenerator.ChunkType.ALIEN;
+        } else if (random_decimal >= 0.35) {
+            return TileGenerator.ChunkType.TUNNEL;
+        } else if (random_decimal >= 0.1) {
+            return TileGenerator.ChunkType.OBSTACLES;
         } else {
-            num_loops = Integer.parseInt(args[0]);
+            return TileGenerator.ChunkType.EMPTY;
         }
-        // evaluate each other argument as a command and add it to the list
-        List<TileGenerator.GenCommand> commands = new LinkedList<>();
-        for (int i = 1; i < args.length; i++) {
-            commands.add(evalCommand(args[i]));
-        }
-        // copy over the list of commands to the evaluated Map
-        for (int i = 0; i < num_loops; i++) {
-            evaluated.getGenCommands().addAll(commands);
-        }
-        return evaluated;
     }
 
-    // takes the String defining a genCommand and parses it into a GenCommand object, returns
-    // format: key word followed by optional '[size]' param
-    private static TileGenerator.GenCommand evalCommand(String commandStr) {
-        Log.d("Map", "Evaluating command " + commandStr);
-        // check whether contains '[', indicating a size param
-        byte size;
-        if (commandStr.contains("[")) {
-            size = Byte.parseByte(commandStr.substring(commandStr.indexOf('[') + 1, commandStr.indexOf(']')));
-            commandStr = commandStr.substring(0, commandStr.indexOf('['));
-        } else {
-            size = TileGenerator.GenCommand.DEFAULT;
-        }
-        return new TileGenerator.GenCommand(commandStr, size);
-    }
-
-    @Override
-    public String toString() {
-        String str = "Map: pointer at " + pointer + ". Endless = " + endless + " w/loopIndex " + endlessLoopIndex + "\n";
-        for (int i = 0; i < genCommands.size(); i++) {
-            str += ":" + genCommands.get(i).toString() + "\n";
-        }
-        return str;
+    boolean determineGenerateCoins(double difficulty) {
+        return (random.nextDouble() <= 0.3);
     }
 }

@@ -21,7 +21,7 @@ public abstract class Sprite {
     protected GameContext gameContext;
 
     // Enumeration of implemented Sprite types
-    enum SpriteType {
+    public enum SpriteType {
         ALIEN,
         ALIEN_BULLET,
         ASTEROID,
@@ -31,7 +31,7 @@ public abstract class Sprite {
         SPACESHIP
     };
 
-    enum SpriteState {
+    public enum SpriteState {
         // Sprite is "alive" and executing normal logic
         ALIVE,
         // Sprite has "died" (hit 0 health)

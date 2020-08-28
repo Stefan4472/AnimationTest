@@ -136,7 +136,7 @@ public class GameActivity extends FragmentActivity implements
         if (isRunning) {
             // Sleep--for testing
             try {
-                Thread.sleep(500);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
 
             }

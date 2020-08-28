@@ -12,9 +12,14 @@ public class GameTimer {
     private long startTime;
     private long lastUpdateMs;
     private long carriedUpdateTimeMs;
-    private boolean isPaused;
+    private boolean isPaused = true;
     // number of milliseconds this timer has in total tracked
     private long msTracked;
+
+    public GameTimer() {
+        carriedUpdateTimeMs = 0;
+        msTracked = 0;
+    }
 
     // Starts the timer. Doesn't do anything if the timer isn't paused.
     public void start() {
@@ -34,9 +39,6 @@ public class GameTimer {
         }
     }
 
-    // MAKE SOME IMPROVEMENTS TO UPDATECONTEXT
-    // REVISE MAP GENERATION
-    // GET DIFFICULTY AND SCROLLSPEED WORKING AS DESIRED
     public GameTime recordUpdate() {
         if (isPaused) {
             throw new IllegalStateException("Can't record update while paused");
@@ -46,7 +48,7 @@ public class GameTimer {
             long ms_this_update = curr_time - lastUpdateMs + carriedUpdateTimeMs;
             long run_time = msTracked + curr_time - startTime;
 
-            lastUpdateMs = System.currentTimeMillis();
+            lastUpdateMs = curr_time;
             carriedUpdateTimeMs = 0;
             return new GameTime(curr_time, ms_this_update, run_time);
         }

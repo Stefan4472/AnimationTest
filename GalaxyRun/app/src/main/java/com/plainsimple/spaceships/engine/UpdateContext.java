@@ -7,7 +7,6 @@ import com.plainsimple.spaceships.util.ProtectedQueue;
 /**
  * Passed to Sprites to update themselves. Meant for internal
  * GameEngine use only!
- * TODO: NOT SURE IF THIS IS GOING TO BE CONTINUED.
  */
 
 public class UpdateContext {
@@ -15,7 +14,6 @@ public class UpdateContext {
     private double difficulty;
     private double scrollSpeed;
 
-    // TODO: MAKE PRIVATE AND ADD `ADD()` METHODS FOR EACH
     private ProtectedQueue<Sprite> createdChildren;
     private ProtectedQueue<EventID> createdEvents;
     private ProtectedQueue<SoundID> createdSounds;
