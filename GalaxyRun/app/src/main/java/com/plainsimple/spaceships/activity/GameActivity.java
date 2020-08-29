@@ -120,16 +120,16 @@ public class GameActivity extends FragmentActivity implements
             long curr_time = System.currentTimeMillis();
             Log.d("GameActivity", "fps: " + numUpdates / ((curr_time - startTime) / 1000));
             Log.d("GameActivity", String.format(
-                    "Got %d drawParams", message.drawParams.getSize()
+                    "Got %d drawParams", message.getDrawParams().getSize()
             ));
         }
-        for (EventID event : message.events) {
+        for (EventID event : message.getEvents()) {
             Log.d("GameActivity", event.toString());
         }
         numUpdates++;
 
         // Update views
-        gameView.queueDrawFrame(message.drawParams);
+        gameView.queueDrawFrame(message.getDrawParams());
 //        healthbarView.setMovingToHealth((int) (numUpdates % 100));
 
         // Call the next update

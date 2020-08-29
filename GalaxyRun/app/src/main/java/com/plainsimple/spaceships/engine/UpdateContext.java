@@ -13,7 +13,6 @@ public class UpdateContext {
     private GameTime gameTime;
     private double difficulty;
     private double scrollSpeed;
-
     private ProtectedQueue<Sprite> createdChildren;
     private ProtectedQueue<EventID> createdEvents;
     private ProtectedQueue<SoundID> createdSounds;

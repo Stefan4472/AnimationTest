@@ -10,6 +10,7 @@ import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
+import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRect;
 import com.plainsimple.spaceships.helper.GameMode;
 import com.plainsimple.spaceships.helper.Map;
@@ -24,6 +25,7 @@ import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.stats.GameTimer;
 import com.plainsimple.spaceships.util.FastQueue;
 import com.plainsimple.spaceships.util.GameEngineUtil;
+import com.plainsimple.spaceships.util.ProtectedQueue;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -41,7 +43,6 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     private Map map;
 
     // Data for calculating FPS (TODO)
-    private long startTime;
     private long numUpdates;
 
     // Represents the level of difficulty. Increases non-linearly over time
@@ -208,21 +209,28 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     // updates all game logic
     // adds any new sprites and generates a new set of sprites if needed
     public GameUpdateMessage update() {
-        GameUpdateMessage update_msg = new GameUpdateMessage();
-
         // Do nothing if paused
         if (isPaused) {
-            return update_msg;
+            return new GameUpdateMessage();
         }
-        // REVISE MAP GENERATION
-        // GET DIFFICULTY AND SCROLLSPEED WORKING AS DESIRED
-        // Set up events + GameActivity input
+
+        // TODO: BETTER ORGANIZATION OF LOGIC WHILE IN DIFFERENT STATES
         GameTime game_time = gameTimer.recordUpdate();
-//        Log.d("GameEngine", String.format("%d %d %d",
-//                game_time.getCurrTimeMs(), game_time.getRunTimeMs(), game_time.getMsSincePrevUpdate()));
         currDifficulty = calcDifficulty(game_time.getRunTimeMs());
-        scrollSpeed = calcScrollSpeed();
+        scrollSpeed = calcScrollSpeed(currDifficulty);
         scrollDistance += game_time.getMsSincePrevUpdate() / 1000.0 * scrollSpeed;
+        scorePerSecond = calcScorePerSecond(currDifficulty);
+
+        Log.d("GameEngine", String.format("%d, %d, %f, %f, %f, %f", game_time.getRunTimeMs(), game_time.getMsSincePrevUpdate(), currDifficulty, scrollSpeed, scrollDistance, scorePerSecond));
+        // If we haven't started yet, check if it's time to start
+        if (currState == GameState.STARTING && checkShouldBeginRun()) {
+            enterInProgressState();
+        }
+
+        // Increment score
+        if (currState == GameState.IN_PROGRESS) {
+            score += game_time.getMsSincePrevUpdate() / 1000.0 * scorePerSecond;
+        }
 
         // Debug prints, every 100 frames
         if (numUpdates != 0 && numUpdates % 100 == 0) {
@@ -230,48 +238,24 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
                     "Spaceship at %f, %f", spaceship.getX(), spaceship.getY()
             ));
             Log.d("GameEngine", String.format(
-                    "Game runtime = %d ms", game_time.getRunTimeMs() / 1000
+                    "Game runtime = %f sec", game_time.getRunTimeMs() / 1000.0
             ));
         }
 
-        // TODO: THIS IS WHERE WE RUN OUR STATE-CHANGE-DETECTION LOGIC
-        switch (currState) {
-            case STARTING: {
-                // Starting position reached
-                if (spaceship.getX() > gameContext.getGameWidthPx() / 4) {
-                    enterInProgressState();
-                }
-            }
-            case IN_PROGRESS: {
-                // Increment score
-                score += 1 + currDifficulty / SCORING_CONST;
-            }
-            case PLAYER_KILLED: {
-                // TODO: DON'T WE NEED TO CHECK FOR PLAYER_INVISIBLE FIRST, THEN SLOW DOWN, THEN MARK FINISHED?
-                // TODO: I THINK WE NEED A 'SLOWING_DOWN` STATE
-                // As soon as the Player is killed, the scrollSpeed
-                // slows down to zero.
-                // Go to `FINISHED` once scrollSpeed hits near-zero.
-//                if (scrollSpeed > -0.0001f) {
-//                    setState(GameState.FINISHED);
-//                }
-            }
-            case FINISHED: {
-
-            }
-        }
-
+        // Create queues for this update
         FastQueue<Sprite> created_sprites = new FastQueue<>();
+        FastQueue<EventID> created_events = new FastQueue<>();
+        FastQueue<SoundID> created_sounds = new FastQueue<>();
+        FastQueue<DrawParams> draw_params = new FastQueue<>();
 
-        // TODO: WAY OF CALCULATING TIME SINCE PREVIOUS UPDATE (WHILE ACCOUNTING FOR PAUSE/RESUME)
         // TODO: PROVIDE IGAMEENGINE INTERFACE REFERENCE?
         UpdateContext update_context = new UpdateContext(
                 game_time,
                 currDifficulty,
                 scrollSpeed,
                 created_sprites,
-                update_msg.events,
-                update_msg.sounds
+                created_events,
+                created_sounds
         );
 
         if (currState == GameState.IN_PROGRESS) {
@@ -301,28 +285,30 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         GameEngineUtil.updateSprites(playerProjectiles, update_context);
 
         // TODO: COLLECT DRAWPARAMS DURING THE SAME PASS AS THE UPDATES
+        // TODO: SIMPLE WAY OF GETTING ALL HITBOXES DRAWN?
         for (Sprite obstacle : obstacles) {
-            obstacle.getDrawParams(update_msg.drawParams);
+            obstacle.getDrawParams(draw_params);
             // Draw hitbox
             DrawRect hitbox_rect = new DrawRect(Color.RED, Paint.Style.STROKE, 2);
             hitbox_rect.setBounds(obstacle.getHitbox());
-            update_msg.drawParams.push(hitbox_rect);
+            draw_params.push(hitbox_rect);
         }
 
         for (Sprite coin : coins) {
-            coin.getDrawParams(update_msg.drawParams);
+            coin.getDrawParams(draw_params);
         }
         for (Sprite alien : aliens) {
-            alien.getDrawParams(update_msg.drawParams);
+            alien.getDrawParams(draw_params);
         }
         for (Sprite alien_projectile : alienProjectiles) {
-            alien_projectile.getDrawParams(update_msg.drawParams);
+            alien_projectile.getDrawParams(draw_params);
         }
-        spaceship.getDrawParams(update_msg.drawParams);
+        spaceship.getDrawParams(draw_params);
 
         // Add all created sprites
         // TODO: REFACTOR THIS OUT
         for (Sprite sprite : created_sprites) {
+            Log.d("GameEngine", String.format("Adding sprite of type %s", sprite.getSpriteType().toString()));
             switch (sprite.getSpriteType()) {
                 case ALIEN: {
                     aliens.add(sprite);
@@ -355,11 +341,36 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
                 }
             }
         }
-        Log.d("GameEngine", String.format(
-                "There were %d sprites created", created_sprites.getSize())
-        );
+
         numUpdates++;
-        return update_msg;
+        return new GameUpdateMessage(
+                draw_params,
+                created_events,
+                created_sounds
+        );
+    }
+
+    // TODO: CLEAN UP THE `UPDATE()` LOGIC
+    private void runStartingState() {
+
+    }
+
+    private void runInProgressState() {
+
+    }
+
+    private void runKilledState() {
+
+    }
+
+    /*
+    Return whether it's time to start the current run (and move from
+    `STARTING` to `IN_PROGRESS`.
+     */
+    private boolean checkShouldBeginRun() {
+        // Starting position reached
+        return currState == GameState.STARTING &&
+                spaceship.getX() >= gameContext.getGameWidthPx() / 4;
     }
 
     private void enterInProgressState() {
@@ -371,6 +382,14 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     }
 
     private void enterKilledState() {
+        // TODO: DON'T WE NEED TO CHECK FOR PLAYER_INVISIBLE FIRST, THEN SLOW DOWN, THEN MARK FINISHED?
+        // TODO: I THINK WE NEED A 'SLOWING_DOWN` STATE
+        // As soon as the Player is killed, the scrollSpeed
+        // slows down to zero.
+        // Go to `FINISHED` once scrollSpeed hits near-zero.
+        //                if (scrollSpeed > -0.0001f) {
+        //                    setState(GameState.FINISHED);
+        //                }
         setState(GameState.PLAYER_KILLED);
     }
 
@@ -391,19 +410,26 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     Calculate difficulty "magic number" based on how long the game
     has run.
      */
-    private static double calcDifficulty(long gameRuntimeMs) {
-        // TODO: THIS IS JUST A PLACEHOLDER
-        return gameRuntimeMs / 1000;
-//        difficulty += 0.6;
+    private double calcDifficulty(long gameRuntimeMs) {
+        double gametime_sec = gameRuntimeMs / 1000.0;
+        Log.d("GameEngine", String.format("difficulty calculation off runtime %d, %f", gameRuntimeMs, gametime_sec));
+        // TODO: MAKE SURE IT NEVER EXCEEDS 1.0
+        double difficulty = (gametime_sec / 45.0) / (1.0 + gametime_sec / 45.0) + 0.1;
+        if (difficulty > 1.0) {
+            difficulty = 1.0;
+            Log.w("GameEngine", String.format(
+                    "WARN: Difficulty exceeded 1.0 (at time %d ms)", gameRuntimeMs)
+            );
+        }
+        return difficulty;
     }
 
     /*
     Calculates "scrollspeed" based on current scroll speed, game state,
-    and difficulty.
-    TODO: AGAIN, NEED TO BASE ON TIME PASSED, NOT NUMBER OF FRAMES
+    and difficulty. Return as pixels per second.
      */
-    private double calcScrollSpeed() {
-        return gameContext.getGameWidthPx() * 0.05;
+    private double calcScrollSpeed(double difficulty) {
+        return (0.43 * difficulty + 0.12) * gameContext.getGameWidthPx();
         // Spaceship destroyed: slow down scrolling to a halt.
 //        if (currState == GameState.PLAYER_KILLED) {
 //            return scrollSpeed / 1.03f;
@@ -412,6 +438,10 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
 ////            scrollSpeed = (float) (-Math.log(difficulty + 1) / 600);
 //            return currDifficulty / 10;
 //        }
+    }
+
+    private double calcScorePerSecond(double difficulty) {
+        return difficulty * 100;
     }
 
     // TODO: REMOVE

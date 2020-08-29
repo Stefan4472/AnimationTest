@@ -69,8 +69,8 @@ public class Map {
             UpdateContext updateContext,
             double scrollDistance
     ) {
+//        Log.d("Map", String.format("Update called with scrolldist %f", scrollDistance));
         int curr_tile = getWTile(scrollDistance);
-        Log.d("Map", TileGenerator.mapToString(tiles));
         // Check if screen has progressed far enough to render the next column of tiles
         if (curr_tile != prevTile) {
             // Add any non-empty tiles in the current column to the edge of the screen
@@ -113,8 +113,9 @@ public class Map {
                         updateContext.getDifficulty(),
                         should_generate_coins
                 );
-//                tiles = map.generateDebugTiles();
                 mapTileCounter = 0;
+                Log.d("Map", String.format("Generated chunk of %s", next_chunk_type.toString()));
+                Log.d("Map", TileGenerator.mapToString(tiles));
             }
             prevTile = curr_tile;
         }

@@ -11,13 +11,37 @@ import com.plainsimple.spaceships.util.FastQueue;
  */
 
 public class GameUpdateMessage {
-    public FastQueue<DrawParams> drawParams;
-    public FastQueue<EventID> events;
-    public FastQueue<SoundID> sounds;
+    private FastQueue<DrawParams> drawParams;
+    private FastQueue<EventID> events;
+    private FastQueue<SoundID> sounds;
+    // TODO: PROVIDE SCORE, HEALTH, AND SCROLLSPEED
 
-    GameUpdateMessage() {
-        drawParams = new FastQueue<>();
-        events = new FastQueue<>();
-        sounds = new FastQueue<>();
+
+    public GameUpdateMessage() {
+        this.drawParams = new FastQueue<>();
+        this.events = new FastQueue<>();
+        this.sounds = new FastQueue<>();
+    }
+
+    public GameUpdateMessage(
+            FastQueue<DrawParams> drawParams,
+            FastQueue<EventID> events,
+            FastQueue<SoundID> sounds
+    ) {
+        this.drawParams = drawParams;
+        this.events = events;
+        this.sounds = sounds;
+    }
+
+    public FastQueue<DrawParams> getDrawParams() {
+        return drawParams;
+    }
+
+    public FastQueue<EventID> getEvents() {
+        return events;
+    }
+
+    public FastQueue<SoundID> getSounds() {
+        return sounds;
     }
 }
