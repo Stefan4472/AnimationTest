@@ -29,6 +29,7 @@ import com.plainsimple.spaceships.util.ProtectedQueue;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Core game logic.
@@ -66,6 +67,9 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     // The player's spaceship
     private Spaceship spaceship;
 
+    // Queue for game input
+    private ConcurrentLinkedQueue<GameInput.InputID> gameInputQueue;
+
     // Represents the possible states that the game can be in
     private enum GameState {
         STARTING,
@@ -101,6 +105,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         // Create BitmapCache
         this.bitmapCache = bitmapCache;
         animCache = new AnimCache(appContext, this.bitmapCache);
+        gameInputQueue = new ConcurrentLinkedQueue<>();
 
         // Create GameContext
         gameContext = new GameContext(
@@ -112,7 +117,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         );
 
         // Create Spaceship and init just off the screen, centered vertically
-        spaceship = gameContext.createSpaceship(0, 0);  // TODO: START OFF INVISIBLE
+        spaceship = gameContext.createSpaceship(0, 0);  // TODO: START OFF INVISIBLE?
         // Set this class to receive Spaceship events
         spaceship.setListener(this);
 
@@ -126,9 +131,11 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     }
 
     private void resetGame() {
+//        gameInputQueue.clear();
         startGame();
     }
 
+    // TODO: MAKE THIS GO THROUGH THE INPUT QUEUE? (THE ANSWER IS YES I THINK)
     public void startGame() {
         currDifficulty = 0;
         score = 0;
@@ -159,49 +166,6 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         setState(GameState.STARTING);
     }
 
-    /* Start implementation of IGameController interface. */
-    // TODO: CONCURRENT QUEUE INPUT
-    // COLLECT DRAWCALLS, EVENTS ON CONCURRENT QUEUE
-    @Override
-    public void inputStartShooting() {
-
-    }
-
-    @Override
-    public void inputEndShooting() {
-
-    }
-
-    @Override
-    public void inputStartMoveUp() {
-
-    }
-
-    @Override
-    public void inputStartMoveDown() {
-
-    }
-
-    @Override
-    public void inputStopMoving() {
-
-    }
-
-    @Override
-    public void inputPause() {
-
-    }
-
-    @Override
-    public void inputResume() {
-
-    }
-
-    @Override
-    public void inputRestart() {
-
-    }
-
     public int getPlayerHealth() {
         return spaceship.getHealth();
     }
@@ -209,6 +173,11 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     // updates all game logic
     // adds any new sprites and generates a new set of sprites if needed
     public GameUpdateMessage update() {
+        // Process any input events on queue
+        while (!gameInputQueue.isEmpty()) {
+            processInput(gameInputQueue.poll());
+        }
+
         // Do nothing if paused
         if (isPaused) {
             return new GameUpdateMessage();
@@ -221,7 +190,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         scrollDistance += game_time.getMsSincePrevUpdate() / 1000.0 * scrollSpeed;
         scorePerSecond = calcScorePerSecond(currDifficulty);
 
-        Log.d("GameEngine", String.format("%d, %d, %f, %f, %f, %f", game_time.getRunTimeMs(), game_time.getMsSincePrevUpdate(), currDifficulty, scrollSpeed, scrollDistance, scorePerSecond));
+//        Log.d("GameEngine", String.format("%d, %d, %f, %f, %f, %f", game_time.getRunTimeMs(), game_time.getMsSincePrevUpdate(), currDifficulty, scrollSpeed, scrollDistance, scorePerSecond));
         // If we haven't started yet, check if it's time to start
         if (currState == GameState.STARTING && checkShouldBeginRun()) {
             enterInProgressState();
@@ -350,6 +319,49 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         );
     }
 
+    private void processInput(GameInput.InputID inputID) {
+        Log.d("GameEngine", String.format("Processing input event %s", inputID.toString()));
+        switch (inputID) {
+            case START_SHOOTING: {
+                spaceship.setShooting(true);
+                break;
+            }
+            case STOP_SHOOTING: {
+                spaceship.setShooting(false);
+                break;
+            }
+            case START_MOVING_UP: {
+                spaceship.setDirection(Spaceship.Direction.UP);
+                break;
+            }
+            case START_MOVING_DOWN: {
+                spaceship.setDirection(Spaceship.Direction.DOWN);
+                break;
+            }
+            case STOP_MOVING: {
+                spaceship.setDirection(Spaceship.Direction.NONE);
+                break;
+            }
+            case PAUSE_GAME: {
+                isPaused = true;
+                break;
+            }
+            case RESUME_GAME: {
+                isPaused = false;
+                break;
+            }
+            case RESTART_GAME: {
+                resetGame();
+                break;
+            }
+            default: {
+                throw new IllegalArgumentException(
+                        String.format("Unsupported GameInputID %s", inputID.toString())
+                );
+            }
+        }
+    }
+
     // TODO: CLEAN UP THE `UPDATE()` LOGIC
     private void runStartingState() {
 
@@ -412,7 +424,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
      */
     private double calcDifficulty(long gameRuntimeMs) {
         double gametime_sec = gameRuntimeMs / 1000.0;
-        Log.d("GameEngine", String.format("difficulty calculation off runtime %d, %f", gameRuntimeMs, gametime_sec));
+//        Log.d("GameEngine", String.format("difficulty calculation off runtime %d, %f", gameRuntimeMs, gametime_sec));
         // TODO: MAKE SURE IT NEVER EXCEEDS 1.0
         double difficulty = (gametime_sec / 45.0) / (1.0 + gametime_sec / 45.0) + 0.1;
         if (difficulty > 1.0) {
@@ -454,5 +466,46 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     public void onInvisible() {
         Log.d("GameView.java", "Received onInvisible");
         enterFinishedState();
+    }
+
+    /* Start implementation of IGameController interface. */
+    @Override
+    public void inputStartShooting() {
+        gameInputQueue.add(GameInput.InputID.START_SHOOTING);
+    }
+
+    @Override
+    public void inputStopShooting() {
+        gameInputQueue.add(GameInput.InputID.STOP_SHOOTING);
+    }
+
+    @Override
+    public void inputStartMoveUp() {
+        gameInputQueue.add(GameInput.InputID.START_MOVING_UP);
+    }
+
+    @Override
+    public void inputStartMoveDown() {
+        gameInputQueue.add(GameInput.InputID.START_MOVING_DOWN);
+    }
+
+    @Override
+    public void inputStopMoving() {
+        gameInputQueue.add(GameInput.InputID.STOP_MOVING);
+    }
+
+    @Override
+    public void inputPause() {
+        gameInputQueue.add(GameInput.InputID.PAUSE_GAME);
+    }
+
+    @Override
+    public void inputResume() {
+        gameInputQueue.add(GameInput.InputID.RESUME_GAME);
+    }
+
+    @Override
+    public void inputRestart() {
+        gameInputQueue.add(GameInput.InputID.RESTART_GAME);
     }
 }

@@ -12,21 +12,16 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 
 import com.plainsimple.spaceships.engine.EventID;
-import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.GameEngine;
 import com.plainsimple.spaceships.engine.GameRunner;
 import com.plainsimple.spaceships.engine.GameUpdateMessage;
-import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
-import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.view.ArrowButtonView;
 import com.plainsimple.spaceships.view.GameView;
 import com.plainsimple.spaceships.view.HealthBarView;
 import com.plainsimple.spaceships.view.IGameViewListener;
-
-import java.util.List;
 
 import plainsimple.spaceships.R;
 
@@ -158,7 +153,7 @@ public class GameActivity extends FragmentActivity implements
                 break;
             // End of touch
             case MotionEvent.ACTION_UP:
-                gameEngine.inputEndShooting();
+                gameEngine.inputStopShooting();
                 break;
         }
     }

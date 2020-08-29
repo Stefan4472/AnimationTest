@@ -158,8 +158,12 @@ public class Spaceship extends Sprite {
     }
 
     // updates the direction the Spaceship is moving in
-    public void updateInput(Direction direction) {
+    public void setDirection(Direction direction) {
         this.direction = direction;
+    }
+
+    public void setShooting(boolean isShooting) {
+        this.isShooting = isShooting;
     }
 
     @Override

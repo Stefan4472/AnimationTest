@@ -6,7 +6,7 @@ package com.plainsimple.spaceships.engine;
 
 public interface IGameController {
     void inputStartShooting();
-    void inputEndShooting();
+    void inputStopShooting();
     void inputStartMoveUp();
     void inputStartMoveDown();
     void inputStopMoving();
