@@ -185,7 +185,7 @@ public class GameEngine implements IGameController {
 
         // Do nothing if paused
         if (isPaused) {
-            return new GameUpdateMessage();
+            return new GameUpdateMessage(score, spaceship.getHealth(), currDifficulty);
         }
 
         // TODO: BETTER ORGANIZATION OF LOGIC WHILE IN DIFFERENT STATES
@@ -314,7 +314,10 @@ public class GameEngine implements IGameController {
         return new GameUpdateMessage(
                 draw_params,
                 created_events,
-                created_sounds
+                created_sounds,
+                score,
+                spaceship.getHealth(),
+                scrollSpeed
         );
     }
 

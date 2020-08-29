@@ -54,8 +54,12 @@ public class GameOverDialogFragment extends DialogFragment {
 
     // initializes and returns a new instance of GameOverDialogFragment given statistics of the game,
     // main message to display (e.g. "You Won!", whether it was a highscore, and how many stars were earned
-    public static GameOverDialogFragment newInstance(GameStats gameStats, String message,
-                                                     boolean highScore, int starsEarned) {
+    public static GameOverDialogFragment newInstance(
+            GameStats gameStats,
+            String message,
+            boolean highScore,
+            int starsEarned
+    ) {
         GameOverDialogFragment dialog = new GameOverDialogFragment();
 
         Bundle bundle = new Bundle();

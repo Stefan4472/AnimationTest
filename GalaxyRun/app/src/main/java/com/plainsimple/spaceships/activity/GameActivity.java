@@ -1,5 +1,7 @@
 package com.plainsimple.spaceships.activity;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.os.Handler;
@@ -118,9 +120,23 @@ public class GameActivity extends FragmentActivity implements
                     "Got %d drawParams", message.getDrawParams().getSize()
             ));
         }
+
         for (EventID event : message.getEvents()) {
             Log.d("GameActivity", event.toString());
+            switch (event) {
+                case GAME_STARTED: {
+                    onGameStarted();
+                    break;
+                }
+                case GAME_FINISHED: {
+                    onGameFinished();
+                    break;
+                }
+            }
         }
+
+        healthbarView.setMovingToHealth(message.getPlayerHealth());
+
         numUpdates++;
 
         // Update views
@@ -361,43 +377,41 @@ public class GameActivity extends FragmentActivity implements
     }
 
     /*
-    Callback fired when the current run has officially started (i.e. the
+    Called when the current run has officially started (i.e. the
     spaceship has reached the correct horizontal position for obstacles
     to start spawning.
      */
-//    @Override
-//    public void onGameStarted() {
-//        // Fade in direction arrows
-//        final AnimatorSet fade_in =
-//                (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.arrowbuttons_fadein);
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                fade_in.setTarget(arrowButtons);
-//                fade_in.start();
-//            }
-//        });
-//        // start the game timer
-////        gameView.getGameTimer().start();
-//    }
-//
-//    /*
-//    Callback fired when the current run is completely over.
-//    Check for high-score (TODO) and show the game-over dialog.
-//     */
-//    @Override
-//    public void onGameFinished() {
-//        // Hide arrowButtons
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                arrowButtons.setAlpha(0);
-//            }
-//        });
-//
-//        boolean is_highscore = false;
-//        int stars_earned = 0;
-//        // Show the GameOver dialog
+    public void onGameStarted() {
+        // Fade in direction arrows
+        final AnimatorSet fade_in = (AnimatorSet) AnimatorInflater.loadAnimator(
+                this,
+                R.animator.arrowbuttons_fadein
+        );
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                fade_in.setTarget(arrowButtons);
+                fade_in.start();
+            }
+        });
+    }
+
+    /*
+    Called when the current run is completely over.
+    Check for high-score (TODO) and show the game-over dialog.
+     */
+    public void onGameFinished() {
+        // Hide arrowButtons
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                arrowButtons.setAlpha(0);
+            }
+        });
+
+        boolean is_highscore = false;
+        int stars_earned = 0;
+        // Show the GameOver dialog
 //        DialogFragment d = GameOverDialogFragment.newInstance(
 //                new GameStats(),
 //                "GameOver",
@@ -405,7 +419,7 @@ public class GameActivity extends FragmentActivity implements
 //                stars_earned
 //        );
 //        d.show(getFragmentManager(), "GameOver");
-//    }
+    }
 
     /*
     Callback fired when the player's health changes.

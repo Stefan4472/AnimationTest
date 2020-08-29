@@ -54,6 +54,10 @@ public class HealthBarView extends View {
 
     // animates change
     public void setMovingToHealth(int movingToHealth) {
+        // Do nothing if there is no change
+        if (movingToHealth == currentHealth) {
+            return;
+        }
         if (movingToHealth < 0) {
             movingToHealth = 0;
         }
