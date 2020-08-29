@@ -5,12 +5,13 @@ package com.plainsimple.spaceships.engine;
  */
 
 public interface IGameController {
+    void inputStartGame();
+    void inputPauseGame();
+    void inputResumeGame();
+    void inputRestartGame();
     void inputStartShooting();
     void inputStopShooting();
     void inputStartMoveUp();
     void inputStartMoveDown();
     void inputStopMoving();
-    void inputPause();
-    void inputResume();
-    void inputRestart();
 }

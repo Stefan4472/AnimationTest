@@ -59,17 +59,6 @@ public class Spaceship extends Sprite {
     private static final SoundID BULLET_SOUND = SoundID.LASER;
     private static final SoundID EXPLODE_SOUND = SoundID.EXPLOSION;
 
-    // listener interface for a classes to receive events from the Spaceship
-    public interface SpaceshipListener {
-        // fired when Spaceship hp changes. Passes new hp
-        void onHealthChanged(int newHealth);
-        // fired when Spaceship has exploded and is no longer visible (game is over)
-        void onInvisible();
-    }
-
-    // listener that receives Spaceship events
-    private SpaceshipListener listener;
-
     public Spaceship(
             int spriteId,
             double x,
@@ -126,13 +115,10 @@ public class Spaceship extends Sprite {
 
         // Checks if explosion has played, in which case terminate should be set to true and onInvisible() called
         if (getCurrState() == SpriteState.DEAD && explodeAnim.hasPlayed()) {
-            setCurrState(SpriteState.TERMINATED);
             setCollidable(false);
             setVisible(false);
-
-            if (listener != null) {
-                listener.onInvisible();
-            }
+            setCurrState(SpriteState.TERMINATED);
+            updateContext.createEvent(EventID.SPACESHIP_INVISIBLE);
         }
     }
 
@@ -228,9 +214,16 @@ public class Spaceship extends Sprite {
     }
 
     @Override
+    public void takeDamage(int damage, UpdateContext updateContext) {
+        updateContext.createEvent(EventID.SPACESHIP_DAMAGED);
+        super.takeDamage(damage, updateContext);
+    }
+
+    @Override
     public void die(UpdateContext updateContext) {
         updateContext.createSound(EXPLODE_SOUND);
         explodeAnim.start();
+        updateContext.createEvent(EventID.SPACESHIP_KILLED);
         setCurrState(SpriteState.DEAD);
     }
 
@@ -270,10 +263,5 @@ public class Spaceship extends Sprite {
 
     public void setControllable(boolean controllable) {
         this.controllable = controllable;
-    }
-
-    // set listener to receive events
-    public void setListener(SpaceshipListener listener) {
-        this.listener = listener;
     }
 }

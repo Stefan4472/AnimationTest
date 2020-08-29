@@ -33,9 +33,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Core game logic.
+ * TODO: NEEDS PRETTY SERIOUS STRUCTURAL IMPROVEMENTS
  */
 
-public class GameEngine implements IGameController, Spaceship.SpaceshipListener {
+public class GameEngine implements IGameController {
 
     private GameContext gameContext;
     private BitmapCache bitmapCache;
@@ -118,8 +119,6 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
 
         // Create Spaceship and init just off the screen, centered vertically
         spaceship = gameContext.createSpaceship(0, 0);  // TODO: START OFF INVISIBLE?
-        // Set this class to receive Spaceship events
-        spaceship.setListener(this);
 
         // TODO: ANY WAY WE CAN PUT THE SPACESHIP INTO THE CONTEXT CONSTRUCTOR?
         gameContext.setPlayerSprite(spaceship);
@@ -130,13 +129,13 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         currState = GameState.FINISHED;
     }
 
-    private void resetGame() {
+    private void resetGame(ProtectedQueue<EventID> createdEvents) {
 //        gameInputQueue.clear();
-        startGame();
+        startGame(createdEvents);
     }
 
     // TODO: MAKE THIS GO THROUGH THE INPUT QUEUE? (THE ANSWER IS YES I THINK)
-    public void startGame() {
+    private void startGame(ProtectedQueue<EventID> createdEvents) {
         currDifficulty = 0;
         score = 0;
         scorePerSecond = 0.0;
@@ -163,7 +162,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         gameTimer = new GameTimer();
         gameTimer.start();
 
-        setState(GameState.STARTING);
+        setState(GameState.STARTING, createdEvents);
     }
 
     public int getPlayerHealth() {
@@ -173,9 +172,15 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     // updates all game logic
     // adds any new sprites and generates a new set of sprites if needed
     public GameUpdateMessage update() {
+        // Create queues for this update
+        FastQueue<Sprite> created_sprites = new FastQueue<>();
+        FastQueue<EventID> created_events = new FastQueue<>();
+        FastQueue<SoundID> created_sounds = new FastQueue<>();
+        FastQueue<DrawParams> draw_params = new FastQueue<>();
+
         // Process any input events on queue
         while (!gameInputQueue.isEmpty()) {
-            processInput(gameInputQueue.poll());
+            processInput(gameInputQueue.poll(), created_events);
         }
 
         // Do nothing if paused
@@ -193,7 +198,7 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
 //        Log.d("GameEngine", String.format("%d, %d, %f, %f, %f, %f", game_time.getRunTimeMs(), game_time.getMsSincePrevUpdate(), currDifficulty, scrollSpeed, scrollDistance, scorePerSecond));
         // If we haven't started yet, check if it's time to start
         if (currState == GameState.STARTING && checkShouldBeginRun()) {
-            enterInProgressState();
+            enterInProgressState(created_events);
         }
 
         // Increment score
@@ -210,12 +215,6 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
                     "Game runtime = %f sec", game_time.getRunTimeMs() / 1000.0
             ));
         }
-
-        // Create queues for this update
-        FastQueue<Sprite> created_sprites = new FastQueue<>();
-        FastQueue<EventID> created_events = new FastQueue<>();
-        FastQueue<SoundID> created_sounds = new FastQueue<>();
-        FastQueue<DrawParams> draw_params = new FastQueue<>();
 
         // TODO: PROVIDE IGAMEENGINE INTERFACE REFERENCE?
         UpdateContext update_context = new UpdateContext(
@@ -319,9 +318,25 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         );
     }
 
-    private void processInput(GameInput.InputID inputID) {
+    private void processInput(GameInput.InputID inputID, ProtectedQueue<EventID> createdEvents) {
         Log.d("GameEngine", String.format("Processing input event %s", inputID.toString()));
         switch (inputID) {
+            case START_GAME: {
+                startGame(createdEvents);
+                break;
+            }
+            case PAUSE_GAME: {
+                isPaused = true;
+                break;
+            }
+            case RESUME_GAME: {
+                isPaused = false;
+                break;
+            }
+            case RESTART_GAME: {
+                resetGame(createdEvents);
+                break;
+            }
             case START_SHOOTING: {
                 spaceship.setShooting(true);
                 break;
@@ -340,18 +355,6 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
             }
             case STOP_MOVING: {
                 spaceship.setDirection(Spaceship.Direction.NONE);
-                break;
-            }
-            case PAUSE_GAME: {
-                isPaused = true;
-                break;
-            }
-            case RESUME_GAME: {
-                isPaused = false;
-                break;
-            }
-            case RESTART_GAME: {
-                resetGame();
                 break;
             }
             default: {
@@ -385,15 +388,19 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
                 spaceship.getX() >= gameContext.getGameWidthPx() / 4;
     }
 
-    private void enterInProgressState() {
+    private void enterStartingState(ProtectedQueue<EventID> createdEvents) {
+
+    }
+
+    private void enterInProgressState(ProtectedQueue<EventID> createdEvents) {
         spaceship.setControllable(true);
         spaceship.setSpeedX(0);
         spaceship.setX(gameContext.getGameWidthPx() / 4);
-        setState(GameState.IN_PROGRESS);
+        setState(GameState.IN_PROGRESS, createdEvents);
         // TODO: START OBSTACLE GENERATION?
     }
 
-    private void enterKilledState() {
+    private void enterKilledState(ProtectedQueue<EventID> createdEvents) {
         // TODO: DON'T WE NEED TO CHECK FOR PLAYER_INVISIBLE FIRST, THEN SLOW DOWN, THEN MARK FINISHED?
         // TODO: I THINK WE NEED A 'SLOWING_DOWN` STATE
         // As soon as the Player is killed, the scrollSpeed
@@ -402,20 +409,21 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         //                if (scrollSpeed > -0.0001f) {
         //                    setState(GameState.FINISHED);
         //                }
-        setState(GameState.PLAYER_KILLED);
+        setState(GameState.PLAYER_KILLED, createdEvents);
     }
 
-    private void enterFinishedState() {
-        setState(GameState.FINISHED);
+    private void enterFinishedState(ProtectedQueue<EventID> createdEvents) {
+        setState(GameState.FINISHED, createdEvents);
     }
 
-    private void setState(GameState newState) {
+    private void setState(GameState newState, ProtectedQueue<EventID> createdEvents) {
         Log.d("GameEngine", String.format("Entering state %s", newState.toString()));
         currState = newState;
-        // TODO: ENQUEUE EVENT via SETSTATE() METHOD
-//        if (gameEventsListener != null) {
-//            gameEventsListener.onGameStarted();
-//        }
+        if (currState == GameState.IN_PROGRESS) {
+            createdEvents.push(EventID.GAME_STARTED);
+        } else if (currState == GameState.FINISHED) {
+            createdEvents.push(EventID.GAME_FINISHED);
+        }
     }
 
     /*
@@ -456,16 +464,24 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
         return difficulty * 100;
     }
 
-    // TODO: REMOVE
     @Override
-    public void onHealthChanged(int change) {
-        Log.d("GameView.java", "Received onHealthChanged for " + change);
+    public void inputStartGame() {
+        gameInputQueue.add(GameInput.InputID.START_GAME);
     }
 
-    @Override // handle spaceship becoming invisible
-    public void onInvisible() {
-        Log.d("GameView.java", "Received onInvisible");
-        enterFinishedState();
+    @Override
+    public void inputPauseGame() {
+        gameInputQueue.add(GameInput.InputID.PAUSE_GAME);
+    }
+
+    @Override
+    public void inputResumeGame() {
+        gameInputQueue.add(GameInput.InputID.RESUME_GAME);
+    }
+
+    @Override
+    public void inputRestartGame() {
+        gameInputQueue.add(GameInput.InputID.RESTART_GAME);
     }
 
     /* Start implementation of IGameController interface. */
@@ -492,20 +508,5 @@ public class GameEngine implements IGameController, Spaceship.SpaceshipListener 
     @Override
     public void inputStopMoving() {
         gameInputQueue.add(GameInput.InputID.STOP_MOVING);
-    }
-
-    @Override
-    public void inputPause() {
-        gameInputQueue.add(GameInput.InputID.PAUSE_GAME);
-    }
-
-    @Override
-    public void inputResume() {
-        gameInputQueue.add(GameInput.InputID.RESUME_GAME);
-    }
-
-    @Override
-    public void inputRestart() {
-        gameInputQueue.add(GameInput.InputID.RESTART_GAME);
     }
 }

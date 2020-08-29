@@ -194,7 +194,7 @@ public class GameActivity extends FragmentActivity implements
         mGameRunner.start();
         mGameRunner.prepareHandler();
         startTime = System.currentTimeMillis();
-        gameEngine.startGame();
+        gameEngine.inputStartGame();
         // Call the first game update
         mGameRunner.queueUpdate();
         initialized = true;
@@ -227,7 +227,7 @@ public class GameActivity extends FragmentActivity implements
         this.isPaused = isPaused;
         if (this.isPaused) {
             Log.d("GameActivity", "Pausing game");
-            gameEngine.inputPause();
+            gameEngine.inputPauseGame();
             pauseButton.setBackgroundResource(R.drawable.play);
 //            soundPool.autoPause();
             // Display pause dialog
@@ -235,7 +235,7 @@ public class GameActivity extends FragmentActivity implements
             d.show(getFragmentManager(), "Pause");
         } else {
             Log.d("GameActivity", "Resuming game");
-            gameEngine.inputResume();
+            gameEngine.inputResumeGame();
             pauseButton.setBackgroundResource(R.drawable.pause);
 //            soundPool.autoResume();
         }
@@ -318,7 +318,7 @@ public class GameActivity extends FragmentActivity implements
         playSound(SoundID.BUTTON_CLICKED);
         dialog.dismiss();
 
-        gameEngine.inputRestart();
+        gameEngine.inputRestartGame();
         resetUI();
         setGamePaused(false);
     }
@@ -429,7 +429,7 @@ public class GameActivity extends FragmentActivity implements
         super.onPause();
         Log.d("GameActivity", "onPause called");
         isPaused = true;
-        gameEngine.inputPause();
+        gameEngine.inputPauseGame();
         gameView.stopThread();
         isRunning = false;
 
