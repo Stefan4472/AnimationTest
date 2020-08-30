@@ -271,6 +271,9 @@ public class GameEngine implements IGameController {
         for (Sprite alien_projectile : alienProjectiles) {
             alien_projectile.getDrawParams(draw_params);
         }
+        for (Sprite player_projectile : playerProjectiles) {
+            player_projectile.getDrawParams(draw_params);
+        }
         spaceship.getDrawParams(draw_params);
 
         // Add all created sprites

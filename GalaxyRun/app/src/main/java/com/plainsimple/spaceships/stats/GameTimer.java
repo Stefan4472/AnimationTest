@@ -8,6 +8,10 @@ import com.plainsimple.spaceships.engine.GameTime;
 
 public class GameTimer {
 
+    // TODO: DIFFERENTIATE "GAME TIME" (TIME SINCE GAME WAS STARTED) VS. "RUN TIME"
+    // (TIME SINCE THE RUN BEGAN). PROVIDE "MARKRUNSTARTED()/MARKRUNFINISHED()" FUNCTIONS.
+    // THIS ALLOWS US TO PROVIDE TIMING INFORMATION EVEN WHILE THE "RUN" ISN'T IN_PROGRESS
+
     // last time the timer was started (ms)
     private long startTime;
     private long lastUpdateMs;

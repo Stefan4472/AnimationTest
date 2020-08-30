@@ -98,6 +98,9 @@ public class Alien extends Sprite {
         framesSinceLastBullet = -bulletDelay;
         bulletsLeft = 4;
         healthBarAnimation = new HealthBarAnimation(getWidth(), getHeight(), getHealth());
+
+        // TODO: THIS IS JUST FOR DEBUGGING AT THE MOMENT
+        setSpeedX(-0.1 * gameContext.getGameWidthPx());
     }
 
     @Override

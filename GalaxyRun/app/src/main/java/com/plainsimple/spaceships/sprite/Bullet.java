@@ -1,5 +1,6 @@
 package com.plainsimple.spaceships.sprite;
 
+import com.plainsimple.spaceships.engine.EventID;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.helper.BitmapID;
@@ -18,7 +19,9 @@ public class Bullet extends Sprite {
 
     public static final int DAMAGE = 5;
     public static final int DELAY_FRAMES = 12;  // TODO: USE MILLISECOND DELAY INSTEAD
-    public static final float TRAVEL_SPEED = 0.01f;  // TODO: MAKE DOUBLE
+    // Bullet speed per second, as percentage of screen width
+    public static final double SPEED_PERCENT_PER_SEC = 0.1;
+
 
     public Bullet(int spriteId, double x, double y, GameContext gameContext) {
         super(spriteId, SpriteType.BULLET, x, y, BITMAP_ID, gameContext);
@@ -29,7 +32,7 @@ public class Bullet extends Sprite {
         setHitboxHeight(getHeight() * 1.4);
 
         setHealth(DAMAGE);
-        setSpeedX(TRAVEL_SPEED);
+        setSpeedX(SPEED_PERCENT_PER_SEC * gameContext.getGameWidthPx());
 
         DRAW_BULLET = new DrawImage(BITMAP_ID);
     }
@@ -53,6 +56,7 @@ public class Bullet extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage, UpdateContext updateContext) {
+        updateContext.createEvent(EventID.BULLET_COLLIDED);
         setCollidable(false);
         setCurrState(SpriteState.TERMINATED);
     }

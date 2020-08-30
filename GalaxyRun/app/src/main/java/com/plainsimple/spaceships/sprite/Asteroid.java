@@ -46,7 +46,7 @@ public class Asteroid extends Sprite {
         super(spriteId, SpriteType.ASTEROID, x, y, BITMAP_ID, gameContext);
         // Set speedX slower than scrollspeed (give the player a chance to destroy it)
 //        speedX = scrollSpeed * 0.6f;
-        setSpeedX(-gameContext.getGameWidthPx() * 0.01);
+        setSpeedX(-gameContext.getGameWidthPx() * 0.05);
         // Set speedY to some randomized positive/negative value up to |0.03|
         // of screen width
         double rel_speed = (random.nextBoolean() ? -1 : +1) * random.nextDouble() * 0.03;

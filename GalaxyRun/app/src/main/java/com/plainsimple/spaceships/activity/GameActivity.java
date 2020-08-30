@@ -135,13 +135,11 @@ public class GameActivity extends FragmentActivity implements
             }
         }
 
+        // Update views
+        gameView.queueDrawFrame(message.getDrawParams());
         healthbarView.setMovingToHealth(message.getPlayerHealth());
 
         numUpdates++;
-
-        // Update views
-        gameView.queueDrawFrame(message.getDrawParams());
-//        healthbarView.setMovingToHealth((int) (numUpdates % 100));
 
         // Call the next update
         if (isRunning) {

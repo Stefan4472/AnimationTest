@@ -9,6 +9,7 @@ import com.plainsimple.spaceships.engine.UpdateContext;
 import java.util.Random;
 
 import static com.plainsimple.spaceships.helper.TileGenerator.NUM_ROWS;
+import static com.plainsimple.spaceships.helper.TileGenerator.TileID.EMPTY;
 import static com.plainsimple.spaceships.helper.TileGenerator.TileID.OBSTACLE;
 
 /**
@@ -72,25 +73,27 @@ public class Map {
 //        Log.d("Map", String.format("Update called with scrolldist %f", scrollDistance));
         int curr_tile = getWTile(scrollDistance);
         // Check if screen has progressed far enough to render the next column of tiles
+        // TODO: HANDLE POSSIBILITY THAT THE SCREEN HAS SCROLLED MORE THAN ONE TILE
         if (curr_tile != prevTile) {
             // Add any non-empty tiles in the current column to the edge of the screen
             for (int i = 0; i < tiles.length; i++) {
                 // process for adding Obstacles: count the number of adjacent obstacles in the row.
                 // Set them all to EMPTY in the array. Construct the obstacle using this data
-                if (tiles[i][mapTileCounter] == OBSTACLE) {
-                    int num_cols = 0;
-                    for (int col = mapTileCounter; col < tiles[0].length && tiles[i][col] == OBSTACLE; col++) {
-                        num_cols++;
-                        tiles[i][col] = TileGenerator.TileID.EMPTY;
-                    }
-                    updateContext.createEvent(EventID.SPRITE_SPAWNED);
-                    updateContext.registerChild(gameContext.createObstacle(
-                            gameContext.getGameWidthPx() + getWOffset(scrollDistance),
-                            i * tileWidth,
-                            num_cols * tileWidth,
-                            tileWidth
-                    ));
-                } else if (tiles[i][mapTileCounter] != TileGenerator.TileID.EMPTY) {
+//                if (tiles[i][mapTileCounter] == OBSTACLE) {
+//                    int num_cols = 0;
+//                    for (int col = mapTileCounter; col < tiles[0].length && tiles[i][col] == OBSTACLE; col++) {
+//                        num_cols++;
+//                        tiles[i][col] = TileGenerator.TileID.EMPTY;
+//                    }
+//                    updateContext.registerChild(gameContext.createObstacle(
+//                            gameContext.getGameWidthPx() + getWOffset(scrollDistance),
+//                            i * tileWidth,
+//                            num_cols * tileWidth,
+//                            tileWidth
+//                    ));
+//                } else if (tiles[i][mapTileCounter] != TileGenerator.TileID.EMPTY) {
+                // TODO: ADD, TILE-ALIGNED
+                if (tiles[i][mapTileCounter] != EMPTY) {
                     addMapTile(
                             tiles[i][mapTileCounter],
                             gameContext.getGameWidthPx() + getWOffset(scrollDistance),
@@ -98,6 +101,7 @@ public class Map {
                             updateContext
                     );
                 }
+//                }
             }
             mapTileCounter++;
 
@@ -138,22 +142,14 @@ public class Map {
             double y,
             UpdateContext updateContext
     ) throws IndexOutOfBoundsException {
+        Log.d("Map", String.format("Adding tile at %f, %f", x, y));
         switch (tileID) {
-            case COIN: {
-                updateContext.registerChild(gameContext.createCoin(
-                        x,
-                        y
-                ));
-                updateContext.createEvent(EventID.SPRITE_SPAWNED);
-                break;
-            }
             case ALIEN: {
                 updateContext.registerChild(gameContext.createAlien(
                         x,
                         y,
                         updateContext.getDifficulty()
                 ));
-                updateContext.createEvent(EventID.SPRITE_SPAWNED);
                 break;
             }
             case ASTEROID: {
@@ -162,7 +158,22 @@ public class Map {
                         y,
                         updateContext.getDifficulty()
                 ));
-                updateContext.createEvent(EventID.SPRITE_SPAWNED);
+                break;
+            }
+            case COIN: {
+                updateContext.registerChild(gameContext.createCoin(
+                        x,
+                        y
+                ));
+                break;
+            }
+            case OBSTACLE: {
+                updateContext.registerChild(gameContext.createObstacle(
+                        x,
+                        y,
+                        tileWidth,
+                        tileWidth
+                ));
                 break;
             }
             default: {

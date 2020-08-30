@@ -1,7 +1,5 @@
 package com.plainsimple.spaceships.sprite;
 
-import android.util.Log;
-
 import com.plainsimple.spaceships.engine.EventID;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.GameEngine;
@@ -37,7 +35,7 @@ public class Spaceship extends Sprite {
     private ColorMatrixAnimator colorMatrixAnimator = new ColorMatrixAnimator(3, 4, 2);
 
     // whether user has control over spaceship
-    private boolean controllable;
+    private boolean isControllable;
 
     // number of frames elapsed since cannon was last fired
     private int lastFiredCannon;
@@ -123,7 +121,8 @@ public class Spaceship extends Sprite {
     }
 
     private boolean canShoot() {
-        return isShooting &&
+        return isControllable &&
+                isShooting &&
                 lastFiredCannon >= Bullet.DELAY_FRAMES &&
                 getCurrState() == SpriteState.ALIVE;
     }
@@ -154,13 +153,15 @@ public class Spaceship extends Sprite {
 
     @Override
     public void updateSpeeds(UpdateContext updateContext) {
-        if (direction == UP) {
-            setSpeedY(-0.015 * gameContext.getGameHeightPx());
-        } else if (direction== DOWN){
-            setSpeedY(0.015 * gameContext.getGameWidthPx());
-        } else {
-            // Slow down
-            setSpeedY(getSpeedY() / 1.7);
+        if (isControllable) {
+            if (direction == UP) {
+                setSpeedY(-0.015 * gameContext.getGameHeightPx());
+            } else if (direction== DOWN){
+                setSpeedY(0.015 * gameContext.getGameWidthPx());
+            } else {
+                // Slow down
+                setSpeedY(getSpeedY() / 1.7);
+            }
         }
     }
 
@@ -262,6 +263,6 @@ public class Spaceship extends Sprite {
     }
 
     public void setControllable(boolean controllable) {
-        this.controllable = controllable;
+        this.isControllable = controllable;
     }
 }

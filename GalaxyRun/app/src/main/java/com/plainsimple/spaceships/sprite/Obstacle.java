@@ -27,6 +27,8 @@ public class Obstacle extends Sprite {
 
     public static final int OBSTACLE_DAMAGE = 5;
 
+    // TODO: PROVIDE SCROLLSPEED AS AN ARGUMENT. OBSTACLE SPEED SHOULDN'T CHANGE--THAT
+    // WAY, THERE WILL BE A NOTICEABLE CHANGE IN SPEEDS AS EACH NEW CHUNK IS SPAWNED
     public Obstacle(
             int spriteId,
             double x,
@@ -52,9 +54,8 @@ public class Obstacle extends Sprite {
     @Override // speedX is set to the game's scrollspeed to ensure
     // smooth acceleration and decelleration with the game
     public void updateSpeeds(UpdateContext updateContext) {
-//        speedX = GameView.getScrollSpeed();
-        // TODO: SET SPEED BASED ON CURR DIFFICULTY
-        setSpeedX(-0.02 * gameContext.getGameWidthPx());
+//        setSpeedX(-updateContext.getScrollSpeed() * gameContext.getGameWidthPx());
+        setSpeedX(-0.1 * gameContext.getGameWidthPx());
     }
 
     @Override

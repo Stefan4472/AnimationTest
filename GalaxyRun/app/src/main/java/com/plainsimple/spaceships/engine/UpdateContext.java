@@ -47,6 +47,8 @@ public class UpdateContext {
 
     public void registerChild(Sprite childSprite) {
         createdChildren.push(childSprite);
+        createEvent(EventID.SPRITE_SPAWNED);
+
     }
 
     public void createEvent(EventID eventID) {
