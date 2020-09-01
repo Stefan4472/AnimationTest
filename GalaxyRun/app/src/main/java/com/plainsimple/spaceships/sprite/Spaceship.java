@@ -69,6 +69,8 @@ public class Spaceship extends Sprite {
         this.gameContext = gameContext;
 
         // Position hitbox
+        setHitboxWidth(getWidth() * 0.7);
+        setHitboxHeight(getHeight() * 0.6);
         setHitboxOffsetX(getWidth() * 0.17);
         setHitboxOffsetY(getHeight() * 0.2f);
 

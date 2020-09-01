@@ -149,7 +149,7 @@ public class GameEngine implements IGameController {
         // Make non-controllable
         spaceship.setControllable(false);
         // Set speed to slowly fly onto screen
-        spaceship.setSpeedX(gameContext.getGameWidthPx() * 0.08);
+        spaceship.setSpeedX(gameContext.getGameWidthPx() * 0.12);
 
         gameTimer = new GameTimer();
         gameTimer.start();

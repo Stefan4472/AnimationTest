@@ -1,5 +1,7 @@
 package com.plainsimple.spaceships.sprite;
 
+import android.util.Log;
+
 import com.plainsimple.spaceships.engine.EventID;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
@@ -11,6 +13,7 @@ import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.helper.LoseHealthAnimation;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -46,7 +49,7 @@ public class Asteroid extends Sprite {
         super(spriteId, SpriteType.ASTEROID, x, y, BITMAP_ID, gameContext);
         // Set speedX slower than scrollspeed (give the player a chance to destroy it)
 //        speedX = scrollSpeed * 0.6f;
-        setSpeedX(-gameContext.getGameWidthPx() * 0.05);
+        setSpeedX(-gameContext.getGameWidthPx() * 0.1);
         // Set speedY to some randomized positive/negative value up to |0.03|
         // of screen width
         double rel_speed = (random.nextBoolean() ? -1 : +1) * random.nextDouble() * 0.03;
@@ -64,7 +67,7 @@ public class Asteroid extends Sprite {
         // Set the current rotation to a random angle
         currentRotation = random.nextInt(360);
         // Set rotation rate as function fo speedY (faster speed = faster rotation)
-        rotationRate = (float) (getSpeedY() * 200 / gameContext.getGameHeightPx());
+        rotationRate = (float) (getSpeedY() * 200.0 / gameContext.getGameHeightPx());
         // Init HealthBarAnimation for use if Asteroid takes damage
         healthBarAnimation = new HealthBarAnimation(getWidth(), getHeight(), getHealth());
     }
@@ -94,28 +97,43 @@ public class Asteroid extends Sprite {
     public void updateAnimations(UpdateContext updateContext) {
         // Increment currentRotation to create the rotating animation
         currentRotation += rotationRate;
+
+        // Update LoseHealthAnimations
+        Iterator<LoseHealthAnimation> health_anims = loseHealthAnimations.iterator();
+        while(health_anims.hasNext()) {
+            LoseHealthAnimation anim = health_anims.next();
+            // Remove animation if finished
+            if (anim.isFinished()) {
+                health_anims.remove();
+            } else {  // Update animation
+                anim.update(updateContext.getGameTime().getMsSincePrevUpdate());
+
+            }
+        }
     }
 
     @Override
     public void handleCollision(Sprite s, int damage, UpdateContext updateContext) {
-        takeDamage(damage, updateContext);
-
         if (s.getSpriteType() == SpriteType.BULLET) {
             updateContext.createEvent(EventID.ASTEROID_SHOT);
         }
 
+        Log.d("Asteroid", String.format("Took damage %d, state is %s", damage, getCurrState().toString()));
         // Start HealthBarAnimation and LoseHealthAnimations
         // if Asteroid took damage and isn't dead.
         if (damage > 0 && getCurrState() == SpriteState.ALIVE) {
+            Log.d("Asteroid", "Creating LoseHealthAnimation");
             healthBarAnimation.start();
             loseHealthAnimations.add(new LoseHealthAnimation(
                     getWidth(),
                     getHeight(),
-                    (float) (s.getX() - getX()),
-                    (float) (s.getY() - getY()),
+                    s.getX() - getX(),
+                    s.getY() - getY(),
                     damage
             ));
         }
+
+        takeDamage(damage, updateContext);
     }
 
     @Override
@@ -134,10 +152,7 @@ public class Asteroid extends Sprite {
 
         // Update and draw loseHealthAnimations
         for (LoseHealthAnimation anim : loseHealthAnimations) {
-            if (!anim.isFinished()) {
-                anim.update();
-                anim.getDrawParams((float) getX(), (float) getY(), drawQueue);
-            }
+            anim.getDrawParams(getX(), getY(), drawQueue);
         }
 
         // update and draw healthBarAnimation if showing

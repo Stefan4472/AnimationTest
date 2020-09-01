@@ -95,6 +95,7 @@ public abstract class Sprite {
         );
 
         this.gameContext = gameContext;
+        setCurrState(SpriteState.ALIVE);
     }
 
     public Sprite(

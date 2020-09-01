@@ -15,6 +15,7 @@ import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -94,7 +95,7 @@ public class Alien extends Sprite {
         vShift = random.nextInt(20);
         hShift = -random.nextInt(3);
         // TODO: BETTER FORMULA
-        setHealth((int) currDifficulty);
+        setHealth((int) (currDifficulty * 30));
         bulletDelay = 20;
         framesSinceLastBullet = -bulletDelay;
         bulletsLeft = 4;
@@ -174,6 +175,22 @@ public class Alien extends Sprite {
         if (explodeAnim.isPlaying()) {
             explodeAnim.update(updateContext.getGameTime().getMsSincePrevUpdate());
         }
+
+        // Update LoseHealthAnimations
+        Iterator<LoseHealthAnimation> health_anims = loseHealthAnimations.iterator();
+        while(health_anims.hasNext()) {
+            LoseHealthAnimation anim = health_anims.next();
+            // Remove animation if finished
+            if (anim.isFinished()) {
+                health_anims.remove();
+            } else {  // Update animation
+                anim.update(updateContext.getGameTime().getMsSincePrevUpdate());
+
+            }
+        }
+
+        // Update HealthbarAnimation
+
     }
 
     @Override
@@ -188,10 +205,10 @@ public class Alien extends Sprite {
         if (damage > 0) {
             healthBarAnimation.start();
             loseHealthAnimations.add(new LoseHealthAnimation(
-                    getWidth(),
-                    getHeight(),
-                    (float) (s.getX() - getX()),
-                    (float) (s.getY() - getY()),
+                    gameContext.getGameWidthPx(),
+                    gameContext.getGameHeightPx(),
+                    s.getX() - getX(),
+                    s.getY() - getY(),
                     damage
             ));
         }
@@ -212,10 +229,7 @@ public class Alien extends Sprite {
         }
         // Update and draw loseHealthAnimations
         for (LoseHealthAnimation anim : loseHealthAnimations) {
-            if (!anim.isFinished()) {
-                anim.update();
-                anim.getDrawParams((float) getX(), (float) getY(), drawQueue);
-            }
+            anim.getDrawParams(getX(), getY(), drawQueue);
         }
         // update and draw healthBarAnimation if showing
         if (healthBarAnimation.isShowing()) {
