@@ -103,6 +103,11 @@ public class Spaceship extends Sprite {
     }
 
     @Override
+    public int getDrawLayer() {
+        return 6;
+    }
+
+    @Override
     public void updateActions(UpdateContext updateContext) {
         // fires cannons if in correct FireMode, has waited long enough, and is still alive
         if (canShoot(updateContext)) {

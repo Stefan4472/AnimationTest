@@ -35,6 +35,7 @@ public class GameEngine implements IGameController {
     private BitmapCache bitmapCache;
     private AnimFactory animFactory;
     private HitDetector hitDetector;
+    private DrawLayers drawLayers;
     private Map map;
 
     // Data for calculating FPS (TODO)
@@ -152,6 +153,8 @@ public class GameEngine implements IGameController {
                 )
         });
 
+        drawLayers = new DrawLayers(7);
+
         // Set state for new, un-started game
         currState = GameState.FINISHED;
     }
@@ -254,6 +257,7 @@ public class GameEngine implements IGameController {
         }
 
         hitDetector.clear();
+        drawLayers.clear();
 
         Iterator<Sprite> it_sprites = sprites.iterator();
         while(it_sprites.hasNext()) {
@@ -265,9 +269,11 @@ public class GameEngine implements IGameController {
 
             GameEngineUtil.updateSprite(sprite, update_context);
             hitDetector.addSprite(sprite);
-            sprite.getDrawParams(draw_params);
-            draw_params.push(GameEngineUtil.drawHitbox(sprite));
+            drawLayers.addSprite(sprite);
         }
+
+        // Collect DrawParams
+        drawLayers.getDrawParams(draw_params, true);
 
         // Handle collisions, passing the health of each as the damage
         // applied to the other.

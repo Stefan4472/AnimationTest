@@ -33,6 +33,11 @@ public class Coin extends Sprite {
     }
 
     @Override
+    public int getDrawLayer() {
+        return 3;
+    }
+
+    @Override
     public void updateActions(UpdateContext updateContext) {
         if (getX() < -getWidth()) {
             setCurrState(SpriteState.TERMINATED);

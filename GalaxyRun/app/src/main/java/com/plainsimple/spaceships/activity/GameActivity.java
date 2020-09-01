@@ -113,14 +113,14 @@ public class GameActivity extends FragmentActivity implements
     @Override
     public void onGameStateUpdated(GameUpdateMessage message) {
 //        Log.d("GameActivity", "Got latest game update");
-//        if (numUpdates != 0 && numUpdates % 100 == 0) {
-//            long curr_time = System.currentTimeMillis();
-//            double fps = numUpdates / ((curr_time - startTime) / 1000.0);
-//            Log.d("GameActivity", String.format("fps: %f (%d updates)", fps, numUpdates));
-//            Log.d("GameActivity", String.format(
-//                    "Got %d drawParams", message.getDrawParams().getSize()
-//            ));
-//        }
+        if (numUpdates != 0 && numUpdates % 150 == 0) {
+            long curr_time = System.currentTimeMillis();
+            double fps = numUpdates / ((curr_time - startTime) / 1000.0);
+            Log.d("GameActivity", String.format("fps: %f (%d updates)", fps, numUpdates));
+            Log.d("GameActivity", String.format(
+                    "Got %d drawParams", message.getDrawParams().getSize()
+            ));
+        }
 
         for (EventID event : message.getEvents()) {
             Log.d("GameActivity", event.toString());

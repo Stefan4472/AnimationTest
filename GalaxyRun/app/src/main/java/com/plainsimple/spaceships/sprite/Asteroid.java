@@ -79,6 +79,11 @@ public class Asteroid extends Sprite {
     }
 
     @Override
+    public int getDrawLayer() {
+        return 5;
+    }
+
+    @Override
     public void updateActions(UpdateContext updateContext) {
         if (getX() < -getWidth()) {
             setCurrState(SpriteState.TERMINATED);

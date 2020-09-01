@@ -131,6 +131,13 @@ public abstract class Sprite {
     }
 
     /* Begin core abstract methods */
+    // NOTE: TODO: CURRENTLY WE ARE JUST USING THE SPRITETYPE AS COLLISION LAYER
+    public int getCollisionLayer() {
+        return spriteType.ordinal();
+    }
+
+    public abstract int getDrawLayer();
+
     // Update/handle any actions sprite takes
     public abstract void updateActions(UpdateContext updateContext);
 
@@ -357,10 +364,5 @@ public abstract class Sprite {
 
     public boolean shouldTerminate() {
         return this.currState == SpriteState.TERMINATED;
-    }
-
-    // NOTE: TODO: CURRENTLY WE ARE JUST USING THE SPRITETYPE AS COLLISION LAYER
-    public int getCollisionLayer() {
-        return spriteType.ordinal();
     }
 }
