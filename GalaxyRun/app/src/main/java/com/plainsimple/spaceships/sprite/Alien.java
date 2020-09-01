@@ -99,7 +99,13 @@ public class Alien extends Sprite {
         bulletDelay = 20;
         framesSinceLastBullet = -bulletDelay;
         bulletsLeft = 4;
-        healthBarAnimation = new HealthBarAnimation(getWidth(), getHeight(), getHealth());
+        healthBarAnimation = new HealthBarAnimation(
+                gameContext.getGameWidthPx(),
+                gameContext.getGameHeightPx(),
+                getWidth(),
+                getHeight(),
+                getHealth()
+        );
 
         // TODO: THIS IS JUST FOR DEBUGGING AT THE MOMENT
         setSpeedX(-0.1 * gameContext.getGameWidthPx());
@@ -190,7 +196,9 @@ public class Alien extends Sprite {
         }
 
         // Update HealthbarAnimation
-
+        if (healthBarAnimation.isShowing()) {
+            healthBarAnimation.update(updateContext.getGameTime().getMsSincePrevUpdate());
+        }
     }
 
     @Override
@@ -203,7 +211,9 @@ public class Alien extends Sprite {
 
         // Start HealthBarAnimation and LoseHealthAnimations
         if (damage > 0) {
+            healthBarAnimation.setHealth(getHealth());
             healthBarAnimation.start();
+
             loseHealthAnimations.add(new LoseHealthAnimation(
                     gameContext.getGameWidthPx(),
                     gameContext.getGameHeightPx(),
@@ -227,14 +237,13 @@ public class Alien extends Sprite {
             DRAW_ALIEN.setCanvasY0((float) getY());
             drawQueue.push(DRAW_ALIEN);
         }
-        // Update and draw loseHealthAnimations
+        // Draw loseHealthAnimations
         for (LoseHealthAnimation anim : loseHealthAnimations) {
             anim.getDrawParams(getX(), getY(), drawQueue);
         }
-        // update and draw healthBarAnimation if showing
+        // Draw healthBarAnimation if showing
         if (healthBarAnimation.isShowing()) {
-            healthBarAnimation.update();
-            healthBarAnimation.getDrawParams((float) getX(), (float) getY(), getHealth(), drawQueue);
+            healthBarAnimation.getDrawParams(getX(), getY(), getHealth(), drawQueue);
         }
         // add explodeAnim params if showing
         if (explodeAnim.isPlaying()) {

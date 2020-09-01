@@ -69,7 +69,13 @@ public class Asteroid extends Sprite {
         // Set rotation rate as function fo speedY (faster speed = faster rotation)
         rotationRate = (float) (getSpeedY() * 200.0 / gameContext.getGameHeightPx());
         // Init HealthBarAnimation for use if Asteroid takes damage
-        healthBarAnimation = new HealthBarAnimation(getWidth(), getHeight(), getHealth());
+        healthBarAnimation = new HealthBarAnimation(
+                gameContext.getGameWidthPx(),
+                gameContext.getGameHeightPx(),
+                getWidth(),
+                getHeight(),
+                getHealth()
+        );
     }
 
     @Override
@@ -107,23 +113,30 @@ public class Asteroid extends Sprite {
                 health_anims.remove();
             } else {  // Update animation
                 anim.update(updateContext.getGameTime().getMsSincePrevUpdate());
-
             }
+        }
+
+        // Update HealthbarAnimation
+        if (healthBarAnimation.isShowing()) {
+            healthBarAnimation.update(updateContext.getGameTime().getMsSincePrevUpdate());
         }
     }
 
     @Override
     public void handleCollision(Sprite s, int damage, UpdateContext updateContext) {
+        takeDamage(damage, updateContext);
+
         if (s.getSpriteType() == SpriteType.BULLET) {
             updateContext.createEvent(EventID.ASTEROID_SHOT);
         }
 
         Log.d("Asteroid", String.format("Took damage %d, state is %s", damage, getCurrState().toString()));
         // Start HealthBarAnimation and LoseHealthAnimations
-        // if Asteroid took damage and isn't dead.
-        if (damage > 0 && getCurrState() == SpriteState.ALIVE) {
+        if (damage > 0) {
             Log.d("Asteroid", "Creating LoseHealthAnimation");
+            healthBarAnimation.setHealth(getHealth());
             healthBarAnimation.start();
+
             loseHealthAnimations.add(new LoseHealthAnimation(
                     getWidth(),
                     getHeight(),
@@ -132,8 +145,6 @@ public class Asteroid extends Sprite {
                     damage
             ));
         }
-
-        takeDamage(damage, updateContext);
     }
 
     @Override
@@ -150,15 +161,14 @@ public class Asteroid extends Sprite {
         DRAW_ASTEROID.setRotation((int) currentRotation);
         drawQueue.push(DRAW_ASTEROID);
 
-        // Update and draw loseHealthAnimations
+        // Draw loseHealthAnimations
         for (LoseHealthAnimation anim : loseHealthAnimations) {
             anim.getDrawParams(getX(), getY(), drawQueue);
         }
 
-        // update and draw healthBarAnimation if showing
+        // Draw healthBarAnimation
         if (healthBarAnimation.isShowing()) {
-            healthBarAnimation.update();
-            healthBarAnimation.getDrawParams((float) getX(), (float) getY(), getHealth(), drawQueue);
+            healthBarAnimation.getDrawParams(getX(), getY(), getHealth(), drawQueue);
         }
     }
 }
