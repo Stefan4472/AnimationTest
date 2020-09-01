@@ -231,8 +231,8 @@ public class Alien extends Sprite {
 
     @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
-        // only draw alien if it is not in last frame of explode animation
-        if (explodeAnim.getFramesLeft() >= 1) {
+        // Draw alien, unless it is exploding and in the last frame of the explosion animation
+        if (!(explodeAnim.isPlaying() && explodeAnim.getFramesLeft() <= 1)) {
             DRAW_ALIEN.setCanvasX0((float) getX());
             DRAW_ALIEN.setCanvasY0((float) getY());
             drawQueue.push(DRAW_ALIEN);

@@ -15,7 +15,7 @@ import java.util.List;
 // TODO: MAKE CHUNK-BASED
 public class HitDetector {
     // Stores the references of two sprites that are in collision
-    public class CollisionTuple {
+    public static class CollisionTuple {
         public Sprite sprite1, sprite2;
 
         public CollisionTuple(Sprite sprite1, Sprite sprite2) {
@@ -24,7 +24,7 @@ public class HitDetector {
         }
     }
 
-    public class CollisionLayer {
+    public static class CollisionLayer {
         public int layer;
         public int[] collidingLayers;
 
@@ -36,11 +36,11 @@ public class HitDetector {
 
     private int numLayers;
     private List<Sprite>[] layers;  // TODO: NAMING IS HORRIBLE
-    private List<CollisionLayer> collisionLayers;
+    private CollisionLayer[] collisionLayers;
 
-    public HitDetector(List<CollisionLayer> collisionLayers) {
-        collisionLayers = collisionLayers;
-        numLayers = collisionLayers.size();
+    public HitDetector(CollisionLayer[] collisionLayers) {
+        this.collisionLayers = collisionLayers;
+        numLayers = collisionLayers.length;
         layers = new LinkedList[numLayers];
         // TODO: `FASTLIST` STRUCTURE?
         for (int i = 0; i < numLayers; i++){

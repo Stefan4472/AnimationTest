@@ -99,4 +99,14 @@ public class GameEngineUtil {
             }
         }
     }
+
+    public static DrawParams drawHitbox(Sprite sprite) {
+        DrawRect draw_hitbox = new DrawRect(
+                debugPaintRed.getColor(),
+                debugPaintRed.getStyle(),
+                debugPaintRed.getStrokeWidth()
+        );
+        draw_hitbox.setBounds(sprite.getHitbox());
+        return draw_hitbox;
+    }
 }

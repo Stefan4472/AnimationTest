@@ -19,6 +19,7 @@ import com.plainsimple.spaceships.util.FastQueue;
 import com.plainsimple.spaceships.util.GameEngineUtil;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -33,7 +34,7 @@ public class GameEngine implements IGameController {
     private GameContext gameContext;
     private BitmapCache bitmapCache;
     private AnimFactory animFactory;
-
+    private HitDetector hitDetector;
     private Map map;
 
     // Data for calculating FPS (TODO)
@@ -54,13 +55,15 @@ public class GameEngine implements IGameController {
     // tracks duration of this game (non-paused)
     private GameTimer gameTimer;
     // speed of sprites scrolling across the screen (must be negative!)
-    private double scrollSpeed = -0.0025f;
+    private double scrollSpeed;
     // Distance (num pixels) scrolled so far this game
     private double scrollDistance;
     // The player's spaceship
     private Spaceship spaceship;
+    // All other sprites
+    private List<Sprite> sprites = new LinkedList<>();
 
-    // Queue for game input
+    // Queue for game input events
     private ConcurrentLinkedQueue<GameInput.InputID> gameInputQueue;
 
     // Represents the possible states that the game can be in
@@ -73,19 +76,9 @@ public class GameEngine implements IGameController {
 
     // relative speed of background scrolling to foreground scrolling
     public static final float SCROLL_SPEED_CONST = 0.4f;
-    // number of frames that must pass before score per frame is increased
-    public static final float SCORING_CONST = 800;
-
     // Number of points that a coin is worth
     public static final int COIN_VALUE = 100;
     public static final int STARTING_PLAYER_HEALTH = 100;
-
-    /* Store sprites according to type. TODO: GENERALIZE */
-    private List<Sprite> coins = new LinkedList<>();
-    private List<Sprite> obstacles = new LinkedList<>();
-    private List<Sprite> aliens = new LinkedList<>();
-    private List<Sprite> alienProjectiles = new LinkedList<>();
-    private List<Sprite> playerProjectiles = new LinkedList<>();
 
 
     /* Start GameEngine logic */
@@ -117,6 +110,48 @@ public class GameEngine implements IGameController {
 
         map = new Map(gameContext);
 
+        // TODO: NEEDS A LOT OF CLEANUP
+        hitDetector = new HitDetector(new HitDetector.CollisionLayer[] {
+                new HitDetector.CollisionLayer(
+                        Sprite.SpriteType.ALIEN.ordinal(),
+                        new int[]{}
+                ),
+                new HitDetector.CollisionLayer(
+                        Sprite.SpriteType.ALIEN_BULLET.ordinal(),
+                        new int[]{}
+                ),
+                new HitDetector.CollisionLayer(
+                        Sprite.SpriteType.ASTEROID.ordinal(),
+                        new int[]{}
+                ),
+                new HitDetector.CollisionLayer(
+                        Sprite.SpriteType.BULLET.ordinal(),
+                        new int[] {
+                                Sprite.SpriteType.OBSTACLE.ordinal(),
+                                Sprite.SpriteType.ALIEN.ordinal(),
+                                Sprite.SpriteType.ASTEROID.ordinal()
+                        }
+                ),
+                new HitDetector.CollisionLayer(
+                        Sprite.SpriteType.COIN.ordinal(),
+                        new int[]{}
+                ),
+                new HitDetector.CollisionLayer(
+                        Sprite.SpriteType.OBSTACLE.ordinal(),
+                        new int[]{}
+                ),
+                new HitDetector.CollisionLayer(
+                        Sprite.SpriteType.SPACESHIP.ordinal(),
+                        new int[] {
+                                Sprite.SpriteType.OBSTACLE.ordinal(),
+                                Sprite.SpriteType.COIN.ordinal(),
+                                Sprite.SpriteType.ALIEN.ordinal(),
+                                Sprite.SpriteType.ALIEN_BULLET.ordinal(),
+                                Sprite.SpriteType.ASTEROID.ordinal()
+                        }
+                )
+        });
+
         // Set state for new, un-started game
         currState = GameState.FINISHED;
     }
@@ -134,12 +169,8 @@ public class GameEngine implements IGameController {
         scrollDistance = 0.0;
 
         spaceship.reset();
-        obstacles.clear();
-        coins.clear();
-        aliens.clear();
-        alienProjectiles.clear();
-        playerProjectiles.clear();
-
+        sprites.clear();
+        sprites.add(spaceship);
         map.restart();
 
         // Move spaceship just off the left of the screen, centered vertically
@@ -222,87 +253,36 @@ public class GameEngine implements IGameController {
             map.update(update_context, scrollDistance);
         }
 
-        GameEngineUtil.updateSprite(spaceship, update_context);
+        hitDetector.clear();
 
-        // check collisions between user-fired projectiles and relevant sprites
-        for(Sprite projectile : playerProjectiles) {
-            GameEngineUtil.checkCollisions(projectile, aliens, update_context);
-            GameEngineUtil.checkCollisions(projectile, obstacles, update_context);
-            //GameEngineUtil.checkCollisions(projectile, alienProjectiles);
-        }
-        // check collisions with spaceship
-        if (!spaceship.shouldTerminate()) {
-            GameEngineUtil.checkCollisions(spaceship, aliens, update_context);
-            GameEngineUtil.checkCollisions(spaceship, obstacles, update_context);
-            GameEngineUtil.checkCollisions(spaceship, coins, update_context);
-            GameEngineUtil.checkCollisions(spaceship, alienProjectiles, update_context);
-        }
-        // update all other sprites
-        GameEngineUtil.updateSprites(obstacles, update_context);
-        GameEngineUtil.updateSprites(aliens, update_context);
-        GameEngineUtil.updateSprites(coins, update_context);
-        GameEngineUtil.updateSprites(alienProjectiles, update_context);
-        GameEngineUtil.updateSprites(playerProjectiles, update_context);
+        Iterator<Sprite> it_sprites = sprites.iterator();
+        while(it_sprites.hasNext()) {
+            Sprite sprite = it_sprites.next();
+            if(sprite.shouldTerminate()) {
+                it_sprites.remove();
+                continue;
+            }
 
-        // TODO: COLLECT DRAWPARAMS DURING THE SAME PASS AS THE UPDATES
-        // TODO: SIMPLE WAY OF GETTING ALL HITBOXES DRAWN?
-        for (Sprite obstacle : obstacles) {
-            obstacle.getDrawParams(draw_params);
-            // Draw hitbox
-            DrawRect hitbox_rect = new DrawRect(Color.RED, Paint.Style.STROKE, 2);
-            hitbox_rect.setBounds(obstacle.getHitbox());
-            draw_params.push(hitbox_rect);
+            GameEngineUtil.updateSprite(sprite, update_context);
+            hitDetector.addSprite(sprite);
+            sprite.getDrawParams(draw_params);
+            draw_params.push(GameEngineUtil.drawHitbox(sprite));
         }
 
-        for (Sprite coin : coins) {
-            coin.getDrawParams(draw_params);
+        // Handle collisions, passing the health of each as the damage
+        // applied to the other.
+        List<HitDetector.CollisionTuple> collisions = hitDetector.determineCollisions();
+        for (HitDetector.CollisionTuple collision : collisions) {
+            int sprite_health = collision.sprite1.getHealth();
+            int other_health = collision.sprite2.getHealth();
+            collision.sprite1.handleCollision(collision.sprite2, other_health, update_context);
+            collision.sprite2.handleCollision(collision.sprite1, sprite_health, update_context);
         }
-        for (Sprite alien : aliens) {
-            alien.getDrawParams(draw_params);
-        }
-        for (Sprite alien_projectile : alienProjectiles) {
-            alien_projectile.getDrawParams(draw_params);
-        }
-        for (Sprite player_projectile : playerProjectiles) {
-            player_projectile.getDrawParams(draw_params);
-        }
-        spaceship.getDrawParams(draw_params);
 
         // Add all created sprites
-        // TODO: REFACTOR THIS OUT
         for (Sprite sprite : created_sprites) {
             Log.d("GameEngine", String.format("Adding sprite of type %s", sprite.getSpriteType().toString()));
-            switch (sprite.getSpriteType()) {
-                case ALIEN: {
-                    aliens.add(sprite);
-                    break;
-                }
-                case ALIEN_BULLET: {
-                    alienProjectiles.add(sprite);
-                    break;
-                }
-                case ASTEROID: {
-                    obstacles.add(sprite);
-                    break;
-                }
-                case BULLET: {
-                    playerProjectiles.add(sprite);
-                    break;
-                }
-                case COIN: {
-                    coins.add(sprite);
-                    break;
-                }
-                case OBSTACLE: {
-                    obstacles.add(sprite);
-                    break;
-                }
-                default: {
-                    throw new IllegalArgumentException(
-                            String.format("Unsupported SpriteType %s", sprite.getSpriteType().toString())
-                    );
-                }
-            }
+            sprites.add(sprite);
         }
 
         numUpdates++;
