@@ -13,6 +13,8 @@ import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
+import plainsimple.spaceships.BuildConfig;
+
 import static com.plainsimple.spaceships.sprite.Spaceship.Direction.DOWN;
 import static com.plainsimple.spaceships.sprite.Spaceship.Direction.UP;
 
@@ -36,8 +38,10 @@ public class Spaceship extends Sprite {
     // whether user has control over spaceship
     private boolean isControllable;
 
-    // number of frames elapsed since cannon was last fired
-    private int lastFiredCannon;
+    // Timestamp *in game time* at which the cannons were last fired
+    private long prevCannonShotTime;
+    // TODO: WOULD BE COOL IF THE SHOOTING DELAY DECREASED AS DIFFICULTY INCREASES
+    private static final int SHOOTING_DELAY_MS = 500;
     // Is the player in the processes of shooting the cannons?
     private boolean isShooting;
 
@@ -93,17 +97,15 @@ public class Spaceship extends Sprite {
         explodeAnim.reset();
 
         moveAnim.start();
-        lastFiredCannon = Bullet.DELAY_FRAMES;
+        prevCannonShotTime = 0;
     }
 
     @Override
     public void updateActions(UpdateContext updateContext) {
-        lastFiredCannon++;
-
         // fires cannons if in correct FireMode, has waited long enough, and is still alive
-        if (canShoot()) {
+        if (canShoot(updateContext)) {
             fireCannons(updateContext);
-            lastFiredCannon = 0;
+            prevCannonShotTime = updateContext.getGameTime().getRunTimeMs();
         }
 
         // Checks if explosion has played, in which case terminate should be set to true and onInvisible() called
@@ -115,15 +117,23 @@ public class Spaceship extends Sprite {
         }
     }
 
-    private boolean canShoot() {
+    private boolean canShoot(UpdateContext updateContext) {
+        double ms_since_last_shot =
+                updateContext.getGameTime().getRunTimeMs() - prevCannonShotTime;
         return isControllable &&
                 isShooting &&
-                lastFiredCannon >= Bullet.DELAY_FRAMES &&
+                (ms_since_last_shot >= SHOOTING_DELAY_MS || prevCannonShotTime == 0) &&
                 getCurrState() == SpriteState.ALIVE;
     }
 
+    // It is assumed that the programmer has called `canShoot()` to make sure that
+    // the cannons can be fired before calling this method. This method does not
+    // check for validity.
     private void fireCannons(UpdateContext updateContext) {
-        // TODO: DON'T WE NEED TO CHECK THAT WE CAN FIRE?
+        if (BuildConfig.DEBUG && !canShoot(updateContext)) {
+            throw new AssertionError("canShoot() must be true before calling fireCannons()");
+        }
+
         updateContext.registerChild(gameContext.createBullet(
                 getX() + getWidth() * 0.78f,
                 getY() + 0.28f * getHeight()
@@ -148,11 +158,12 @@ public class Spaceship extends Sprite {
 
     @Override
     public void updateSpeeds(UpdateContext updateContext) {
+        // TODO: MORE NUANCED CONTROLS, WITH SIMPLE ACCELERATION/DECELLERATION. ALSO, BECOME MORE RESPONSIVE AS DIFFICULTY INCREASES
         if (isControllable) {
             if (direction == UP) {
-                setSpeedY(-0.015 * gameContext.getGameHeightPx());
+                setSpeedY(-0.4 * gameContext.getGameHeightPx());
             } else if (direction== DOWN){
-                setSpeedY(0.015 * gameContext.getGameWidthPx());
+                setSpeedY(0.4 * gameContext.getGameHeightPx());
             } else {
                 // Slow down
                 setSpeedY(getSpeedY() / 1.7);

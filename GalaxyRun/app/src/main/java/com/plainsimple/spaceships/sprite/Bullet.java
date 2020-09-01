@@ -18,9 +18,9 @@ public class Bullet extends Sprite {
     private DrawImage DRAW_BULLET;
 
     public static final int DAMAGE = 5;
-    public static final int DELAY_FRAMES = 12;  // TODO: USE MILLISECOND DELAY INSTEAD
     // Bullet speed per second, as percentage of screen width
-    public static final double SPEED_PERCENT_PER_SEC = 0.1;
+    // TODO: WOULD BE COOL TO INCREASE SPEED AS A FUNCTION OF DIFFICULTY
+    public static final double SPEED_PERCENT_PER_SEC = 0.3;
 
 
     public Bullet(int spriteId, double x, double y, GameContext gameContext) {
