@@ -1,5 +1,6 @@
 package com.plainsimple.spaceships.sprite;
 
+import com.plainsimple.spaceships.engine.AnimID;
 import com.plainsimple.spaceships.engine.EventID;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
@@ -77,7 +78,7 @@ public class Alien extends Sprite {
         // TODO: NEED A WAY TO CALCULATE SPEED
 
         bulletBitmapData = gameContext.getBitmapCache().getData(BitmapID.ALIEN_BULLET);
-        explodeAnim = gameContext.getAnimCache().get(BitmapID.SPACESHIP_EXPLODE);
+        explodeAnim = gameContext.getAnimFactory().get(AnimID.ALIEN_EXPLODE);
 
         setHitboxOffsetX(getWidth() * 0.2);
         setHitboxOffsetY(getHeight() * 0.2);
@@ -171,7 +172,7 @@ public class Alien extends Sprite {
     @Override
     public void updateAnimations(UpdateContext updateContext) {
         if (explodeAnim.isPlaying()) {
-            explodeAnim.incrementFrame();
+            explodeAnim.update(updateContext.getGameTime().getMsSincePrevUpdate());
         }
     }
 

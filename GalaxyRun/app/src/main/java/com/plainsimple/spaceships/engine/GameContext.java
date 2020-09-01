@@ -2,9 +2,7 @@ package com.plainsimple.spaceships.engine;
 
 import android.content.Context;
 
-import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
-import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.sprite.Alien;
 import com.plainsimple.spaceships.sprite.AlienBullet;
 import com.plainsimple.spaceships.sprite.Asteroid;
@@ -21,7 +19,7 @@ import com.plainsimple.spaceships.sprite.Sprite;
 public class GameContext {
     private Context appContext;
     private BitmapCache bitmapCache;
-    private AnimCache animCache;
+    private AnimFactory animFactory;
     private Sprite playerSprite;
     private int gameWidthPx;
     private int gameHeightPx;
@@ -31,12 +29,12 @@ public class GameContext {
     public GameContext(
             Context appContext,
             BitmapCache bitmapCache,
-            AnimCache animCache,
+            AnimFactory animCache,
             int gameWidthPx,
             int gameHeightPx) {
         this.appContext = appContext;
         this.bitmapCache = bitmapCache;
-        this.animCache = animCache;
+        this.animFactory = animCache;
         this.gameWidthPx = gameWidthPx;
         this.gameHeightPx = gameHeightPx;
     }
@@ -49,8 +47,8 @@ public class GameContext {
         return bitmapCache;
     }
 
-    public AnimCache getAnimCache() {
-        return animCache;
+    public AnimFactory getAnimFactory() {
+        return animFactory;
     }
 
     public Sprite getPlayerSprite() {

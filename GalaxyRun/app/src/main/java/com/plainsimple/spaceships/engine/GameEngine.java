@@ -1,25 +1,17 @@
 package com.plainsimple.spaceships.engine;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 
-import com.plainsimple.spaceships.helper.AnimCache;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawParams;
 import com.plainsimple.spaceships.helper.DrawRect;
-import com.plainsimple.spaceships.helper.GameMode;
 import com.plainsimple.spaceships.helper.Map;
 import com.plainsimple.spaceships.helper.SoundID;
-import com.plainsimple.spaceships.helper.TileGenerator;
-import com.plainsimple.spaceships.sprite.Alien;
-import com.plainsimple.spaceships.sprite.Asteroid;
-import com.plainsimple.spaceships.sprite.Coin;
-import com.plainsimple.spaceships.sprite.Obstacle;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.stats.GameTimer;
@@ -40,7 +32,7 @@ public class GameEngine implements IGameController {
 
     private GameContext gameContext;
     private BitmapCache bitmapCache;
-    private AnimCache animCache;
+    private AnimFactory animFactory;
 
     private Map map;
 
@@ -105,14 +97,14 @@ public class GameEngine implements IGameController {
     ) {
         // Create BitmapCache
         this.bitmapCache = bitmapCache;
-        animCache = new AnimCache(appContext, this.bitmapCache);
+        animFactory = new AnimFactory(this.bitmapCache);
         gameInputQueue = new ConcurrentLinkedQueue<>();
 
         // Create GameContext
         gameContext = new GameContext(
                 appContext,
                 this.bitmapCache,
-                animCache,
+                animFactory,
                 gameWidthPx,
                 gameHeightPx
         );
@@ -207,14 +199,14 @@ public class GameEngine implements IGameController {
         }
 
         // Debug prints, every 100 frames
-        if (numUpdates != 0 && numUpdates % 100 == 0) {
-            Log.d("GameEngine", String.format(
-                    "Spaceship at %f, %f", spaceship.getX(), spaceship.getY()
-            ));
-            Log.d("GameEngine", String.format(
-                    "Game runtime = %f sec", game_time.getRunTimeMs() / 1000.0
-            ));
-        }
+//        if (numUpdates != 0 && numUpdates % 100 == 0) {
+//            Log.d("GameEngine", String.format(
+//                    "Spaceship at %f, %f", spaceship.getX(), spaceship.getY()
+//            ));
+//            Log.d("GameEngine", String.format(
+//                    "Game runtime = %f sec", game_time.getRunTimeMs() / 1000.0
+//            ));
+//        }
 
         // TODO: PROVIDE IGAMEENGINE INTERFACE REFERENCE?
         UpdateContext update_context = new UpdateContext(

@@ -50,7 +50,6 @@ public class GameView extends SurfaceView implements Runnable {
         this.context = context;
         surfaceHolder = getHolder();
         drawFramesQueue = new ConcurrentLinkedQueue<>();
-        // TODO: HOW TO GET BITMAPCACHE?
     }
 
     public void setGameActivityInterface(IGameActivity gameActivityInterface) {

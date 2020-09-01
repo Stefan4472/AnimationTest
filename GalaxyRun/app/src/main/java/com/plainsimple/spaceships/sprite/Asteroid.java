@@ -71,7 +71,7 @@ public class Asteroid extends Sprite {
 
     @Override
     public void updateActions(UpdateContext updateContext) {
-        if (!isVisibleInBounds()) {
+        if (getX() < -getWidth()) {
             setCurrState(SpriteState.TERMINATED);
         }
     }

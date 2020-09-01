@@ -1,5 +1,6 @@
 package com.plainsimple.spaceships.sprite;
 
+import com.plainsimple.spaceships.engine.AnimID;
 import com.plainsimple.spaceships.engine.EventID;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.GameEngine;
@@ -22,13 +23,11 @@ public class Spaceship extends Sprite {
 
     // SpriteAnimations used
     private SpriteAnimation moveAnim;
-    private SpriteAnimation fireRocketAnim;
     private SpriteAnimation explodeAnim;
 
     // DrawParam objects that specify how to draw the Spaceship
     private DrawImage DRAW_SHIP;
     private DrawImage DRAW_EXHAUST;
-    private DrawImage DRAW_ROCKET_FIRED;
     private DrawImage DRAW_EXPLODE;
 
     // used to create the spaceship flash animation when hit
@@ -53,7 +52,6 @@ public class Spaceship extends Sprite {
     private Direction direction;
 
     // SoundIDs Spaceship uses
-    private static final SoundID ROCKET_SOUND = SoundID.ROCKET;
     private static final SoundID BULLET_SOUND = SoundID.LASER;
     private static final SoundID EXPLODE_SOUND = SoundID.EXPLOSION;
 
@@ -71,14 +69,12 @@ public class Spaceship extends Sprite {
         setHitboxOffsetY(getHeight() * 0.2f);
 
         // Load animations from AnimCache
-        moveAnim = gameContext.getAnimCache().get(BitmapID.SPACESHIP_MOVE);
-        fireRocketAnim = gameContext.getAnimCache().get(BitmapID.SPACESHIP_FIRE);
-        explodeAnim = gameContext.getAnimCache().get(BitmapID.SPACESHIP_EXPLODE);
+        moveAnim = gameContext.getAnimFactory().get(AnimID.SPACESHIP_MOVE);
+        explodeAnim = gameContext.getAnimFactory().get(AnimID.SPACESHIP_EXPLODE);
 
         // Init DrawParams
         DRAW_SHIP = new DrawImage(BitmapID.SPACESHIP);
         DRAW_EXHAUST = new DrawImage(moveAnim.getBitmapID());
-        DRAW_ROCKET_FIRED = new DrawImage(fireRocketAnim.getBitmapID());
         DRAW_EXPLODE = new DrawImage(explodeAnim.getBitmapID());
 
         // Call initialization logic
@@ -94,7 +90,6 @@ public class Spaceship extends Sprite {
         setSpeedY(0.0);
 
         moveAnim.reset();
-        fireRocketAnim.reset();
         explodeAnim.reset();
 
         moveAnim.start();
@@ -178,18 +173,15 @@ public class Spaceship extends Sprite {
 
     @Override
     public void updateAnimations(UpdateContext updateContext) {
-        // update ColorMatrixAnimator
+        // Update ColorMatrixAnimator  TODO: USE TIME
         colorMatrixAnimator.update();
 
-        // update the other animations
+        // Update animations
         if (moveAnim.isPlaying()) {
-            moveAnim.incrementFrame();
-        }
-        if (fireRocketAnim.isPlaying()) {
-            fireRocketAnim.incrementFrame();
+            moveAnim.update(updateContext.getGameTime().getMsSincePrevUpdate());
         }
         if (explodeAnim.isPlaying()) {
-            explodeAnim.incrementFrame();
+            explodeAnim.update(updateContext.getGameTime().getMsSincePrevUpdate());
         }
     }
 
@@ -231,28 +223,20 @@ public class Spaceship extends Sprite {
     @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         if (!explodeAnim.hasPlayed()) {
-            // draw the Spaceship itself
+            // Draw the Spaceship
             DRAW_SHIP.setCanvasX0((float) getX());
             DRAW_SHIP.setCanvasY0((float) getY());
             DRAW_SHIP.setFilter(colorMatrixAnimator.getMatrix());
             drawQueue.push(DRAW_SHIP);
 
-            // draw moving animation behind it
+            // Draw the moving animation behind it
             DRAW_EXHAUST.setCanvasX0((float) getX());
             DRAW_EXHAUST.setCanvasY0((float) getY());
             DRAW_EXHAUST.setDrawRegion(moveAnim.getCurrentFrameSrc());
             DRAW_EXHAUST.setFilter(colorMatrixAnimator.getMatrix());
             drawQueue.push(DRAW_EXHAUST);
 
-            // draw fireRocketAnim animation if it is in progress
-            if (fireRocketAnim.isPlaying()) {
-                DRAW_ROCKET_FIRED.setCanvasX0((float) getX() + getWidth() / 2);
-                DRAW_ROCKET_FIRED.setCanvasY0((float) getY());
-                DRAW_ROCKET_FIRED.setDrawRegion(fireRocketAnim.getCurrentFrameSrc());
-                DRAW_ROCKET_FIRED.setFilter(colorMatrixAnimator.getMatrix());
-                drawQueue.push(DRAW_ROCKET_FIRED);
-            }
-            // draw explodeAnim animation if it is in progress
+            // Draw the explosion animation if it is playing
             if (explodeAnim.isPlaying()) {
                 DRAW_EXPLODE.setCanvasX0((float) getX());
                 DRAW_EXPLODE.setCanvasY0((float) getY());

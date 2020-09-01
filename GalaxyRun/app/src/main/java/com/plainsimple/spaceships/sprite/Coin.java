@@ -1,13 +1,11 @@
 package com.plainsimple.spaceships.sprite;
 
-import android.icu.lang.UProperty;
-
+import com.plainsimple.spaceships.engine.AnimID;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.DrawImage;
 import com.plainsimple.spaceships.helper.DrawParams;
-import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
@@ -27,7 +25,7 @@ public class Coin extends Sprite {
         setHitboxWidth(getWidth() * 0.7);
         setHitboxHeight(getHeight() * 0.8);
 
-        spin = gameContext.getAnimCache().get(BitmapID.COIN_SPIN);
+        spin = gameContext.getAnimFactory().get(AnimID.COIN_SPIN);
         setWidth(spin.getFrameW());
         setHeight(spin.getFrameH());
         spin.start();
@@ -36,7 +34,7 @@ public class Coin extends Sprite {
 
     @Override
     public void updateActions(UpdateContext updateContext) {
-        if (!isVisibleInBounds()) {
+        if (getX() < -getWidth()) {
             setCurrState(SpriteState.TERMINATED);
         }
     }
@@ -49,7 +47,7 @@ public class Coin extends Sprite {
 
     @Override
     public void updateAnimations(UpdateContext updateContext) {
-        spin.incrementFrame();
+        spin.update(updateContext.getGameTime().getMsSincePrevUpdate());
     }
 
     @Override

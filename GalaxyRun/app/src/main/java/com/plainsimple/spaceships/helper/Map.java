@@ -37,14 +37,15 @@ public class Map {
     // Grid of tile IDs specifying which sprites will be generated where.
     // A "tile-based map".
     private TileGenerator.TileID[][] tiles;
-    // Number of tiles elapsed since last tiles was generated
-    private int mapTileCounter;
-    // Keeps track of the tile spaceship was on the previous update
-    private int prevTile;
-    // width (px) of the side of a tile
+    // Width (px) of the side of a tile (equal to one-sixth of game height px)
     private int tileWidth;
     // Set the number of columns of empty space before each created chunk
     private static final int LEADING_BUFFER_LENGTH = 3;
+    // How many pixels past the right of the screen edge to spawn in new
+    // chunks
+    private int spawnBeyondScreenPx;
+    // X-coordinate at which the next chunk will be spawned
+    private double nextSpawnAtX;
 
 
     // TODO: ALLOW PASSING IN A "SEED"?
@@ -52,97 +53,71 @@ public class Map {
         this.gameContext = gameContext;
         random = new Random();  // TODO: DO WE NEED TO INIT WITH TIME AS A SEED?
         tileWidth = gameContext.getGameHeightPx() / NUM_ROWS;
-        init();
-    }
-
-    public void restart() {
-        mapTileCounter = 0;
-        prevTile = 0;
+        spawnBeyondScreenPx = tileWidth;
         init();
     }
 
     private void init() {
         // Generate a short stretch of EMPTY
         tiles = TileGenerator.generateEmpty(5);
+        nextSpawnAtX = tileWidth * 5;
+    }
+
+    public void restart() {
+        init();
     }
 
     public void update(
             UpdateContext updateContext,
             double scrollDistance
     ) {
-//        Log.d("Map", String.format("Update called with scrolldist %f", scrollDistance));
-        int curr_tile = getWTile(scrollDistance);
-        // Check if screen has progressed far enough to render the next column of tiles
-        // TODO: HANDLE POSSIBILITY THAT THE SCREEN HAS SCROLLED MORE THAN ONE TILE
-        if (curr_tile != prevTile) {
-            // Add any non-empty tiles in the current column to the edge of the screen
-            for (int i = 0; i < tiles.length; i++) {
-                // process for adding Obstacles: count the number of adjacent obstacles in the row.
-                // Set them all to EMPTY in the array. Construct the obstacle using this data
-//                if (tiles[i][mapTileCounter] == OBSTACLE) {
-//                    int num_cols = 0;
-//                    for (int col = mapTileCounter; col < tiles[0].length && tiles[i][col] == OBSTACLE; col++) {
-//                        num_cols++;
-//                        tiles[i][col] = TileGenerator.TileID.EMPTY;
-//                    }
-//                    updateContext.registerChild(gameContext.createObstacle(
-//                            gameContext.getGameWidthPx() + getWOffset(scrollDistance),
-//                            i * tileWidth,
-//                            num_cols * tileWidth,
-//                            tileWidth
-//                    ));
-//                } else if (tiles[i][mapTileCounter] != TileGenerator.TileID.EMPTY) {
-                // TODO: ADD, TILE-ALIGNED
-                if (tiles[i][mapTileCounter] != EMPTY) {
-                    addMapTile(
-                            tiles[i][mapTileCounter],
-                            gameContext.getGameWidthPx() + getWOffset(scrollDistance),
-                            i * tileWidth,
-                            updateContext
-                    );
-                }
-//                }
-            }
-            mapTileCounter++;
+        // We've scrolled far enough to spawn in the next chunk
+        if (scrollDistance >= nextSpawnAtX) {
+            // Generate the next chunk
+            TileGenerator.ChunkType next_chunk_type =
+                    determineNextChunkType(updateContext.getDifficulty());
+            boolean should_generate_coins =
+                    determineGenerateCoins(updateContext.getDifficulty());
+            tiles = TileGenerator.generateChunk(
+                    next_chunk_type,
+                    LEADING_BUFFER_LENGTH,
+                    updateContext.getDifficulty(),
+                    should_generate_coins
+            );
+            Log.d("Map", String.format("Generated chunk of %s", next_chunk_type.toString()));
+            Log.d("Map", TileGenerator.mapToString(tiles));
 
-            // Generate more sprites if we've reached the end of this set
-            if (mapTileCounter == tiles[0].length) {
-                TileGenerator.ChunkType next_chunk_type =
-                        determineNextChunkType(updateContext.getDifficulty());
-                boolean should_generate_coins =
-                        determineGenerateCoins(updateContext.getDifficulty());
-                tiles = TileGenerator.generateChunk(
-                        next_chunk_type,
-                        LEADING_BUFFER_LENGTH,
-                        updateContext.getDifficulty(),
-                        should_generate_coins
-                );
-                mapTileCounter = 0;
-                Log.d("Map", String.format("Generated chunk of %s", next_chunk_type.toString()));
-                Log.d("Map", TileGenerator.mapToString(tiles));
+            // Calculate where to begin spawning in the new chunk
+            long offset = (long) scrollDistance % tileWidth;
+            double spawn_x = gameContext.getGameWidthPx() + spawnBeyondScreenPx - offset;
+
+            // Spawn in all non-empty tiles
+            for (int i = 0; i < tiles.length; i++) {
+                for (int j = 0; j < tiles[i].length; j++) {
+                    if (tiles[i][j] != EMPTY) {
+                        addMapTile(
+                                tiles[i][j],
+                                spawn_x + j * tileWidth,
+                                i * tileWidth,
+                                updateContext
+                        );
+                    }
+                }
             }
-            prevTile = curr_tile;
+
+            nextSpawnAtX += tiles[0].length * tileWidth;
+            Log.d("Map", String.format("nextSpawnAtX = %f", nextSpawnAtX));
         }
     }
 
-    // current horizontal tile
-    private int getWTile(double scrollDistance) {
-        return ((int) scrollDistance) / tileWidth;
-    }
-
-    // number of pixels from start of current tile
-    private int getWOffset(double scrollDistance) {
-        return ((int) scrollDistance) % tileWidth;
-    }
-
-    // initializes sprite and adds to the proper list, given parameters
+    // Initializes sprite at given coordinates
     private void addMapTile(
             TileGenerator.TileID tileID,
             double x,
             double y,
             UpdateContext updateContext
     ) throws IndexOutOfBoundsException {
-        Log.d("Map", String.format("Adding tile at %f, %f", x, y));
+//        Log.d("Map", String.format("Adding tile at %f, %f", x, y));
         switch (tileID) {
             case ALIEN: {
                 updateContext.registerChild(gameContext.createAlien(
@@ -186,7 +161,6 @@ public class Map {
 
     TileGenerator.ChunkType determineNextChunkType(double difficulty) {
         double random_decimal = random.nextDouble();
-        Log.d("Map", String.format("%f", random_decimal));
         if (random_decimal >= 0.7) {
             return TileGenerator.ChunkType.ASTEROID;
         } else if (random_decimal >= 0.6) {
