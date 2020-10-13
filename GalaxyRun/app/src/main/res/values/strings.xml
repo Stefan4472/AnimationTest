@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GalaxyRun</string>
+    <string name="button_play">Play</string>
+    <string name="button_store">Store</string>
+    <string name="button_stats">Stats</string>
+    <string name="equipped_bullet">EQUIPPED_BULLET</string>
+    <string name="equipped_rocket">EQUIPPED_ROCKET</string>
+    <string name="paused">Paused</string>
+    <string name="resume">Resume</string>
+    <string name="tap_to_resume">Tap to Resume</string>
+    <string name="quit">Quit</string>
+    <string name="restart">Restart</string>
+    <string name="game_over">Game Over</string>
+    <string name="play_again">Play Again</string>
+    <string name="game_volume">Game Volume</string>
+    <string name="music_volume">Music Volume</string>
+    <string name="return_to_menu">Return to Menu</string>
+    <string name="game_statistics">Game Statistics</string>
+    <string name="equipment_status">Status:</string>
+    <string name="equipment_equip">Click to Equip</string>
+    <string name="equipment_equipped">Equipped</string>
+    <string name="equipment_buy">Buy for %1$s Coins</string>
+    <string name="endless">Endless</string>
+    <string name="easy_difficulty">Recruit</string>
+    <string name="medium_difficulty">Pilot</string>
+    <string name="hard_difficulty">Captain</string>
+    <string name="go">Let\'s Go!</string>
+    <string name="available_gamemodes">Available GameModes</string>
+    <string name="highscore">Congrats! HIGHSCORE!!!</string>
+    <string name="highscore_equals">Highscore: %1$s</string>
+</resources>
