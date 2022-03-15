@@ -9,10 +9,6 @@ import java.io.IOException;*/
 
 import android.content.Context;
 import android.graphics.*;
-import android.util.Log;
-
-import com.plainsimple.spaceships.helper.BitmapID;
-import com.plainsimple.spaceships.helper.DrawParams;
 
 /**
  * Created by Stefan on 8/17/2015.

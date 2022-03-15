@@ -1,6 +1,6 @@
 package com.plainsimple.spaceships.engine;
 
-import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.util.FastQueue;
 

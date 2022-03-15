@@ -1,15 +1,11 @@
 package com.plainsimple.spaceships.util;
 
-import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.helper.DrawParams;
-import com.plainsimple.spaceships.helper.DrawRect;
-import com.plainsimple.spaceships.sprite.Alien;
+import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.sprite.Sprite;
 
 import java.util.Iterator;

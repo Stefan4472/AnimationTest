@@ -1,15 +1,12 @@
 package com.plainsimple.spaceships.engine;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.Log;
 
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
-import com.plainsimple.spaceships.helper.DrawParams;
-import com.plainsimple.spaceships.helper.DrawRect;
+import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.helper.Map;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
@@ -85,19 +82,18 @@ public class GameEngine implements IGameController {
     /* Start GameEngine logic */
     public GameEngine(
             Context appContext,
-            BitmapCache bitmapCache,
             int gameWidthPx,
             int gameHeightPx
     ) {
         // Create BitmapCache
-        this.bitmapCache = bitmapCache;
-        animFactory = new AnimFactory(this.bitmapCache);
+        bitmapCache = new BitmapCache(appContext, gameWidthPx, gameHeightPx);
+        animFactory = new AnimFactory(bitmapCache);
         gameInputQueue = new ConcurrentLinkedQueue<>();
 
         // Create GameContext
         gameContext = new GameContext(
                 appContext,
-                this.bitmapCache,
+                bitmapCache,
                 animFactory,
                 gameWidthPx,
                 gameHeightPx

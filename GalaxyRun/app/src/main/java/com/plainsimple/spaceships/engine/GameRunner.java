@@ -3,30 +3,22 @@ package com.plainsimple.spaceships.engine;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
-import android.util.Log;
-
-import com.plainsimple.spaceships.helper.DrawParams;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
- * Created by Stefan on 8/23/2020.
+ * Runs the GameEngine in a worker thread.
  */
-
 public class GameRunner extends HandlerThread {
     private Handler mWorkerHandler;
-    private Handler mResponseHandler;
-    private static final String TAG = GameRunner.class.getSimpleName();
-    private Callback mCallback;
-    private GameEngine mGameEngine;
+    private final Handler mResponseHandler;
+    private final Callback mCallback;
+    private final GameEngine mGameEngine;
 
     public interface Callback {
         void onGameStateUpdated(GameUpdateMessage message);
     }
 
     public GameRunner(Handler responseHandler, Callback callback, GameEngine gameEngine) {
-        super(TAG);
+        super(GameRunner.class.getSimpleName());
         mResponseHandler = responseHandler;
         mCallback = callback;
         // TODO: COULD REQUIRE `GAMEENGINE` TO BE PASSED WITH THE REQUEST
@@ -34,7 +26,7 @@ public class GameRunner extends HandlerThread {
     }
 
     /*
-    Queues a call to `mGameEngine.update()` on the worker thread.
+    Tell the Thread to trigger a game update.
      */
     public void queueUpdate() {
 //        Log.d(TAG, "Queued update()");
@@ -43,6 +35,10 @@ public class GameRunner extends HandlerThread {
 
     public void prepareHandler() {
         mWorkerHandler = new Handler(getLooper(), new Handler.Callback() {
+            /*
+            Simply run GameEngine.update() and call the callback with
+            the resulting UpdateMessage.
+             */
             @Override
             public boolean handleMessage(Message msg) {
                 final GameUpdateMessage m = mGameEngine.update();

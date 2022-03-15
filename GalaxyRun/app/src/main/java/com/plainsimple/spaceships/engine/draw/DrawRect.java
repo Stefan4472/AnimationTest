@@ -1,9 +1,10 @@
-package com.plainsimple.spaceships.helper;
+package com.plainsimple.spaceships.engine.draw;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.helper.BitmapCache;
+import com.plainsimple.spaceships.helper.Rectangle;
 
 /**
  * Stores instructions for drawing a Rectangle

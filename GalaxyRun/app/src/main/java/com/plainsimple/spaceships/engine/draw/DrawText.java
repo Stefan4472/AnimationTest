@@ -1,11 +1,9 @@
-package com.plainsimple.spaceships.helper;
+package com.plainsimple.spaceships.engine.draw;
 
-import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.helper.BitmapCache;
 
 /**
  * Stores instructions for drawing text

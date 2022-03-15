@@ -2,6 +2,8 @@ package com.plainsimple.spaceships.helper;
 
 import android.graphics.Color;
 
+import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawText;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
 /**

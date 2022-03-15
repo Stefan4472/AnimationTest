@@ -3,6 +3,8 @@ package com.plainsimple.spaceships.helper;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
 /**

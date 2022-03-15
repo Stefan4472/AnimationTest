@@ -3,9 +3,8 @@ package com.plainsimple.spaceships.sprite;
 import com.plainsimple.spaceships.engine.AnimID;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.helper.BitmapID;
-import com.plainsimple.spaceships.helper.DrawImage;
-import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawImage;
+import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 

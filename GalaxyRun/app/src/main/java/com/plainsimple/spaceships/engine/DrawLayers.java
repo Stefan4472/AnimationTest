@@ -1,6 +1,6 @@
 package com.plainsimple.spaceships.engine;
 
-import com.plainsimple.spaceships.helper.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.util.GameEngineUtil;
 import com.plainsimple.spaceships.util.ProtectedQueue;

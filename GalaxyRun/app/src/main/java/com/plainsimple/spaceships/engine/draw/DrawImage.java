@@ -1,15 +1,14 @@
-package com.plainsimple.spaceships.helper;
+package com.plainsimple.spaceships.engine.draw;
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.icu.text.TimeZoneFormat;
-import android.util.Log;
 
-import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.helper.BitmapCache;
+import com.plainsimple.spaceships.helper.BitmapData;
+import com.plainsimple.spaceships.helper.BitmapID;
 
 /**
  * Stores instructions for drawing a Bitmap

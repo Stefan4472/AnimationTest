@@ -1,9 +1,8 @@
-package com.plainsimple.spaceships.helper;
+package com.plainsimple.spaceships.engine.draw;
 
-import android.content.Context;
 import android.graphics.Canvas;
 
-import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.helper.BitmapCache;
 
 /**
  * Interface for all sub-classes that draw onto the screen.

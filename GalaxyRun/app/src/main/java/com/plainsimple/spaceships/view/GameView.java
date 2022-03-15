@@ -2,10 +2,6 @@ package com.plainsimple.spaceships.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.os.Handler;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -13,24 +9,24 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.plainsimple.spaceships.activity.IGameActivity;
+import com.plainsimple.spaceships.engine.draw.DrawImage;
+import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.helper.*;
 import com.plainsimple.spaceships.util.FastQueue;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * Created by Stefan on 10/17/2015.
- *
  * Built from starter tutorial https://google-developer-training.github.io/android-developer-advanced-course-practicals/unit-5-advanced-graphics-and-views/lesson-11-canvas/11-2-p-create-a-surfaceview/11-2-p-create-a-surfaceview.html
  */
 public class GameView extends SurfaceView implements Runnable {
 
-    private Context context;
+    private final Context context;
     private boolean isRunning;
     private Thread drawThread;
     private BitmapCache bitmapCache;
     private SurfaceHolder surfaceHolder;
-    private int viewWidth, viewHeight;
     // Queue of game frames to draw
     private ConcurrentLinkedQueue<FastQueue<DrawParams>> drawFramesQueue;
 
@@ -60,10 +56,6 @@ public class GameView extends SurfaceView implements Runnable {
         this.gameViewListener = gameViewListener;
     }
 
-    public void setBitmapCache(BitmapCache bitmapCache) {
-        this.bitmapCache = bitmapCache;
-    }
-
     public void queueDrawFrame(FastQueue<DrawParams> drawParams) {
         drawFramesQueue.add(drawParams);
     }
@@ -83,8 +75,9 @@ public class GameView extends SurfaceView implements Runnable {
         }
 
         // Ask the GameActivity what dimensions should be used by the game
-        viewWidth = gameActivityInterface.calcPlayableWidth(width);
-        viewHeight = gameActivityInterface.calcPlayableHeight(height);
+        int playableWidth = gameActivityInterface.calcPlayableWidth(width);
+        int playableHeight = gameActivityInterface.calcPlayableHeight(height);
+        bitmapCache = new BitmapCache(context, playableWidth, playableHeight);
 
         background = new Background(width, height);
         scoreDisplay = new ScoreDisplay(context, 0);
@@ -115,6 +108,7 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void drawFrame(Canvas canvas, FastQueue<DrawParams> drawParams) {
+//        Log.d("GameView", "Drawing Frame with " + drawParams.getSize() + " DrawParams");
         if (background != null) {
             background.draw(canvas);
         }
@@ -139,7 +133,6 @@ public class GameView extends SurfaceView implements Runnable {
 
     /*
     Starts up the drawing thread.
-    Call from GameActivity.onResume()
      */
     public void startThread() {
         isRunning = true;
@@ -149,7 +142,6 @@ public class GameView extends SurfaceView implements Runnable {
 
     /*
     Stops the drawing thread.
-    Call from GameActivity.onPause()
      */
     public void stopThread() {
         isRunning = false;
