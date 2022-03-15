@@ -5,8 +5,6 @@ package com.plainsimple.spaceships.activity;
  */
 
 public interface IGameActivity {
-    int calcPlayableHeight(int surfaceHeight);
-    int calcPlayableWidth(int surfaceWidth);
 //    void playSound();
     void onSizeSet(int widthPx, int heightPx);
 }

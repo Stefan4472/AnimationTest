@@ -44,6 +44,13 @@ public class DrawRect implements DrawParams {
         y1 = (float) (bounds.getY() + bounds.getHeight());
     }
 
+    public void setBounds(float x, float y, float x1, float y1) {
+        this.x = x;
+        this.y = y;
+        this.x1 = x1;
+        this.y1 = y1;
+    }
+
     public void setColor(int color) {
         this.color = color;
     }

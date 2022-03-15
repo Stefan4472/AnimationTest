@@ -75,9 +75,10 @@ public class GameView extends SurfaceView implements Runnable {
         }
 
         // Ask the GameActivity what dimensions should be used by the game
-        int playableWidth = gameActivityInterface.calcPlayableWidth(width);
-        int playableHeight = gameActivityInterface.calcPlayableHeight(height);
-        bitmapCache = new BitmapCache(context, playableWidth, playableHeight);
+        // TODO: ExternalBitmapCache where we don't know the scale factor
+//        int playableWidth = gameActivityInterface.calcPlayableWidth(width);
+//        int playableHeight = gameActivityInterface.calcPlayableHeight(height);
+        bitmapCache = new BitmapCache(context, width, height);
 
         background = new Background(width, height);
         scoreDisplay = new ScoreDisplay(context, 0);

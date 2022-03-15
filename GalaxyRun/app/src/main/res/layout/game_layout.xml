@@ -32,12 +32,6 @@
         android:layout_marginTop="10dp"
         android:onClick="onMutePressed"
         style="?android:attr/borderlessButtonStyle" />
-    <!-- HealthBar -->
-    <com.plainsimple.spaceships.view.HealthBarView
-        android:id="@+id/healthbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"/>
     <!-- position ArrowButton view along the left edge of the screen, above healthbar. Default
      to invisible, so they can be revealed when game is started -->
     <com.plainsimple.spaceships.view.ArrowButtonView
@@ -46,6 +40,5 @@
         android:layout_height="match_parent"
         android:paddingLeft="10dp"
         android:layout_alignParentLeft="true"
-        android:layout_above="@id/healthbar"
         android:alpha="0"/>
 </RelativeLayout>

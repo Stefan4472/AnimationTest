@@ -15,6 +15,7 @@ import com.plainsimple.spaceships.stats.GameTimer;
 import com.plainsimple.spaceships.util.FastQueue;
 import com.plainsimple.spaceships.util.GameEngineUtil;
 import com.plainsimple.spaceships.util.ProtectedQueue;
+import com.plainsimple.spaceships.engine.ui.HealthBar;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -34,6 +35,9 @@ public class GameEngine implements IGameController {
     private HitDetector hitDetector;
     private DrawLayers drawLayers;
     private Map map;
+
+    // UI element for the Health Bar, drawn at the bottom of the screen
+    private HealthBar healthBar;
 
     // Data for calculating FPS (TODO)
     private long numUpdates;
@@ -101,9 +105,11 @@ public class GameEngine implements IGameController {
 
         // Create Spaceship and init just off the screen, centered vertically
         spaceship = gameContext.createSpaceship(0, 0);  // TODO: START OFF INVISIBLE?
-
         // TODO: ANY WAY WE CAN PUT THE SPACESHIP INTO THE CONTEXT CONSTRUCTOR?
         gameContext.setPlayerSprite(spaceship);
+
+        // TODO: need to adjust playable width/height to accommodate healthbar
+        healthBar = new HealthBar(appContext, gameWidthPx, gameHeightPx, spaceship.getHealth(), GameEngine.STARTING_PLAYER_HEALTH);
 
         map = new Map(gameContext);
 
@@ -180,6 +186,8 @@ public class GameEngine implements IGameController {
         spaceship.setControllable(false);
         // Set speed to slowly fly onto screen
         spaceship.setSpeedX(gameContext.getGameWidthPx() * 0.12);
+
+        healthBar.setCurrentHealth(spaceship.getHealth());
 
         gameTimer = new GameTimer();
         gameTimer.start();
@@ -286,6 +294,10 @@ public class GameEngine implements IGameController {
             Log.d("GameEngine", String.format("Adding sprite of type %s", sprite.getSpriteType().toString()));
             sprites.add(sprite);
         }
+
+        // Update and draw HealthBar
+        healthBar.setMovingToHealth(spaceship.getHealth());
+        healthBar.getDrawParams(draw_params);
 
         numUpdates++;
         return new GameUpdateMessage(

@@ -3,7 +3,6 @@ package com.plainsimple.spaceships.activity;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.app.DialogFragment;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -17,12 +16,10 @@ import com.plainsimple.spaceships.engine.EventID;
 import com.plainsimple.spaceships.engine.GameEngine;
 import com.plainsimple.spaceships.engine.GameRunner;
 import com.plainsimple.spaceships.engine.GameUpdateMessage;
-import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.view.ArrowButtonView;
 import com.plainsimple.spaceships.view.GameView;
-import com.plainsimple.spaceships.view.HealthBarView;
 import com.plainsimple.spaceships.view.IGameViewListener;
 
 import androidx.fragment.app.FragmentActivity;
@@ -54,7 +51,6 @@ public class GameActivity extends FragmentActivity implements
 
     // View elements
     private GameView gameView;
-    private HealthBarView healthbarView;
     private ImageButton pauseButton;
     private ImageButton muteButton;
     private ArrowButtonView arrowButtons;
@@ -81,7 +77,6 @@ public class GameActivity extends FragmentActivity implements
 
         // Get handles to the view elements
         gameView = findViewById(R.id.spaceships);
-        healthbarView = findViewById(R.id.healthbar);
         pauseButton = findViewById(R.id.pausebutton);
         muteButton = findViewById(R.id.mutebutton);
         arrowButtons = findViewById(R.id.arrow_buttons);
@@ -138,9 +133,6 @@ public class GameActivity extends FragmentActivity implements
         );
 //        gameContext.setSpaceship(gameEngine.getSpaceship());
 
-        // Setup UI
-        initUI();
-
         // Create GameRunner background thread
         mGameRunner = new GameRunner(new Handler(), this, gameEngine);
         mGameRunner.start();
@@ -149,12 +141,6 @@ public class GameActivity extends FragmentActivity implements
         gameEngine.inputStartGame();
         // Call the first game update
         mGameRunner.queueUpdate();
-    }
-
-    private void initUI() {
-        // Initialize healthbarView with the correct hp values
-        healthbarView.setFullHealth(GameEngine.STARTING_PLAYER_HEALTH);
-        healthbarView.setCurrentHealth(gameEngine.getPlayerHealth());
     }
 
     /*
@@ -188,7 +174,6 @@ public class GameActivity extends FragmentActivity implements
 
         // Update views
         gameView.queueDrawFrame(updateMessage.getDrawParams());
-        healthbarView.setMovingToHealth(updateMessage.getPlayerHealth());
 
         numUpdates++;
 
@@ -318,25 +303,7 @@ public class GameActivity extends FragmentActivity implements
         dialog.dismiss();
 
         gameEngine.inputRestartGame();
-        initUI();
         setGamePaused(false);
-    }
-
-    /*
-    Callbacks fired when the GameView's surface dimensions are set or changed.
-    Returns given surfaceHeight minus height of HealthBarView. This way,
-    we make sure that the GameView does not draw itself under the HealthBarView.
-    TODO: COULD WE MAKE IT SO THAT THIS IS NOT NECESSARY?
-    -> draw health bar via internal GameEngine draw calls
-     */
-    @Override
-    public int calcPlayableHeight(int surfaceHeight) {
-        return surfaceHeight - healthbarView.getHeight();
-    }
-
-    @Override
-    public int calcPlayableWidth(int surfaceWidth) {
-        return surfaceWidth;
     }
 
     /*
