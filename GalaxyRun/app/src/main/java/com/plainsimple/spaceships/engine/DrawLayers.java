@@ -17,6 +17,7 @@ public class DrawLayers {
     private List<Sprite>[] layers;  // TODO: NAMING IS HORRIBLE
 
 
+    // TODO: HAVE A WAY TO ASSIGN A DRAW LAYER TO A SPRITE TYPE
     public DrawLayers(int numLayers) {
         this.numLayers = numLayers;
         layers = new LinkedList[numLayers];

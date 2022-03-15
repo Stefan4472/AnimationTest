@@ -5,7 +5,6 @@ import android.animation.AnimatorSet;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,6 +24,7 @@ import com.plainsimple.spaceships.view.GameView;
 import com.plainsimple.spaceships.view.HealthBarView;
 import com.plainsimple.spaceships.view.IGameViewListener;
 
+import androidx.fragment.app.FragmentActivity;
 import plainsimple.spaceships.R;
 
 /**
@@ -232,7 +232,7 @@ public class GameActivity extends FragmentActivity implements
     }
 
     private void setGamePaused(boolean isPaused) {
-        assert(gameEngine != null);
+//        assert(gameEngine != null);
 
         // Do nothing if this does not change the state
         if (this.isPaused == isPaused) {
@@ -257,7 +257,7 @@ public class GameActivity extends FragmentActivity implements
     }
 
     private void setGameMuted(boolean isMuted) {
-        assert(gameEngine != null);
+//        assert(gameEngine != null);
 
         // Do nothing if this does not change the state
         if (this.isMuted == isMuted) {

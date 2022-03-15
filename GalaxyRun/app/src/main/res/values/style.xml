@@ -2,19 +2,19 @@
 <resources>
     <!-- Applies the Cyanotype font -->
     <style name="Cyanotype" parent="@android:style/Widget.Button">
-        <item name="font">fonts/Cyanotype.ttf</item>
+<!--        <item name="font">fonts/Cyanotype.ttf</item>-->
     </style>
     <!-- Applies the EngineerHand font -->
     <style name="EngineerHand" parent="@android:style/Widget.Button">
-        <item name="font">fonts/EngineerHand.ttf</item>
+<!--        <item name="font">fonts/EngineerHand.ttf</item>-->
     </style>
     <!-- Applies Andromeda font -->
     <style name="Andromeda"> <!-- setting parent doesn't appear to do much -->
-        <item name="font">fonts/AndromedaTV.TTF</item>
+<!--        <item name="font">fonts/AndromedaTV.TTF</item>-->
     </style>
     <!-- Applies Galaxy Monkey font -->
     <style name="GalaxyMonkey">
-        <item name="font">fonts/galax___.ttf</item>
+<!--        <item name="font">fonts/galax___.ttf</item>-->
     </style>
     <!-- Style used for menu buttons -->
     <style name="Andromeda.MenuStyle">

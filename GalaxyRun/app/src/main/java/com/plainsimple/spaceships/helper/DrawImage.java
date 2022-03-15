@@ -80,7 +80,7 @@ public class DrawImage implements DrawParams {
         // save and rotate canvas if a rotation was specified
         if (degreesRotation != 0) {
             // save canvas so we can revert it after performing the rotation
-            canvas.save(Canvas.MATRIX_SAVE_FLAG);
+            canvas.save();
             // rotate canvas about center of drawRegion
             canvas.rotate(degreesRotation, canvasX0 + drawRegion.width() / 2, canvasY0 + drawRegion.height() / 2);
         }

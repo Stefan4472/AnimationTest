@@ -1,7 +1,6 @@
 package com.plainsimple.spaceships.view;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +9,7 @@ import android.view.ViewGroup;
 import com.plainsimple.spaceships.helper.GameMode;
 import com.plainsimple.spaceships.helper.GameModeManager;
 
+import androidx.recyclerview.widget.RecyclerView;
 import plainsimple.spaceships.R;
 
 /**
