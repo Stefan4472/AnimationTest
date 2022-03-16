@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.plainsimple.spaceships.engine.ui.Background;
+import com.plainsimple.spaceships.engine.ui.Controls;
 import com.plainsimple.spaceships.engine.ui.MuteButton;
 import com.plainsimple.spaceships.engine.ui.PauseButton;
 import com.plainsimple.spaceships.engine.ui.ScoreDisplay;
@@ -47,6 +48,7 @@ public class GameEngine implements IGameController {
     private Background background;
     private PauseButton pauseButton;
     private MuteButton muteButton;
+    private Controls controls;
 
     // Data for calculating FPS (TODO)
     private long numUpdates;
@@ -124,6 +126,7 @@ public class GameEngine implements IGameController {
         background = new Background(gameContext);
         pauseButton = new PauseButton(gameContext);
         muteButton = new MuteButton(gameContext);
+        controls = new Controls(gameContext);
 
         map = new Map(gameContext);
 
@@ -323,6 +326,8 @@ public class GameEngine implements IGameController {
         pauseButton.getDrawParams(draw_params);
         muteButton.update(update_context);
         muteButton.getDrawParams(draw_params);
+        controls.update(update_context);
+        controls.getDrawParams(draw_params);
 
         numUpdates++;
         return new GameUpdateMessage(
