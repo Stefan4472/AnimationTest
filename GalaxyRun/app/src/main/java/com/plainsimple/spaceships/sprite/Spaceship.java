@@ -112,7 +112,7 @@ public class Spaceship extends Sprite {
         // fires cannons if in correct FireMode, has waited long enough, and is still alive
         if (canShoot(updateContext)) {
             fireCannons(updateContext);
-            prevCannonShotTime = updateContext.getGameTime().getRunTimeMs();
+            prevCannonShotTime = updateContext.getGameTime().runTimeMs;
         }
 
         // Checks if explosion has played, in which case terminate should be set to true and onInvisible() called
@@ -126,7 +126,7 @@ public class Spaceship extends Sprite {
 
     private boolean canShoot(UpdateContext updateContext) {
         double ms_since_last_shot =
-                updateContext.getGameTime().getRunTimeMs() - prevCannonShotTime;
+                updateContext.getGameTime().runTimeMs - prevCannonShotTime;
         return isControllable &&
                 isShooting &&
                 (ms_since_last_shot >= SHOOTING_DELAY_MS || prevCannonShotTime == 0) &&
@@ -200,10 +200,10 @@ public class Spaceship extends Sprite {
 
         // Update animations
         if (moveAnim.isPlaying()) {
-            moveAnim.update(updateContext.getGameTime().getMsSincePrevUpdate());
+            moveAnim.update(updateContext.getGameTime().msSincePrevUpdate);
         }
         if (explodeAnim.isPlaying()) {
-            explodeAnim.update(updateContext.getGameTime().getMsSincePrevUpdate());
+            explodeAnim.update(updateContext.getGameTime().msSincePrevUpdate);
         }
     }
 

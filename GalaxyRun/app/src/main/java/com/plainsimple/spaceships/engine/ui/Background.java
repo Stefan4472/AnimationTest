@@ -24,6 +24,8 @@ public class Background {
     // rendered background that scrolls
     private Bitmap background;
 
+    // relative speed of background scrolling to foreground scrolling TODO
+    public static final float SCROLL_SPEED_CONST = 0.4f;
 
     // increases scroll counter by x
     public void scroll(double x) {

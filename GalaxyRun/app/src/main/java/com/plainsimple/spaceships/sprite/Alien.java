@@ -184,7 +184,7 @@ public class Alien extends Sprite {
     @Override
     public void updateAnimations(UpdateContext updateContext) {
         if (explodeAnim.isPlaying()) {
-            explodeAnim.update(updateContext.getGameTime().getMsSincePrevUpdate());
+            explodeAnim.update(updateContext.getGameTime().msSincePrevUpdate);
         }
 
         // Update LoseHealthAnimations
@@ -195,14 +195,14 @@ public class Alien extends Sprite {
             if (anim.isFinished()) {
                 health_anims.remove();
             } else {  // Update animation
-                anim.update(updateContext.getGameTime().getMsSincePrevUpdate());
+                anim.update(updateContext.getGameTime().msSincePrevUpdate);
 
             }
         }
 
         // Update HealthbarAnimation
         if (healthBarAnimation.isShowing()) {
-            healthBarAnimation.update(updateContext.getGameTime().getMsSincePrevUpdate());
+            healthBarAnimation.update(updateContext.getGameTime().msSincePrevUpdate);
         }
     }
 

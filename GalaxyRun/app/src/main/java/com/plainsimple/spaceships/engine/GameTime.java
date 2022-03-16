@@ -5,25 +5,13 @@ package com.plainsimple.spaceships.engine;
  */
 
 public class GameTime {
-    private long currTimeMs;
-    private long msSincePrevUpdate;
-    private long runTimeMs;
+    public final long currTimeMs;
+    public final long msSincePrevUpdate;
+    public final long runTimeMs;
 
     public GameTime(long currTimeMs, long msSincePrevUpdate, long runTimeMs) {
         this.currTimeMs = currTimeMs;
         this.msSincePrevUpdate = msSincePrevUpdate;
         this.runTimeMs = runTimeMs;
-    }
-
-    public long getCurrTimeMs() {
-        return currTimeMs;
-    }
-
-    public long getMsSincePrevUpdate() {
-        return msSincePrevUpdate;
-    }
-
-    public long getRunTimeMs() {
-        return runTimeMs;
     }
 }

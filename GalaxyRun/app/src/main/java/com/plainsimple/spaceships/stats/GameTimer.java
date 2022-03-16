@@ -43,6 +43,10 @@ public class GameTimer {
         }
     }
 
+    public void reset() {
+        // TODO
+    }
+
     public GameTime recordUpdate() {
         if (isPaused) {
             throw new IllegalStateException("Can't record update while paused");

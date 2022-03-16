@@ -20,7 +20,7 @@ public class GameContext {
     private Context appContext;
     private BitmapCache bitmapCache;
     private AnimFactory animFactory;
-    private Sprite playerSprite;
+    private Sprite playerSprite;  // TODO: can we remove this?
     public final int gameWidthPx;
     public final int gameHeightPx;
     public final int fullHealth;

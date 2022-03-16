@@ -171,8 +171,8 @@ public abstract class Sprite {
     // Moves the sprite based on current speeds and the number of
     // milliseconds since the previous update.
     public void move(UpdateContext updateContext) {
-        x += speedX * updateContext.getGameTime().getMsSincePrevUpdate() / 1000;
-        y += speedY * updateContext.getGameTime().getMsSincePrevUpdate() / 1000;
+        x += speedX * updateContext.getGameTime().msSincePrevUpdate / 1000;
+        y += speedY * updateContext.getGameTime().msSincePrevUpdate / 1000;
         hitbox.setX(x + hitboxOffsetX);
         hitbox.setY(y + hitboxOffsetY);
     }

@@ -51,7 +51,7 @@ public class Coin extends Sprite {
 
     @Override
     public void updateAnimations(UpdateContext updateContext) {
-        spin.update(updateContext.getGameTime().getMsSincePrevUpdate());
+        spin.update(updateContext.getGameTime().msSincePrevUpdate);
     }
 
     @Override

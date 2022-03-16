@@ -43,30 +43,19 @@ public class GameEngine implements IExternalGameController {
     private HitDetector hitDetector;
     private DrawLayers drawLayers;
     private Map map;
-
     private Background background;
     private GameUI ui;
 
-    // Represents the level of difficulty. Increases non-linearly over time
-    private double currDifficulty;
-
+    private GameState currState;
     private boolean isPaused;
     private boolean isMuted;
-    private GameState currState;
     private int score;
 
-    // Score gained per second of survival. Calculated as a function
-    // of `currDifficulty`
-    private double scorePerSecond;
-
     // TODO: NOTE: IN PROGRESS OF REWRITING OLD LOGIC
-    // tracks duration of this game (non-paused)
+    // Tracks game (non-paused)  TODO: handle pause() and resume()
+    // Note: game difficulty is purely time-based.
     private GameTimer gameTimer;
     private FpsCalculator fpsCalculator;
-    // speed of sprites scrolling across the screen (must be negative!)
-    private double scrollSpeed;
-    // Distance (num pixels) scrolled so far this game
-    private double scrollDistance;
     // The player's spaceship
     private Spaceship spaceship;
     // All other sprites
@@ -74,8 +63,6 @@ public class GameEngine implements IExternalGameController {
 
     // Queue for game input events coming from outside
     private ConcurrentLinkedQueue<ExternalInput> externalInputQueue;
-    // Queue for game input events coming from the UI
-    private ConcurrentLinkedQueue<ExternalInput> uiInputQueue;
 
     // Represents the possible states that the game can be in
     private enum GameState {
@@ -85,12 +72,9 @@ public class GameEngine implements IExternalGameController {
         FINISHED;
     }
 
-    // relative speed of background scrolling to foreground scrolling
-    public static final float SCROLL_SPEED_CONST = 0.4f;
     // Number of points that a coin is worth
     public static final int COIN_VALUE = 100;
     public static final int STARTING_PLAYER_HEALTH = 100;
-
 
     /* Start GameEngine logic */
     public GameEngine(
@@ -98,10 +82,10 @@ public class GameEngine implements IExternalGameController {
             int gameWidthPx,
             int gameHeightPx
     ) {
-        // Create BitmapCache
         bitmapCache = new BitmapCache(appContext, gameWidthPx, gameHeightPx);
         animFactory = new AnimFactory(bitmapCache);
         externalInputQueue = new ConcurrentLinkedQueue<>();
+        gameTimer = new GameTimer();
         fpsCalculator = new FpsCalculator(100);
 
         // Create GameContext
@@ -115,8 +99,9 @@ public class GameEngine implements IExternalGameController {
         );
 
         // Create Spaceship and init just off the screen, centered vertically
-        spaceship = gameContext.createSpaceship(0, 0);  // TODO: START OFF INVISIBLE?
+        spaceship = gameContext.createSpaceship(0, 0);
         // TODO: ANY WAY WE CAN PUT THE SPACESHIP INTO THE CONTEXT CONSTRUCTOR?
+        // -> need to remove from GameContext, but add to UpdateContext
         gameContext.setPlayerSprite(spaceship);
 
         // GUI elements
@@ -126,7 +111,7 @@ public class GameEngine implements IExternalGameController {
 
         map = new Map(gameContext);
 
-        // TODO: NEEDS A LOT OF CLEANUP
+        // TODO: cleanup and make static somewhere else
         hitDetector = new HitDetector(new HitDetector.CollisionLayer[] {
                 new HitDetector.CollisionLayer(
                         Sprite.SpriteType.ALIEN.ordinal(),
@@ -185,10 +170,9 @@ public class GameEngine implements IExternalGameController {
     // TODO: MAKE THIS GO THROUGH THE INPUT QUEUE? (THE ANSWER IS YES I THINK)
     // TODO: how to reset/restart the game?
     private void startGame(ProtectedQueue<EventID> createdEvents) {
-        currDifficulty = 0;
         score = 0;
-        scorePerSecond = 0.0;
-        scrollDistance = 0.0;
+        gameTimer.reset();  // TODO
+        gameTimer.start();
 
         spaceship.reset();
         sprites.clear();
@@ -204,14 +188,7 @@ public class GameEngine implements IExternalGameController {
         // Set speed to slowly fly onto screen
         spaceship.setSpeedX(gameContext.getGameWidthPx() * 0.12);
 
-        gameTimer = new GameTimer();
-        gameTimer.start();
-
         setState(GameState.STARTING, createdEvents);
-    }
-
-    public int getPlayerHealth() {
-        return spaceship.getHealth();
     }
 
     // updates all game logic
@@ -235,13 +212,11 @@ public class GameEngine implements IExternalGameController {
         }
 
         // TODO: BETTER ORGANIZATION OF LOGIC WHILE IN DIFFERENT STATES
-        GameTime game_time = gameTimer.recordUpdate();
-        currDifficulty = calcDifficulty(game_time.getRunTimeMs());
-        scrollSpeed = calcScrollSpeed(currDifficulty);
-        scrollDistance += game_time.getMsSincePrevUpdate() / 1000.0 * scrollSpeed;
-        scorePerSecond = calcScorePerSecond(currDifficulty);
+        GameTime gameTime = gameTimer.recordUpdate();
+        map.update(gameTime, createdSprites);
+        double difficulty = map.getDifficulty();
+        double scrollSpeed = map.getScrollSpeed();
 
-//        Log.d("GameEngine", String.format("%d, %d, %f, %f, %f, %f", game_time.getRunTimeMs(), game_time.getMsSincePrevUpdate(), currDifficulty, scrollSpeed, scrollDistance, scorePerSecond));
         // If we haven't started yet, check if it's time to start
         if (currState == GameState.STARTING && checkShouldBeginRun()) {
             enterInProgressState(createdEvents);
@@ -249,23 +224,14 @@ public class GameEngine implements IExternalGameController {
 
         // Increment score
         if (currState == GameState.IN_PROGRESS) {
-            score += game_time.getMsSincePrevUpdate() / 1000.0 * scorePerSecond;
+            double scorePerSecond = calcScorePerSecond(difficulty);
+            score += gameTime.msSincePrevUpdate / 1000.0 * scorePerSecond;
         }
 
-        // Debug prints, every 100 frames
-//        if (numUpdates != 0 && numUpdates % 100 == 0) {
-//            Log.d("GameEngine", String.format(
-//                    "Spaceship at %f, %f", spaceship.getX(), spaceship.getY()
-//            ));
-//            Log.d("GameEngine", String.format(
-//                    "Game runtime = %f sec", game_time.getRunTimeMs() / 1000.0
-//            ));
-//        }
-
         // TODO: PROVIDE IGAMEENGINE INTERFACE REFERENCE?
-        UpdateContext update_context = new UpdateContext(
-                game_time,
-                currDifficulty,
+        UpdateContext updateContext = new UpdateContext(
+                gameTime,
+                difficulty,
                 scrollSpeed,
                 score,
                 spaceship.getHealth(),
@@ -277,15 +243,15 @@ public class GameEngine implements IExternalGameController {
                 createdSounds
         );
 
-        if (currState == GameState.IN_PROGRESS) {
-            map.update(update_context, scrollDistance);
-        }
+//        if (currState == GameState.IN_PROGRESS) {
+//            map.update(updateContext, scrollDistance);
+//        }
 
         hitDetector.clear();
         drawLayers.clear();
 
         // Draw background
-        background.update(update_context);
+        background.update(updateContext);
         background.getDrawParams(drawParams);
 
         // Update sprites
@@ -297,7 +263,7 @@ public class GameEngine implements IExternalGameController {
                 continue;
             }
 
-            GameEngineUtil.updateSprite(sprite, update_context);
+            GameEngineUtil.updateSprite(sprite, updateContext);
             hitDetector.addSprite(sprite);
             drawLayers.addSprite(sprite);
         }
@@ -311,8 +277,8 @@ public class GameEngine implements IExternalGameController {
         for (HitDetector.CollisionTuple collision : collisions) {
             int sprite_health = collision.sprite1.getHealth();
             int other_health = collision.sprite2.getHealth();
-            collision.sprite1.handleCollision(collision.sprite2, other_health, update_context);
-            collision.sprite2.handleCollision(collision.sprite1, sprite_health, update_context);
+            collision.sprite1.handleCollision(collision.sprite2, other_health, updateContext);
+            collision.sprite2.handleCollision(collision.sprite1, sprite_health, updateContext);
         }
 
         // Add all created sprites
@@ -321,7 +287,7 @@ public class GameEngine implements IExternalGameController {
             sprites.add(sprite);
         }
 
-        ui.update(update_context);
+        ui.update(updateContext);
         ui.getDrawParams(drawParams);
 
         for (UIInputId input : ui.pollAllInput()) {
@@ -360,17 +326,6 @@ public class GameEngine implements IExternalGameController {
         } else if (input instanceof MotionExternalInput) {
             MotionEvent e = ((MotionExternalInput) input).motion;
             ui.handleMotionEvent(e);
-            Log.d("GameEngine", String.format("Processing motion %s", e.toString()));
-            switch (e.getAction()) {
-                // Start of touch
-                case MotionEvent.ACTION_DOWN:
-//                    inputStartShooting();
-                    break;
-                // End of touch
-                case MotionEvent.ACTION_UP:
-//                    inputStopShooting();
-                    break;
-            }
         } else {
             throw new IllegalArgumentException("Unsupported input type");
         }
@@ -486,40 +441,6 @@ public class GameEngine implements IExternalGameController {
         } else if (currState == GameState.FINISHED) {
             createdEvents.push(EventID.GAME_FINISHED);
         }
-    }
-
-    /*
-    Calculate difficulty "magic number" based on how long the game
-    has run.
-     */
-    private double calcDifficulty(long gameRuntimeMs) {
-        double gametime_sec = gameRuntimeMs / 1000.0;
-//        Log.d("GameEngine", String.format("difficulty calculation off runtime %d, %f", gameRuntimeMs, gametime_sec));
-        // TODO: MAKE SURE IT NEVER EXCEEDS 1.0
-        double difficulty = (gametime_sec / 45.0) / (1.0 + gametime_sec / 45.0) + 0.1;
-        if (difficulty > 1.0) {
-            difficulty = 1.0;
-            Log.w("GameEngine", String.format(
-                    "WARN: Difficulty exceeded 1.0 (at time %d ms)", gameRuntimeMs)
-            );
-        }
-        return difficulty;
-    }
-
-    /*
-    Calculates "scrollspeed" based on current scroll speed, game state,
-    and difficulty. Return as pixels per second.
-     */
-    private double calcScrollSpeed(double difficulty) {
-        return (0.43 * difficulty + 0.12) * gameContext.getGameWidthPx();
-        // Spaceship destroyed: slow down scrolling to a halt.
-//        if (currState == GameState.PLAYER_KILLED) {
-//            return scrollSpeed / 1.03f;
-//        } else { // Normal scrolling progression
-//            //scrollSpeed = MAX_SCROLL_SPEED * Math.atan(difficulty / 500.0f) * 2 / Math.PI;
-////            scrollSpeed = (float) (-Math.log(difficulty + 1) / 600);
-//            return currDifficulty / 10;
-//        }
     }
 
     private double calcScorePerSecond(double difficulty) {
