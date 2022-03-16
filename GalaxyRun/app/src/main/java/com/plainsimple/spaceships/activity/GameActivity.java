@@ -113,7 +113,8 @@ public class GameActivity extends FragmentActivity implements
         if (numUpdates != 0 && numUpdates % 150 == 0) {
             long curr_time = System.currentTimeMillis();
             double fps = numUpdates / ((curr_time - startTime) / 1000.0);
-            Log.d("GameActivity", String.format("fps: %f (%d updates)", fps, numUpdates));
+//            Log.d("GameActivity", String.format("fps: %f (%d updates)", fps, numUpdates));
+            Log.d("GameActivity", String.format("FPS: %f", updateMessage.fps));
             Log.d("GameActivity", String.format(
                     "Got %d drawParams", updateMessage.getDrawParams().getSize()
             ));

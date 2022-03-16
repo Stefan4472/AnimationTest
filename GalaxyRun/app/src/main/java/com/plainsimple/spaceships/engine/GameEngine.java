@@ -15,6 +15,7 @@ import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.helper.FpsCalculator;
 import com.plainsimple.spaceships.helper.Map;
 import com.plainsimple.spaceships.helper.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
@@ -46,9 +47,6 @@ public class GameEngine implements IExternalGameController {
     private Background background;
     private GameUI ui;
 
-    // Data for calculating FPS (TODO)
-    private long numUpdates;
-
     // Represents the level of difficulty. Increases non-linearly over time
     private double currDifficulty;
 
@@ -64,6 +62,7 @@ public class GameEngine implements IExternalGameController {
     // TODO: NOTE: IN PROGRESS OF REWRITING OLD LOGIC
     // tracks duration of this game (non-paused)
     private GameTimer gameTimer;
+    private FpsCalculator fpsCalculator;
     // speed of sprites scrolling across the screen (must be negative!)
     private double scrollSpeed;
     // Distance (num pixels) scrolled so far this game
@@ -103,6 +102,7 @@ public class GameEngine implements IExternalGameController {
         bitmapCache = new BitmapCache(appContext, gameWidthPx, gameHeightPx);
         animFactory = new AnimFactory(bitmapCache);
         externalInputQueue = new ConcurrentLinkedQueue<>();
+        fpsCalculator = new FpsCalculator(100);
 
         // Create GameContext
         gameContext = new GameContext(
@@ -218,20 +218,20 @@ public class GameEngine implements IExternalGameController {
     // adds any new sprites and generates a new set of sprites if needed
     public GameUpdateMessage update() {
         // Create queues for this update
-        FastQueue<Sprite> created_sprites = new FastQueue<>();
-        FastQueue<EventID> created_events = new FastQueue<>();
-        FastQueue<SoundID> created_sounds = new FastQueue<>();
-        FastQueue<DrawParams> draw_params = new FastQueue<>();
+        FastQueue<Sprite> createdSprites = new FastQueue<>();
+        FastQueue<EventID> createdEvents = new FastQueue<>();
+        FastQueue<SoundID> createdSounds = new FastQueue<>();
+        FastQueue<DrawParams> drawParams = new FastQueue<>();
 
         // Process any input events on queue
         while (!externalInputQueue.isEmpty()) {
-            processExternalInput(externalInputQueue.poll(), created_events);
+            processExternalInput(externalInputQueue.poll(), createdEvents);
         }
 
         // Do nothing if paused
         if (isPaused) {
             Log.d("GameEngine", "Game is paused!");
-            return new GameUpdateMessage(score, spaceship.getHealth(), currDifficulty);
+            return new GameUpdateMessage(drawParams, createdEvents, createdSounds, 0.0);
         }
 
         // TODO: BETTER ORGANIZATION OF LOGIC WHILE IN DIFFERENT STATES
@@ -244,7 +244,7 @@ public class GameEngine implements IExternalGameController {
 //        Log.d("GameEngine", String.format("%d, %d, %f, %f, %f, %f", game_time.getRunTimeMs(), game_time.getMsSincePrevUpdate(), currDifficulty, scrollSpeed, scrollDistance, scorePerSecond));
         // If we haven't started yet, check if it's time to start
         if (currState == GameState.STARTING && checkShouldBeginRun()) {
-            enterInProgressState(created_events);
+            enterInProgressState(createdEvents);
         }
 
         // Increment score
@@ -272,9 +272,9 @@ public class GameEngine implements IExternalGameController {
                 isPaused,
                 isMuted,
                 spaceship.getDirection(),
-                created_sprites,
-                created_events,
-                created_sounds
+                createdSprites,
+                createdEvents,
+                createdSounds
         );
 
         if (currState == GameState.IN_PROGRESS) {
@@ -286,7 +286,7 @@ public class GameEngine implements IExternalGameController {
 
         // Draw background
         background.update(update_context);
-        background.getDrawParams(draw_params);
+        background.getDrawParams(drawParams);
 
         // Update sprites
         Iterator<Sprite> it_sprites = sprites.iterator();
@@ -303,7 +303,7 @@ public class GameEngine implements IExternalGameController {
         }
 
         // Collect DrawParams
-        drawLayers.getDrawParams(draw_params, true);
+        drawLayers.getDrawParams(drawParams, true);
 
         // Handle collisions, passing the health of each as the damage
         // applied to the other.
@@ -316,26 +316,24 @@ public class GameEngine implements IExternalGameController {
         }
 
         // Add all created sprites
-        for (Sprite sprite : created_sprites) {
+        for (Sprite sprite : createdSprites) {
             Log.d("GameEngine", String.format("Adding sprite of type %s", sprite.getSpriteType().toString()));
             sprites.add(sprite);
         }
 
         ui.update(update_context);
-        ui.getDrawParams(draw_params);
+        ui.getDrawParams(drawParams);
 
         for (UIInputId input : ui.pollAllInput()) {
             processUIInput(input);
         }
 
-        numUpdates++;
+        fpsCalculator.recordFrame();
         return new GameUpdateMessage(
-                draw_params,
-                created_events,
-                created_sounds,
-                score,
-                spaceship.getHealth(),
-                scrollSpeed
+                drawParams,
+                createdEvents,
+                createdSounds,
+                fpsCalculator.getAverage()
         );
     }
 
@@ -383,6 +381,7 @@ public class GameEngine implements IExternalGameController {
             case PAUSE_GAME: {
                 Log.d("GameEngine", "Pausing game");
                 isPaused = true;
+                fpsCalculator.reset();
                 break;
             }
             case RESUME_GAME: {
