@@ -159,6 +159,10 @@ public class Spaceship extends Sprite {
         this.direction = direction;
     }
 
+    public Direction getDirection() {
+        return direction;
+    }
+
     public void setShooting(boolean isShooting) {
         this.isShooting = isShooting;
     }

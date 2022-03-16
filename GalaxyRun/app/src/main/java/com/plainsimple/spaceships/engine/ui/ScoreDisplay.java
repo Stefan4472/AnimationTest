@@ -2,12 +2,15 @@ package com.plainsimple.spaceships.engine.ui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.view.MotionEvent;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.engine.draw.DrawText;
 import com.plainsimple.spaceships.util.ProtectedQueue;
+
+import java.util.Queue;
 
 /**
  * Displays the game score in the top left of the screen.
@@ -21,7 +24,7 @@ import com.plainsimple.spaceships.util.ProtectedQueue;
  *
  * TODO: custom font
  */
-public class ScoreDisplay {
+public class ScoreDisplay extends UIElement {
 
     private GameContext gameContext;
 
@@ -128,5 +131,11 @@ public class ScoreDisplay {
 
     private static String colorToString(int color) {
         return "A:" + Color.alpha(color) + " R:" + Color.red(color) + " G:" + Color.green(color) + " B:" + Color.blue(color);
+    }
+
+    @Override
+    public boolean handleEvent(MotionEvent e, Queue<UIInputId> createdInput) {
+        // This element is not interactable
+        return false;
     }
 }

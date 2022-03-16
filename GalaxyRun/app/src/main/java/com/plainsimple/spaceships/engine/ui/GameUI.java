@@ -6,9 +6,12 @@ import android.view.MotionEvent;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.util.FastQueue;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -27,7 +30,8 @@ public class GameUI {
     private final MuteButton muteButton;
     private final Controls controls;
 
-    private Queue<UIInputId> createdInput = new LinkedBlockingQueue<>();
+    // TODO: ProtectedQueue?
+    private Queue<UIInputId> createdInput = new ArrayDeque<>();
 
     // TODO: how to reset the UI? (e.g., on game restart?)
     public GameUI(GameContext gameContext) {
@@ -40,8 +44,23 @@ public class GameUI {
     }
 
     public void handleMotionEvent(MotionEvent e) {
-        Log.d("GameUI", String.format("Processing motion %s", e.toString()));
-        // TODO: offer to other elements first
+//        Log.d("GameUI", String.format("Processing motion %s", e.toString()));
+
+        if (healthBar.handleEvent(e, createdInput)) {
+            return;
+        }
+        if (scoreDisplay.handleEvent(e, createdInput)) {
+            return;
+        }
+        if (pauseButton.handleEvent(e, createdInput)) {
+            return;
+        }
+        if (muteButton.handleEvent(e, createdInput)) {
+            return;
+        }
+        if (controls.handleEvent(e, createdInput)) {
+            return;
+        }
 
         // Events not processed by other elements get registered as shooting
         switch (e.getAction()) {
@@ -55,11 +74,11 @@ public class GameUI {
     }
 
     public List<UIInputId> pollAllInput() {
-        List<UIInputId> input = new ArrayList<>();
+        List<UIInputId> copied = new ArrayList<>();
         while (!createdInput.isEmpty()) {
-            input.add(createdInput.poll());
+            copied.add(createdInput.poll());
         }
-        return input;
+        return copied;
     }
 
     public void update(UpdateContext updateContext) {

@@ -59,6 +59,11 @@ public class Rectangle {
                 y + height >= y1 &&
                 y1 + h1 >= y;
     }
+
+    public boolean isInBounds(double ix, double iy) {
+        return ix >= x && ix <= x + width && iy >= y && iy <= y + height;
+    }
+
     // Returns this Rectangle as an `androids.graphics.Rect`
     public Rect toRect() {
         return new Rect(

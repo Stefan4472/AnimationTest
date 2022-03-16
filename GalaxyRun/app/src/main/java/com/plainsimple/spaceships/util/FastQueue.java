@@ -51,7 +51,12 @@ public class FastQueue<T> implements ProtectedQueue<T>, Iterable<T> {
     }
 
 //    public T pop() {
+//        if (isEmpty()) {
+//            throw new IndexOutOfBoundsException("Queue is empty");
+//        } else {
+//            T elem = peek();
 //
+//        }
 //    }
 
     protected T get(int index) throws IndexOutOfBoundsException {

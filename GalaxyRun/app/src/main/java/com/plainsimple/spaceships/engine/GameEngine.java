@@ -53,6 +53,7 @@ public class GameEngine implements IExternalGameController {
     private double currDifficulty;
 
     private boolean isPaused;
+    private boolean isMuted;
     private GameState currState;
     private int score;
 
@@ -171,6 +172,9 @@ public class GameEngine implements IExternalGameController {
 
         // Set state for new, un-started game
         currState = GameState.FINISHED;
+
+        // TODO: allow external trigger?
+        startGame(new FastQueue<>());
     }
 
     private void resetGame(ProtectedQueue<EventID> createdEvents) {
@@ -226,6 +230,7 @@ public class GameEngine implements IExternalGameController {
 
         // Do nothing if paused
         if (isPaused) {
+            Log.d("GameEngine", "Game is paused!");
             return new GameUpdateMessage(score, spaceship.getHealth(), currDifficulty);
         }
 
@@ -264,6 +269,9 @@ public class GameEngine implements IExternalGameController {
                 scrollSpeed,
                 score,
                 spaceship.getHealth(),
+                isPaused,
+                isMuted,
+                spaceship.getDirection(),
                 created_sprites,
                 created_events,
                 created_sounds
@@ -373,10 +381,12 @@ public class GameEngine implements IExternalGameController {
     private void processUIInput(UIInputId input) {
         switch (input) {
             case PAUSE_GAME: {
+                Log.d("GameEngine", "Pausing game");
                 isPaused = true;
                 break;
             }
             case RESUME_GAME: {
+                Log.d("GameEngine", "Resuming game");
                 isPaused = false;
                 break;
             }
@@ -402,6 +412,14 @@ public class GameEngine implements IExternalGameController {
             }
             case STOP_MOVING: {
                 spaceship.setDirection(Spaceship.Direction.NONE);
+                break;
+            }
+            case MUTE_GAME: {
+                isMuted = true;
+                break;
+            }
+            case UNMUTE_GAME: {
+                isMuted = false;
                 break;
             }
             default: {

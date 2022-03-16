@@ -9,5 +9,7 @@ public enum UIInputId {
     START_GAME,
     PAUSE_GAME,
     RESUME_GAME,
-    RESTART_GAME
+    RESTART_GAME,
+    MUTE_GAME,
+    UNMUTE_GAME,
 }

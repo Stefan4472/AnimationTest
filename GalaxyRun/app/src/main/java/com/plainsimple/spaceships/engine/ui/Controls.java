@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -13,10 +15,14 @@ import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawImage2;
 import com.plainsimple.spaceships.engine.draw.DrawImage3;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawRect;
+import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.util.ImageUtil;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 import com.plainsimple.spaceships.view.ArrowButtonView;
+
+import java.util.Queue;
 
 import plainsimple.spaceships.R;
 
@@ -26,7 +32,7 @@ import plainsimple.spaceships.R;
  * state.
  */
 
-public class Controls {
+public class Controls extends UIElement {
 
     private GameContext gameContext;
 
@@ -43,10 +49,12 @@ public class Controls {
     private Spaceship.Direction currentDirection;
 
     private final int widthPx, heightPx;
+    private Rectangle boundingBoxUp, boundingBoxDown;
 
     public Controls(GameContext gameContext) {
         this.gameContext = gameContext;
         currentDirection = Spaceship.Direction.NONE;
+
         // Set width to 30% of game width and height to full game height
         widthPx = (int) (0.3 * gameContext.gameWidthPx);
         heightPx = gameContext.gameHeightPx;
@@ -63,6 +71,9 @@ public class Controls {
         upArrowTop = /*getPaddingTop()*/ 0 + heightPx / 2 - upArrow.getHeight() - y_offset;
         downArrowTop = /*getPaddingTop()*/ 0 + heightPx / 2 + y_offset;
         paddingLeft = 0;
+
+        boundingBoxUp = new Rectangle(0, upArrowTop, widthPx, upArrow.getHeight() - y_offset);
+        boundingBoxDown = new Rectangle(0, downArrowTop, widthPx, downArrow.getHeight());
     }
 
 //    @Override // handle user touching the view. Update currentState based on event
@@ -99,7 +110,7 @@ public class Controls {
 //    }
 
     public void update(UpdateContext updateContext) {
-
+        currentDirection = updateContext.playerDirection;
     }
 
     public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
@@ -114,6 +125,41 @@ public class Controls {
             // Draw both
             drawParams.push(drawUp);
             drawParams.push(drawDown);
+        }
+
+        DrawRect upHitbox = new DrawRect(Color.GREEN, Paint.Style.STROKE, 2.0f);
+        upHitbox.setBounds(boundingBoxUp);
+        DrawRect downHitbox = new DrawRect(Color.BLUE, Paint.Style.STROKE, 2.0f);
+        downHitbox.setBounds(boundingBoxDown);
+        drawParams.push(upHitbox);
+        drawParams.push(downHitbox);
+    }
+
+    @Override
+    public boolean handleEvent(MotionEvent e, Queue<UIInputId> createdInput) {
+        boolean inUp = boundingBoxUp.isInBounds(e.getX(), e.getY());
+        boolean inDown = boundingBoxDown.isInBounds(e.getX(), e.getY());
+
+        switch (e.getAction()) {
+            case (MotionEvent.ACTION_DOWN): {
+                if (inUp) {
+                    createdInput.add(UIInputId.START_MOVING_UP);
+                    return true;
+                } else if (inDown) {
+                    createdInput.add(UIInputId.START_MOVING_DOWN);
+                    return true;
+                }
+            }
+            case (MotionEvent.ACTION_UP): {
+                // Stop direction input, regardless of where on the screen
+                // is being released
+                createdInput.add(UIInputId.STOP_MOVING);
+                // Consume input if within a bounding box
+                return inUp || inDown;
+            }
+            default: {
+                return false;
+            }
         }
     }
 }

@@ -4,19 +4,23 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.engine.draw.DrawText;
+import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
+
+import java.util.Queue;
 
 /**
  * Draws player's health.
  */
 
-public class HealthBar {
+public class HealthBar extends UIElement {
 
     private GameContext gameContext;
 
@@ -135,5 +139,11 @@ public class HealthBar {
         double red = (UPPER_RED - LOWER_RED) / 2.0 - (ratio - 0.5) * (UPPER_RED - LOWER_RED);
         double green = (UPPER_GREEN - LOWER_GREEN) / 2.0 + (ratio - 0.5) * (UPPER_GREEN - LOWER_GREEN);
         return Color.rgb((int) red, (int) green, BLUE);
+    }
+
+    @Override
+    public boolean handleEvent(MotionEvent e, Queue<UIInputId> createdInput) {
+        // This element is not interactable
+        return false;
     }
 }

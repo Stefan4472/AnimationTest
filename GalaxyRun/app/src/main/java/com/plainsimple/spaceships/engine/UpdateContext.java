@@ -1,6 +1,7 @@
 package com.plainsimple.spaceships.engine;
 
 import com.plainsimple.spaceships.helper.SoundID;
+import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
@@ -15,6 +16,9 @@ public class UpdateContext {
     public final double scrollSpeed;
     public final int score;
     public final int playerHealth;
+    public final boolean isPaused;
+    public final boolean isMuted;
+    public final Spaceship.Direction playerDirection;
     private ProtectedQueue<Sprite> createdChildren;
     private ProtectedQueue<EventID> createdEvents;
     private ProtectedQueue<SoundID> createdSounds;
@@ -25,6 +29,9 @@ public class UpdateContext {
             double scrollSpeed,
             int score,
             int playerHealth,
+            boolean isPaused,
+            boolean isMuted,
+            Spaceship.Direction playerDirection,
             ProtectedQueue<Sprite> createdChildren,
             ProtectedQueue<EventID> createdEvents,
             ProtectedQueue<SoundID> createdSounds
@@ -34,6 +41,9 @@ public class UpdateContext {
         this.score = score;
         this.playerHealth = playerHealth;
         this.scrollSpeed = scrollSpeed;
+        this.isPaused = isPaused;
+        this.isMuted = isMuted;
+        this.playerDirection = playerDirection;
         this.createdChildren = createdChildren;
         this.createdEvents = createdEvents;
         this.createdSounds = createdSounds;
