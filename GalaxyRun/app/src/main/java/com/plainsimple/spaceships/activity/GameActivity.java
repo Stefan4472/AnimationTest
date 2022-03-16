@@ -7,7 +7,6 @@ import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.plainsimple.spaceships.engine.GameEngine;
 import com.plainsimple.spaceships.engine.GameRunner;
 import com.plainsimple.spaceships.engine.GameUpdateMessage;
 import com.plainsimple.spaceships.view.GameView;
@@ -18,28 +17,24 @@ import plainsimple.spaceships.R;
 /**
  * Activity containing the game.
  *
- * The Game logic lives in `GameEngine`, which is executed in a parallel
- * thread by `GameRunner`. GameActivity receives `DrawParams` for the
+ * The Game logic is run in a parallel thread (`GameRunner`).
+ * The GameActivity receives `DrawParams` for the
  * current game and forwards them to `GameView`, which draws them.
- *
- * See https://developer.android.com/guide/components/activities/activity-lifecycle
- * for information about the Activity Lifecycle
  */
 public class GameActivity extends FragmentActivity implements
         GameRunner.Callback, // Receive game state updates
         GameView.IGameViewListener // Receive events from GameView
 {
-    private GameEngine gameEngine;
-    private GameRunner mGameRunner;
-
     private long startTime;
     private long numUpdates;
 
+    // Runs the game in a separate thread
+    private GameRunner mGameRunner;
     // View element that draws the game
     private GameView gameView;
 
-    // Whether to keep running the game in a background thread
-    //private boolean isRunning; // TODO: improve and work with ACTIVITY LIFECYCLE! -> stop the background thread when activity is not being shown
+    // Whether the Activity is in an active state
+    private boolean isActivityActive;
 
     @Override
     public void onCreate(Bundle savedInstanceState) throws IllegalArgumentException {
@@ -61,16 +56,16 @@ public class GameActivity extends FragmentActivity implements
     public void onResume() {
         super.onResume();
         Log.d("GameActivity", "onResume called");
+        isActivityActive = true;
         gameView.startThread();
-        // TODO: send message to GameEngine
     }
 
     @Override
     public void onPause() {
         super.onPause();
         Log.d("GameActivity", "onPause called");
+        isActivityActive = false;
         gameView.stopThread();
-        // TODO: send message to GameEngine
     }
 
     /*
@@ -82,29 +77,30 @@ public class GameActivity extends FragmentActivity implements
     }
 
     /*
+    IGameViewListener--handle touch event.
+     */
+    @Override
+    public void handleScreenTouch(MotionEvent motionEvent) {
+        mGameRunner.inputMotionEvent(motionEvent);
+    }
+
+    /*
     Initialize the game. This is called once the GameView has been sized.
     We have to wait for this because we need to know how big our screen is.
      */
-    private void initialize(int playableWidthPx, int playableHeightPx) {
+    private void initialize(int screenWidthPx, int screenHeightPx) {
         Log.d("GameActivity", String.format(
-                "initialize() called w/width %d, height %d", playableWidthPx, playableHeightPx
+                "initialize() called w/width %d, height %d", screenWidthPx, screenHeightPx
         ));
 
-        // Create GameEngine
-        // TODO: can we move the GameEngine fully into GameRunner?
-        gameEngine = new GameEngine(
-                getApplicationContext(),
-                playableWidthPx,
-                playableHeightPx
-        );
-
         // Create GameRunner background thread
-        mGameRunner = new GameRunner(new Handler(), this, gameEngine);
+        mGameRunner = new GameRunner(
+                new Handler(), this, getApplicationContext(), screenWidthPx, screenHeightPx);
         mGameRunner.start();
         mGameRunner.prepareHandler();
-        startTime = System.currentTimeMillis();
-        gameEngine.inputExternalStartGame();
-        // Call the first game update
+        startTime = System.currentTimeMillis(); // TODO: calculate FPS somewhere else (e.g., GameUpdateMessage)
+        // Send START signal and queue the first update
+        mGameRunner.startGame();
         mGameRunner.queueUpdate();
     }
 
@@ -127,7 +123,7 @@ public class GameActivity extends FragmentActivity implements
         numUpdates++;
 
         // Call the next update
-//        if (isRunning) {
+        if (isActivityActive) {
             // Sleep--for testing
             try {
                 Thread.sleep(30);
@@ -135,14 +131,9 @@ public class GameActivity extends FragmentActivity implements
 
             }
             mGameRunner.queueUpdate();
-//        }
-    }
-
-    /*
-    IGameViewListener--handle touch event.
-     */
-    @Override
-    public void handleScreenTouch(MotionEvent motionEvent) {
-        gameEngine.inputExternalMotionEvent(motionEvent);
+        }
+        else {
+            Log.d("GameActivity", "Activity is inactive");
+        }
     }
 }

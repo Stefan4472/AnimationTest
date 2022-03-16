@@ -1,8 +1,10 @@
 package com.plainsimple.spaceships.engine;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.view.MotionEvent;
 
 /**
  * Runs the GameEngine in a worker thread.
@@ -17,20 +19,32 @@ public class GameRunner extends HandlerThread {
         void onGameStateUpdated(GameUpdateMessage message);
     }
 
-    public GameRunner(Handler responseHandler, Callback callback, GameEngine gameEngine) {
+    public GameRunner(Handler responseHandler, Callback callback,
+                      Context context, int screenWidthPx, int screenHeightPx) {
         super(GameRunner.class.getSimpleName());
         mResponseHandler = responseHandler;
         mCallback = callback;
-        // TODO: COULD REQUIRE `GAMEENGINE` TO BE PASSED WITH THE REQUEST
-        mGameEngine = gameEngine;
+        mGameEngine = new GameEngine(context.getApplicationContext(), screenWidthPx, screenHeightPx);
+
+    }
+
+    /*
+    Send the signal to start the game.
+     */
+    public void startGame() {
+        // TODO: could just do this on the first queueUpdate()
+        mGameEngine.inputStartGame();
     }
 
     /*
     Tell the Thread to trigger a game update.
      */
     public void queueUpdate() {
-//        Log.d(TAG, "Queued update()");
         mWorkerHandler.obtainMessage().sendToTarget();
+    }
+
+    public void inputMotionEvent(MotionEvent e) {
+        mGameEngine.inputExternalMotionEvent(e);
     }
 
     public void prepareHandler() {
