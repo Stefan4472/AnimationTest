@@ -7,38 +7,5 @@
     <com.plainsimple.spaceships.view.GameView
         android:id="@+id/spaceships"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"/>
-    <!-- pause button -->
-<!--    <ImageButton-->
-<!--        android:id="@+id/pausebutton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentTop="true"-->
-<!--        android:layout_alignParentRight="true"-->
-<!--        android:layout_marginRight="10dp"-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        android:onClick="onPausePressed"-->
-<!--        style="?android:attr/borderlessButtonStyle" />-->
-<!--    &lt;!&ndash; mute button &ndash;&gt;-->
-<!--    <ImageButton-->
-<!--        android:id="@+id/mutebutton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentTop="true"-->
-<!--        android:layout_toLeftOf="@+id/pausebutton"-->
-<!--        android:layout_marginLeft="10dp"-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        android:onClick="onMutePressed"-->
-<!--        style="?android:attr/borderlessButtonStyle" />-->
-<!--    &lt;!&ndash; position ArrowButton view along the left edge of the screen, above healthbar. Default-->
-<!--     to invisible, so they can be revealed when game is started &ndash;&gt;-->
-<!--    <com.plainsimple.spaceships.view.ArrowButtonView-->
-<!--        android:id="@+id/arrow_buttons"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:paddingLeft="10dp"-->
-<!--        android:layout_alignParentLeft="true"-->
-<!--        android:alpha="0"/>-->
+        android:layout_height="fill_parent"/>
 </RelativeLayout>

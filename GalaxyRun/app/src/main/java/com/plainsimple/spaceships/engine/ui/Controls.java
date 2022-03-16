@@ -20,7 +20,6 @@ import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.util.ImageUtil;
 import com.plainsimple.spaceships.util.ProtectedQueue;
-import com.plainsimple.spaceships.view.ArrowButtonView;
 
 import java.util.Queue;
 

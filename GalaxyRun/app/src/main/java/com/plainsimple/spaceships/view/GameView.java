@@ -8,10 +8,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.plainsimple.spaceships.activity.IGameActivity;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
-import com.plainsimple.spaceships.engine.ui.Background;
-import com.plainsimple.spaceships.engine.ui.ScoreDisplay;
 import com.plainsimple.spaceships.helper.*;
 import com.plainsimple.spaceships.util.FastQueue;
 
@@ -22,6 +19,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class GameView extends SurfaceView implements Runnable {
 
+    /**
+     * Event callbacks triggered by GameView.
+     */
+    public interface IGameViewListener {
+        void onSizeSet(int widthPx, int heightPx);
+        void handleScreenTouch(MotionEvent motionEvent);
+    }
+
     private final Context context;
     private boolean isRunning;
     private Thread drawThread;
@@ -29,9 +34,6 @@ public class GameView extends SurfaceView implements Runnable {
     private SurfaceHolder surfaceHolder;
     // Queue of game frames to draw
     private ConcurrentLinkedQueue<FastQueue<DrawParams>> drawFramesQueue;
-
-    // Interface to the GameActivity. Provides a couple utility methods.
-    private IGameActivity gameActivityInterface;
     // Listener registered to this view
     private IGameViewListener gameViewListener;
 
@@ -42,11 +44,7 @@ public class GameView extends SurfaceView implements Runnable {
         drawFramesQueue = new ConcurrentLinkedQueue<>();
     }
 
-    public void setGameActivityInterface(IGameActivity gameActivityInterface) {
-        this.gameActivityInterface = gameActivityInterface;
-    }
-
-    public void setGameViewListener(IGameViewListener gameViewListener) {
+    public void setListener(IGameViewListener gameViewListener) {
         this.gameViewListener = gameViewListener;
     }
 
@@ -60,7 +58,6 @@ public class GameView extends SurfaceView implements Runnable {
     @Override
     protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
         super.onSizeChanged(width, height, oldWidth, oldHeight);
-        assert(gameActivityInterface != null);
         Log.d("GameView", String.format("surfaceChanged() called with %d, %d", width, height));
 
         if (width == 0 || height == 0){
@@ -75,7 +72,7 @@ public class GameView extends SurfaceView implements Runnable {
         bitmapCache = new BitmapCache(context, width, height);
 
         // Tell GameActivity that we're ready to start
-        gameActivityInterface.onSizeSet(width, height);
+        gameViewListener.onSizeSet(width, height);
     }
 
     /*
@@ -92,7 +89,6 @@ public class GameView extends SurfaceView implements Runnable {
                 FastQueue<DrawParams> draw_params = drawFramesQueue.poll();
                 if (surfaceHolder.getSurface().isValid()) {
                     canvas = surfaceHolder.lockCanvas();
-                    updateSubViews();
                     drawFrame(canvas, draw_params);
                     surfaceHolder.unlockCanvasAndPost(canvas);
                 }
@@ -102,18 +98,9 @@ public class GameView extends SurfaceView implements Runnable {
 
     private void drawFrame(Canvas canvas, FastQueue<DrawParams> drawParams) {
 //        Log.d("GameView", "Drawing Frame with " + drawParams.getSize() + " DrawParams");
-//        Log.d("GameView", String.format("drawFrame() got %d DrawParams", drawParams.getSize()));
         for (DrawParams draw_param : drawParams) {
             draw_param.draw(canvas, bitmapCache);
         }
-//        Log.d("GameView", "finished drawing");
-        // fill the area outside of playScreenH but in screenH with black
-//            canvas.drawRect(0, playScreenH, screenW, screenH, blackPaint);
-    }
-
-    public void updateSubViews() {
-//            background.scroll(-gameEngine.scrollSpeed * gameEngine.gameWidthPx * gameEngine.SCROLL_SPEED_CONST);
-//            scoreDisplay.update(gameEngine.score);
     }
 
     /*
