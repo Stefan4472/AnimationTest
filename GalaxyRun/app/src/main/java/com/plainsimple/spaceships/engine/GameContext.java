@@ -21,8 +21,8 @@ public class GameContext {
     private BitmapCache bitmapCache;
     private AnimFactory animFactory;
     private Sprite playerSprite;
-    private int gameWidthPx;
-    private int gameHeightPx;
+    public final int gameWidthPx;
+    public final int gameHeightPx;
     private int nextSpriteId = 1;
 
     // TODO: PROVIDE `ISINBOUNDS()` METHOD?

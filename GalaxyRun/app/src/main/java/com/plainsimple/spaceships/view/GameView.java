@@ -10,6 +10,7 @@ import android.view.SurfaceView;
 
 import com.plainsimple.spaceships.activity.IGameActivity;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.ui.Background;
 import com.plainsimple.spaceships.engine.ui.ScoreDisplay;
 import com.plainsimple.spaceships.helper.*;
 import com.plainsimple.spaceships.util.FastQueue;
@@ -28,12 +29,6 @@ public class GameView extends SurfaceView implements Runnable {
     private SurfaceHolder surfaceHolder;
     // Queue of game frames to draw
     private ConcurrentLinkedQueue<FastQueue<DrawParams>> drawFramesQueue;
-
-    // TODO: THIS SHOULD REALLY BE A UI ELEMENT IN GAMEACTIVITY--BUT THAT WOULD LIKELY IMPACT PERFORMANCE DUE TO RUNONUITHREAD()
-    // Score display in top left of screen
-    private ScoreDisplay scoreDisplay;
-    // Scrolling space background (moves at SCROLL_SPEED_CONST of regular sprites)
-    private Background background;
 
     // Interface to the GameActivity. Provides a couple utility methods.
     private IGameActivity gameActivityInterface;
@@ -79,7 +74,6 @@ public class GameView extends SurfaceView implements Runnable {
 //        int playableHeight = gameActivityInterface.calcPlayableHeight(height);
         bitmapCache = new BitmapCache(context, width, height);
 
-        background = new Background(width, height);
         // Tell GameActivity that we're ready to start
         gameActivityInterface.onSizeSet(width, height);
     }
@@ -108,10 +102,6 @@ public class GameView extends SurfaceView implements Runnable {
 
     private void drawFrame(Canvas canvas, FastQueue<DrawParams> drawParams) {
 //        Log.d("GameView", "Drawing Frame with " + drawParams.getSize() + " DrawParams");
-        if (background != null) {
-            background.draw(canvas);
-        }
-
 //        Log.d("GameView", String.format("drawFrame() got %d DrawParams", drawParams.getSize()));
         for (DrawParams draw_param : drawParams) {
             draw_param.draw(canvas, bitmapCache);

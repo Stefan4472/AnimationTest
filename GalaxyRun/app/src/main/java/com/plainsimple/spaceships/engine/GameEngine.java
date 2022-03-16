@@ -3,6 +3,7 @@ package com.plainsimple.spaceships.engine;
 import android.content.Context;
 import android.util.Log;
 
+import com.plainsimple.spaceships.engine.ui.Background;
 import com.plainsimple.spaceships.engine.ui.ScoreDisplay;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
@@ -41,6 +42,7 @@ public class GameEngine implements IGameController {
     // UI element for the Health Bar, drawn at the bottom of the screen
     private HealthBar healthBar;
     private ScoreDisplay scoreDisplay;
+    private Background background;
 
     // Data for calculating FPS (TODO)
     private long numUpdates;
@@ -115,6 +117,7 @@ public class GameEngine implements IGameController {
         // TODO: need to adjust playable width/height to accommodate healthbar
         healthBar = new HealthBar(appContext, gameWidthPx, gameHeightPx, spaceship.getHealth(), GameEngine.STARTING_PLAYER_HEALTH);
         scoreDisplay = new ScoreDisplay(appContext, gameWidthPx, gameHeightPx);
+        background = new Background(gameContext);
 
         map = new Map(gameContext);
 
@@ -268,6 +271,10 @@ public class GameEngine implements IGameController {
 
         hitDetector.clear();
         drawLayers.clear();
+
+        // Draw background
+        background.update(update_context);
+        background.getDrawParams(draw_params);
 
         Iterator<Sprite> it_sprites = sprites.iterator();
         while(it_sprites.hasNext()) {
