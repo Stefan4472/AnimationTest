@@ -1,6 +1,6 @@
-package com.plainsimple.spaceships.engine.input;
+package com.plainsimple.spaceships.engine.ui;
 
-public enum GameInputId {
+public enum UIInputId {
     START_SHOOTING,
     STOP_SHOOTING,
     START_MOVING_UP,

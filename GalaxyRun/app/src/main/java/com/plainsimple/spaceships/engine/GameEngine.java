@@ -4,16 +4,13 @@ import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.plainsimple.spaceships.engine.input.GameInput;
-import com.plainsimple.spaceships.engine.input.GameInputId;
-import com.plainsimple.spaceships.engine.input.MotionGameInput;
-import com.plainsimple.spaceships.engine.input.SimpleGameInput;
+import com.plainsimple.spaceships.engine.external.ExternalInput;
+import com.plainsimple.spaceships.engine.external.ExternalInputId;
+import com.plainsimple.spaceships.engine.external.MotionExternalInput;
+import com.plainsimple.spaceships.engine.external.SimpleExternalInput;
 import com.plainsimple.spaceships.engine.ui.Background;
-import com.plainsimple.spaceships.engine.ui.Controls;
 import com.plainsimple.spaceships.engine.ui.GameUI;
-import com.plainsimple.spaceships.engine.ui.MuteButton;
-import com.plainsimple.spaceships.engine.ui.PauseButton;
-import com.plainsimple.spaceships.engine.ui.ScoreDisplay;
+import com.plainsimple.spaceships.engine.ui.UIInputId;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
@@ -26,7 +23,6 @@ import com.plainsimple.spaceships.stats.GameTimer;
 import com.plainsimple.spaceships.util.FastQueue;
 import com.plainsimple.spaceships.util.GameEngineUtil;
 import com.plainsimple.spaceships.util.ProtectedQueue;
-import com.plainsimple.spaceships.engine.ui.HealthBar;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -38,7 +34,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * TODO: NEEDS PRETTY SERIOUS STRUCTURAL IMPROVEMENTS
  */
 
-public class GameEngine implements IGameController {
+public class GameEngine implements IExternalGameController {
 
     private GameContext gameContext;
     private BitmapCache bitmapCache;
@@ -76,8 +72,10 @@ public class GameEngine implements IGameController {
     // All other sprites
     private List<Sprite> sprites = new LinkedList<>();
 
-    // Queue for game input events
-    private ConcurrentLinkedQueue<GameInput> gameInputQueue;
+    // Queue for game input events coming from outside
+    private ConcurrentLinkedQueue<ExternalInput> externalInputQueue;
+    // Queue for game input events coming from the UI
+    private ConcurrentLinkedQueue<ExternalInput> uiInputQueue;
 
     // Represents the possible states that the game can be in
     private enum GameState {
@@ -103,7 +101,7 @@ public class GameEngine implements IGameController {
         // Create BitmapCache
         bitmapCache = new BitmapCache(appContext, gameWidthPx, gameHeightPx);
         animFactory = new AnimFactory(bitmapCache);
-        gameInputQueue = new ConcurrentLinkedQueue<>();
+        externalInputQueue = new ConcurrentLinkedQueue<>();
 
         // Create GameContext
         gameContext = new GameContext(
@@ -222,8 +220,8 @@ public class GameEngine implements IGameController {
         FastQueue<DrawParams> draw_params = new FastQueue<>();
 
         // Process any input events on queue
-        while (!gameInputQueue.isEmpty()) {
-            processInput(gameInputQueue.poll(), created_events);
+        while (!externalInputQueue.isEmpty()) {
+            processExternalInput(externalInputQueue.poll(), created_events);
         }
 
         // Do nothing if paused
@@ -282,6 +280,7 @@ public class GameEngine implements IGameController {
         background.update(update_context);
         background.getDrawParams(draw_params);
 
+        // Update sprites
         Iterator<Sprite> it_sprites = sprites.iterator();
         while(it_sprites.hasNext()) {
             Sprite sprite = it_sprites.next();
@@ -317,6 +316,10 @@ public class GameEngine implements IGameController {
         ui.update(update_context);
         ui.getDrawParams(draw_params);
 
+        for (UIInputId input : ui.pollAllInput()) {
+            processUIInput(input);
+        }
+
         numUpdates++;
         return new GameUpdateMessage(
                 draw_params,
@@ -328,68 +331,82 @@ public class GameEngine implements IGameController {
         );
     }
 
-    private void processInput(GameInput input, ProtectedQueue<EventID> createdEvents) {
-        Log.d("GameEngine", String.format("Processing input event %s", input.toString()));
-        if (input instanceof SimpleGameInput) {
-            switch (((SimpleGameInput) input).inputId) {
-                case START_GAME: {
-                    startGame(createdEvents);
-                    break;
-                }
-                case PAUSE_GAME: {
-                    isPaused = true;
-                    break;
-                }
-                case RESUME_GAME: {
-                    isPaused = false;
-                    break;
-                }
-                case RESTART_GAME: {
-                    resetGame(createdEvents);
-                    break;
-                }
-                case START_SHOOTING: {
-                    spaceship.setShooting(true);
-                    break;
-                }
-                case STOP_SHOOTING: {
-                    spaceship.setShooting(false);
-                    break;
-                }
-                case START_MOVING_UP: {
-                    spaceship.setDirection(Spaceship.Direction.UP);
-                    break;
-                }
-                case START_MOVING_DOWN: {
-                    spaceship.setDirection(Spaceship.Direction.DOWN);
-                    break;
-                }
-                case STOP_MOVING: {
-                    spaceship.setDirection(Spaceship.Direction.NONE);
-                    break;
-                }
-                default: {
-                    throw new IllegalArgumentException(
-                            String.format("Unsupported GameInputID %s", ((SimpleGameInput) input).inputId)
-                    );
-                }
-            }
-        } else if (input instanceof MotionGameInput) {
-            MotionEvent e = ((MotionGameInput) input).motion;
+    // TODO: handle external lifecycle events (PAUSE, RESUME, STOP)
+    private void processExternalInput(ExternalInput input, ProtectedQueue<EventID> createdEvents) {
+        Log.d("GameEngine", String.format("Processing external input event %s", input.toString()));
+        if (input instanceof SimpleExternalInput) {
+//            switch (((SimpleExternalInput) input).inputId) {
+//                case START_GAME: {
+//                    startGame(createdEvents);
+//                    break;
+//                }
+//                case PAUSE_GAME: {
+//                    isPaused = true;
+//                    // TODO: pauseGame()
+//                    break;
+//                }
+//                default: {
+//                    throw new IllegalArgumentException(
+//                            String.format("Unsupported GameInputID %s", ((SimpleExternalInput) input).inputId)
+//                    );
+//                }
+//            }
+        } else if (input instanceof MotionExternalInput) {
+            MotionEvent e = ((MotionExternalInput) input).motion;
             ui.handleMotionEvent(e);
             Log.d("GameEngine", String.format("Processing motion %s", e.toString()));
             switch (e.getAction()) {
                 // Start of touch
                 case MotionEvent.ACTION_DOWN:
-                    inputStartShooting();
+//                    inputStartShooting();
                     break;
                 // End of touch
                 case MotionEvent.ACTION_UP:
-                    inputStopShooting();
+//                    inputStopShooting();
                     break;
             }
         } else {
             throw new IllegalArgumentException("Unsupported input type");
+        }
+    }
+
+    private void processUIInput(UIInputId input) {
+        switch (input) {
+            case PAUSE_GAME: {
+                isPaused = true;
+                break;
+            }
+            case RESUME_GAME: {
+                isPaused = false;
+                break;
+            }
+//            case RESTART_GAME: {
+//                resetGame(createdEvents);
+//                break;
+//            }
+            case START_SHOOTING: {
+                spaceship.setShooting(true);
+                break;
+            }
+            case STOP_SHOOTING: {
+                spaceship.setShooting(false);
+                break;
+            }
+            case START_MOVING_UP: {
+                spaceship.setDirection(Spaceship.Direction.UP);
+                break;
+            }
+            case START_MOVING_DOWN: {
+                spaceship.setDirection(Spaceship.Direction.DOWN);
+                break;
+            }
+            case STOP_MOVING: {
+                spaceship.setDirection(Spaceship.Direction.NONE);
+                break;
+            }
+            default: {
+                throw new IllegalArgumentException();
+            }
         }
     }
 
@@ -492,54 +509,59 @@ public class GameEngine implements IGameController {
         return difficulty * 100;
     }
 
+    /* IExternalGameController interface. */
     @Override
+    public void inputExternalStartGame() {
+        externalInputQueue.add(new SimpleExternalInput(ExternalInputId.START_GAME));
+    }
+
+    @Override
+    public void inputExternalPauseGame() {
+        externalInputQueue.add(new SimpleExternalInput(ExternalInputId.PAUSE_GAME));
+    }
+
+    @Override
+    public void inputExternalMotionEvent(MotionEvent e) {
+        externalInputQueue.add(new MotionExternalInput(e));
+    }
+
     public void inputStartGame() {
-        gameInputQueue.add(new SimpleGameInput(GameInputId.START_GAME));
+        externalInputQueue.add(new SimpleExternalInput(ExternalInputId.START_GAME));
     }
 
-    @Override
     public void inputPauseGame() {
-        gameInputQueue.add(new SimpleGameInput(GameInputId.PAUSE_GAME));
+        externalInputQueue.add(new SimpleExternalInput(ExternalInputId.PAUSE_GAME));
     }
 
-    @Override
-    public void inputResumeGame() {
-        gameInputQueue.add(new SimpleGameInput(GameInputId.RESUME_GAME));
-    }
-
-    @Override
-    public void inputRestartGame() {
-        gameInputQueue.add(new SimpleGameInput(GameInputId.RESTART_GAME));
-    }
-
-    /* Start implementation of IGameController interface. */
-    @Override
-    public void inputStartShooting() {
-        gameInputQueue.add(new SimpleGameInput(GameInputId.START_SHOOTING));
-    }
-
-    @Override
-    public void inputStopShooting() {
-        gameInputQueue.add(new SimpleGameInput(GameInputId.STOP_SHOOTING));
-    }
-
-    @Override
-    public void inputStartMoveUp() {
-        gameInputQueue.add(new SimpleGameInput(GameInputId.START_MOVING_UP));
-    }
-
-    @Override
-    public void inputStartMoveDown() {
-        gameInputQueue.add(new SimpleGameInput(GameInputId.START_MOVING_DOWN));
-    }
-
-    @Override
-    public void inputStopMoving() {
-        gameInputQueue.add(new SimpleGameInput(GameInputId.STOP_MOVING));
-    }
-
-    @Override
     public void inputMotionEvent(MotionEvent e) {
-        gameInputQueue.add(new MotionGameInput(e));
+        externalInputQueue.add(new MotionExternalInput(e));
     }
+
+//    public void inputResumeGame() {
+//        gameInputQueue.add(new SimpleGameInput(GameInputId.RESUME_GAME));
+//    }
+//
+//    public void inputRestartGame() {
+//        gameInputQueue.add(new SimpleGameInput(GameInputId.RESTART_GAME));
+//    }
+//
+//    public void inputStartShooting() {
+//        gameInputQueue.add(new SimpleGameInput(GameInputId.START_SHOOTING));
+//    }
+//
+//    public void inputStopShooting() {
+//        gameInputQueue.add(new SimpleGameInput(GameInputId.STOP_SHOOTING));
+//    }
+//
+//    public void inputStartMoveUp() {
+//        gameInputQueue.add(new SimpleGameInput(GameInputId.START_MOVING_UP));
+//    }
+//
+//    public void inputStartMoveDown() {
+//        gameInputQueue.add(new SimpleGameInput(GameInputId.START_MOVING_DOWN));
+//    }
+//
+//    public void inputStopMoving() {
+//        gameInputQueue.add(new SimpleGameInput(GameInputId.STOP_MOVING));
+//    }
 }

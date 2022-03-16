@@ -51,14 +51,14 @@ public class GameActivity extends FragmentActivity implements
 
     // View elements
     private GameView gameView;
-    private ImageButton pauseButton;
-    private ImageButton muteButton;
-    private ArrowButtonView arrowButtons;
+//    private ImageButton pauseButton;
+//    private ImageButton muteButton;
+//    private ArrowButtonView arrowButtons;
 
     // Whether to keep running the game in a background thread
     //private boolean isRunning; // TODO: improve and work with ACTIVITY LIFECYCLE! -> stop the background thread when activity is not being shown
-    private boolean isGamePaused;
-    private boolean isGameMuted;
+//    private boolean isGamePaused;
+//    private boolean isGameMuted;
 
     @Override
     public void onCreate(Bundle savedInstanceState) throws IllegalArgumentException {
@@ -77,15 +77,15 @@ public class GameActivity extends FragmentActivity implements
 
         // Get handles to the view elements
         gameView = findViewById(R.id.spaceships);
-        pauseButton = findViewById(R.id.pausebutton);
-        muteButton = findViewById(R.id.mutebutton);
-        arrowButtons = findViewById(R.id.arrow_buttons);
+//        pauseButton = findViewById(R.id.pausebutton);
+//        muteButton = findViewById(R.id.mutebutton);
+//        arrowButtons = findViewById(R.id.arrow_buttons);
 
         // Provide GameView with a reference to our IGameActivity interface.
         gameView.setGameActivityInterface(this);
         // Register ourselves for needed listeners
         gameView.setGameViewListener(this);
-        arrowButtons.setOnDirectionChangedListener(this);
+//        arrowButtons.setOnDirectionChangedListener(this);
     }
 
     @Override
@@ -93,18 +93,18 @@ public class GameActivity extends FragmentActivity implements
         super.onResume();
         Log.d("GameActivity", "onResume called");
         gameView.startThread();
-        if (isGamePaused) {
-            // Display pause dialog
-            DialogFragment d = PauseDialogFragment.newInstance(1.0f, 1.0f);
-            d.show(getFragmentManager(), "Pause");
-        }
+//        if (isGamePaused) {
+//            // Display pause dialog
+//            DialogFragment d = PauseDialogFragment.newInstance(1.0f, 1.0f);
+//            d.show(getFragmentManager(), "Pause");
+//        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         Log.d("GameActivity", "onPause called");
-        setGamePaused(true);
+//        setGamePaused(true);
         gameView.stopThread();
     }
 
@@ -126,6 +126,7 @@ public class GameActivity extends FragmentActivity implements
         ));
 
         // Create GameEngine
+        // TODO: can we move the GameEngine fully into GameRunner?
         gameEngine = new GameEngine(
                 getApplicationContext(),
                 playableWidthPx,
@@ -138,13 +139,13 @@ public class GameActivity extends FragmentActivity implements
         mGameRunner.start();
         mGameRunner.prepareHandler();
         startTime = System.currentTimeMillis();
-        gameEngine.inputStartGame();
+        gameEngine.inputExternalStartGame();
         // Call the first game update
         mGameRunner.queueUpdate();
     }
 
     /*
-    GameRunner.Callback. Called when the next game update has been run.
+    GameRunner.Callback. Called when the next game state is ready.
      */
     @Override
     public void onGameStateUpdated(GameUpdateMessage updateMessage) {
@@ -158,19 +159,19 @@ public class GameActivity extends FragmentActivity implements
             ));
         }
 
-        for (EventID event : updateMessage.getEvents()) {
-            Log.d("GameActivity", event.toString());
-            switch (event) {
-                case GAME_STARTED: {
-                    onGameStarted();
-                    break;
-                }
-                case GAME_FINISHED: {
-                    onGameFinished();
-                    break;
-                }
-            }
-        }
+//        for (EventID event : updateMessage.getEvents()) {
+//            Log.d("GameActivity", event.toString());
+//            switch (event) {
+//                case GAME_STARTED: {
+//                    onGameStarted();
+//                    break;
+//                }
+//                case GAME_FINISHED: {
+//                    onGameFinished();
+//                    break;
+//                }
+//            }
+//        }
 
         // Update views
         gameView.queueDrawFrame(updateMessage.getDrawParams());
@@ -194,74 +195,74 @@ public class GameActivity extends FragmentActivity implements
      */
     @Override
     public void handleScreenTouch(MotionEvent motionEvent) {
-        gameEngine.inputMotionEvent(motionEvent);
+        gameEngine.inputExternalMotionEvent(motionEvent);
     }
 
-    private void setGamePaused(boolean isPaused) {
-        // Do nothing if this does not change the state
-        if (this.isGamePaused == isPaused) {
-            return;
-        }
+//    private void setGamePaused(boolean isPaused) {
+//        // Do nothing if this does not change the state
+//        if (this.isGamePaused == isPaused) {
+//            return;
+//        }
+//
+//        this.isGamePaused = isPaused;
+//        if (this.isGamePaused) {
+//            Log.d("GameActivity", "Pausing game");
+//            gameEngine.inputExternalPauseGame();
+//            pauseButton.setBackgroundResource(R.drawable.play);
+////            soundPool.autoPause();
+//            // Display pause dialog
+//            DialogFragment d = PauseDialogFragment.newInstance(1.0f, 1.0f);
+//            d.show(getFragmentManager(), "Pause");
+//        } else {
+//            Log.d("GameActivity", "Resuming game");
+//            gameEngine.inputResumeGame();
+//            pauseButton.setBackgroundResource(R.drawable.pause);
+////            soundPool.autoResume();
+//        }
+//    }
 
-        this.isGamePaused = isPaused;
-        if (this.isGamePaused) {
-            Log.d("GameActivity", "Pausing game");
-            gameEngine.inputPauseGame();
-            pauseButton.setBackgroundResource(R.drawable.play);
-//            soundPool.autoPause();
-            // Display pause dialog
-            DialogFragment d = PauseDialogFragment.newInstance(1.0f, 1.0f);
-            d.show(getFragmentManager(), "Pause");
-        } else {
-            Log.d("GameActivity", "Resuming game");
-            gameEngine.inputResumeGame();
-            pauseButton.setBackgroundResource(R.drawable.pause);
-//            soundPool.autoResume();
-        }
-    }
-
-    private void setGameMuted(boolean isMuted) {
-        // Do nothing if this does not change the state
-        if (this.isGameMuted == isMuted) {
-            return;
-        }
-
-        this.isGameMuted = isMuted;
-        if(this.isGameMuted) {
-            muteButton.setBackgroundResource(R.drawable.sound_off);
-        } else {
-            muteButton.setBackgroundResource(R.drawable.sound_on);
-        }
-//        AudioManager a_manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-//        a_manager.setStreamMute(AudioManager.STREAM_MUSIC, isMuted);
-    }
+//    private void setGameMuted(boolean isMuted) {
+//        // Do nothing if this does not change the state
+//        if (this.isGameMuted == isMuted) {
+//            return;
+//        }
+//
+//        this.isGameMuted = isMuted;
+//        if(this.isGameMuted) {
+//            muteButton.setBackgroundResource(R.drawable.sound_off);
+//        } else {
+//            muteButton.setBackgroundResource(R.drawable.sound_on);
+//        }
+////        AudioManager a_manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+////        a_manager.setStreamMute(AudioManager.STREAM_MUSIC, isMuted);
+//    }
 
     /*
     Plays the sound specified by the provided `SoundID`. If the game is isMuted,
      the sound will be suppressed.
      */
-    public void playSound(SoundID soundID) {
-        if (!isGameMuted) {
-            // TODO: LOGIC FOR PLAYING SOUNDS IS CURRENTLY BEING COMMENTED OUT
-//            soundPool.play(soundIDs.get(soundID), gameVolume, gameVolume, 1, 0, 1.0f);
-        }
-    }
+//    public void playSound(SoundID soundID) {
+//        if (!isGameMuted) {
+//            // TODO: LOGIC FOR PLAYING SOUNDS IS CURRENTLY BEING COMMENTED OUT
+////            soundPool.play(soundIDs.get(soundID), gameVolume, gameVolume, 1, 0, 1.0f);
+//        }
+//    }
 
-    /*
-    Callback fired when the user clicks the "pause" button.
-     */
-    public void onPausePressed(View view) {
-        playSound(SoundID.BUTTON_CLICKED);
-        setGamePaused(!isGamePaused);
-    }
+//    /*
+//    Callback fired when the user clicks the "pause" button.
+//     */
+//    public void onPausePressed(View view) {
+//        playSound(SoundID.BUTTON_CLICKED);
+//        setGamePaused(!isGamePaused);
+//    }
 
-    /*
-    Callback fired when the user clicks the "mute" button.
-     */
-    public void onMutePressed(View view) {
-        playSound(SoundID.BUTTON_CLICKED);
-        setGameMuted(!isGameMuted);
-    }
+//    /*
+//    Callback fired when the user clicks the "mute" button.
+//     */
+//    public void onMutePressed(View view) {
+//        playSound(SoundID.BUTTON_CLICKED);
+//        setGameMuted(!isGameMuted);
+//    }
 
     /*
     Callback fired when the user wants to resume the current run (which is paused).
@@ -269,9 +270,9 @@ public class GameActivity extends FragmentActivity implements
      */
     @Override
     public void onResumePressed(DialogFragment dialog) {
-        playSound(SoundID.BUTTON_CLICKED);
-        dialog.dismiss();
-        setGamePaused(false);
+//        playSound(SoundID.BUTTON_CLICKED);
+//        dialog.dismiss();
+//        setGamePaused(false);
     }
 
     /*
@@ -279,10 +280,10 @@ public class GameActivity extends FragmentActivity implements
      */
     @Override
     public void onQuitPressed(DialogFragment dialog) {
-        playSound(SoundID.BUTTON_CLICKED);
-//        setGamePaused(true);
-        Log.d("GameActivity", "Quitting game");
-        finish();
+//        playSound(SoundID.BUTTON_CLICKED);
+////        setGamePaused(true);
+//        Log.d("GameActivity", "Quitting game");
+//        finish();
     }
 
     /*
@@ -290,11 +291,11 @@ public class GameActivity extends FragmentActivity implements
      */
     @Override
     public void onRestartPressed(DialogFragment dialog) {
-        playSound(SoundID.BUTTON_CLICKED);
-        dialog.dismiss();
-
-        gameEngine.inputRestartGame();
-        setGamePaused(false);
+//        playSound(SoundID.BUTTON_CLICKED);
+//        dialog.dismiss();
+//
+//        gameEngine.inputRestartGame();
+//        setGamePaused(false);
     }
 
     /*
@@ -303,20 +304,20 @@ public class GameActivity extends FragmentActivity implements
      */
     @Override
     public void onDirectionChanged(Spaceship.Direction newDirection) {
-        switch (newDirection) {
-            case DOWN: {
-                gameEngine.inputStartMoveDown();
-                break;
-            }
-            case UP: {
-                gameEngine.inputStartMoveUp();
-                break;
-            }
-            case NONE: {
-                gameEngine.inputStopMoving();
-                break;
-            }
-        }
+//        switch (newDirection) {
+//            case DOWN: {
+//                gameEngine.inputStartMoveDown();
+//                break;
+//            }
+//            case UP: {
+//                gameEngine.inputStartMoveUp();
+//                break;
+//            }
+//            case NONE: {
+//                gameEngine.inputStopMoving();
+//                break;
+//            }
+//        }
     }
 
     /*
@@ -324,45 +325,45 @@ public class GameActivity extends FragmentActivity implements
     spaceship has reached the correct horizontal position for obstacles
     to start spawning.
      */
-    public void onGameStarted() {
-        // Fade in direction arrows
-        final AnimatorSet fade_in = (AnimatorSet) AnimatorInflater.loadAnimator(
-                this,
-                R.animator.arrowbuttons_fadein
-        );
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                fade_in.setTarget(arrowButtons);
-                fade_in.start();
-            }
-        });
-    }
+//    public void onGameStarted() {
+//        // Fade in direction arrows
+//        final AnimatorSet fade_in = (AnimatorSet) AnimatorInflater.loadAnimator(
+//                this,
+//                R.animator.arrowbuttons_fadein
+//        );
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                fade_in.setTarget(arrowButtons);
+//                fade_in.start();
+//            }
+//        });
+//    }
 
     /*
     Called when the current run is completely over.
     Check for high-score (TODO) and show the game-over dialog.
      */
-    public void onGameFinished() {
-        // Hide arrowButtons
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                arrowButtons.setAlpha(0);
-            }
-        });
-
-        boolean is_highscore = false;
-        int stars_earned = 0;
-        // Show the GameOver dialog
-//        DialogFragment d = GameOverDialogFragment.newInstance(
-//                new GameStats(),
-//                "GameOver",
-//                is_highscore,
-//                stars_earned
-//        );
-//        d.show(getFragmentManager(), "GameOver");
-    }
+//    public void onGameFinished() {
+//        // Hide arrowButtons
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                arrowButtons.setAlpha(0);
+//            }
+//        });
+//
+//        boolean is_highscore = false;
+//        int stars_earned = 0;
+//        // Show the GameOver dialog
+////        DialogFragment d = GameOverDialogFragment.newInstance(
+////                new GameStats(),
+////                "GameOver",
+////                is_highscore,
+////                stars_earned
+////        );
+////        d.show(getFragmentManager(), "GameOver");
+//    }
 
     /*
     Callback fired when the player's health changes.
@@ -378,18 +379,18 @@ public class GameActivity extends FragmentActivity implements
 //        });
 //    }
 
-    // TODO: REMOVE
+//    // TODO: REMOVE
     @Override
     public void onGameVolumeChanged(DialogFragment dialog, float gameVolume) {
-//        GameActivity.gameVolume = gameVolume;
-        Log.d("GameActivity.java", "New Game Volume set to " + gameVolume);
-        playSound(SoundID.BUTTON_CLICKED);
+////        GameActivity.gameVolume = gameVolume;
+//        Log.d("GameActivity.java", "New Game Volume set to " + gameVolume);
+//        playSound(SoundID.BUTTON_CLICKED);
     }
-
-    // TODO: REMOVE
+//
+//    // TODO: REMOVE
     @Override
     public void onMusicVolumeChanged(DialogFragment dialog, float musicVolume) {
-//        this.musicVolume = musicVolume;
-        Log.d("GameActivity.java", "New Music Volume set to " + musicVolume);
+////        this.musicVolume = musicVolume;
+//        Log.d("GameActivity.java", "New Music Volume set to " + musicVolume);
     }
 }

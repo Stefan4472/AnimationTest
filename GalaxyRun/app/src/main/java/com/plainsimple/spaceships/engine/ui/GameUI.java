@@ -4,12 +4,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.plainsimple.spaceships.engine.GameContext;
-import com.plainsimple.spaceships.engine.GameEngine;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
-import com.plainsimple.spaceships.engine.input.GameInput;
-import com.plainsimple.spaceships.engine.input.GameInputId;
-import com.plainsimple.spaceships.engine.input.SimpleGameInput;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
 import java.util.ArrayList;
@@ -31,7 +27,7 @@ public class GameUI {
     private final MuteButton muteButton;
     private final Controls controls;
 
-    private Queue<GameInput> createdInput = new LinkedBlockingQueue<>();
+    private Queue<UIInputId> createdInput = new LinkedBlockingQueue<>();
 
     // TODO: how to reset the UI? (e.g., on game restart?)
     public GameUI(GameContext gameContext) {
@@ -45,20 +41,21 @@ public class GameUI {
 
     public void handleMotionEvent(MotionEvent e) {
         Log.d("GameUI", String.format("Processing motion %s", e.toString()));
+        // TODO: offer to other elements first
+
+        // Events not processed by other elements get registered as shooting
         switch (e.getAction()) {
-            // Start of touch
             case MotionEvent.ACTION_DOWN:
-                createdInput.add(new SimpleGameInput(GameInputId.START_SHOOTING));
+                createdInput.add(UIInputId.START_SHOOTING);
                 break;
-            // End of touch
             case MotionEvent.ACTION_UP:
-                createdInput.add(new SimpleGameInput(GameInputId.STOP_SHOOTING));
+                createdInput.add(UIInputId.STOP_SHOOTING);
                 break;
         }
     }
 
-    public List<GameInput> pollAllInput() {
-        List<GameInput> input = new ArrayList<>();
+    public List<UIInputId> pollAllInput() {
+        List<UIInputId> input = new ArrayList<>();
         while (!createdInput.isEmpty()) {
             input.add(createdInput.poll());
         }
