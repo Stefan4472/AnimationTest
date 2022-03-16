@@ -9,9 +9,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.plainsimple.spaceships.activity.IGameActivity;
-import com.plainsimple.spaceships.engine.draw.DrawImage;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
-import com.plainsimple.spaceships.engine.draw.DrawRect;
+import com.plainsimple.spaceships.engine.ui.ScoreDisplay;
 import com.plainsimple.spaceships.helper.*;
 import com.plainsimple.spaceships.util.FastQueue;
 
@@ -81,7 +80,6 @@ public class GameView extends SurfaceView implements Runnable {
         bitmapCache = new BitmapCache(context, width, height);
 
         background = new Background(width, height);
-        scoreDisplay = new ScoreDisplay(context, 0);
         // Tell GameActivity that we're ready to start
         gameActivityInterface.onSizeSet(width, height);
     }
@@ -114,10 +112,6 @@ public class GameView extends SurfaceView implements Runnable {
             background.draw(canvas);
         }
 
-        if (scoreDisplay != null) {
-            scoreDisplay.update(100);
-            scoreDisplay.draw(canvas);
-        }
 //        Log.d("GameView", String.format("drawFrame() got %d DrawParams", drawParams.getSize()));
         for (DrawParams draw_param : drawParams) {
             draw_param.draw(canvas, bitmapCache);

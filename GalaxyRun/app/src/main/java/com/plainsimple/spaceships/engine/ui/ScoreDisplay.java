@@ -1,12 +1,12 @@
-package com.plainsimple.spaceships.view;
+package com.plainsimple.spaceships.engine.ui;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.util.DisplayMetrics;
-import android.util.Log;
+
+import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawText;
+import com.plainsimple.spaceships.util.ProtectedQueue;
 
 /**
  * Displays the game score in the top left of the screen.
@@ -17,23 +17,26 @@ import android.util.Log;
  * based on *the change in score,* where changes in score closer to maxScore lead to bigger
  * animated changes. Positive changes are made in a non-linear fashion, whereas negative changes
  * happen one step at a time in a linear fashion.
+ *
+ * TODO: custom font
  */
 public class ScoreDisplay {
 
     // score to display
     private int score;
-    // Paint used for drawText on canvas
-    private Paint paint;
     // x-coordinates to start drawing score
-    private float startX;
+    private final float startX;
     // y-coordinate to start drawing score
-    private float startY;
+    private final float startY;
     // current change in score being animated
     private float currentScoreChange;
     // change in score animation is moving toward
     private float movingToScoreChange;
     // whether an animation upwards is occurring
     private boolean animatingUp = false;
+
+    private final int screenHeightPx;
+
     // default color
     private static final int DEFAULT_COLOR = Color.WHITE;
     // color transitioned to when points are rapidly scored
@@ -44,28 +47,25 @@ public class ScoreDisplay {
     // max magnifying effect for when points are rapidly scored
     private static final float MAX_MAGNIFICATION = 1.5f;
     // left and top padding (dp)
-    private static final int PADDING = 10;
+    private static final float PADDING_PCT = 0.05f;
     // path to font file to use
     private static final String FONT = "fonts/galax___.ttf";
-    // text size
-    private static final int TEXT_SIZE = 50;
+    // text size (percentage of screen height)
+    private static final float BASE_TEXT_SIZE_PCT = 0.10f;
 
-    public ScoreDisplay(Context context, int startScore) {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        float padding = PADDING * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-        startX = padding;
-        startY = padding;
-        Typeface tf = Typeface.createFromAsset(context.getAssets(), FONT);
-        paint = new Paint();
-        paint.setTypeface(tf); // todo: bold?
-        this.score = startScore;
+    public ScoreDisplay(Context context, int screenWidthPx, int screenHeightPx) {
+        this.screenHeightPx = screenHeightPx;
+        startX = screenWidthPx * PADDING_PCT;
+        startY = screenHeightPx * PADDING_PCT;
     }
 
-    // adds to the current score and configures animation
-    public void update(int newScore) {
-        float dscore = newScore - score;
-        dscore = (dscore > MAX_SCORE_CHANGE ? MAX_SCORE_CHANGE : dscore);
-        if (dscore > movingToScoreChange) { // start animating up
+    /*
+    Update animations.
+     */
+    public void update(GameContext gameContext, int newScore) {
+        float dscore = Math.min(newScore - score, MAX_SCORE_CHANGE);
+        if (dscore > movingToScoreChange) {
+            // Start animating up
             movingToScoreChange = dscore;
             animatingUp = true;
         } else if (movingToScoreChange > dscore && !animatingUp) {
@@ -76,24 +76,27 @@ public class ScoreDisplay {
         score = newScore;
     }
 
-    public void draw(Canvas canvas) {
-        paint.setColor(getColor());
-        paint.setTextSize(TEXT_SIZE * getMagnification());
-        //Log.d("ScoreDisplay.java", "Color set to " + colorToString(paint.getColor()) + " Magnification at " + getMagnification());
-        canvas.drawText(Integer.toString(score), startX, startY + paint.getTextSize(), paint);
+    public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
+        String scoreString = Integer.toString(score);
+        int textSize = (int) (BASE_TEXT_SIZE_PCT * screenHeightPx * getMagnification());
+        // TODO: support fonts
+        DrawText text = new DrawText(scoreString, startX, startY + textSize, calculateColor(), textSize);
+        drawQueue.push(text);
     }
 
     // calculated "steps" -- change in color value for each unit of scoreChange
-    private float rStep = (Color.red(SCORING_COLOR) - Color.red(DEFAULT_COLOR)) / MAX_SCORE_CHANGE;
-    private float gStep = (Color.green(SCORING_COLOR) - Color.green(DEFAULT_COLOR)) / MAX_SCORE_CHANGE;
-    private float bStep = (Color.blue(SCORING_COLOR) - Color.blue(DEFAULT_COLOR)) / MAX_SCORE_CHANGE;
+    private final float R_STEP = (Color.red(SCORING_COLOR) - Color.red(DEFAULT_COLOR)) / MAX_SCORE_CHANGE;
+    private final float G_STEP = (Color.green(SCORING_COLOR) - Color.green(DEFAULT_COLOR)) / MAX_SCORE_CHANGE;
+    private final float B_STEP = (Color.blue(SCORING_COLOR) - Color.blue(DEFAULT_COLOR)) / MAX_SCORE_CHANGE;
 
-    // returns color to use when drawing ScoreDisplay text
-    private int getColor() {
+    /*
+    Calculates RGB color to use when drawing ScoreDisplay.
+     */
+    private int calculateColor() {
         // calculate current rgb values
-        float r_current = Color.red(DEFAULT_COLOR) + (currentScoreChange / MAX_SCORE_CHANGE) * rStep;
-        float g_current = Color.green(DEFAULT_COLOR) + (currentScoreChange / MAX_SCORE_CHANGE) * gStep;
-        float b_current = Color.blue(DEFAULT_COLOR) + (currentScoreChange / MAX_SCORE_CHANGE) * bStep;
+        float r_current = Color.red(DEFAULT_COLOR) + (currentScoreChange / MAX_SCORE_CHANGE) * R_STEP;
+        float g_current = Color.green(DEFAULT_COLOR) + (currentScoreChange / MAX_SCORE_CHANGE) * G_STEP;
+        float b_current = Color.blue(DEFAULT_COLOR) + (currentScoreChange / MAX_SCORE_CHANGE) * B_STEP;
         // non-linear color change up
         if (animatingUp) {
             // calculate number of "steps" to take toward movingToScoreChange. Calculate rgb based off that
@@ -102,11 +105,11 @@ public class ScoreDisplay {
             if ((int) dsteps == 0) {
                 animatingUp = false;
             }
-            return Color.rgb((int) (r_current + rStep * dsteps), (int) (g_current + gStep * dsteps),
-                    (int) (b_current + bStep * dsteps));
+            return Color.rgb((int) (r_current + R_STEP * dsteps), (int) (g_current + G_STEP * dsteps),
+                    (int) (b_current + B_STEP * dsteps));
         } else { // calculate rgb for movingToScoreChange (which is decreasing linearly)
-            return Color.rgb((int) (rStep * movingToScoreChange), (int) (gStep * movingToScoreChange),
-                    (int) (bStep * movingToScoreChange));
+            return Color.rgb((int) (R_STEP * movingToScoreChange), (int) (G_STEP * movingToScoreChange),
+                    (int) (B_STEP * movingToScoreChange));
         }
     }
 
@@ -117,6 +120,9 @@ public class ScoreDisplay {
 
     public void reset() {
         score = 0;
+        currentScoreChange = 0;
+        movingToScoreChange = 0;
+        animatingUp = false;
     }
 
     private static String colorToString(int color) {

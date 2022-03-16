@@ -3,6 +3,7 @@ package com.plainsimple.spaceships.engine;
 import android.content.Context;
 import android.util.Log;
 
+import com.plainsimple.spaceships.engine.ui.ScoreDisplay;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
@@ -36,8 +37,10 @@ public class GameEngine implements IGameController {
     private DrawLayers drawLayers;
     private Map map;
 
+    /* UI Elements */
     // UI element for the Health Bar, drawn at the bottom of the screen
     private HealthBar healthBar;
+    private ScoreDisplay scoreDisplay;
 
     // Data for calculating FPS (TODO)
     private long numUpdates;
@@ -108,8 +111,10 @@ public class GameEngine implements IGameController {
         // TODO: ANY WAY WE CAN PUT THE SPACESHIP INTO THE CONTEXT CONSTRUCTOR?
         gameContext.setPlayerSprite(spaceship);
 
+        // GUI elements
         // TODO: need to adjust playable width/height to accommodate healthbar
         healthBar = new HealthBar(appContext, gameWidthPx, gameHeightPx, spaceship.getHealth(), GameEngine.STARTING_PLAYER_HEALTH);
+        scoreDisplay = new ScoreDisplay(appContext, gameWidthPx, gameHeightPx);
 
         map = new Map(gameContext);
 
@@ -188,6 +193,7 @@ public class GameEngine implements IGameController {
         spaceship.setSpeedX(gameContext.getGameWidthPx() * 0.12);
 
         healthBar.setCurrentHealth(spaceship.getHealth());
+        scoreDisplay.reset();
 
         gameTimer = new GameTimer();
         gameTimer.start();
@@ -298,6 +304,8 @@ public class GameEngine implements IGameController {
         // Update and draw HealthBar
         healthBar.setMovingToHealth(spaceship.getHealth());
         healthBar.getDrawParams(draw_params);
+        scoreDisplay.update(gameContext, score);
+        scoreDisplay.getDrawParams(draw_params);
 
         numUpdates++;
         return new GameUpdateMessage(

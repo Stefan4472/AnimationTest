@@ -7,6 +7,8 @@ import com.plainsimple.spaceships.helper.BitmapCache;
 
 /**
  * Stores instructions for drawing text
+ *
+ * TODO: support using font
  */
 
 public class DrawText implements DrawParams {
