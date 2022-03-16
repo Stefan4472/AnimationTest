@@ -10,6 +10,7 @@ import com.plainsimple.spaceships.engine.input.MotionGameInput;
 import com.plainsimple.spaceships.engine.input.SimpleGameInput;
 import com.plainsimple.spaceships.engine.ui.Background;
 import com.plainsimple.spaceships.engine.ui.Controls;
+import com.plainsimple.spaceships.engine.ui.GameUI;
 import com.plainsimple.spaceships.engine.ui.MuteButton;
 import com.plainsimple.spaceships.engine.ui.PauseButton;
 import com.plainsimple.spaceships.engine.ui.ScoreDisplay;
@@ -46,14 +47,8 @@ public class GameEngine implements IGameController {
     private DrawLayers drawLayers;
     private Map map;
 
-    /* UI Elements */
-    // UI element for the Health Bar, drawn at the bottom of the screen
-    private HealthBar healthBar;
-    private ScoreDisplay scoreDisplay;
     private Background background;
-    private PauseButton pauseButton;
-    private MuteButton muteButton;
-    private Controls controls;
+    private GameUI ui;
 
     // Data for calculating FPS (TODO)
     private long numUpdates;
@@ -116,7 +111,8 @@ public class GameEngine implements IGameController {
                 bitmapCache,
                 animFactory,
                 gameWidthPx,
-                gameHeightPx
+                gameHeightPx,
+                GameEngine.STARTING_PLAYER_HEALTH
         );
 
         // Create Spaceship and init just off the screen, centered vertically
@@ -126,12 +122,8 @@ public class GameEngine implements IGameController {
 
         // GUI elements
         // TODO: need to adjust playable width/height to accommodate healthbar
-        healthBar = new HealthBar(appContext, gameWidthPx, gameHeightPx, spaceship.getHealth(), GameEngine.STARTING_PLAYER_HEALTH);
-        scoreDisplay = new ScoreDisplay(appContext, gameWidthPx, gameHeightPx);
         background = new Background(gameContext);
-        pauseButton = new PauseButton(gameContext);
-        muteButton = new MuteButton(gameContext);
-        controls = new Controls(gameContext);
+        ui = new GameUI(gameContext);
 
         map = new Map(gameContext);
 
@@ -189,6 +181,7 @@ public class GameEngine implements IGameController {
     }
 
     // TODO: MAKE THIS GO THROUGH THE INPUT QUEUE? (THE ANSWER IS YES I THINK)
+    // TODO: how to reset/restart the game?
     private void startGame(ProtectedQueue<EventID> createdEvents) {
         currDifficulty = 0;
         score = 0;
@@ -208,9 +201,6 @@ public class GameEngine implements IGameController {
         spaceship.setControllable(false);
         // Set speed to slowly fly onto screen
         spaceship.setSpeedX(gameContext.getGameWidthPx() * 0.12);
-
-        healthBar.setCurrentHealth(spaceship.getHealth());
-        scoreDisplay.reset();
 
         gameTimer = new GameTimer();
         gameTimer.start();
@@ -274,6 +264,8 @@ public class GameEngine implements IGameController {
                 game_time,
                 currDifficulty,
                 scrollSpeed,
+                score,
+                spaceship.getHealth(),
                 created_sprites,
                 created_events,
                 created_sounds
@@ -322,17 +314,8 @@ public class GameEngine implements IGameController {
             sprites.add(sprite);
         }
 
-        // Update and draw HealthBar
-        healthBar.setMovingToHealth(spaceship.getHealth());
-        healthBar.getDrawParams(draw_params);
-        scoreDisplay.update(gameContext, score);
-        scoreDisplay.getDrawParams(draw_params);
-        pauseButton.update(update_context);
-        pauseButton.getDrawParams(draw_params);
-        muteButton.update(update_context);
-        muteButton.getDrawParams(draw_params);
-        controls.update(update_context);
-        controls.getDrawParams(draw_params);
+        ui.update(update_context);
+        ui.getDrawParams(draw_params);
 
         numUpdates++;
         return new GameUpdateMessage(
@@ -393,7 +376,18 @@ public class GameEngine implements IGameController {
             }
         } else if (input instanceof MotionGameInput) {
             MotionEvent e = ((MotionGameInput) input).motion;
+            ui.handleMotionEvent(e);
             Log.d("GameEngine", String.format("Processing motion %s", e.toString()));
+            switch (e.getAction()) {
+                // Start of touch
+                case MotionEvent.ACTION_DOWN:
+                    inputStartShooting();
+                    break;
+                // End of touch
+                case MotionEvent.ACTION_UP:
+                    inputStopShooting();
+                    break;
+            }
         } else {
             throw new IllegalArgumentException("Unsupported input type");
         }

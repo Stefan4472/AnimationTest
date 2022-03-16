@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 
 import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.engine.draw.DrawText;
 import com.plainsimple.spaceships.util.ProtectedQueue;
@@ -22,6 +23,8 @@ import com.plainsimple.spaceships.util.ProtectedQueue;
  */
 public class ScoreDisplay {
 
+    private GameContext gameContext;
+
     // score to display
     private int score;
     // x-coordinates to start drawing score
@@ -34,8 +37,6 @@ public class ScoreDisplay {
     private float movingToScoreChange;
     // whether an animation upwards is occurring
     private boolean animatingUp = false;
-
-    private final int screenHeightPx;
 
     // default color
     private static final int DEFAULT_COLOR = Color.WHITE;
@@ -53,17 +54,17 @@ public class ScoreDisplay {
     // text size (percentage of screen height)
     private static final float BASE_TEXT_SIZE_PCT = 0.10f;
 
-    public ScoreDisplay(Context context, int screenWidthPx, int screenHeightPx) {
-        this.screenHeightPx = screenHeightPx;
-        startX = screenWidthPx * PADDING_PCT;
-        startY = screenHeightPx * PADDING_PCT;
+    public ScoreDisplay(GameContext gameContext) {
+        this.gameContext = gameContext;
+        startX = gameContext.gameWidthPx * PADDING_PCT;
+        startY = gameContext.gameHeightPx * PADDING_PCT;
     }
 
     /*
     Update animations.
      */
-    public void update(GameContext gameContext, int newScore) {
-        float dscore = Math.min(newScore - score, MAX_SCORE_CHANGE);
+    public void update(UpdateContext updateContext) {
+        float dscore = Math.min(updateContext.score - score, MAX_SCORE_CHANGE);
         if (dscore > movingToScoreChange) {
             // Start animating up
             movingToScoreChange = dscore;
@@ -73,12 +74,12 @@ public class ScoreDisplay {
             // score is falling one step per frame
             movingToScoreChange--;
         }
-        score = newScore;
+        score = updateContext.score;
     }
 
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         String scoreString = Integer.toString(score);
-        int textSize = (int) (BASE_TEXT_SIZE_PCT * screenHeightPx * getMagnification());
+        int textSize = (int) (BASE_TEXT_SIZE_PCT * gameContext.gameHeightPx * getMagnification());
         // TODO: support fonts
         DrawText text = new DrawText(scoreString, startX, startY + textSize, calculateColor(), textSize);
         drawQueue.push(text);

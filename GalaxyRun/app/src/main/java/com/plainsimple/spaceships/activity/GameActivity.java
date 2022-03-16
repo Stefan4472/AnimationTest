@@ -194,16 +194,6 @@ public class GameActivity extends FragmentActivity implements
      */
     @Override
     public void handleScreenTouch(MotionEvent motionEvent) {
-        switch (motionEvent.getAction()) {
-            // Start of touch
-            case MotionEvent.ACTION_DOWN:
-                gameEngine.inputStartShooting();
-                break;
-            // End of touch
-            case MotionEvent.ACTION_UP:
-                gameEngine.inputStopShooting();
-                break;
-        }
         gameEngine.inputMotionEvent(motionEvent);
     }
 

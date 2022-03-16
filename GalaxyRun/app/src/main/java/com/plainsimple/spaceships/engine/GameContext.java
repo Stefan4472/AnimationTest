@@ -23,6 +23,7 @@ public class GameContext {
     private Sprite playerSprite;
     public final int gameWidthPx;
     public final int gameHeightPx;
+    public final int fullHealth;
     private int nextSpriteId = 1;
 
     // TODO: PROVIDE `ISINBOUNDS()` METHOD?
@@ -31,12 +32,14 @@ public class GameContext {
             BitmapCache bitmapCache,
             AnimFactory animCache,
             int gameWidthPx,
-            int gameHeightPx) {
+            int gameHeightPx,
+            int fullHealth) {
         this.appContext = appContext;
         this.bitmapCache = bitmapCache;
         this.animFactory = animCache;
         this.gameWidthPx = gameWidthPx;
         this.gameHeightPx = gameHeightPx;
+        this.fullHealth = fullHealth;
     }
 
     public Context getAppContext() {

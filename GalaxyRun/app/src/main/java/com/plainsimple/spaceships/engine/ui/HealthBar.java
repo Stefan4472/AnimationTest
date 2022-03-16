@@ -1,12 +1,12 @@
 package com.plainsimple.spaceships.engine.ui;
 
-import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.engine.draw.DrawText;
@@ -18,10 +18,12 @@ import com.plainsimple.spaceships.util.ProtectedQueue;
 
 public class HealthBar {
 
+    private GameContext gameContext;
+
     // current health level
-    int currentHealth = 0;
+    int currentHealth;
     // full health level
-    int fullHealth = 0;
+    int fullHealth;
     // health level the bar is transitioning to
     int movingToHealth;
     // width of health bar on screen
@@ -32,10 +34,9 @@ public class HealthBar {
     float startX;
     // starting y-coordinate
     float startY;
+
     // left, right, and bottom padding (dp)
     private static final int PADDING = 10;
-    // used to getDrawParams the health bar
-    Paint paint;
     // Specify upper and lower RGB values
     private final int BLUE = 0;
     private final int LOWER_GREEN = 0;
@@ -45,17 +46,19 @@ public class HealthBar {
 
     // viewWidth and Height will be used to determine size and location of healthbar
     // startHealth and fullHealth configure healthbar values
-    public HealthBar(Context context, int viewWidth, int viewHeight, int startHealth, int fullHealth) {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+    public HealthBar(GameContext gameContext) {
+        this.gameContext = gameContext;
+
+        DisplayMetrics metrics = gameContext.getAppContext().getResources().getDisplayMetrics();
         float padding = PADDING * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-        width = viewWidth - 2 * padding;
-        height = viewHeight * 0.03f;
+        width = gameContext.gameWidthPx - 2 * padding;
+        height = gameContext.gameHeightPx * 0.03f;
         startX = padding;
-        startY = viewHeight - height - padding; // todo: padding?
+        startY = gameContext.gameHeightPx - height - padding; // todo: padding?
         Log.d("HealthBar", "Coordinates are " + startX + "," + startY + " with w/h " + width + "," + height);
-        paint = new Paint();
-        setFullHealth(fullHealth);
-        setCurrentHealth(startHealth);
+
+        setFullHealth(gameContext.fullHealth);
+        setCurrentHealth(gameContext.fullHealth);
     }
 
     // sets currentHealth to given value without triggering animated change
@@ -82,6 +85,9 @@ public class HealthBar {
         this.fullHealth = fullHealth;
     }
 
+    public void update(UpdateContext updateContext) {
+        setMovingToHealth(updateContext.playerHealth);
+    }
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         // Draw outline
         DrawRect outline = new DrawRect(Color.GRAY, Paint.Style.STROKE, height * 0.1f);

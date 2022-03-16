@@ -11,8 +11,10 @@ import com.plainsimple.spaceships.util.ProtectedQueue;
 
 public class UpdateContext {
     private GameTime gameTime;
-    private double difficulty;
-    private double scrollSpeed;
+    public final double difficulty;
+    public final double scrollSpeed;
+    public final int score;
+    public final int playerHealth;
     private ProtectedQueue<Sprite> createdChildren;
     private ProtectedQueue<EventID> createdEvents;
     private ProtectedQueue<SoundID> createdSounds;
@@ -21,12 +23,16 @@ public class UpdateContext {
             GameTime gameTime,
             double difficulty,
             double scrollSpeed,
+            int score,
+            int playerHealth,
             ProtectedQueue<Sprite> createdChildren,
             ProtectedQueue<EventID> createdEvents,
             ProtectedQueue<SoundID> createdSounds
     ) {
         this.gameTime = gameTime;
         this.difficulty = difficulty;
+        this.score = score;
+        this.playerHealth = playerHealth;
         this.scrollSpeed = scrollSpeed;
         this.createdChildren = createdChildren;
         this.createdEvents = createdEvents;
