@@ -24,7 +24,7 @@ public class Coin extends Sprite {
         setHitboxWidth(getWidth() * 0.7);
         setHitboxHeight(getHeight() * 0.8);
 
-        spin = gameContext.getAnimFactory().get(AnimID.COIN_SPIN);
+        spin = gameContext.animFactory.get(AnimID.COIN_SPIN);
         setWidth(spin.getFrameW());
         setHeight(spin.getFrameH());
         spin.start();

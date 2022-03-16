@@ -40,7 +40,7 @@ public class AlienBullet extends Sprite {
         setHealth(10);
 
         // SpeedX is fixed
-        setSpeedX(-0.008f * gameContext.getGameWidthPx());
+        setSpeedX(-0.008f * gameContext.gameWidthPx);
 
         // Calculate fireAngle based on distance to target in x and y.
         // Keep in mind this gets tricky because we're in canvas coordinates
@@ -50,8 +50,8 @@ public class AlienBullet extends Sprite {
 
         // TODO: UPDATE
         // Calculate speedY using relative screen dimensions
-        double frames_to_impact = Math.abs(dist_x / gameContext.getGameWidthPx() / getSpeedX());
-        setSpeedY(-dist_y / gameContext.getGameHeightPx() / frames_to_impact);
+        double frames_to_impact = Math.abs(dist_x / gameContext.gameWidthPx / getSpeedX());
+        setSpeedY(-dist_y / gameContext.gameHeightPx / frames_to_impact);
         // Cap speedY if abs. value greater than 0.012f
         if (Math.abs(getSpeedY()) > 0.012) {
             setSpeedY(Math.signum(getSpeedY()) * 0.012);

@@ -19,6 +19,7 @@ public class UpdateContext {
     public final boolean isPaused;
     public final boolean isMuted;
     public final Spaceship.Direction playerDirection;
+    public final Sprite playerSprite;
     private ProtectedQueue<Sprite> createdChildren;
     private ProtectedQueue<EventID> createdEvents;
     private ProtectedQueue<SoundID> createdSounds;
@@ -32,6 +33,7 @@ public class UpdateContext {
             boolean isPaused,
             boolean isMuted,
             Spaceship.Direction playerDirection,
+            Sprite playerSprite,
             ProtectedQueue<Sprite> createdChildren,
             ProtectedQueue<EventID> createdEvents,
             ProtectedQueue<SoundID> createdSounds
@@ -44,6 +46,7 @@ public class UpdateContext {
         this.isPaused = isPaused;
         this.isMuted = isMuted;
         this.playerDirection = playerDirection;
+        this.playerSprite = playerSprite;
         this.createdChildren = createdChildren;
         this.createdEvents = createdEvents;
         this.createdSounds = createdSounds;

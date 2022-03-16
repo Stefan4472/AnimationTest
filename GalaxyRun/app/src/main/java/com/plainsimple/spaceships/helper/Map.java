@@ -59,7 +59,7 @@ public class Map {
     public Map(GameContext gameContext) {
         this.gameContext = gameContext;
         random = new Random();  // TODO: DO WE NEED TO INIT WITH TIME AS A SEED?
-        tileWidth = gameContext.getGameHeightPx() / NUM_ROWS;
+        tileWidth = gameContext.gameHeightPx / NUM_ROWS;
         spawnBeyondScreenPx = tileWidth;
         init();
     }
@@ -114,7 +114,7 @@ public class Map {
 
             // Calculate where to begin spawning in the new chunk
             long offset = (long) distanceFlown % tileWidth;
-            double spawnX = gameContext.getGameWidthPx() + spawnBeyondScreenPx - offset;
+            double spawnX = gameContext.gameWidthPx + spawnBeyondScreenPx - offset;
 
             // Spawn in all non-empty tiles
             for (int i = 0; i < tiles.length; i++) {
@@ -152,7 +152,7 @@ public class Map {
     and difficulty. Return as pixels per second.
      */
     private double calcScrollSpeed(double difficulty) {
-        return (0.43 * difficulty + 0.12) * gameContext.getGameWidthPx();
+        return (0.43 * difficulty + 0.12) * gameContext.gameWidthPx;
         // Spaceship destroyed: slow down scrolling to a halt.
 //        if (currState == GameState.PLAYER_KILLED) {
 //            return scrollSpeed / 1.03f;

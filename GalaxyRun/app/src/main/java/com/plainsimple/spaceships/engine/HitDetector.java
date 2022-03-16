@@ -9,10 +9,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Stefan on 9/1/2020.
+ * Super-simple layer-based collision detection.
+ * TODO: improve. Make chunk-based?
  */
-// TODO: VERY SIMPLE AT THE MOMENT, WIP
-// TODO: MAKE CHUNK-BASED
 public class HitDetector {
     // Stores the references of two sprites that are in collision
     public static class CollisionTuple {
@@ -92,5 +91,48 @@ public class HitDetector {
                 }
             }
         }
+    }
+
+    public static HitDetector MakeDefaultHitDetector() {
+        return new HitDetector(new HitDetector.CollisionLayer[] {
+                new HitDetector.CollisionLayer(
+                        Sprite.SpriteType.ALIEN.ordinal(),
+                        new int[]{}
+                ),
+                new HitDetector.CollisionLayer(
+                        Sprite.SpriteType.ALIEN_BULLET.ordinal(),
+                        new int[]{}
+                ),
+                new HitDetector.CollisionLayer(
+                        Sprite.SpriteType.ASTEROID.ordinal(),
+                        new int[]{}
+                ),
+                new HitDetector.CollisionLayer(
+                        Sprite.SpriteType.BULLET.ordinal(),
+                        new int[] {
+                                Sprite.SpriteType.OBSTACLE.ordinal(),
+                                Sprite.SpriteType.ALIEN.ordinal(),
+                                Sprite.SpriteType.ASTEROID.ordinal()
+                        }
+                ),
+                new HitDetector.CollisionLayer(
+                        Sprite.SpriteType.COIN.ordinal(),
+                        new int[]{}
+                ),
+                new HitDetector.CollisionLayer(
+                        Sprite.SpriteType.OBSTACLE.ordinal(),
+                        new int[]{}
+                ),
+                new HitDetector.CollisionLayer(
+                        Sprite.SpriteType.SPACESHIP.ordinal(),
+                        new int[] {
+                                Sprite.SpriteType.OBSTACLE.ordinal(),
+                                Sprite.SpriteType.COIN.ordinal(),
+                                Sprite.SpriteType.ALIEN.ordinal(),
+                                Sprite.SpriteType.ALIEN_BULLET.ordinal(),
+                                Sprite.SpriteType.ASTEROID.ordinal()
+                        }
+                )
+        });
     }
 }

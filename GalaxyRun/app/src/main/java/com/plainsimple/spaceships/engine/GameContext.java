@@ -13,20 +13,18 @@ import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.sprite.Sprite;
 
 /**
- * Created by Stefan on 8/24/2020.
+ * Context.
  */
 
 public class GameContext {
-    private Context appContext;
-    private BitmapCache bitmapCache;
-    private AnimFactory animFactory;
-    private Sprite playerSprite;  // TODO: can we remove this?
+    public final Context appContext;
+    public final BitmapCache bitmapCache;
+    public final AnimFactory animFactory;
     public final int gameWidthPx;
     public final int gameHeightPx;
     public final int fullHealth;
     private int nextSpriteId = 1;
 
-    // TODO: PROVIDE `ISINBOUNDS()` METHOD?
     public GameContext(
             Context appContext,
             BitmapCache bitmapCache,
@@ -42,62 +40,34 @@ public class GameContext {
         this.fullHealth = fullHealth;
     }
 
-    public Context getAppContext() {
-        return appContext;
-    }
-
-    public BitmapCache getBitmapCache() {
-        return bitmapCache;
-    }
-
-    public AnimFactory getAnimFactory() {
-        return animFactory;
-    }
-
-    public Sprite getPlayerSprite() {
-        return playerSprite;
-    }
-
-    public void setPlayerSprite(Sprite playerSprite) {
-        this.playerSprite = playerSprite;
-    }
-
-    public int getGameWidthPx() {
-        return gameWidthPx;
-    }
-
-    public int getGameHeightPx() {
-        return gameHeightPx;
+    //
+    public int getNextSpriteId() {
+        return nextSpriteId++;
     }
 
     /* Begin Sprite creation factory methods */
-    // NOTE: UNFORTUNATELY WE CAN'T JUST PASS IN A `VARARGS`, LIKE IN PYTHON :(
-//    Sprite createSprite()
+    // TODO: probably don't need these methods
     public Alien createAlien(double x, double y, double difficulty) {
-        return new Alien(nextSpriteId++, x, y, difficulty, this);
+        return new Alien(getNextSpriteId(), x, y, difficulty, this);
     }
 
     public AlienBullet createAlienBullet(double x, double y, double targetX, double targetY) {
-        return new AlienBullet(nextSpriteId++, x, y, targetX, targetY, this);
+        return new AlienBullet(getNextSpriteId(), x, y, targetX, targetY, this);
     }
 
     public Asteroid createAsteroid(double x, double y, double difficulty) {
-        return new Asteroid(nextSpriteId++, x, y, difficulty, this);
+        return new Asteroid(getNextSpriteId(), x, y, difficulty, this);
     }
 
     public Bullet createBullet(double x, double y) {
-        return new Bullet(nextSpriteId++, x, y, this);
+        return new Bullet(getNextSpriteId(), x, y, this);
     }
 
     public Coin createCoin(double x, double y) {
-        return new Coin(nextSpriteId++, x, y, this);
+        return new Coin(getNextSpriteId(), x, y, this);
     }
 
     public Obstacle createObstacle(double x, double y, int width, int height) {
-        return new Obstacle(nextSpriteId++, x, y, width, height, this);
-    }
-
-    public Spaceship createSpaceship(double x, double y) {
-        return new Spaceship(nextSpriteId++, x, y, this);
+        return new Obstacle(getNextSpriteId(), x, y, width, height, this);
     }
 }

@@ -88,7 +88,7 @@ public class GameEngine implements IExternalGameController {
         gameTimer = new GameTimer();
         fpsCalculator = new FpsCalculator(100);
 
-        // Create GameContext
+        // Create GameContext TODO: add "debug" flag to GameContext?
         gameContext = new GameContext(
                 appContext,
                 bitmapCache,
@@ -98,11 +98,8 @@ public class GameEngine implements IExternalGameController {
                 GameEngine.STARTING_PLAYER_HEALTH
         );
 
-        // Create Spaceship and init just off the screen, centered vertically
-        spaceship = gameContext.createSpaceship(0, 0);
-        // TODO: ANY WAY WE CAN PUT THE SPACESHIP INTO THE CONTEXT CONSTRUCTOR?
-        // -> need to remove from GameContext, but add to UpdateContext
-        gameContext.setPlayerSprite(spaceship);
+        // Create Spaceship. Will be set just off the screen, centered vertically
+        spaceship = new Spaceship(gameContext.getNextSpriteId(), 0, 0, gameContext);
 
         // GUI elements
         // TODO: need to adjust playable width/height to accommodate healthbar
@@ -111,48 +108,7 @@ public class GameEngine implements IExternalGameController {
 
         map = new Map(gameContext);
 
-        // TODO: cleanup and make static somewhere else
-        hitDetector = new HitDetector(new HitDetector.CollisionLayer[] {
-                new HitDetector.CollisionLayer(
-                        Sprite.SpriteType.ALIEN.ordinal(),
-                        new int[]{}
-                ),
-                new HitDetector.CollisionLayer(
-                        Sprite.SpriteType.ALIEN_BULLET.ordinal(),
-                        new int[]{}
-                ),
-                new HitDetector.CollisionLayer(
-                        Sprite.SpriteType.ASTEROID.ordinal(),
-                        new int[]{}
-                ),
-                new HitDetector.CollisionLayer(
-                        Sprite.SpriteType.BULLET.ordinal(),
-                        new int[] {
-                                Sprite.SpriteType.OBSTACLE.ordinal(),
-                                Sprite.SpriteType.ALIEN.ordinal(),
-                                Sprite.SpriteType.ASTEROID.ordinal()
-                        }
-                ),
-                new HitDetector.CollisionLayer(
-                        Sprite.SpriteType.COIN.ordinal(),
-                        new int[]{}
-                ),
-                new HitDetector.CollisionLayer(
-                        Sprite.SpriteType.OBSTACLE.ordinal(),
-                        new int[]{}
-                ),
-                new HitDetector.CollisionLayer(
-                        Sprite.SpriteType.SPACESHIP.ordinal(),
-                        new int[] {
-                                Sprite.SpriteType.OBSTACLE.ordinal(),
-                                Sprite.SpriteType.COIN.ordinal(),
-                                Sprite.SpriteType.ALIEN.ordinal(),
-                                Sprite.SpriteType.ALIEN_BULLET.ordinal(),
-                                Sprite.SpriteType.ASTEROID.ordinal()
-                        }
-                )
-        });
-
+        hitDetector = HitDetector.MakeDefaultHitDetector();
         drawLayers = new DrawLayers(7);
 
         // Set state for new, un-started game
@@ -180,20 +136,24 @@ public class GameEngine implements IExternalGameController {
         map.restart();
 
         // Move spaceship just off the left of the screen, centered vertically
-        BitmapData ship_data = gameContext.getBitmapCache().getData(BitmapID.SPACESHIP);
+        BitmapData ship_data = gameContext.bitmapCache.getData(BitmapID.SPACESHIP);
         spaceship.setX(-ship_data.getWidth());
-        spaceship.setY(gameContext.getGameHeightPx() / 2 - ship_data.getHeight() / 2);
+        spaceship.setY(gameContext.gameHeightPx / 2 - ship_data.getHeight() / 2);
         // Make non-controllable
         spaceship.setControllable(false);
         // Set speed to slowly fly onto screen
-        spaceship.setSpeedX(gameContext.getGameWidthPx() * 0.12);
+        spaceship.setSpeedX(gameContext.gameWidthPx * 0.12);
 
         setState(GameState.STARTING, createdEvents);
     }
 
-    // updates all game logic
-    // adds any new sprites and generates a new set of sprites if needed
+    /*
+    Update all game logic.
+     */
     public GameUpdateMessage update() {
+        hitDetector.clear();
+        drawLayers.clear();
+
         // Create queues for this update
         FastQueue<Sprite> createdSprites = new FastQueue<>();
         FastQueue<EventID> createdEvents = new FastQueue<>();
@@ -206,6 +166,7 @@ public class GameEngine implements IExternalGameController {
         }
 
         // Do nothing if paused
+        // TODO: probably don't need to handle this case if GameTimer is paused
         if (isPaused) {
             Log.d("GameEngine", "Game is paused!");
             return new GameUpdateMessage(drawParams, createdEvents, createdSounds, 0.0);
@@ -238,6 +199,7 @@ public class GameEngine implements IExternalGameController {
                 isPaused,
                 isMuted,
                 spaceship.getDirection(),
+                spaceship,
                 createdSprites,
                 createdEvents,
                 createdSounds
@@ -247,22 +209,18 @@ public class GameEngine implements IExternalGameController {
 //            map.update(updateContext, scrollDistance);
 //        }
 
-        hitDetector.clear();
-        drawLayers.clear();
-
-        // Draw background
+        // Update and draw background
         background.update(updateContext);
         background.getDrawParams(drawParams);
 
-        // Update sprites
+        // Update sprites, removing any that should be "terminated"
         Iterator<Sprite> it_sprites = sprites.iterator();
-        while(it_sprites.hasNext()) {
+        while (it_sprites.hasNext()) {
             Sprite sprite = it_sprites.next();
-            if(sprite.shouldTerminate()) {
+            if (sprite.shouldTerminate()) {
                 it_sprites.remove();
                 continue;
             }
-
             GameEngineUtil.updateSprite(sprite, updateContext);
             hitDetector.addSprite(sprite);
             drawLayers.addSprite(sprite);
@@ -402,7 +360,7 @@ public class GameEngine implements IExternalGameController {
     private boolean checkShouldBeginRun() {
         // Starting position reached
         return currState == GameState.STARTING &&
-                spaceship.getX() >= gameContext.getGameWidthPx() / 4;
+                spaceship.getX() >= gameContext.gameWidthPx / 4;
     }
 
     private void enterStartingState(ProtectedQueue<EventID> createdEvents) {
@@ -412,7 +370,7 @@ public class GameEngine implements IExternalGameController {
     private void enterInProgressState(ProtectedQueue<EventID> createdEvents) {
         spaceship.setControllable(true);
         spaceship.setSpeedX(0);
-        spaceship.setX(gameContext.getGameWidthPx() / 4);
+        spaceship.setX(gameContext.gameWidthPx / 4);
         setState(GameState.IN_PROGRESS, createdEvents);
         // TODO: START OBSTACLE GENERATION?
     }

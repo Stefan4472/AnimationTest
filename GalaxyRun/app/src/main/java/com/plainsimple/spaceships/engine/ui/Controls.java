@@ -60,13 +60,13 @@ public class Controls extends UIElement {
 
         // load upArrow and downArrow todo: need to be scaled?
         upArrow = BitmapFactory.decodeResource(
-                gameContext.getAppContext().getResources(), UP_ARROW_IMG_ID);
+                gameContext.appContext.getResources(), UP_ARROW_IMG_ID);
         downArrow = ImageUtil.rotate180(upArrow);
         Log.d("ArrowButtonView", "Size set to " + widthPx + "," + heightPx);
 
         // calculate top-left for upArrow and downArrow. We want them mirrored about vertical
         // center, with a small offset of DP_FROM_CENTER pixels
-        int y_offset = (int) (DP_FROM_CENTER * gameContext.getAppContext().getResources().getDisplayMetrics().density);
+        int y_offset = (int) (DP_FROM_CENTER * gameContext.appContext.getResources().getDisplayMetrics().density);
         upArrowTop = /*getPaddingTop()*/ 0 + heightPx / 2 - upArrow.getHeight() - y_offset;
         downArrowTop = /*getPaddingTop()*/ 0 + heightPx / 2 + y_offset;
         paddingLeft = 0;

@@ -48,11 +48,11 @@ public class Asteroid extends Sprite {
         super(spriteId, SpriteType.ASTEROID, x, y, BITMAP_ID, gameContext);
         // Set speedX slower than scrollspeed (give the player a chance to destroy it)
 //        speedX = scrollSpeed * 0.6f;
-        setSpeedX(-gameContext.getGameWidthPx() * 0.1);
+        setSpeedX(-gameContext.gameWidthPx * 0.1);
         // Set speedY to some randomized positive/negative value up to |0.03|
         // of screen width
         double rel_speed = (random.nextBoolean() ? -1 : +1) * random.nextDouble() * 0.03;
-        setSpeedY(rel_speed * gameContext.getGameWidthPx());
+        setSpeedY(rel_speed * gameContext.gameWidthPx);
         // Set health relatively high
         setHealth(10 + (int) (difficulty / 100));
         // Make hitbox 20% smaller than sprite
@@ -66,11 +66,11 @@ public class Asteroid extends Sprite {
         // Set the current rotation to a random angle
         currentRotation = random.nextInt(360);
         // Set rotation rate as function fo speedY (faster speed = faster rotation)
-        rotationRate = (float) (getSpeedY() * 200.0 / gameContext.getGameHeightPx());
+        rotationRate = (float) (getSpeedY() * 200.0 / gameContext.gameHeightPx);
         // Init HealthBarAnimation for use if Asteroid takes damage
         healthBarAnimation = new HealthBarAnimation(
-                gameContext.getGameWidthPx(),
-                gameContext.getGameHeightPx(),
+                gameContext.gameWidthPx,
+                gameContext.gameHeightPx,
                 getWidth(),
                 getHeight(),
                 getHealth()
@@ -93,7 +93,7 @@ public class Asteroid extends Sprite {
     public void updateSpeeds(UpdateContext updateContext) {
         // Reverse speedY if it is nearly headed off a screen edge (i.e. "bounce")
         boolean leaving_above =
-                getY() >= (gameContext.getGameHeightPx() - getHeight()) &&
+                getY() >= (gameContext.gameHeightPx - getHeight()) &&
                 getSpeedY() > 0;
         boolean leaving_below =
                 getY() <= 0 && getSpeedY() < 0;

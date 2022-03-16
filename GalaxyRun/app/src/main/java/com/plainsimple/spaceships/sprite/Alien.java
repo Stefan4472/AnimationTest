@@ -78,8 +78,8 @@ public class Alien extends Sprite {
 //        speedX = scrollSpeed / 2.5f;
         // TODO: NEED A WAY TO CALCULATE SPEED
 
-        bulletBitmapData = gameContext.getBitmapCache().getData(BitmapID.ALIEN_BULLET);
-        explodeAnim = gameContext.getAnimFactory().get(AnimID.ALIEN_EXPLODE);
+        bulletBitmapData = gameContext.bitmapCache.getData(BitmapID.ALIEN_BULLET);
+        explodeAnim = gameContext.animFactory.get(AnimID.ALIEN_EXPLODE);
 
         setHitboxOffsetX(getWidth() * 0.2);
         setHitboxOffsetY(getHeight() * 0.2);
@@ -100,15 +100,15 @@ public class Alien extends Sprite {
         framesSinceLastBullet = -bulletDelay;
         bulletsLeft = 4;
         healthBarAnimation = new HealthBarAnimation(
-                gameContext.getGameWidthPx(),
-                gameContext.getGameHeightPx(),
+                gameContext.gameWidthPx,
+                gameContext.gameHeightPx,
                 getWidth(),
                 getHeight(),
                 getHealth()
         );
 
         // TODO: THIS IS JUST FOR DEBUGGING AT THE MOMENT
-        setSpeedX(-0.1 * gameContext.getGameWidthPx());
+        setSpeedX(-0.1 * gameContext.gameWidthPx);
     }
 
     @Override
@@ -128,7 +128,7 @@ public class Alien extends Sprite {
         if (canFire(updateContext)) {
             updateContext.createEvent(EventID.ALIEN_FIRED_BULLET);
             updateContext.createSound(SoundID.ALIEN_FIRED_BULLET);
-            fireBullet(gameContext.getPlayerSprite(), updateContext);
+            fireBullet(updateContext.playerSprite, updateContext);
             framesSinceLastBullet = 0;
             bulletsLeft--;
         }
@@ -149,10 +149,10 @@ public class Alien extends Sprite {
         // in this frame, even if all conditions are met
         return getCurrState() == SpriteState.ALIVE &&
                 framesSinceLastBullet >= bulletDelay &&
-                gameContext.getPlayerSprite().isAlive() &&
+                updateContext.playerSprite.isAlive() &&
                 bulletsLeft > 0 &&
                 random.nextFloat() <= 0.3f &&
-                getX() > gameContext.getGameWidthPx() / 2;
+                getX() > gameContext.gameWidthPx / 2;
     }
 
     // fires bullet at sprite with small randomized inaccuracy, based on
@@ -220,8 +220,8 @@ public class Alien extends Sprite {
             healthBarAnimation.start();
 
             loseHealthAnimations.add(new LoseHealthAnimation(
-                    gameContext.getGameWidthPx(),
-                    gameContext.getGameHeightPx(),
+                    gameContext.gameWidthPx,
+                    gameContext.gameHeightPx,
                     s.getX() - getX(),
                     s.getY() - getY(),
                     damage

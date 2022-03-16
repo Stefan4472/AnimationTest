@@ -126,7 +126,7 @@ public abstract class Sprite {
             BitmapID bitmapID,
             GameContext gameContext
     ) {
-        this(spriteId, spriteType, x, y, gameContext.getBitmapCache().getData(bitmapID), gameContext);
+        this(spriteId, spriteType, x, y, gameContext.bitmapCache.getData(bitmapID), gameContext);
     }
 
     /* Begin core abstract methods */
@@ -182,8 +182,8 @@ public abstract class Sprite {
         return hitbox.intersects(
                 0,
                 0,
-                gameContext.getGameWidthPx(),
-                gameContext.getGameHeightPx()
+                gameContext.gameWidthPx,
+                gameContext.gameHeightPx
         );
     }
 
@@ -192,8 +192,8 @@ public abstract class Sprite {
     public boolean isVisibleInBounds() {
         return x > -width &&
                 y > -height &&
-                x < gameContext.getGameWidthPx() + width &&
-                y < gameContext.getGameHeightPx();
+                x < gameContext.gameWidthPx + width &&
+                y < gameContext.gameHeightPx;
     }
 
     // Subtracts specified damage from sprite's health and floors

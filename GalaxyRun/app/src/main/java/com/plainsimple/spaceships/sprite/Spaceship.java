@@ -75,8 +75,8 @@ public class Spaceship extends Sprite {
         setHitboxOffsetY(getHeight() * 0.2f);
 
         // Load animations from AnimCache
-        moveAnim = gameContext.getAnimFactory().get(AnimID.SPACESHIP_MOVE);
-        explodeAnim = gameContext.getAnimFactory().get(AnimID.SPACESHIP_EXPLODE);
+        moveAnim = gameContext.animFactory.get(AnimID.SPACESHIP_MOVE);
+        explodeAnim = gameContext.animFactory.get(AnimID.SPACESHIP_EXPLODE);
 
         // Init DrawParams
         DRAW_SHIP = new DrawImage(BitmapID.SPACESHIP);
@@ -172,9 +172,9 @@ public class Spaceship extends Sprite {
         // TODO: MORE NUANCED CONTROLS, WITH SIMPLE ACCELERATION/DECELLERATION. ALSO, BECOME MORE RESPONSIVE AS DIFFICULTY INCREASES
         if (isControllable) {
             if (direction == UP) {
-                setSpeedY(-0.4 * gameContext.getGameHeightPx());
+                setSpeedY(-0.4 * gameContext.gameHeightPx);
             } else if (direction== DOWN){
-                setSpeedY(0.4 * gameContext.getGameHeightPx());
+                setSpeedY(0.4 * gameContext.gameHeightPx);
             } else {
                 // Slow down
                 setSpeedY(getSpeedY() / 1.7);
@@ -188,8 +188,8 @@ public class Spaceship extends Sprite {
         // prevent spaceship from going off-screen
         if (getY() < 0) {
             setY(0);
-        } else if (getY() > gameContext.getGameHeightPx() - getHeight()) {
-            setY(gameContext.getGameHeightPx() - getHeight());
+        } else if (getY() > gameContext.gameHeightPx - getHeight()) {
+            setY(gameContext.gameHeightPx - getHeight());
         }
     }
 

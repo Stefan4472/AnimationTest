@@ -59,7 +59,7 @@ public class Obstacle extends Sprite {
     // smooth acceleration and decelleration with the game
     public void updateSpeeds(UpdateContext updateContext) {
 //        setSpeedX(-updateContext.getScrollSpeed() * gameContext.getGameWidthPx());
-        setSpeedX(-0.1 * gameContext.getGameWidthPx());
+        setSpeedX(-0.1 * gameContext.gameWidthPx);
     }
 
     @Override

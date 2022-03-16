@@ -31,7 +31,7 @@ public class Bullet extends Sprite {
         setHitboxHeight(getHeight() * 1.4);
 
         setHealth(DAMAGE);
-        setSpeedX(SPEED_PERCENT_PER_SEC * gameContext.getGameWidthPx());
+        setSpeedX(SPEED_PERCENT_PER_SEC * gameContext.gameWidthPx);
 
         DRAW_BULLET = new DrawImage(BITMAP_ID);
     }

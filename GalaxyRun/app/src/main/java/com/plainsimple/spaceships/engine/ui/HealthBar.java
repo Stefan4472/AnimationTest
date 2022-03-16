@@ -53,7 +53,7 @@ public class HealthBar extends UIElement {
     public HealthBar(GameContext gameContext) {
         this.gameContext = gameContext;
 
-        DisplayMetrics metrics = gameContext.getAppContext().getResources().getDisplayMetrics();
+        DisplayMetrics metrics = gameContext.appContext.getResources().getDisplayMetrics();
         float padding = PADDING * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
         width = gameContext.gameWidthPx - 2 * padding;
         height = gameContext.gameHeightPx * 0.03f;
