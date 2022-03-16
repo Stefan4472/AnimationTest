@@ -36,7 +36,7 @@ public class PauseButton {
     public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
         // TODO: need width and height
         BitmapID bitmap = (isPaused ? BitmapID.PAUSE_BUTTON_PAUSED : BitmapID.PAUSE_BUTTON_UNPAUSED);
-        Log.d("PauseButton", "Drawing " + bitmap.name());
+//        Log.d("PauseButton", "Drawing " + bitmap.name());
         DrawImage drawBtn = new DrawImage(bitmap);
         drawBtn.setCanvasX0(x);
         drawBtn.setCanvasY0(y);

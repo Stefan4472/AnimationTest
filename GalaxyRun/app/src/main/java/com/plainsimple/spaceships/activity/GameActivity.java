@@ -204,6 +204,7 @@ public class GameActivity extends FragmentActivity implements
                 gameEngine.inputStopShooting();
                 break;
         }
+        gameEngine.inputMotionEvent(motionEvent);
     }
 
     private void setGamePaused(boolean isPaused) {
