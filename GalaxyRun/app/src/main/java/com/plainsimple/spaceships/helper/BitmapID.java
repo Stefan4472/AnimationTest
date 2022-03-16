@@ -38,7 +38,12 @@ public enum BitmapID {
     ASTEROID(R.drawable.asteroid),
     COIN(R.drawable.coin),
     COIN_SPIN(R.drawable.coin_spin),
-    OBSTACLE(R.drawable.obstacle);
+    OBSTACLE(R.drawable.obstacle),
+
+    PAUSE_BUTTON_PAUSED(R.drawable.pause),
+    PAUSE_BUTTON_UNPAUSED(R.drawable.play),
+    MUTE_BUTTON_MUTED(R.drawable.sound_off),
+    MUTE_BUTTON_UNMUTED(R.drawable.sound_on);
 
     // r.drawable id specifying bitmap
     private int rId;
