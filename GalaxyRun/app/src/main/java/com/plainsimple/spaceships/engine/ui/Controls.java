@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.engine.GameState;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawImage2;
 import com.plainsimple.spaceships.engine.draw.DrawImage3;
@@ -49,6 +50,8 @@ public class Controls extends UIElement {
 
     private final int widthPx, heightPx;
     private Rectangle boundingBoxUp, boundingBoxDown;
+
+    private boolean isInteractable;
 
     public Controls(GameContext gameContext) {
         this.gameContext = gameContext;
@@ -110,6 +113,8 @@ public class Controls extends UIElement {
 
     public void update(UpdateContext updateContext) {
         currentDirection = updateContext.playerDirection;
+        // Disable changes while game is paused
+        isInteractable = (!updateContext.isPaused);
     }
 
     public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
@@ -136,6 +141,10 @@ public class Controls extends UIElement {
 
     @Override
     public boolean handleEvent(MotionEvent e, Queue<UIInputId> createdInput) {
+        if (!isInteractable) {
+            return false;
+        }
+
         boolean inUp = boundingBoxUp.isInBounds(e.getX(), e.getY());
         boolean inDown = boundingBoxDown.isInBounds(e.getX(), e.getY());
 

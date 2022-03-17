@@ -19,7 +19,7 @@ public class PauseButton extends UIElement {
     private boolean isPaused;
     // Calculated position
     private final int x, y, width;
-    private Rectangle boundingBox;
+    private final Rectangle boundingBox;
 
     // Layout configuration
     private final float WIDTH_PCT = 0.08f;
@@ -41,7 +41,7 @@ public class PauseButton extends UIElement {
 
     public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
         // TODO: need width and height
-        BitmapID bitmap = (isPaused ? BitmapID.PAUSE_BUTTON_PAUSED : BitmapID.PAUSE_BUTTON_UNPAUSED);
+        BitmapID bitmap = (isPaused ? BitmapID.PAUSE_BUTTON_UNPAUSED : BitmapID.PAUSE_BUTTON_PAUSED);
         DrawImage drawBtn = new DrawImage(bitmap);
         drawBtn.setCanvasX0(x);
         drawBtn.setCanvasY0(y);

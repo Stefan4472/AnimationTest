@@ -1,7 +1,6 @@
 package com.plainsimple.spaceships.engine.ui;
 
 import android.graphics.Color;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.plainsimple.spaceships.engine.GameContext;
@@ -9,16 +8,13 @@ import com.plainsimple.spaceships.engine.GameState;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.engine.draw.DrawText;
-import com.plainsimple.spaceships.util.FastQueue;
 import com.plainsimple.spaceships.util.Pair;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /*
 Manage in-GameEngine user interface.
@@ -39,7 +35,8 @@ public class GameUI {
     private final Controls controls;
 
     // TODO: a better way of doing this
-    private boolean gameOver;
+    private boolean isGameOver;
+    private boolean isPaused;
 
     // TODO: ProtectedQueue?
     private Queue<UIInputId> createdInput = new ArrayDeque<>();
@@ -82,8 +79,8 @@ public class GameUI {
                 break;
         }
 
-        // Restart game on button press
-        if (gameOver && e.getAction() == MotionEvent.ACTION_DOWN) {
+        // Restart game on button press when game is over
+        if (isGameOver && e.getAction() == MotionEvent.ACTION_DOWN) {
             createdInput.add(UIInputId.RESTART_GAME);
         }
     }
@@ -102,7 +99,8 @@ public class GameUI {
         pauseButton.update(updateContext);
         muteButton.update(updateContext);
         controls.update(updateContext);
-        gameOver = (updateContext.gameState == GameState.FINISHED);
+        isGameOver = (updateContext.gameState == GameState.FINISHED);
+        isPaused = updateContext.isPaused;
     }
 
     public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
@@ -113,13 +111,22 @@ public class GameUI {
         controls.getDrawParams(drawParams);
 
         // TODO: an actual dialog
-        if (gameOver) {
+        if (isGameOver) {
             drawParams.push(new DrawText(
                     "GAME OVER",
                     gameContext.gameWidthPx / 2.0f,
                     gameContext.gameHeightPx / 2.0f,
                     Color.YELLOW,
-                    50
+                    70
+            ));
+        }
+        if (isPaused) {
+            drawParams.push(new DrawText(
+                    "PAUSED",
+                    gameContext.gameWidthPx / 2.0f,
+                    gameContext.gameHeightPx / 2.0f,
+                    Color.YELLOW,
+                    70
             ));
         }
     }

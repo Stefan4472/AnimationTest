@@ -112,7 +112,6 @@ public class GameEngine implements IExternalGameController {
      */
     public GameUpdateMessage update() {
         GameTime gameTime = gameTimer.recordUpdate();
-        Log.d("GameEngine", gameTime.currTimeMs + ", " + gameTime.msSincePrevUpdate + ", " + gameTime.runTimeMs);
         hitDetector.clear();
         drawLayers.clear();
 
