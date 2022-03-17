@@ -22,6 +22,8 @@ public class GameContext {
     public final AnimFactory animFactory;
     public final int gameWidthPx;
     public final int gameHeightPx;
+    public final int screenWidthPx;
+    public final int screenHeightPx;
     public final int fullHealth;
     private int nextSpriteId = 1;
 
@@ -31,12 +33,16 @@ public class GameContext {
             AnimFactory animCache,
             int gameWidthPx,
             int gameHeightPx,
+            int screenWidthPx,
+            int screenHeightPx,
             int fullHealth) {
         this.appContext = appContext;
         this.bitmapCache = bitmapCache;
         this.animFactory = animCache;
         this.gameWidthPx = gameWidthPx;
         this.gameHeightPx = gameHeightPx;
+        this.screenWidthPx = screenWidthPx;
+        this.screenHeightPx = screenHeightPx;
         this.fullHealth = fullHealth;
     }
 

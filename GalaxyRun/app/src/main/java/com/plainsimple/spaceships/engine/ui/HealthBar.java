@@ -55,10 +55,10 @@ public class HealthBar extends UIElement {
 
         DisplayMetrics metrics = gameContext.appContext.getResources().getDisplayMetrics();
         float padding = PADDING * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-        width = gameContext.gameWidthPx - 2 * padding;
-        height = gameContext.gameHeightPx * 0.03f;
+        width = gameContext.screenWidthPx - 2 * padding;
+        height = gameContext.screenHeightPx * 0.03f;
         startX = padding;
-        startY = gameContext.gameHeightPx - height - padding; // todo: padding?
+        startY = gameContext.screenHeightPx - height - padding; // todo: padding?
         Log.d("HealthBar", "Coordinates are " + startX + "," + startY + " with w/h " + width + "," + height);
 
         setFullHealth(gameContext.fullHealth);
@@ -92,6 +92,7 @@ public class HealthBar extends UIElement {
     public void update(UpdateContext updateContext) {
         setMovingToHealth(updateContext.playerHealth);
     }
+
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         // Draw outline
         DrawRect outline = new DrawRect(Color.GRAY, Paint.Style.STROKE, height * 0.1f);

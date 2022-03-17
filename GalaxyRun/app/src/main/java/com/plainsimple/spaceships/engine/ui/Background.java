@@ -47,7 +47,7 @@ public class Background {
         drawSpace.setUseGradient(false);
         drawSpace.setBackgroundColor(Color.BLACK);
         background = Bitmap.createBitmap(
-                gameContext.gameWidthPx, gameContext.gameHeightPx, Bitmap.Config.ARGB_8888);
+                gameContext.screenWidthPx, gameContext.screenHeightPx, Bitmap.Config.ARGB_8888);
         drawSpace.drawSpace(background);
     }
 
@@ -58,18 +58,23 @@ public class Background {
 
     public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
         // Requires two draw calls to split over the screen
-        int offset = pixelsScrolled % gameContext.gameWidthPx;
-        Rect src = new Rect(offset, 0, gameContext.gameWidthPx, gameContext.gameHeightPx);
-        Rect dst = new Rect(0, 0, src.width(), gameContext.gameHeightPx);
+        int offset = pixelsScrolled % gameContext.screenWidthPx;
+        Rect src = new Rect(offset, 0, gameContext.screenWidthPx, gameContext.screenHeightPx);
+        Rect dst = new Rect(0, 0, src.width(), gameContext.screenHeightPx);
         drawParams.push(new DrawImage2(background, src, dst));
 
-        Rect src2 = new Rect(0, 0, offset, gameContext.gameHeightPx);
-        Rect dst2 = new Rect(gameContext.gameWidthPx - offset, 0, gameContext.gameWidthPx, gameContext.gameHeightPx);
+        Rect src2 = new Rect(0, 0, offset, gameContext.screenHeightPx);
+        Rect dst2 = new Rect(
+                gameContext.screenWidthPx - offset,
+                0,
+                gameContext.screenWidthPx,
+                gameContext.screenHeightPx
+        );
         drawParams.push(new DrawImage2(background, src2, dst2));
     }
 
     // returns "distance" travelled: 1 screen width = 1 kilometer (for now) todo: change?
     public float getDistanceTravelled() {
-        return (float) pixelsScrolled / gameContext.gameWidthPx;
+        return (float) pixelsScrolled / gameContext.screenWidthPx;
     }
 }

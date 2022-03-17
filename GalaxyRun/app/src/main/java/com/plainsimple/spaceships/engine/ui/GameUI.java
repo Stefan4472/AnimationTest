@@ -7,6 +7,7 @@ import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.util.FastQueue;
+import com.plainsimple.spaceships.util.Pair;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
 import java.util.ArrayDeque;
@@ -18,6 +19,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /*
 Manage in-GameEngine user interface.
+
+The UI generally uses the full screen dimensions, while the game
+uses the game dimensions. This is because the HealthBar takes up
+part of the bottom of the screen.
  */
 public class GameUI {
 
@@ -95,5 +100,11 @@ public class GameUI {
         pauseButton.getDrawParams(drawParams);
         muteButton.getDrawParams(drawParams);
         controls.getDrawParams(drawParams);
+    }
+
+    public static Pair<Integer, Integer> calcGameDimensions(
+            int screenWidthPx,
+            int screenHeightPx) {
+        return new Pair<>(screenWidthPx, (int) (screenHeightPx * 0.94));
     }
 }

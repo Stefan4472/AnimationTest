@@ -23,6 +23,7 @@ import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.stats.GameTimer;
 import com.plainsimple.spaceships.util.FastQueue;
 import com.plainsimple.spaceships.util.GameEngineUtil;
+import com.plainsimple.spaceships.util.Pair;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
 import java.util.Iterator;
@@ -79,9 +80,15 @@ public class GameEngine implements IExternalGameController {
     /* Start GameEngine logic */
     public GameEngine(
             Context appContext,
-            int gameWidthPx,
-            int gameHeightPx
+            int screenWidthPx,
+            int screenHeightPx
     ) {
+        // Calculate game dimensions based on screen dimensions.
+        Pair<Integer, Integer> gameDimensions =
+                GameUI.calcGameDimensions(screenWidthPx, screenHeightPx);
+        int gameWidthPx = gameDimensions.first;
+        int gameHeightPx = gameDimensions.second;
+
         bitmapCache = new BitmapCache(appContext, gameWidthPx, gameHeightPx);
         animFactory = new AnimFactory(bitmapCache);
         externalInputQueue = new ConcurrentLinkedQueue<>();
@@ -95,6 +102,8 @@ public class GameEngine implements IExternalGameController {
                 animFactory,
                 gameWidthPx,
                 gameHeightPx,
+                screenWidthPx,
+                screenHeightPx,
                 GameEngine.STARTING_PLAYER_HEALTH
         );
 

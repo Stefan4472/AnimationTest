@@ -28,9 +28,9 @@ public class MuteButton extends UIElement {
 
     public MuteButton(GameContext gameContext) {
         this.gameContext = gameContext;
-        x = (int) (gameContext.gameWidthPx * (1.0f - X_OFFSET_PCT - WIDTH_PCT));
-        y = (int) (gameContext.gameWidthPx * Y_OFFSET_PCT);
-        width = (int) (gameContext.gameWidthPx * WIDTH_PCT);
+        x = (int) (gameContext.screenWidthPx * (1.0f - X_OFFSET_PCT - WIDTH_PCT));
+        y = (int) (gameContext.screenWidthPx * Y_OFFSET_PCT);
+        width = (int) (gameContext.screenWidthPx * WIDTH_PCT);
         boundingBox = new Rectangle(x, y, width, width);
     }
 

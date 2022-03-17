@@ -55,8 +55,8 @@ public class Controls extends UIElement {
         currentDirection = Spaceship.Direction.NONE;
 
         // Set width to 30% of game width and height to full game height
-        widthPx = (int) (0.3 * gameContext.gameWidthPx);
-        heightPx = gameContext.gameHeightPx;
+        widthPx = (int) (0.3 * gameContext.screenWidthPx);
+        heightPx = gameContext.screenHeightPx;
 
         // load upArrow and downArrow todo: need to be scaled?
         upArrow = BitmapFactory.decodeResource(

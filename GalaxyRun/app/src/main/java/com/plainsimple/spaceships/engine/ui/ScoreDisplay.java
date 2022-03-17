@@ -59,8 +59,8 @@ public class ScoreDisplay extends UIElement {
 
     public ScoreDisplay(GameContext gameContext) {
         this.gameContext = gameContext;
-        startX = gameContext.gameWidthPx * PADDING_PCT;
-        startY = gameContext.gameHeightPx * PADDING_PCT;
+        startX = gameContext.screenWidthPx * PADDING_PCT;
+        startY = gameContext.screenHeightPx * PADDING_PCT;
     }
 
     /*
@@ -82,7 +82,7 @@ public class ScoreDisplay extends UIElement {
 
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         String scoreString = Integer.toString(score);
-        int textSize = (int) (BASE_TEXT_SIZE_PCT * gameContext.gameHeightPx * getMagnification());
+        int textSize = (int) (BASE_TEXT_SIZE_PCT * gameContext.screenHeightPx * getMagnification());
         // TODO: support fonts
         DrawText text = new DrawText(scoreString, startX, startY + textSize, calculateColor(), textSize);
         drawQueue.push(text);

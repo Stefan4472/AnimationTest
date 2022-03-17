@@ -28,10 +28,10 @@ public class PauseButton extends UIElement {
 
     public PauseButton(GameContext gameContext) {
         this.gameContext = gameContext;
-        x = (int) (gameContext.gameWidthPx * (1.0f - X_OFFSET_PCT - WIDTH_PCT));
-        y = (int) (gameContext.gameWidthPx * Y_OFFSET_PCT);
+        x = (int) (gameContext.screenWidthPx * (1.0f - X_OFFSET_PCT - WIDTH_PCT));
+        y = (int) (gameContext.screenWidthPx * Y_OFFSET_PCT);
         Log.d("PauseButton", x + ", " + y);
-        width = (int) (gameContext.gameWidthPx * WIDTH_PCT);
+        width = (int) (gameContext.screenWidthPx * WIDTH_PCT);
         boundingBox = new Rectangle(x, y, width, width);
     }
 
