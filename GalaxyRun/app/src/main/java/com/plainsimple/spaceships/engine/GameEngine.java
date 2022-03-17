@@ -203,6 +203,12 @@ public class GameEngine implements IExternalGameController {
         drawLayers.getDrawParams(drawParams, true);
         ui.getDrawParams(drawParams);
 
+        // A little hack to easily support muting:
+        // simply delete all sounds
+        if (isMuted) {
+            createdSounds.clear();
+        }
+
         fpsCalculator.recordFrame();
         return new GameUpdateMessage(
                 drawParams,
