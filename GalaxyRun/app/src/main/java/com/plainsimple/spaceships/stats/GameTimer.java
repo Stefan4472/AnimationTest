@@ -8,6 +8,8 @@ import com.plainsimple.spaceships.engine.GameTime;
 
 public class GameTimer {
 
+    // TODO: CLEANUP
+
     // TODO: DIFFERENTIATE "GAME TIME" (TIME SINCE GAME WAS STARTED) VS. "RUN TIME"
     // (TIME SINCE THE RUN BEGAN). PROVIDE "MARKRUNSTARTED()/MARKRUNFINISHED()" FUNCTIONS.
     // THIS ALLOWS US TO PROVIDE TIMING INFORMATION EVEN WHILE THE "RUN" ISN'T IN_PROGRESS
@@ -26,7 +28,7 @@ public class GameTimer {
     }
 
     // Starts the timer. Doesn't do anything if the timer isn't paused.
-    public void start() {
+    public void resume() {
         if (isPaused) {
             startTime = System.currentTimeMillis();
             lastUpdateMs = startTime;
@@ -48,17 +50,17 @@ public class GameTimer {
     }
 
     public GameTime recordUpdate() {
+        long currTime = System.currentTimeMillis();
         if (isPaused) {
-            throw new IllegalStateException("Can't record update while paused");
+            return new GameTime(currTime, 0, msTracked);
         } else {
-            long curr_time = System.currentTimeMillis();
             // TODO: NOT SURE IF THIS WORKS CORRECTLY (THE TRICKY THING IS TO WORK OVER PAUSE()/RESUME())
-            long ms_this_update = curr_time - lastUpdateMs + carriedUpdateTimeMs;
-            long run_time = msTracked + curr_time - startTime;
+            long msThisUpdate = currTime - lastUpdateMs + carriedUpdateTimeMs;
+            long runTime = msTracked + currTime - startTime;
 
-            lastUpdateMs = curr_time;
+            lastUpdateMs = currTime;
             carriedUpdateTimeMs = 0;
-            return new GameTime(curr_time, ms_this_update, run_time);
+            return new GameTime(currTime, msThisUpdate, runTime);
         }
     }
 

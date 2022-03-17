@@ -11,7 +11,8 @@ import com.plainsimple.spaceships.util.ProtectedQueue;
  */
 
 public class UpdateContext {
-    private GameTime gameTime;
+    public final GameTime gameTime;
+    public final GameState gameState;
     public final double difficulty;
     public final double scrollSpeed;
     public final int score;
@@ -26,6 +27,7 @@ public class UpdateContext {
 
     public UpdateContext(
             GameTime gameTime,
+            GameState gameState,
             double difficulty,
             double scrollSpeed,
             int score,
@@ -39,6 +41,7 @@ public class UpdateContext {
             ProtectedQueue<SoundID> createdSounds
     ) {
         this.gameTime = gameTime;
+        this.gameState = gameState;
         this.difficulty = difficulty;
         this.score = score;
         this.playerHealth = playerHealth;
