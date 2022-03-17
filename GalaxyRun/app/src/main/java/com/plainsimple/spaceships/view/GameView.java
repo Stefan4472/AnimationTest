@@ -86,10 +86,10 @@ public class GameView extends SurfaceView implements Runnable {
         while (isRunning) {
             // TODO: MAKE SURE THAT THERE ISN'T A BUILD-UP OF DRAW FRAMES
             if (!drawFramesQueue.isEmpty()) {
-                FastQueue<DrawParams> draw_params = drawFramesQueue.poll();
+                FastQueue<DrawParams> drawParams = drawFramesQueue.poll();
                 if (surfaceHolder.getSurface().isValid()) {
                     canvas = surfaceHolder.lockCanvas();
-                    drawFrame(canvas, draw_params);
+                    drawFrame(canvas, drawParams);
                     surfaceHolder.unlockCanvasAndPost(canvas);
                 }
             }

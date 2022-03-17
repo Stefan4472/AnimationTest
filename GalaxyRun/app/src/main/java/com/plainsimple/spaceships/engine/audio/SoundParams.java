@@ -1,4 +1,4 @@
-package com.plainsimple.spaceships.helper;
+package com.plainsimple.spaceships.engine.audio;
 
 /**
  * Stores parameters for playing a raw file using SoundPool

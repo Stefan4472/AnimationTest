@@ -11,7 +11,7 @@ import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.helper.HealthBarAnimation;
 import com.plainsimple.spaceships.helper.LoseHealthAnimation;
 import com.plainsimple.spaceships.helper.Point2D;
-import com.plainsimple.spaceships.helper.SoundID;
+import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 

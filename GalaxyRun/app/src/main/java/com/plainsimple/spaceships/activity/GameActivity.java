@@ -8,7 +8,9 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.plainsimple.spaceships.engine.GameRunner;
-import com.plainsimple.spaceships.engine.GameUpdateMessage;
+import com.plainsimple.spaceships.engine.audio.SoundID;
+import com.plainsimple.spaceships.engine.external.GameUpdateMessage;
+import com.plainsimple.spaceships.engine.external.SoundPlayer;
 import com.plainsimple.spaceships.view.GameView;
 
 import androidx.fragment.app.FragmentActivity;
@@ -32,6 +34,8 @@ public class GameActivity extends FragmentActivity implements
     private GameRunner mGameRunner;
     // View element that draws the game
     private GameView gameView;
+    // Plays game audio
+    private SoundPlayer soundPlayer;
 
     // Whether the Activity is in an active state
     private boolean isActivityActive;
@@ -50,6 +54,7 @@ public class GameActivity extends FragmentActivity implements
         setContentView(R.layout.game_layout);
         gameView = findViewById(R.id.spaceships);
         gameView.setListener(this);
+        soundPlayer = new SoundPlayer(getApplicationContext());
     }
 
     @Override
@@ -118,6 +123,11 @@ public class GameActivity extends FragmentActivity implements
             Log.d("GameActivity", String.format(
                     "Got %d drawParams", updateMessage.getDrawParams().getSize()
             ));
+        }
+
+        // TODO: may need to support pausing and resuming sounds
+        for (SoundID sound : updateMessage.getSounds()) {
+            soundPlayer.playSound(sound);
         }
 
         gameView.queueDrawFrame(updateMessage.getDrawParams());

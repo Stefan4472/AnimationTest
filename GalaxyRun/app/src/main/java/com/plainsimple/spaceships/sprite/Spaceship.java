@@ -9,7 +9,7 @@ import com.plainsimple.spaceships.helper.ColorMatrixAnimator;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.engine.draw.DrawImage;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
-import com.plainsimple.spaceships.helper.SoundID;
+import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 

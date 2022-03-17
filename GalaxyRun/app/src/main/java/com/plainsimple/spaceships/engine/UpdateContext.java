@@ -1,6 +1,6 @@
 package com.plainsimple.spaceships.engine;
 
-import com.plainsimple.spaceships.helper.SoundID;
+import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.util.ProtectedQueue;

@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 
 import com.plainsimple.spaceships.engine.external.ExternalInput;
 import com.plainsimple.spaceships.engine.external.ExternalInputId;
+import com.plainsimple.spaceships.engine.external.GameUpdateMessage;
 import com.plainsimple.spaceships.engine.external.MotionExternalInput;
 import com.plainsimple.spaceships.engine.external.SimpleExternalInput;
 import com.plainsimple.spaceships.engine.ui.Background;
@@ -17,7 +18,7 @@ import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.helper.FpsCalculator;
 import com.plainsimple.spaceships.helper.Map;
-import com.plainsimple.spaceships.helper.SoundID;
+import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.stats.GameTimer;

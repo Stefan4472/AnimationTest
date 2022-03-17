@@ -6,6 +6,8 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.view.MotionEvent;
 
+import com.plainsimple.spaceships.engine.external.GameUpdateMessage;
+
 /**
  * Runs the GameEngine in a worker thread.
  */
