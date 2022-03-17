@@ -177,10 +177,10 @@ public class GameEngine implements IExternalGameController {
 
         // Do nothing if paused
         // TODO: probably don't need to handle this case if GameTimer is paused
-        if (isPaused) {
-            Log.d("GameEngine", "Game is paused!");
-            return new GameUpdateMessage(drawParams, createdEvents, createdSounds, 0.0);
-        }
+//        if (isPaused) {
+//            Log.d("GameEngine", "Game is paused!");
+//            return new GameUpdateMessage(drawParams, createdEvents, createdSounds, fpsCalculator.getNumFrames(), 0.0);
+//        }
 
         // TODO: BETTER ORGANIZATION OF LOGIC WHILE IN DIFFERENT STATES
         GameTime gameTime = gameTimer.recordUpdate();
@@ -267,7 +267,8 @@ public class GameEngine implements IExternalGameController {
                 drawParams,
                 createdEvents,
                 createdSounds,
-                fpsCalculator.getAverage()
+                fpsCalculator.getNumFrames(),
+                fpsCalculator.calcFps()
         );
     }
 

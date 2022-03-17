@@ -27,9 +27,6 @@ public class GameActivity extends FragmentActivity implements
         GameRunner.Callback, // Receive game state updates
         GameView.IGameViewListener // Receive events from GameView
 {
-    private long startTime;
-    private long numUpdates;
-
     // Runs the game in a separate thread
     private GameRunner mGameRunner;
     // View element that draws the game
@@ -60,7 +57,6 @@ public class GameActivity extends FragmentActivity implements
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("GameActivity", "onResume called");
         isActivityActive = true;
         gameView.startThread();
     }
@@ -68,7 +64,6 @@ public class GameActivity extends FragmentActivity implements
     @Override
     public void onPause() {
         super.onPause();
-        Log.d("GameActivity", "onPause called");
         isActivityActive = false;
         gameView.stopThread();
     }
@@ -103,7 +98,6 @@ public class GameActivity extends FragmentActivity implements
                 new Handler(), this, getApplicationContext(), screenWidthPx, screenHeightPx);
         mGameRunner.start();
         mGameRunner.prepareHandler();
-        startTime = System.currentTimeMillis(); // TODO: calculate FPS somewhere else (e.g., GameUpdateMessage)
         // Send START signal and queue the first update
         mGameRunner.startGame();
         mGameRunner.queueUpdate();
@@ -114,15 +108,11 @@ public class GameActivity extends FragmentActivity implements
      */
     @Override
     public void onGameStateUpdated(GameUpdateMessage updateMessage) {
-        // Log debugging info every 150 frames
-        if (numUpdates != 0 && numUpdates % 150 == 0) {
-            long curr_time = System.currentTimeMillis();
-            double fps = numUpdates / ((curr_time - startTime) / 1000.0);
-//            Log.d("GameActivity", String.format("fps: %f (%d updates)", fps, numUpdates));
-            Log.d("GameActivity", String.format("FPS: %f", updateMessage.fps));
-            Log.d("GameActivity", String.format(
-                    "Got %d drawParams", updateMessage.getDrawParams().getSize()
-            ));
+        if (updateMessage.frameNumber > 0 && updateMessage.frameNumber % 150 == 0) {
+            // Log debugging info every 150 frames
+            Log.d("GameActivity", "FrameNumber = " + updateMessage.frameNumber);
+            Log.d("GameActivity", "FPS = " + updateMessage.fps);
+            Log.d("GameActivity", "Got " + updateMessage.getDrawParams().getSize() + " drawParams");
         }
 
         // TODO: may need to support pausing and resuming sounds
@@ -131,11 +121,10 @@ public class GameActivity extends FragmentActivity implements
         }
 
         gameView.queueDrawFrame(updateMessage.getDrawParams());
-        numUpdates++;
 
         // Call the next update
         if (isActivityActive) {
-            // Sleep--for testing
+            // Sleep--for testing  TODO: framerate management?
             try {
                 Thread.sleep(30);
             } catch (InterruptedException e) {

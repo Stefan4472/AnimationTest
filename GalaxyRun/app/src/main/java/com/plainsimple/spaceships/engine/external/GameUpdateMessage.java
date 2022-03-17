@@ -13,6 +13,7 @@ public class GameUpdateMessage {
     private FastQueue<DrawParams> drawParams;
     private FastQueue<EventID> events;
     private FastQueue<SoundID> sounds;
+    public final long frameNumber;
     // FPS over the previous 100 frames
     public final double fps;
 
@@ -20,11 +21,13 @@ public class GameUpdateMessage {
             FastQueue<DrawParams> drawParams,
             FastQueue<EventID> events,
             FastQueue<SoundID> sounds,
+            long frameNumber,
             double fps
     ) {
         this.drawParams = drawParams;
         this.events = events;
         this.sounds = sounds;
+        this.frameNumber = frameNumber;
         this.fps = fps;
     }
 

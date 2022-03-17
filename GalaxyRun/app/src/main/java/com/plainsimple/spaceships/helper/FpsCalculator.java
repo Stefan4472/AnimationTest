@@ -1,7 +1,5 @@
 package com.plainsimple.spaceships.helper;
 
-import android.util.Log;
-
 /*
 Calculate rolling average FPS.
  */
@@ -9,7 +7,11 @@ public class FpsCalculator {
     public final int ringSize;
     private long timestamps[];
     private int index = -1;
-    private int numSamples;
+    private int numFrames;
+
+    public int getNumFrames() {
+        return numFrames;
+    }
 
     public FpsCalculator(int ringSize) {
         this.ringSize = ringSize;
@@ -19,11 +21,11 @@ public class FpsCalculator {
     public void recordFrame() {
         index = (index + 1) % ringSize;
         timestamps[index] = System.currentTimeMillis();
-        numSamples++;
+        numFrames++;
     }
 
-    public double getAverage() {
-        if (numSamples < ringSize) {
+    public double calcFps() {
+        if (numFrames < ringSize) {
             return 0;
         }
         int oldestIndex = (index + 1 == ringSize ? 0 : index + 1);
@@ -32,6 +34,6 @@ public class FpsCalculator {
 
     public void reset() {
         index = -1;
-        numSamples = 0;
+        numFrames = 0;
     }
 }
