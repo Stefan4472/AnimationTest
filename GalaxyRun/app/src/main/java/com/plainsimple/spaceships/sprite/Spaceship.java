@@ -91,7 +91,6 @@ public class Spaceship extends Sprite {
         setHealth(GameEngine.STARTING_PLAYER_HEALTH);
         setCurrState(SpriteState.ALIVE);
         setCollidable(true);
-        setControllable(false);  // TODO: REMOVE?
         setSpeedX(0.0);
         setSpeedY(0.0);
 

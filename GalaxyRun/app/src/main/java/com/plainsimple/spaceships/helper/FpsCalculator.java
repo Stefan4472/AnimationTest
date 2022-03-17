@@ -5,7 +5,7 @@ Calculate rolling average FPS.
  */
 public class FpsCalculator {
     public final int ringSize;
-    private long timestamps[];
+    private final long[] timestamps;
     private int index = -1;
     private int numFrames;
 

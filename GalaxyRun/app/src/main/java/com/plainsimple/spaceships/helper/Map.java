@@ -39,6 +39,7 @@ public class Map {
     private final Random random;
 
     private double difficulty;
+    // Base speed of scrolling obstacles, pixels per second
     private double scrollSpeed;
     private double distanceFlown;
 
@@ -64,17 +65,13 @@ public class Map {
         init();
     }
 
-    private void init() {
+    public void init() {
         // Generate a short stretch of EMPTY
         tiles = TileGenerator.generateEmpty(5);
         nextSpawnAtX = tileWidth * 5;
         difficulty = calcDifficulty(0);
         scrollSpeed = calcScrollSpeed(difficulty);
         distanceFlown = 0;
-    }
-
-    public void restart() {
-        init();
     }
 
     public double getDifficulty() {

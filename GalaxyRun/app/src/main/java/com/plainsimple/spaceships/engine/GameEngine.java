@@ -112,6 +112,7 @@ public class GameEngine implements IExternalGameController {
      */
     public GameUpdateMessage update() {
         GameTime gameTime = gameTimer.recordUpdate();
+        Log.d("GameEngine", gameTime.currTimeMs + ", " + gameTime.msSincePrevUpdate + ", " + gameTime.runTimeMs);
         hitDetector.clear();
         drawLayers.clear();
 
@@ -252,21 +253,22 @@ public class GameEngine implements IExternalGameController {
         spaceship.setX(-ship_data.getWidth());
         spaceship.setY(gameContext.gameHeightPx / 2.0 - ship_data.getHeight() / 2.0);
         // Make non-controllable
+        // TODO: this can be done at the GameEngine level with a flag and suppressing input
         spaceship.setControllable(false);
     }
 
     private void enterStartingState() {
         currState = GameState.STARTING;
         score = 0;
-        gameTimer.reset();  // TODO
-        gameTimer.resume();
+        gameTimer = new GameTimer();
+        gameTimer.start();
 
         // Create Spaceship and position off the screen to the left,
         // centered vertically
         spaceship.reset();
         sprites.clear();
         sprites.add(spaceship);
-        map.restart();
+        map.init();
 
         // Set speed to slowly fly onto screen
         spaceship.setSpeedX(gameContext.gameWidthPx * 0.12);
@@ -290,13 +292,17 @@ public class GameEngine implements IExternalGameController {
     }
 
     private void setPaused(boolean shouldPause) {
-        Log.d("GameEngine", "Setting paused = " + shouldPause);
-        isPaused = shouldPause;
-        if (shouldPause) {
-            gameTimer.pause();
-            fpsCalculator.reset();
-        } else {
-            gameTimer.resume();
+        // Note: have to be careful in WAITING and FINISHED states,
+        // because the timer should not be running
+        if (isPaused != shouldPause && currState != GameState.FINISHED && currState != GameState.WAITING) {
+            Log.d("GameEngine", "Setting paused = " + shouldPause);
+            isPaused = shouldPause;
+            if (shouldPause) {
+                gameTimer.pause();
+            } else {
+                gameTimer.resume();
+            }
+
         }
     }
 
@@ -338,6 +344,7 @@ public class GameEngine implements IExternalGameController {
                 break;
             }
             case RESTART_GAME: {
+                // TODO: also need to reset the UI
                 enterStartingState();
                 break;
             }

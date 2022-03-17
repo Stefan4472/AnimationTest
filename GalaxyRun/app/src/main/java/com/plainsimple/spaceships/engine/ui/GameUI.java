@@ -1,11 +1,14 @@
 package com.plainsimple.spaceships.engine.ui;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 
 import com.plainsimple.spaceships.engine.GameContext;
+import com.plainsimple.spaceships.engine.GameState;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawText;
 import com.plainsimple.spaceships.util.FastQueue;
 import com.plainsimple.spaceships.util.Pair;
 import com.plainsimple.spaceships.util.ProtectedQueue;
@@ -35,6 +38,9 @@ public class GameUI {
     private final MuteButton muteButton;
     private final Controls controls;
 
+    // TODO: a better way of doing this
+    private boolean gameOver;
+
     // TODO: ProtectedQueue?
     private Queue<UIInputId> createdInput = new ArrayDeque<>();
 
@@ -50,7 +56,6 @@ public class GameUI {
 
     public void handleMotionEvent(MotionEvent e) {
 //        Log.d("GameUI", String.format("Processing motion %s", e.toString()));
-
         if (healthBar.handleEvent(e, createdInput)) {
             return;
         }
@@ -76,6 +81,11 @@ public class GameUI {
                 createdInput.add(UIInputId.STOP_SHOOTING);
                 break;
         }
+
+        // Restart game on button press
+        if (gameOver && e.getAction() == MotionEvent.ACTION_DOWN) {
+            createdInput.add(UIInputId.RESTART_GAME);
+        }
     }
 
     public List<UIInputId> pollAllInput() {
@@ -92,6 +102,7 @@ public class GameUI {
         pauseButton.update(updateContext);
         muteButton.update(updateContext);
         controls.update(updateContext);
+        gameOver = (updateContext.gameState == GameState.FINISHED);
     }
 
     public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
@@ -100,6 +111,17 @@ public class GameUI {
         pauseButton.getDrawParams(drawParams);
         muteButton.getDrawParams(drawParams);
         controls.getDrawParams(drawParams);
+
+        // TODO: an actual dialog
+        if (gameOver) {
+            drawParams.push(new DrawText(
+                    "GAME OVER",
+                    gameContext.gameWidthPx / 2.0f,
+                    gameContext.gameHeightPx / 2.0f,
+                    Color.YELLOW,
+                    50
+            ));
+        }
     }
 
     public static Pair<Integer, Integer> calcGameDimensions(

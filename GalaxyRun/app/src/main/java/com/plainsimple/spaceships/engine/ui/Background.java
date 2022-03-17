@@ -52,8 +52,9 @@ public class Background {
     }
 
     public void update(UpdateContext updateContext) {
-//        scroll(updateContext.getScrollSpeed() * updateContext.;);
-        scroll(1);
+        // Scroll at 30% of Map scroll speed
+        scroll(updateContext.scrollSpeed * 0.3 *
+                updateContext.gameTime.msSincePrevUpdate / 1000.0);
     }
 
     public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {

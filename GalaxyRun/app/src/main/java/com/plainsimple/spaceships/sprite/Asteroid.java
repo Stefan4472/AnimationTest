@@ -29,6 +29,7 @@ public class Asteroid extends Sprite {
     // current rotation, in degrees, of asteroid
     private float currentRotation;
     // degrees rotated per frame (positive or negative)
+    // TODO: base on game time elapsed
     private float rotationRate;
 
     private DrawImage DRAW_ASTEROID;
