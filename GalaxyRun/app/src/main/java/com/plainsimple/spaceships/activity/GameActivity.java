@@ -108,11 +108,15 @@ public class GameActivity extends FragmentActivity implements
      */
     @Override
     public void onGameStateUpdated(GameUpdateMessage updateMessage) {
-        if (updateMessage.frameNumber > 0 && updateMessage.frameNumber % 150 == 0) {
-            // Log debugging info every 150 frames
-            Log.d("GameActivity", "FrameNumber = " + updateMessage.frameNumber);
-            Log.d("GameActivity", "FPS = " + updateMessage.fps);
-            Log.d("GameActivity", "Got " + updateMessage.getDrawParams().getSize() + " drawParams");
+        // Log debugging info every 150 frames
+//        if (updateMessage.frameNumber > 0 && updateMessage.frameNumber % 150 == 0) {
+//            Log.d("GameActivity", "FrameNumber = " + updateMessage.frameNumber);
+//            Log.d("GameActivity", "FPS = " + updateMessage.fps);
+//            Log.d("GameActivity", "Got " + updateMessage.getDrawParams().getSize() + " drawParams");
+//        }
+
+        if (updateMessage.fps != 0 && updateMessage.fps < 30) {
+            Log.w("GameActivity", "FPS below 30! FPS = " + updateMessage.fps);
         }
 
         // TODO: may need to support pausing and resuming sounds

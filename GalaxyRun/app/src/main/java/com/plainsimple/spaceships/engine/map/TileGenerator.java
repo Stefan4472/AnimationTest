@@ -1,12 +1,12 @@
-package com.plainsimple.spaceships.helper;
+package com.plainsimple.spaceships.engine.map;
 
 import java.util.Arrays;
 import java.util.Random;
 
-import static com.plainsimple.spaceships.helper.TileGenerator.TileID.ALIEN;
-import static com.plainsimple.spaceships.helper.TileGenerator.TileID.ASTEROID;
-import static com.plainsimple.spaceships.helper.TileGenerator.TileID.EMPTY;
-import static com.plainsimple.spaceships.helper.TileGenerator.TileID.OBSTACLE;
+import static com.plainsimple.spaceships.engine.map.TileGenerator.TileID.ALIEN;
+import static com.plainsimple.spaceships.engine.map.TileGenerator.TileID.ASTEROID;
+import static com.plainsimple.spaceships.engine.map.TileGenerator.TileID.EMPTY;
+import static com.plainsimple.spaceships.engine.map.TileGenerator.TileID.OBSTACLE;
 
 /**
  * Created by Stefan on 2/13/2016.
@@ -19,16 +19,6 @@ public class TileGenerator {
         OBSTACLE,
         COIN,
         ALIEN,
-        ASTEROID
-    };
-
-    // Types of possible chunks
-    public enum ChunkType {
-        EMPTY,
-        OBSTACLES,
-        TUNNEL,
-        ALIEN,
-        ALIEN_SWARM,
         ASTEROID
     };
 

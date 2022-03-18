@@ -17,7 +17,7 @@ import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.helper.FpsCalculator;
-import com.plainsimple.spaceships.helper.Map;
+import com.plainsimple.spaceships.engine.map.Map;
 import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.sprite.Sprite;

@@ -1,4 +1,4 @@
-package com.plainsimple.spaceships.helper;
+package com.plainsimple.spaceships.engine.map;
 
 import android.util.Log;
 
@@ -6,13 +6,12 @@ import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.GameTime;
 import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.util.ProtectedQueue;
+import com.plainsimple.spaceships.util.WeightedRandomChooser;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 
-import static com.plainsimple.spaceships.helper.TileGenerator.NUM_ROWS;
-import static com.plainsimple.spaceships.helper.TileGenerator.TileID.EMPTY;
+import static com.plainsimple.spaceships.engine.map.TileGenerator.NUM_ROWS;
+import static com.plainsimple.spaceships.engine.map.TileGenerator.TileID.EMPTY;
 
 /**
  * The Map class manages the creation of non-playing sprites on the screen.
@@ -98,15 +97,16 @@ public class Map {
             Log.d("Map", String.format("Runtime is %f, difficult is %f, scrollSpeed is %f",
                     gameTime.msSincePrevUpdate / 1000.0, difficulty, scrollSpeed));
             // Generate the next chunk
-            TileGenerator.ChunkType next_chunk_type = determineNextChunkType(difficulty);
-            boolean should_generate_coins = determineGenerateCoins(difficulty);
+            ChunkType nextChunkType = determineNextChunkType(difficulty);
+            boolean shouldGenerateCoins = determineGenerateCoins(difficulty);
             tiles = TileGenerator.generateChunk(
-                    next_chunk_type,
+                    nextChunkType,
                     LEADING_BUFFER_LENGTH,
                     difficulty,
-                    should_generate_coins
+                    shouldGenerateCoins
             );
-            Log.d("Map", String.format("Generated chunk of %s", next_chunk_type.toString()));
+            Log.d("Map", "Generating a chunk of " + nextChunkType.name());
+            Log.d("Map", "ShouldGenerateCoins = " + shouldGenerateCoins);
             Log.d("Map", TileGenerator.mapToString(tiles));
 
             // Calculate where to begin spawning in the new chunk
@@ -132,16 +132,13 @@ public class Map {
     }
 
     /*
-    Calculate difficulty "magic number" based on how long the game
-    has run. Difficulty is between 0 and 1.
+    Calculate difficulty based on runtime of the game.
+    Difficulty is between 0 and 1.
      */
-    private double calcDifficulty(long gameRuntimeMs) {
-        double gametime_sec = gameRuntimeMs / 1000.0;
-        double difficulty = (gametime_sec / 45.0) / (1.0 + gametime_sec / 45.0) + 0.1;
-        if (difficulty > 1.0) {
-            difficulty = 1.0;
-        }
-        return difficulty;
+    private static double calcDifficulty(long gameRuntimeMs) {
+        // Each second of runtime = 0.01 points of difficulty
+        double difficulty = (gameRuntimeMs / 1000.0) / 100.0;
+        return Math.min(difficulty, 1.0);
     }
 
     /*
@@ -150,14 +147,6 @@ public class Map {
      */
     private double calcScrollSpeed(double difficulty) {
         return (0.43 * difficulty + 0.12) * gameContext.gameWidthPx;
-        // Spaceship destroyed: slow down scrolling to a halt.
-//        if (currState == GameState.PLAYER_KILLED) {
-//            return scrollSpeed / 1.03f;
-//        } else { // Normal scrolling progression
-//            //scrollSpeed = MAX_SCROLL_SPEED * Math.atan(difficulty / 500.0f) * 2 / Math.PI;
-////            scrollSpeed = (float) (-Math.log(difficulty + 1) / 600);
-//            return currDifficulty / 10;
-//        }
     }
 
     /*
@@ -190,21 +179,13 @@ public class Map {
         }
     }
 
-    TileGenerator.ChunkType determineNextChunkType(double difficulty) {
-        double random_decimal = random.nextDouble();
-        if (random_decimal >= 0.7) {
-            return TileGenerator.ChunkType.ASTEROID;
-        } else if (random_decimal >= 0.6) {
-            return TileGenerator.ChunkType.ALIEN_SWARM;
-        } else if (random_decimal >= 0.45) {
-            return TileGenerator.ChunkType.ALIEN;
-        } else if (random_decimal >= 0.35) {
-            return TileGenerator.ChunkType.TUNNEL;
-        } else if (random_decimal >= 0.1) {
-            return TileGenerator.ChunkType.OBSTACLES;
-        } else {
-            return TileGenerator.ChunkType.EMPTY;
+    ChunkType determineNextChunkType(double difficulty) {
+        WeightedRandomChooser<ChunkType> chooser = new WeightedRandomChooser<>(random);
+        for (ChunkType chunkType : ChunkType.values()) {
+            double chunkProb = ChunkProbabilities.getProbability(chunkType, difficulty);
+            chooser.addItem(chunkType, chunkProb);
         }
+        return chooser.choose();
     }
 
     boolean determineGenerateCoins(double difficulty) {
