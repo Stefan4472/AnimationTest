@@ -33,7 +33,7 @@ public class Map {
     private double numPixelsScrolled;
 
     // X-coordinate at which the next chunk will be spawned
-    private double nextSpawnAtX;
+    private double nextSpawnAtPx;
     // Grid of tiles specifying which sprites will be generated in the current chunk.
     // A "tile-based map".
     private TileType[][] currTiles;
@@ -61,23 +61,25 @@ public class Map {
         tileWidth = gameContext.gameHeightPx / NUM_ROWS;
         spawnBeyondScreenPx = tileWidth;
         mapGenerator = new MapGenerator(randomSeed);
-        nextSpawnAtX = 0;
+        nextSpawnAtPx = 0;
     }
 
     public void update(GameTime gameTime, ProtectedQueue<Sprite> createdSprites) {
         numPixelsScrolled += chunkScrollSpeedPx * (gameTime.msSincePrevUpdate / 1000.0);
 
         // We've scrolled far enough to spawn in the next chunk
-        if (numPixelsScrolled >= nextSpawnAtX) {
-            Log.d("Map", "Time to spawn!");
+        // TODO: there is something fishy going on here. It seems like one chunk may
+        // spawn on top of another chunk, or at least that some overlap is possible
+        if (numPixelsScrolled >= nextSpawnAtPx) {
+            Log.d("Map", "Time to spawn! PxScrolled = " + numPixelsScrolled);
             // Update difficulty and scroll speed
             chunkDifficulty = calcDifficulty(gameTime.runTimeMs);
             chunkScrollSpeedPx = calcScrollSpeed(chunkDifficulty) * gameContext.gameWidthPx;
             Log.d("Map", String.format("Runtime is %f, difficult is %f, scrollSpeed is %f",
-                    gameTime.msSincePrevUpdate / 1000.0, chunkDifficulty, chunkScrollSpeedPx));
+                    gameTime.runTimeMs / 1000.0, chunkDifficulty, chunkScrollSpeedPx));
             // Generate the next chunk
             currTiles = mapGenerator.generateNextChunk(chunkDifficulty);
-            Log.d("Map", TileGenerator.mapToString(currTiles));
+            Log.d("Map", TileGenerator.chunkToString(currTiles));
 
             // Calculate where to begin spawning in the new chunk
             long offset = (long) numPixelsScrolled % tileWidth;
@@ -96,8 +98,8 @@ public class Map {
                 }
             }
 
-            nextSpawnAtX += currTiles[0].length * tileWidth;
-            Log.d("Map", String.format("nextSpawnAtX = %f", nextSpawnAtX));
+            nextSpawnAtPx += currTiles[0].length * tileWidth;
+            Log.d("Map", String.format("nextSpawnAtX = %f", nextSpawnAtPx));
         }
     }
 
