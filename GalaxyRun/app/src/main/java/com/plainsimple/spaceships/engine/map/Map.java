@@ -6,119 +6,89 @@ import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.GameTime;
 import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.util.ProtectedQueue;
-import com.plainsimple.spaceships.util.WeightedRandomChooser;
-
-import java.util.Random;
 
 import static com.plainsimple.spaceships.engine.map.TileGenerator.NUM_ROWS;
-import static com.plainsimple.spaceships.engine.map.TileGenerator.TileID.EMPTY;
 
 /**
  * The Map class manages the creation of non-playing sprites on the screen.
- * Internally, it makes calls to TileGenerator. It generates one "chunk"
- * of non-playing sprites at a time.
- *
- * Types of "chunks":
- * - Empty: P(0.10)
- * - Obstacles: P(0.25)
- * - Tunnel: P(0.10)
- * - Alien: P(0.15)
- * - Alien Swarm: P(0.10)
- * - Asteroid: P(0.30)
- *
- * Each chunk has some leading "buffer" without any sprites, which gives
- * the player a chance to reset their position.
- *
- * TODO: improve generation
+ * Uses a `MapGenerator` to generate chunks of Tiles. The Map spawns sprites
+ * based on the tiles.
  */
 
 public class Map {
 
     private final GameContext gameContext;
-    private final Random random;
+    private MapGenerator mapGenerator;
 
-    private double difficulty;
-    // Base speed of scrolling obstacles, pixels per second
-    private double scrollSpeed;
-    private double distanceFlown;
+    // Difficulty calculated for this chunk.
+    // Re-calculated each time a new chunk is generated.
+    private double chunkDifficulty;
+    // The base "scroll speed" for obstacles in this chunk.
+    // Scroll speed is calculated as a function of difficulty,
+    // and is re-calculated for each new chunk.
+    // Generated sprites do not need to hold themselves to the
+    // scroll speed.
+    private double chunkScrollSpeedPx;
+    // Number of pixels scrolled in total
+    private double numPixelsScrolled;
 
-    // Grid of tile IDs specifying which sprites will be generated where.
+    // X-coordinate at which the next chunk will be spawned
+    private double nextSpawnAtX;
+    // Grid of tiles specifying which sprites will be generated in the current chunk.
     // A "tile-based map".
-    private TileGenerator.TileID[][] tiles;
+    private TileType[][] currTiles;
+
     // Width (px) of the side of a tile (equal to one-sixth of game height px)
     private final int tileWidth;
     // How many pixels past the right of the screen edge to spawn in new
     // chunks
     private final int spawnBeyondScreenPx;
-    // X-coordinate at which the next chunk will be spawned
-    private double nextSpawnAtX;
-    // Set the number of columns of empty space before each created chunk
-    private static final int LEADING_BUFFER_LENGTH = 3;
-
-    // TODO: ALLOW PASSING IN A "SEED"?
-    public Map(GameContext gameContext) {
-        this.gameContext = gameContext;
-        random = new Random();  // TODO: DO WE NEED TO INIT WITH TIME AS A SEED?
-        tileWidth = gameContext.gameHeightPx / NUM_ROWS;
-        spawnBeyondScreenPx = tileWidth;
-        init();
-    }
-
-    public void init() {
-        // Generate a short stretch of EMPTY
-        tiles = TileGenerator.generateEmpty(5);
-        nextSpawnAtX = tileWidth * 5;
-        difficulty = calcDifficulty(0);
-        scrollSpeed = calcScrollSpeed(difficulty);
-        distanceFlown = 0;
-    }
 
     public double getDifficulty() {
-        return difficulty;
+        return chunkDifficulty;
     }
 
     public double getScrollSpeed() {
-        return scrollSpeed;
+        return chunkScrollSpeedPx;
     }
 
-    public double getDistanceFlown() {
-        return distanceFlown;
+    public double getNumPixelsScrolled() {
+        return numPixelsScrolled;
+    }
+
+    public Map(GameContext gameContext, long randomSeed) {
+        this.gameContext = gameContext;
+        tileWidth = gameContext.gameHeightPx / NUM_ROWS;
+        spawnBeyondScreenPx = tileWidth;
+        mapGenerator = new MapGenerator(randomSeed);
+        nextSpawnAtX = 0;
     }
 
     public void update(GameTime gameTime, ProtectedQueue<Sprite> createdSprites) {
-        distanceFlown += scrollSpeed * (gameTime.msSincePrevUpdate / 1000.0);
+        numPixelsScrolled += chunkScrollSpeedPx * (gameTime.msSincePrevUpdate / 1000.0);
 
         // We've scrolled far enough to spawn in the next chunk
-        if (distanceFlown >= nextSpawnAtX) {
+        if (numPixelsScrolled >= nextSpawnAtX) {
             Log.d("Map", "Time to spawn!");
             // Update difficulty and scroll speed
-            difficulty = calcDifficulty(gameTime.runTimeMs);
-            scrollSpeed = calcScrollSpeed(difficulty);
+            chunkDifficulty = calcDifficulty(gameTime.runTimeMs);
+            chunkScrollSpeedPx = calcScrollSpeed(chunkDifficulty) * gameContext.gameWidthPx;
             Log.d("Map", String.format("Runtime is %f, difficult is %f, scrollSpeed is %f",
-                    gameTime.msSincePrevUpdate / 1000.0, difficulty, scrollSpeed));
+                    gameTime.msSincePrevUpdate / 1000.0, chunkDifficulty, chunkScrollSpeedPx));
             // Generate the next chunk
-            ChunkType nextChunkType = determineNextChunkType(difficulty);
-            boolean shouldGenerateCoins = determineGenerateCoins(difficulty);
-            tiles = TileGenerator.generateChunk(
-                    nextChunkType,
-                    LEADING_BUFFER_LENGTH,
-                    difficulty,
-                    shouldGenerateCoins
-            );
-            Log.d("Map", "Generating a chunk of " + nextChunkType.name());
-            Log.d("Map", "ShouldGenerateCoins = " + shouldGenerateCoins);
-            Log.d("Map", TileGenerator.mapToString(tiles));
+            currTiles = mapGenerator.generateNextChunk(chunkDifficulty);
+            Log.d("Map", TileGenerator.mapToString(currTiles));
 
             // Calculate where to begin spawning in the new chunk
-            long offset = (long) distanceFlown % tileWidth;
+            long offset = (long) numPixelsScrolled % tileWidth;
             double spawnX = gameContext.gameWidthPx + spawnBeyondScreenPx - offset;
 
             // Spawn in all non-empty tiles
-            for (int i = 0; i < tiles.length; i++) {
-                for (int j = 0; j < tiles[i].length; j++) {
-                    if (tiles[i][j] != EMPTY) {
+            for (int i = 0; i < currTiles.length; i++) {
+                for (int j = 0; j < currTiles[i].length; j++) {
+                    if (currTiles[i][j] != TileType.EMPTY) {
                         createdSprites.push(createMapTile(
-                                tiles[i][j],
+                                currTiles[i][j],
                                 spawnX + j * tileWidth,
                                 i * tileWidth
                         ));
@@ -126,7 +96,7 @@ public class Map {
                 }
             }
 
-            nextSpawnAtX += tiles[0].length * tileWidth;
+            nextSpawnAtX += currTiles[0].length * tileWidth;
             Log.d("Map", String.format("nextSpawnAtX = %f", nextSpawnAtX));
         }
     }
@@ -142,11 +112,11 @@ public class Map {
     }
 
     /*
-    Calculates "scrollspeed" based on current scroll speed, game state,
-    and difficulty. Return as pixels per second.
+    Calculates scrollspeed based on current difficulty *as a fraction
+    of the game width*.
      */
-    private double calcScrollSpeed(double difficulty) {
-        return (0.43 * difficulty + 0.12) * gameContext.gameWidthPx;
+    private static double calcScrollSpeed(double difficulty) {
+        return (0.43 * difficulty + 0.12);
     }
 
     /*
@@ -154,16 +124,16 @@ public class Map {
     Sprite. Only supports TileIDs that generate a sprite.
      */
     private Sprite createMapTile(
-            TileGenerator.TileID tileID,
+            TileType tileType,
             double x,
             double y
     ) throws IndexOutOfBoundsException {
-        switch (tileID) {
+        switch (tileType) {
             case ALIEN: {
-                return gameContext.createAlien(x, y, difficulty);
+                return gameContext.createAlien(x, y, chunkDifficulty);
             }
             case ASTEROID: {
-                return gameContext.createAsteroid(x, y, difficulty);
+                return gameContext.createAsteroid(x, y, chunkDifficulty);
             }
             case COIN: {
                 return gameContext.createCoin(x, y);
@@ -173,22 +143,9 @@ public class Map {
             }
             default: {
                 throw new IllegalArgumentException(String.format(
-                        "Unsupported tileID %s", tileID.toString())
+                        "Unsupported tileID %s", tileType.toString())
                 );
             }
         }
-    }
-
-    ChunkType determineNextChunkType(double difficulty) {
-        WeightedRandomChooser<ChunkType> chooser = new WeightedRandomChooser<>(random);
-        for (ChunkType chunkType : ChunkType.values()) {
-            double chunkProb = ChunkProbabilities.getProbability(chunkType, difficulty);
-            chooser.addItem(chunkType, chunkProb);
-        }
-        return chooser.choose();
-    }
-
-    boolean determineGenerateCoins(double difficulty) {
-        return (random.nextDouble() <= 0.3);
     }
 }

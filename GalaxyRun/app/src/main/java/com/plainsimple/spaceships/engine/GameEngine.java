@@ -33,9 +33,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Core game logic.
- * TODO: NEEDS PRETTY SERIOUS STRUCTURAL IMPROVEMENTS
+ *
+ * TODO: think more about how to handle restarts.
  */
-
 public class GameEngine implements IExternalGameController {
 
     private GameContext gameContext;
@@ -99,7 +99,7 @@ public class GameEngine implements IExternalGameController {
         spaceship = new Spaceship(gameContext.getNextSpriteId(), 0, 0, gameContext);
         background = new Background(gameContext);
         ui = new GameUI(gameContext);
-        map = new Map(gameContext);
+        map = new Map(gameContext, System.currentTimeMillis());
         hitDetector = HitDetector.MakeDefaultHitDetector();
         drawLayers = new DrawLayers(7);
 
@@ -253,6 +253,7 @@ public class GameEngine implements IExternalGameController {
 
     private void enterWaitingState() {
         currState = GameState.WAITING;
+        map = new Map(gameContext, System.currentTimeMillis());
         // Move spaceship just off the left of the screen, centered vertically
         BitmapData ship_data = gameContext.bitmapCache.getData(BitmapID.SPACESHIP);
         spaceship.setX(-ship_data.getWidth());
@@ -273,7 +274,9 @@ public class GameEngine implements IExternalGameController {
         spaceship.reset();
         sprites.clear();
         sprites.add(spaceship);
-        map.init();
+        // TODO: how to avoid re-creating the Map multiple times?
+        //   -> may in fact need a reset() function for certain objects
+        map = new Map(gameContext, System.currentTimeMillis());
 
         // Set speed to slowly fly onto screen
         spaceship.setSpeedX(gameContext.gameWidthPx * 0.12);

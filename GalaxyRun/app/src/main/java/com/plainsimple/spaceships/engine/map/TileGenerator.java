@@ -3,28 +3,16 @@ package com.plainsimple.spaceships.engine.map;
 import java.util.Arrays;
 import java.util.Random;
 
-import static com.plainsimple.spaceships.engine.map.TileGenerator.TileID.ALIEN;
-import static com.plainsimple.spaceships.engine.map.TileGenerator.TileID.ASTEROID;
-import static com.plainsimple.spaceships.engine.map.TileGenerator.TileID.EMPTY;
-import static com.plainsimple.spaceships.engine.map.TileGenerator.TileID.OBSTACLE;
-
 /**
  * Created by Stefan on 2/13/2016.
+ * TODO: rename `ChunkGenerator` or `MapGenerator`?
  */
 public class TileGenerator {
-
-    // Tile IDs
-    public enum TileID {
-        EMPTY,
-        OBSTACLE,
-        COIN,
-        ALIEN,
-        ASTEROID
-    };
 
     // The number of rows of tiles the game has. Does not change.
     public static final int NUM_ROWS = 6;
     // Length of coin trails. TODO: VARY WITH DIFFICULTY
+    // TODO: split off into CoinTrailGenerator
     private static final int COIN_TRAIL_LENGTH = 15;
 
     // Used for generating random numbers TODO: use seed? PASS IN FROM MAP?
@@ -33,7 +21,7 @@ public class TileGenerator {
     // TODO: RANDOMNESS IN CHUNK GENERATION, COIN GENERATOIN, DIFFICULTY USAGE(?)
 
     // Convenience method
-    public static TileID[][] generateChunk(
+    public static TileType[][] generateChunk(
             ChunkType chunkType,
             int leadingBufferLength,
             double difficulty,
@@ -68,31 +56,31 @@ public class TileGenerator {
     }
 
     // Generates chunk of randomly-placed obstacles
-    public static TileID[][] generateObstaclesChunk(
+    public static TileType[][] generateObstaclesChunk(
             int leadingBufferLength,
             double difficulty,
             boolean shouldGenerateCoins
     ) {
         int chunk_length = leadingBufferLength + 10;
-        TileID[][] generated = generateEmpty(chunk_length);
+        TileType[][] generated = generateEmpty(chunk_length);
 
         for (int col = leadingBufferLength; col < chunk_length; col++) {
             if (testRandom(0.4f)) {
                 // Place obstacle at random row
                 int row = random.nextInt(NUM_ROWS);
-                generated[row][col] = OBSTACLE;
+                generated[row][col] = TileType.OBSTACLE;
 
                 // Attempt to generate another obstacle immediately to the right
                 if (col + 1 < chunk_length && testRandom(0.3f)) {
-                    generated[row][col + 1] = OBSTACLE;
+                    generated[row][col + 1] = TileType.OBSTACLE;
                 }
 
                 // Attempt to generate another obstacle immediately above or below
                 if (row + 1 < NUM_ROWS && testRandom(0.3f)) {
-                    generated[row + 1][col] = OBSTACLE;
+                    generated[row + 1][col] = TileType.OBSTACLE;
                 } else if (row > 0 && testRandom(0.3f)) {
                     // else try to generate another obstacle above
-                    generated[row - 1][col] = OBSTACLE;
+                    generated[row - 1][col] = TileType.OBSTACLE;
                 }
             }
         }
@@ -101,13 +89,13 @@ public class TileGenerator {
     }
 
     // generates tunnel of the given length
-    public static TileID[][] generateTunnelChunk(
+    public static TileType[][] generateTunnelChunk(
             int leadingBufferLength,
             double difficulty,
             boolean shouldGenerateCoins
     ) {
         int chunk_length = leadingBufferLength + 15;
-        TileID[][] generated = generateEmpty(chunk_length);
+        TileType[][] generated = generateEmpty(chunk_length);
 
         // TODO: MAKE PASSAGES TWO ROWS BIG
 
@@ -133,11 +121,11 @@ public class TileGenerator {
                 // Construct the change in the tunnel
                 for (int i = 0; i < NUM_ROWS; i++) {
                     if (i == tunnel_row || i == tunnel_row + direction_change) {
-                        generated[i][col] = EMPTY;
-                        generated[i][col + 1] = EMPTY;
+                        generated[i][col] = TileType.EMPTY;
+                        generated[i][col + 1] = TileType.EMPTY;
                     } else {
-                        generated[i][col] = OBSTACLE;
-                        generated[i][col + 1] = OBSTACLE;
+                        generated[i][col] = TileType.OBSTACLE;
+                        generated[i][col + 1] = TileType.OBSTACLE;
                     }
                 }
                 col++;
@@ -146,9 +134,9 @@ public class TileGenerator {
             } else {
                 for (int i = 0; i < NUM_ROWS; i++) {
                     if (i == tunnel_row) {
-                        generated[i][col] = EMPTY;
+                        generated[i][col] = TileType.EMPTY;
                     } else {
-                        generated[i][col] = OBSTACLE;
+                        generated[i][col] = TileType.OBSTACLE;
                     }
                 }
 
@@ -161,47 +149,47 @@ public class TileGenerator {
 
     // generates a single alien at a random row index in a chunk of the given length. Alien will be
     // placed randomly
-    public static TileID[][] generateAlienChunk(
+    public static TileType[][] generateAlienChunk(
             int leadingBufferLength,
             double difficulty,
             boolean shouldGenerateCoins
     ) {
         int chunk_length = leadingBufferLength + 9;
-        TileID[][] generated = generateEmpty(chunk_length);
-        generated[1 + random.nextInt(NUM_ROWS - 1)][leadingBufferLength + 3] = ALIEN;
+        TileType[][] generated = generateEmpty(chunk_length);
+        generated[1 + random.nextInt(NUM_ROWS - 1)][leadingBufferLength + 3] = TileType.ALIEN;
         return generated;
     }
 
     // generates numAliens aliens. Each alien is preceded and succeeded by 8 empty tiles.
-    public static TileID[][] generateAlienSwarmChunk(
+    public static TileType[][] generateAlienSwarmChunk(
             int leadingBufferLength,
             double difficulty,
             boolean shouldGenerateCoins
     ) {
         int num_aliens = 5;
         int chunk_length = leadingBufferLength + 8 * num_aliens;
-        TileID[][] generated = generateEmpty(chunk_length);
+        TileType[][] generated = generateEmpty(chunk_length);
         for (int a = 1; a <= num_aliens; a++) {
-            generated[1 + random.nextInt(NUM_ROWS - 1)][8 * a] = ALIEN;
+            generated[1 + random.nextInt(NUM_ROWS - 1)][8 * a] = TileType.ALIEN;
         }
         return generated;
     }
 
     // generates a single asteroid at a random row index in a chunk of the given length. Asteroid is
     // placed randomly within the chunk
-    public static TileID[][] generateAsteroidChunk(
+    public static TileType[][] generateAsteroidChunk(
             int leadingBufferLength,
             double difficulty,
             boolean shouldGenerateCoins
     ) {
         int chunk_length = leadingBufferLength + 7;
-        TileID[][] generated = generateEmpty(chunk_length);
-        generated[1 + random.nextInt(NUM_ROWS - 1)][random.nextInt(7)] = ASTEROID;
+        TileType[][] generated = generateEmpty(chunk_length);
+        generated[1 + random.nextInt(NUM_ROWS - 1)][random.nextInt(7)] = TileType.ASTEROID;
         return generated;
     }
 
     // generates a coin trail on map
-//    private static void generateCoins(TileID[][] generated) {
+//    private static void generateCoins(TileType[][] generated) {
 //        int col, row, end_col;
 //        // start coin trail somewhere in chunk making sure there is enough space
 //        if (generated[0].length <= COIN_TRAIL_LENGTH) {
@@ -245,7 +233,7 @@ public class TileGenerator {
 //    }
 
     // TODO: THE ARGS TO THIS DON'T REALLY MAKE SENSE
-    public static TileID[][] generateEmptyChunk(
+    public static TileType[][] generateEmptyChunk(
             int leadingBufferLength,
             double difficulty,
             boolean shouldGenerateCoins
@@ -253,11 +241,11 @@ public class TileGenerator {
         return generateEmpty(leadingBufferLength + 5);
     }
 
-    public static TileID[][] generateEmpty(int numCols) {
-        TileID empty[][] = new TileID[NUM_ROWS][numCols];
+    public static TileType[][] generateEmpty(int numCols) {
+        TileType[][] empty = new TileType[NUM_ROWS][numCols];
         // Fill with `EMPTY` tiles (default is NULL)
-        for (TileID[] row : empty) {
-            Arrays.fill(row, TileID.EMPTY);
+        for (TileType[] row : empty) {
+            Arrays.fill(row, TileType.EMPTY);
         }
         return empty;
     }
@@ -271,19 +259,19 @@ public class TileGenerator {
     }
 
     // generates specific tile set for debugging
-    public static TileID[][] generateDebugTiles() {
-        TileID tiles[][] = new TileID[NUM_ROWS][8];
-        tiles[4][0] = ASTEROID;
-        tiles[2][6] = ALIEN;
-        tiles[0][0] = OBSTACLE;
-        tiles[0][1] = OBSTACLE;
-        tiles[0][2] = OBSTACLE;
-        tiles[0][3] = OBSTACLE;
+    public static TileType[][] generateDebugTiles() {
+        TileType[][] tiles = new TileType[NUM_ROWS][8];
+        tiles[4][0] = TileType.ASTEROID;
+        tiles[2][6] = TileType.ALIEN;
+        tiles[0][0] = TileType.OBSTACLE;
+        tiles[0][1] = TileType.OBSTACLE;
+        tiles[0][2] = TileType.OBSTACLE;
+        tiles[0][3] = TileType.OBSTACLE;
         return tiles;
     }
 
     // prints map in a 2-d array
-    public static String mapToString(TileID[][] map) {
+    public static String mapToString(TileType[][] map) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
@@ -294,58 +282,4 @@ public class TileGenerator {
         }
         return result.toString();
     }
-
-// models to simulate probability todo: PROBABILITY CALCULATION HAS BEEN MOVED TO `MAP`
-//    private static final LinearProbability pTunnel = new LinearProbability(0.15f, 0.3f, 1_500, 300);
-//    private static final LinearProbability pAlienSwarm = new LinearProbability(0.05f, 0.3f, 500, 200);
-//    private static final LinearProbability pCoinTrail = new LinearProbability(0.15f, 0.7f, 1_000, 100);
-//    private static final LinearProbability pAsteroid = new LinearProbability(0.10f, 0.25f, 2_000, 250);
-//    // a class to calculate linear probability for map generation
-//    private static class LinearProbability {
-//
-//        // starting probability
-//        private float initialProbability;
-//        // final probability (max/min)
-//        private float finalProbability;
-//        // minimum difficulty for probability to start changing
-//        private int changeThreshold;
-//        // change in difficulty required to increase/decrease probability by 0.01f
-//        private float changeRate;
-//
-//        private LinearProbability(float initialProbability,
-//                                  float finalProbability,
-//                                  int changeThreshold,
-//                                  float changeRate) throws IllegalArgumentException {
-//
-//            if (initialProbability < 0 || initialProbability > 1 || finalProbability < 0 ||
-//                    finalProbability > 1 || changeThreshold < 0 || changeRate < 0) {
-//                throw new IllegalArgumentException("Invalid Parameter(s)");
-//            } else {
-//                this.initialProbability = initialProbability;
-//                this.finalProbability = finalProbability;
-//                this.changeThreshold = changeThreshold;
-//                this.changeRate = changeRate;
-//            }
-//        }
-//
-//        // calculates and returns probability based on given difficulty
-//        public float getP(int difficulty) {
-//            // return initialProbability if difficulty isn't
-//            // high enough to have reached changeThreshold
-//            if (difficulty < changeThreshold) {
-//                return initialProbability;
-//            } else {
-//                // calculate probability based on given difficulty and parameters
-//                float p = initialProbability + (difficulty - changeThreshold) / changeRate / 100;
-//                // ensure we don't return a p outside the max/min
-//                if (changeRate > 0 && p > finalProbability) {
-//                    return finalProbability;
-//                } else if (changeRate < 0 && p < finalProbability) {
-//                    return finalProbability;
-//                } else {
-//                    return finalProbability;
-//                }
-//            }
-//        }
-//    }
 }
