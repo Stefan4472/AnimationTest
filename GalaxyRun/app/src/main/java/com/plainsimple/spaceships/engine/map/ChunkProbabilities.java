@@ -33,22 +33,22 @@ public class ChunkProbabilities {
     }
 
     public static double getProbabilityOfObstacles(double difficulty) {
-        return 0.2;
+        return 0.5;
     }
 
     public static double getProbabilityOfTunnel(double difficulty) {
-        return 0.2;
+        return 0.5;
     }
 
     public static double getProbabilityOfAlien(double difficulty) {
-        return 0.2;
+        return 0.0;
     }
 
     public static double getProbabilityOfAlienSwarm(double difficulty) {
-        return 0.2;
+        return 0.0;
     }
 
     public static double getProbabilityOfAsteroid(double difficulty) {
-        return 0.2;
+        return 0.0;
     }
 }

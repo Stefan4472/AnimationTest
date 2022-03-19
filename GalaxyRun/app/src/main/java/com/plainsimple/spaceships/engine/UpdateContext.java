@@ -1,5 +1,7 @@
 package com.plainsimple.spaceships.engine;
 
+import android.util.Log;
+
 import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.sprite.Sprite;
@@ -14,7 +16,7 @@ public class UpdateContext {
     public final GameTime gameTime;
     public final GameState gameState;
     public final double difficulty;
-    public final double scrollSpeed;
+    public final double scrollSpeedPx;
     public final int score;
     public final int playerHealth;
     public final boolean isPaused;
@@ -29,7 +31,7 @@ public class UpdateContext {
             GameTime gameTime,
             GameState gameState,
             double difficulty,
-            double scrollSpeed,
+            double scrollSpeedPx,
             int score,
             int playerHealth,
             boolean isPaused,
@@ -40,12 +42,13 @@ public class UpdateContext {
             ProtectedQueue<EventID> createdEvents,
             ProtectedQueue<SoundID> createdSounds
     ) {
+        Log.d("UpdateContext", "ScrollSpeed = " + scrollSpeedPx);
         this.gameTime = gameTime;
         this.gameState = gameState;
         this.difficulty = difficulty;
         this.score = score;
         this.playerHealth = playerHealth;
-        this.scrollSpeed = scrollSpeed;
+        this.scrollSpeedPx = scrollSpeedPx;
         this.isPaused = isPaused;
         this.isMuted = isMuted;
         this.playerDirection = playerDirection;
@@ -57,10 +60,6 @@ public class UpdateContext {
 
     public GameTime getGameTime() {
         return gameTime;
-    }
-
-    public double getScrollSpeed() {
-        return scrollSpeed;
     }
 
     public double getDifficulty() {

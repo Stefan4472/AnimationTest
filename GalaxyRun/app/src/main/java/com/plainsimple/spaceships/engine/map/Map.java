@@ -7,8 +7,6 @@ import com.plainsimple.spaceships.engine.GameTime;
 import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
-import static com.plainsimple.spaceships.engine.map.TileGenerator.NUM_ROWS;
-
 /**
  * The Map class manages the creation of non-playing sprites on the screen.
  * Uses a `MapGenerator` to generate chunks of Tiles. The Map spawns sprites
@@ -19,7 +17,6 @@ public class Map {
 
     private final GameContext gameContext;
     private MapGenerator mapGenerator;
-
     // Difficulty calculated for this chunk.
     // Re-calculated each time a new chunk is generated.
     private double chunkDifficulty;
@@ -31,15 +28,13 @@ public class Map {
     private double chunkScrollSpeedPx;
     // Number of pixels scrolled in total
     private double numPixelsScrolled;
-
     // X-coordinate at which the next chunk will be spawned
     private double nextSpawnAtPx;
-    // Grid of tiles specifying which sprites will be generated in the current chunk.
-    // A "tile-based map".
-    private TileType[][] currTiles;
 
+    // The number of rows of tiles the game has. Does not change.
+    public static final int NUM_ROWS = 6;
     // Width (px) of the side of a tile (equal to one-sixth of game height px)
-    private final int tileWidth;
+    private final int tileWidthPx;
     // How many pixels past the right of the screen edge to spawn in new
     // chunks
     private final int spawnBeyondScreenPx;
@@ -58,8 +53,8 @@ public class Map {
 
     public Map(GameContext gameContext, long randomSeed) {
         this.gameContext = gameContext;
-        tileWidth = gameContext.gameHeightPx / NUM_ROWS;
-        spawnBeyondScreenPx = tileWidth;
+        tileWidthPx = gameContext.gameHeightPx / NUM_ROWS;
+        spawnBeyondScreenPx = tileWidthPx;
         mapGenerator = new MapGenerator(randomSeed);
         nextSpawnAtPx = 0;
     }
@@ -68,8 +63,6 @@ public class Map {
         numPixelsScrolled += chunkScrollSpeedPx * (gameTime.msSincePrevUpdate / 1000.0);
 
         // We've scrolled far enough to spawn in the next chunk
-        // TODO: there is something fishy going on here. It seems like one chunk may
-        // spawn on top of another chunk, or at least that some overlap is possible
         if (numPixelsScrolled >= nextSpawnAtPx) {
             Log.d("Map", "Time to spawn! PxScrolled = " + numPixelsScrolled);
             // Update difficulty and scroll speed
@@ -78,11 +71,11 @@ public class Map {
             Log.d("Map", String.format("Runtime is %f, difficult is %f, scrollSpeed is %f",
                     gameTime.runTimeMs / 1000.0, chunkDifficulty, chunkScrollSpeedPx));
             // Generate the next chunk
-            currTiles = mapGenerator.generateNextChunk(chunkDifficulty);
+            TileType[][] currTiles = mapGenerator.generateNextChunk(chunkDifficulty);
             Log.d("Map", TileGenerator.chunkToString(currTiles));
 
             // Calculate where to begin spawning in the new chunk
-            long offset = (long) numPixelsScrolled % tileWidth;
+            long offset = (long) numPixelsScrolled % tileWidthPx; // TODO: sure this shouldn't be a "+ offset"?
             double spawnX = gameContext.gameWidthPx + spawnBeyondScreenPx - offset;
 
             // Spawn in all non-empty tiles
@@ -91,14 +84,14 @@ public class Map {
                     if (currTiles[i][j] != TileType.EMPTY) {
                         createdSprites.push(createMapTile(
                                 currTiles[i][j],
-                                spawnX + j * tileWidth,
-                                i * tileWidth
+                                spawnX + j * tileWidthPx,
+                                i * tileWidthPx
                         ));
                     }
                 }
             }
 
-            nextSpawnAtPx += currTiles[0].length * tileWidth;
+            nextSpawnAtPx = numPixelsScrolled + currTiles[0].length * tileWidthPx;
             Log.d("Map", String.format("nextSpawnAtX = %f", nextSpawnAtPx));
         }
     }
@@ -141,7 +134,7 @@ public class Map {
                 return gameContext.createCoin(x, y);
             }
             case OBSTACLE: {
-                return gameContext.createObstacle(x, y, tileWidth, tileWidth);
+                return gameContext.createObstacle(x, y, tileWidthPx, tileWidthPx);
             }
             default: {
                 throw new IllegalArgumentException(String.format(

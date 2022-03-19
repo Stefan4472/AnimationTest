@@ -1,7 +1,6 @@
 package com.plainsimple.spaceships.engine.ui;
 
 import android.graphics.*;
-import android.util.Log;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
@@ -53,7 +52,7 @@ public class Background {
 
     public void update(UpdateContext updateContext) {
         // Scroll at 30% of Map scroll speed
-        scroll(updateContext.scrollSpeed * 0.3 *
+        scroll(updateContext.scrollSpeedPx * 0.3 *
                 updateContext.gameTime.msSincePrevUpdate / 1000.0);
     }
 

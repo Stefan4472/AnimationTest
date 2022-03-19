@@ -8,10 +8,6 @@ import java.util.Random;
  */
 public class TileGenerator {
 
-    // The number of rows of tiles the game has. Does not change.
-    // TODO: put this constant somewhere else. Is used in a few places
-    public static final int NUM_ROWS = 6;
-
     public static TileType[][] generateChunk(
             Random rand,
             ChunkType chunkType,
@@ -55,7 +51,7 @@ public class TileGenerator {
         for (int col = 0; col < chunkLength; col++) {
             if (testRandom(rand, 0.4f)) {
                 // Place obstacle at random row
-                int row = rand.nextInt(NUM_ROWS);
+                int row = rand.nextInt(Map.NUM_ROWS);
                 generated[row][col] = TileType.OBSTACLE;
 
                 // Attempt to generate another obstacle immediately to the right
@@ -64,7 +60,7 @@ public class TileGenerator {
                 }
 
                 // Attempt to generate another obstacle immediately above or below
-                if (row + 1 < NUM_ROWS && testRandom(rand, 0.3f)) {
+                if (row + 1 < Map.NUM_ROWS && testRandom(rand, 0.3f)) {
                     generated[row + 1][col] = TileType.OBSTACLE;
                 } else if (row > 0 && testRandom(rand, 0.3f)) {
                     // else try to generate another obstacle above
@@ -87,7 +83,7 @@ public class TileGenerator {
         // TODO: MAKE PASSAGES TWO ROWS BIG
 
         // Randomly choose starting row of the tunnel
-        int tunnel_row = 1 + rand.nextInt(NUM_ROWS - 2);
+        int tunnel_row = 1 + rand.nextInt(Map.NUM_ROWS - 2);
         // Probability that the tunnel will move up or down
         float p_change_path = 0.0f;
 
@@ -99,14 +95,14 @@ public class TileGenerator {
 
                 if (tunnel_row == 0) {
                     direction_change = 1;
-                } else if (tunnel_row == NUM_ROWS - 1) {
+                } else if (tunnel_row == Map.NUM_ROWS - 1) {
                     direction_change = -1;
                 } else {
                     direction_change = (testRandom(rand, 0.5f) ? +1 : -1);
                 }
 
                 // Construct the change in the tunnel
-                for (int i = 0; i < NUM_ROWS; i++) {
+                for (int i = 0; i < Map.NUM_ROWS; i++) {
                     if (i == tunnel_row || i == tunnel_row + direction_change) {
                         generated[i][col] = TileType.EMPTY;
                         generated[i][col + 1] = TileType.EMPTY;
@@ -119,7 +115,7 @@ public class TileGenerator {
                 tunnel_row += direction_change;
                 p_change_path = 0.0f;
             } else {
-                for (int i = 0; i < NUM_ROWS; i++) {
+                for (int i = 0; i < Map.NUM_ROWS; i++) {
                     if (i == tunnel_row) {
                         generated[i][col] = TileType.EMPTY;
                     } else {
@@ -142,7 +138,7 @@ public class TileGenerator {
     ) {
         int chunkLength = 9;
         TileType[][] generated = generateEmpty(chunkLength);
-        generated[1 + rand.nextInt(NUM_ROWS - 1)][4] = TileType.ALIEN;
+        generated[1 + rand.nextInt(Map.NUM_ROWS - 1)][4] = TileType.ALIEN;
         return generated;
     }
 
@@ -155,7 +151,7 @@ public class TileGenerator {
         int chunkLength = 8 * (num_aliens + 1);
         TileType[][] generated = generateEmpty(chunkLength);
         for (int a = 1; a <= num_aliens; a++) {
-            generated[1 + rand.nextInt(NUM_ROWS - 1)][8 * a] = TileType.ALIEN;
+            generated[1 + rand.nextInt(Map.NUM_ROWS - 1)][8 * a] = TileType.ALIEN;
         }
         return generated;
     }
@@ -168,7 +164,7 @@ public class TileGenerator {
     ) {
         int chunkLength = 7;
         TileType[][] generated = generateEmpty(chunkLength);
-        generated[1 + rand.nextInt(NUM_ROWS - 1)][rand.nextInt(7)] = TileType.ASTEROID;
+        generated[1 + rand.nextInt(Map.NUM_ROWS - 1)][rand.nextInt(7)] = TileType.ASTEROID;
         return generated;
     }
 
@@ -217,7 +213,7 @@ public class TileGenerator {
 //    }
 
     public static TileType[][] generateEmpty(int numCols) {
-        TileType[][] empty = new TileType[NUM_ROWS][numCols];
+        TileType[][] empty = new TileType[Map.NUM_ROWS][numCols];
         // Fill with `EMPTY` tiles (default is NULL)
         for (TileType[] row : empty) {
             Arrays.fill(row, TileType.EMPTY);
