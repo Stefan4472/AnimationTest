@@ -320,7 +320,7 @@ public class GameEngine implements IExternalGameController {
     }
 
     private void processExternalInput(ExternalInput input) {
-        Log.d("GameEngine", String.format("Processing external input event %s", input.toString()));
+//        Log.d("GameEngine", String.format("Processing external input event %s", input.toString()));
         if (input instanceof SimpleExternalInput) {
             switch (((SimpleExternalInput) input).inputId) {
                 case START_GAME: {

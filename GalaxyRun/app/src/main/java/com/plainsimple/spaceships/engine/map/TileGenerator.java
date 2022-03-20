@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * Generates map tiles.
+ * Generates "chunks" of map tiles.
  */
 public class TileGenerator {
 
@@ -17,7 +17,7 @@ public class TileGenerator {
             case EMPTY: {
                 return generateEmpty(5);
             }
-            case OBSTACLES: {
+            case OBSTACLE_FIELD: {
                 return generateObstacleField(rand, difficulty);
             }
             case TUNNEL: {
@@ -31,6 +31,9 @@ public class TileGenerator {
             }
             case ASTEROID: {
                 return generateAsteroid(rand, difficulty);
+            }
+            case ASTEROID_FIELD: {
+                return generateAsteroidField(rand, difficulty);
             }
             default: {
                 throw new IllegalArgumentException(
