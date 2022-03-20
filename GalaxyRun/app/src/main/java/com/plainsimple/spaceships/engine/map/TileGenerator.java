@@ -18,19 +18,19 @@ public class TileGenerator {
                 return generateEmpty(5);
             }
             case OBSTACLES: {
-                return generateObstaclesChunk(rand, difficulty);
+                return generateObstacleField(rand, difficulty);
             }
             case TUNNEL: {
-                return generateTunnelChunk(rand, difficulty);
+                return generateTunnel(rand, difficulty);
             }
             case ALIEN: {
-                return generateAlienChunk(rand, difficulty);
+                return generateAlien(rand, difficulty);
             }
             case ALIEN_SWARM: {
-                return generateAlienSwarmChunk(rand, difficulty);
+                return generateAlienSwarm(rand, difficulty);
             }
             case ASTEROID: {
-                return generateAsteroidChunk(rand, difficulty);
+                return generateAsteroid(rand, difficulty);
             }
             default: {
                 throw new IllegalArgumentException(
@@ -40,131 +40,161 @@ public class TileGenerator {
         }
     }
 
-    // Generates chunk of randomly-placed obstacles
-    public static TileType[][] generateObstaclesChunk(
+    /*
+    Generate array of dimensions (NUM_ROWS, num_cols) filled with TileType t.
+     */
+    public static TileType[][] createArray(TileType t, int numCols) {
+        TileType[][] arr = new TileType[Map.NUM_ROWS][numCols];
+        for (TileType[] row : arr) {
+            Arrays.fill(row, t);
+        }
+        return arr;
+    }
+
+    public static TileType[][] generateEmpty(int numCols) {
+        return createArray(TileType.EMPTY, numCols);
+    }
+
+    public static TileType[][] generateObstacleField(
             Random rand,
             double difficulty
     ) {
-        int chunkLength = 10;
+        int chunkLength = 8 + rand.nextInt(8);
         TileType[][] generated = generateEmpty(chunkLength);
-
+        // Higher difficulty -> higher obstacle density
+        float pGenerate = 0.3f + (float) (difficulty * 0.4);
         for (int col = 0; col < chunkLength; col++) {
-            if (testRandom(rand, 0.4f)) {
+            if (testRandom(rand, pGenerate)) {
                 // Place obstacle at random row
                 int row = rand.nextInt(Map.NUM_ROWS);
                 generated[row][col] = TileType.OBSTACLE;
 
-                // Attempt to generate another obstacle immediately to the right
-                if (col + 1 < chunkLength && testRandom(rand, 0.3f)) {
+                // Possibly generate another obstacle immediately above or below
+                if (testRandom(rand, 0.25f)) {
+                    if (row == 0) {
+                        generated[row + 1][col] = TileType.OBSTACLE;
+                    } else if (row == Map.NUM_ROWS - 1) {
+                        generated[row - 1][col] = TileType.OBSTACLE;
+                    } else {
+                        generated[row + (rand.nextBoolean() ? 1 : -1)][col] = TileType.OBSTACLE;
+                    }
+                }
+                if (col + 1 < chunkLength && testRandom(rand, 0.25f)) {
+                    // Possibly generate another obstacle immediately to the right
                     generated[row][col + 1] = TileType.OBSTACLE;
                 }
 
-                // Attempt to generate another obstacle immediately above or below
-                if (row + 1 < Map.NUM_ROWS && testRandom(rand, 0.3f)) {
-                    generated[row + 1][col] = TileType.OBSTACLE;
-                } else if (row > 0 && testRandom(rand, 0.3f)) {
-                    // else try to generate another obstacle above
-                    generated[row - 1][col] = TileType.OBSTACLE;
-                }
+                // Do not generate a new Obstacle in the next column
+                col++;
             }
         }
 
         return generated;
     }
 
-    // generates tunnel of the given length
-    public static TileType[][] generateTunnelChunk(
+    /*
+    A 2-tile wide tunnel.
+     */
+    public static TileType[][] generateTunnel(
             Random rand,
             double difficulty
     ) {
-        int chunkLength = 15;
-        TileType[][] generated = generateEmpty(chunkLength);
+        int chunkLength = 6 + rand.nextInt(10);
+        // Create array filled with OBSTACLE, then "carve out" the passage
+        TileType[][] generated = createArray(TileType.OBSTACLE, chunkLength);
 
-        // TODO: MAKE PASSAGES TWO ROWS BIG
-
-        // Randomly choose starting row of the tunnel
-        int tunnel_row = 1 + rand.nextInt(Map.NUM_ROWS - 2);
-        // Probability that the tunnel will move up or down
+        // Randomly choose starting row of the tunnel passage
+        int passage_top = 1 + rand.nextInt(Map.NUM_ROWS - 3);
+        int passage_btm = passage_top + 1;
+        // Probability that the passage will move up or down
         float p_change_path = 0.0f;
+        // The amount that the probability increases per generated column.
+        // Higher difficulty = higher likelihood of path changes
+        float d_change_path = 0.06f * (float) difficulty;
 
         for (int col = 0; col < chunkLength; col++) {
-            // Check whether to change direction (based on probability)
-            if (col < chunkLength - 2 && testRandom(rand, p_change_path)) {
-                // Determine which direction to change in
-                int direction_change = 0;
+            generated[passage_top][col] = TileType.EMPTY;
+            generated[passage_btm][col] = TileType.EMPTY;
 
-                if (tunnel_row == 0) {
-                    direction_change = 1;
-                } else if (tunnel_row == Map.NUM_ROWS - 1) {
+            // Check whether to change direction
+            if (col < chunkLength - 3 && testRandom(rand, p_change_path)) {
+                // Decide in which direction to change
+                int direction_change;
+                if (passage_top == 0) {
+                    direction_change = +1;
+                } else if (passage_btm == Map.NUM_ROWS - 1) {
                     direction_change = -1;
                 } else {
                     direction_change = (testRandom(rand, 0.5f) ? +1 : -1);
                 }
 
-                // Construct the change in the tunnel
-                for (int i = 0; i < Map.NUM_ROWS; i++) {
-                    if (i == tunnel_row || i == tunnel_row + direction_change) {
-                        generated[i][col] = TileType.EMPTY;
-                        generated[i][col + 1] = TileType.EMPTY;
-                    } else {
-                        generated[i][col] = TileType.OBSTACLE;
-                        generated[i][col + 1] = TileType.OBSTACLE;
-                    }
-                }
-                col++;
-                tunnel_row += direction_change;
+                // Construct the change in the tunnel.
+                // This can be accomplished by simply setting one tile in
+                // the direction of change to EMPTY
+                generated[passage_top + direction_change][col] = TileType.EMPTY;
+                generated[passage_btm + direction_change][col] = TileType.EMPTY;
+                generated[passage_top][col + 1] = TileType.EMPTY;
+                generated[passage_btm][col + 1] = TileType.EMPTY;
+
+                passage_top += direction_change;
+                passage_btm = passage_top + 1;
                 p_change_path = 0.0f;
             } else {
-                for (int i = 0; i < Map.NUM_ROWS; i++) {
-                    if (i == tunnel_row) {
-                        generated[i][col] = TileType.EMPTY;
-                    } else {
-                        generated[i][col] = TileType.OBSTACLE;
-                    }
-                }
-
-                // Increase probability of changing path by 5 percent
-                p_change_path += 0.05f;
+                // Increase probability of changing path
+                p_change_path += d_change_path;
             }
         }
         return generated;
     }
 
-    // generates a single alien at a random row index in a chunk of the given length. Alien will be
-    // placed randomly
-    public static TileType[][] generateAlienChunk(
+    public static TileType[][] generateAlien(
             Random rand,
             double difficulty
     ) {
-        int chunkLength = 9;
+        // Higher difficulty -> smaller chunk (less time)
+        int chunkLength = 3 + (int) (9 * (1.0 - difficulty));
         TileType[][] generated = generateEmpty(chunkLength);
-        generated[1 + rand.nextInt(Map.NUM_ROWS - 1)][4] = TileType.ALIEN;
+        generated[1 + rand.nextInt(Map.NUM_ROWS - 1)][0] = TileType.ALIEN;
         return generated;
     }
 
-    // generates numAliens aliens. Each alien is preceded and succeeded by 8 empty tiles.
-    public static TileType[][] generateAlienSwarmChunk(
+    public static TileType[][] generateAlienSwarm(
             Random rand,
             double difficulty
     ) {
-        int num_aliens = 5;
-        int chunkLength = 8 * (num_aliens + 1);
+        // Higher difficulty -> more aliens
+        int numAliens = 2 + (int) (4 * difficulty * rand.nextDouble());
+        int chunkLength = 8 * numAliens;
         TileType[][] generated = generateEmpty(chunkLength);
-        for (int a = 1; a <= num_aliens; a++) {
-            generated[1 + rand.nextInt(Map.NUM_ROWS - 1)][8 * a] = TileType.ALIEN;
+        for (int j = 0; j < numAliens; j++) {
+            generated[1 + rand.nextInt(Map.NUM_ROWS - 1)][j * 8] = TileType.ALIEN;
         }
         return generated;
     }
 
-    // generates a single asteroid at a random row index in a chunk of the given length. Asteroid is
-    // placed randomly within the chunk
-    public static TileType[][] generateAsteroidChunk(
+    public static TileType[][] generateAsteroid(
             Random rand,
             double difficulty
     ) {
-        int chunkLength = 7;
+        // Higher difficulty -> smaller chunk (less time)
+        int chunkLength = 5 + (int) (9 * (1.0 - difficulty));;
         TileType[][] generated = generateEmpty(chunkLength);
         generated[1 + rand.nextInt(Map.NUM_ROWS - 1)][rand.nextInt(7)] = TileType.ASTEROID;
+        return generated;
+    }
+
+    public static TileType[][] generateAsteroidField(
+            Random rand,
+            double difficulty
+    ) {
+        // Higher difficulty -> more asteroids
+        int numAsteroids = 2 + (int) (4 * difficulty * rand.nextDouble());
+        int chunkLength = 8 * numAsteroids;
+        TileType[][] generated = generateEmpty(chunkLength);
+        for (int ia = 0; ia < numAsteroids; ia++) {
+            generated[1 + rand.nextInt(Map.NUM_ROWS - 2)][8 * ia + rand.nextInt(7)] =
+                    TileType.ASTEROID;
+        }
         return generated;
     }
 
@@ -212,19 +242,10 @@ public class TileGenerator {
 //        }
 //    }
 
-    public static TileType[][] generateEmpty(int numCols) {
-        TileType[][] empty = new TileType[Map.NUM_ROWS][numCols];
-        // Fill with `EMPTY` tiles (default is NULL)
-        for (TileType[] row : empty) {
-            Arrays.fill(row, TileType.EMPTY);
-        }
-        return empty;
-    }
-
-    // generates a random float and checks if it is below given
-    // probability. Returns true if it does. Used to decide whether
-    // to generate certain types of obstacles given their probabilities
-    // of occurring.
+    /*
+    Generates a random float in range [0, 1] and returns whether
+    it is less than the given probability.
+     */
     private static boolean testRandom(Random rand, float probability) {
         return rand.nextFloat() <= probability;
     }

@@ -42,7 +42,6 @@ public class UpdateContext {
             ProtectedQueue<EventID> createdEvents,
             ProtectedQueue<SoundID> createdSounds
     ) {
-        Log.d("UpdateContext", "ScrollSpeed = " + scrollSpeedPx);
         this.gameTime = gameTime;
         this.gameState = gameState;
         this.difficulty = difficulty;
