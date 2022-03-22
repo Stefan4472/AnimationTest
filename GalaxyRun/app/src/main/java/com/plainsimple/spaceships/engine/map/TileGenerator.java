@@ -182,7 +182,7 @@ public class TileGenerator {
         // Higher difficulty -> smaller chunk (less time)
         int chunkLength = 5 + (int) (9 * (1.0 - difficulty));;
         Chunk chunk = generateEmpty(chunkLength);
-        chunk.tiles[1 + rand.nextInt(Map.NUM_ROWS - 1)][rand.nextInt(7)] = TileType.ASTEROID;
+        chunk.tiles[1 + rand.nextInt(Map.NUM_ROWS - 1)][0] = TileType.ASTEROID;
         return chunk;
     }
 
