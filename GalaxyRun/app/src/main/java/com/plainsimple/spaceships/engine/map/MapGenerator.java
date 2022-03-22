@@ -33,7 +33,12 @@ public class MapGenerator {
         Chunk leadEmpty = TileGenerator.generateEmpty(LEADING_BUFFER_LENGTH);
         Chunk feature = TileGenerator.generateChunk(rand, nextChunkType, difficulty);
         Chunk fullChunk = Chunk.concatenateChunks(leadEmpty, feature);
-        PathFinder.findPath(fullChunk, 200);
+        try {
+            Path foundPath = PathFinder.findPath(fullChunk, 200);
+            Log.d("PathFinder", "Found a path! " + foundPath);
+        } catch (NoPathFoundException e) {
+            Log.e("PathFinder", "No path found");
+        }
         return fullChunk;
     }
 
@@ -47,6 +52,7 @@ public class MapGenerator {
     }
 
     private boolean decideGenerateCoins(double difficulty) {
-        return (rand.nextDouble() <= 0.3);
+//        return (rand.nextDouble() <= 0.3);
+        return true;
     }
 }
