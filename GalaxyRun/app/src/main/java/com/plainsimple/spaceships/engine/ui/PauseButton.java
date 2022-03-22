@@ -42,9 +42,7 @@ public class PauseButton extends UIElement {
     public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
         // TODO: need width and height
         BitmapID bitmap = (isPaused ? BitmapID.PAUSE_BUTTON_UNPAUSED : BitmapID.PAUSE_BUTTON_PAUSED);
-        DrawImage drawBtn = new DrawImage(bitmap);
-        drawBtn.setCanvasX0(x);
-        drawBtn.setCanvasY0(y);
+        DrawImage drawBtn = new DrawImage(bitmap, x, y);
         drawParams.push(drawBtn);
     }
 

@@ -12,6 +12,8 @@ import com.plainsimple.spaceships.helper.BitmapID;
 
 /**
  * Stores instructions for drawing a Bitmap
+ *
+ * TODO: refactor the various DrawImage classes
  */
 
 public class DrawImage implements DrawParams {
@@ -31,11 +33,7 @@ public class DrawImage implements DrawParams {
     // paint used for drawing
     private static Paint paint = new Paint();
 
-    // constructor that sets bitmapID
-    public DrawImage(BitmapID bitmapID) {
-        this.bitmapID = bitmapID;
-    }
-
+    // TODO: use double
     public DrawImage(BitmapID bitmapID, float canvasX0, float canvasY0) {
         this.bitmapID = bitmapID;
         this.canvasX0 = canvasX0;

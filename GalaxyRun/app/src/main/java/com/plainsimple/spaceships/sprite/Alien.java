@@ -54,12 +54,6 @@ public class Alien extends Sprite {
     private int vShift;
     private int hShift;
 
-    private static final BitmapID BITMAP_ID = BitmapID.ALIEN;
-
-    // DrawParams to draw Alien and Explosion
-    private DrawImage DRAW_ALIEN;
-    private DrawImage DRAW_EXPLOSION;
-
     private BitmapData bulletBitmapData;
     private SpriteAnimation explodeAnim;
     // draws animated healthbar above Alien if Alien is damaged
@@ -74,7 +68,7 @@ public class Alien extends Sprite {
             double currDifficulty,
             GameContext gameContext
     ) {
-        super(spriteId, SpriteType.ALIEN, x, y, BITMAP_ID, gameContext);
+        super(spriteId, SpriteType.ALIEN, x, y, BitmapID.ALIEN, gameContext);
 //        speedX = scrollSpeed / 2.5f;
         // TODO: NEED A WAY TO CALCULATE SPEED
 
@@ -85,9 +79,6 @@ public class Alien extends Sprite {
         setHitboxOffsetY(getHeight() * 0.2);
         setHitboxWidth(getWidth() * 0.8);
         setHitboxHeight(getHeight() * 0.8);
-
-        DRAW_ALIEN = new DrawImage(BITMAP_ID);
-        DRAW_EXPLOSION = new DrawImage(explodeAnim.getBitmapID());
 
         startingY = y;
         amplitude = 70 + random.nextInt(60);
@@ -106,9 +97,6 @@ public class Alien extends Sprite {
                 getHeight(),
                 getHealth()
         );
-
-        // TODO: THIS IS JUST FOR DEBUGGING AT THE MOMENT
-        setSpeedX(-0.1 * gameContext.gameWidthPx);
     }
 
     @Override
@@ -138,8 +126,7 @@ public class Alien extends Sprite {
         // Terminate if dead and explosion has finished playing,
         // or if no longer visible
         // TODO: RATHER THAN CHECKING WHETHER VISIBLE, SHOULD WE CHECK IF WE'RE OFF THE LEFT OF THE SCREEN?
-        return (getCurrState() == SpriteState.DEAD && explodeAnim.hasPlayed()) ||
-                !isVisibleInBounds();
+        return (getCurrState() == SpriteState.DEAD && explodeAnim.hasPlayed()) || getX() < 0;
     }
 
     private boolean canFire(UpdateContext updateContext) {
@@ -152,7 +139,7 @@ public class Alien extends Sprite {
                 updateContext.playerSprite.isAlive() &&
                 bulletsLeft > 0 &&
                 random.nextFloat() <= 0.3f &&
-                getX() > gameContext.gameWidthPx / 2;
+                getX() > gameContext.gameWidthPx / 2.0;
     }
 
     // fires bullet at sprite with small randomized inaccuracy, based on
@@ -172,13 +159,15 @@ public class Alien extends Sprite {
         // TODO: comment, improve
 //        double projected_y;
 //        // if sprite in top half of screen, start flying down. Else start flying up
-//        if (startingY <= 150) {
+//        if (startingY <= gameContext.gameWidthPx / 2.0) {
 //            projected_y = amplitude * Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
 //        } else { // todo: flying up
 //            projected_y = amplitude * Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
 //        }
-//        speedY = (projected_y - y) / 600.0f;
-        elapsedFrames++;
+//        setSpeedY((projected_y - getY()) / 600);
+//        elapsedFrames++;
+        setSpeedX(-updateContext.scrollSpeedPx / 3);
+        setSpeedY(0);
     }
 
     @Override
@@ -238,9 +227,7 @@ public class Alien extends Sprite {
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         // Draw alien, unless it is exploding and in the last frame of the explosion animation
         if (!(explodeAnim.isPlaying() && explodeAnim.getFramesLeft() <= 1)) {
-            DRAW_ALIEN.setCanvasX0((float) getX());
-            DRAW_ALIEN.setCanvasY0((float) getY());
-            drawQueue.push(DRAW_ALIEN);
+            drawQueue.push(new DrawImage(BitmapID.ALIEN, (float) getX(), (float) getY()));
         }
         // Draw loseHealthAnimations
         for (LoseHealthAnimation anim : loseHealthAnimations) {
@@ -252,10 +239,9 @@ public class Alien extends Sprite {
         }
         // add explodeAnim params if showing
         if (explodeAnim.isPlaying()) {
-            DRAW_EXPLOSION.setCanvasX0((float) getX());
-            DRAW_EXPLOSION.setCanvasY0((float) getY());
-            DRAW_EXPLOSION.setDrawRegion(explodeAnim.getCurrentFrameSrc());
-            drawQueue.push(DRAW_EXPLOSION);
+            DrawImage explodeImg = new DrawImage(explodeAnim.getBitmapID(), (float) getX(), (float) getY());
+            explodeImg.setDrawRegion(explodeAnim.getCurrentFrameSrc());
+            drawQueue.push(explodeImg);
         }
     }
 }

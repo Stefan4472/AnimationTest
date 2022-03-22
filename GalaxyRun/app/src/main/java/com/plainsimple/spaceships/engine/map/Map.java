@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.GameTime;
+import com.plainsimple.spaceships.sprite.Asteroid;
 import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
@@ -59,6 +60,7 @@ public class Map {
         nextSpawnAtPx = 0;
     }
 
+    // TODO: would be really great to have access to UpdateContext here...
     public void update(GameTime gameTime, ProtectedQueue<Sprite> createdSprites) {
         numPixelsScrolled += chunkScrollSpeedPx * (gameTime.msSincePrevUpdate / 1000.0);
 
@@ -128,7 +130,7 @@ public class Map {
                 return gameContext.createAlien(x, y, chunkDifficulty);
             }
             case ASTEROID: {
-                return gameContext.createAsteroid(x, y, chunkDifficulty);
+                return new Asteroid(gameContext.getNextSpriteId(), x, y, chunkDifficulty, gameContext, chunkScrollSpeedPx);
             }
             case COIN: {
                 return gameContext.createCoin(x, y);

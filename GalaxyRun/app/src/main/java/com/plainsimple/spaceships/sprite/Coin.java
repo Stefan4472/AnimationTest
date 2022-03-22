@@ -14,7 +14,6 @@ import com.plainsimple.spaceships.util.ProtectedQueue;
 public class Coin extends Sprite {
 
     private SpriteAnimation spin;
-    private DrawImage DRAW_COIN;
 
     public Coin(int spriteId, double x, double y, GameContext gameContext) {
         super(spriteId, SpriteType.COIN, x, y, gameContext);
@@ -28,7 +27,6 @@ public class Coin extends Sprite {
         setWidth(spin.getFrameW());
         setHeight(spin.getFrameH());
         spin.start();
-        DRAW_COIN = new DrawImage(spin.getBitmapID());
     }
 
     @Override
@@ -46,7 +44,7 @@ public class Coin extends Sprite {
     @Override // speed tracks with game's scrollspeed for
     // smooth acceleration and decelleration
     public void updateSpeeds(UpdateContext updateContext) {
-//        speedX = GameView.getScrollSpeed();
+        setSpeedX(-updateContext.scrollSpeedPx);
     }
 
     @Override
@@ -68,9 +66,8 @@ public class Coin extends Sprite {
 
     @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
-        DRAW_COIN.setCanvasX0((float) getX());
-        DRAW_COIN.setCanvasY0((float) getY());
-        DRAW_COIN.setDrawRegion(spin.getCurrentFrameSrc());
-        drawQueue.push(DRAW_COIN);
+        DrawImage img = new DrawImage(spin.getBitmapID(), (float) getX(), (float) getY());
+        img.setDrawRegion(spin.getCurrentFrameSrc());
+        drawQueue.push(img);
     }
 }

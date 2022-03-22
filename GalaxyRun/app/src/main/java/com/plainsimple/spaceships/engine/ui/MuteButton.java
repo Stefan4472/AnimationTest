@@ -41,9 +41,7 @@ public class MuteButton extends UIElement {
     public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
         // TODO: need width and height
         BitmapID bitmap = (isMuted ? BitmapID.MUTE_BUTTON_MUTED : BitmapID.MUTE_BUTTON_UNMUTED);
-        DrawImage drawBtn = new DrawImage(bitmap);
-        drawBtn.setCanvasX0(x);
-        drawBtn.setCanvasY0(y);
+        DrawImage drawBtn = new DrawImage(bitmap, x, y);
         drawParams.push(drawBtn);
     }
 

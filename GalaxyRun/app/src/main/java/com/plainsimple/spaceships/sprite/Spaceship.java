@@ -27,11 +27,6 @@ public class Spaceship extends Sprite {
     private SpriteAnimation moveAnim;
     private SpriteAnimation explodeAnim;
 
-    // DrawParam objects that specify how to draw the Spaceship
-    private DrawImage DRAW_SHIP;
-    private DrawImage DRAW_EXHAUST;
-    private DrawImage DRAW_EXPLODE;
-
     // used to create the spaceship flash animation when hit
     private ColorMatrixAnimator colorMatrixAnimator = new ColorMatrixAnimator(3, 4, 2);
 
@@ -77,11 +72,6 @@ public class Spaceship extends Sprite {
         // Load animations from AnimCache
         moveAnim = gameContext.animFactory.get(AnimID.SPACESHIP_MOVE);
         explodeAnim = gameContext.animFactory.get(AnimID.SPACESHIP_EXPLODE);
-
-        // Init DrawParams
-        DRAW_SHIP = new DrawImage(BitmapID.SPACESHIP);
-        DRAW_EXHAUST = new DrawImage(moveAnim.getBitmapID());
-        DRAW_EXPLODE = new DrawImage(explodeAnim.getBitmapID());
 
         // Call initialization logic
         reset();
@@ -245,24 +235,21 @@ public class Spaceship extends Sprite {
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         if (!explodeAnim.hasPlayed()) {
             // Draw the Spaceship
-            DRAW_SHIP.setCanvasX0((float) getX());
-            DRAW_SHIP.setCanvasY0((float) getY());
-            DRAW_SHIP.setFilter(colorMatrixAnimator.getMatrix());
-            drawQueue.push(DRAW_SHIP);
+            DrawImage drawShip = new DrawImage(BitmapID.SPACESHIP, (float) getX(), (float) getY());
+            drawShip.setFilter(colorMatrixAnimator.getMatrix());
+            drawQueue.push(drawShip);
 
             // Draw the moving animation behind it
-            DRAW_EXHAUST.setCanvasX0((float) getX());
-            DRAW_EXHAUST.setCanvasY0((float) getY());
-            DRAW_EXHAUST.setDrawRegion(moveAnim.getCurrentFrameSrc());
-            DRAW_EXHAUST.setFilter(colorMatrixAnimator.getMatrix());
-            drawQueue.push(DRAW_EXHAUST);
+            DrawImage drawExhaust = new DrawImage(moveAnim.getBitmapID(), (float) getX(), (float) getY());
+            drawExhaust.setDrawRegion(moveAnim.getCurrentFrameSrc());
+            drawExhaust.setFilter(colorMatrixAnimator.getMatrix());
+            drawQueue.push(drawExhaust);
 
             // Draw the explosion animation if it is playing
             if (explodeAnim.isPlaying()) {
-                DRAW_EXPLODE.setCanvasX0((float) getX());
-                DRAW_EXPLODE.setCanvasY0((float) getY());
-                DRAW_EXPLODE.setDrawRegion(explodeAnim.getCurrentFrameSrc());
-                drawQueue.push(DRAW_EXPLODE);
+                DrawImage drawExplosion = new DrawImage(explodeAnim.getBitmapID(), (float) getX(), (float) getY());
+                drawExplosion.setDrawRegion(explodeAnim.getCurrentFrameSrc());
+                drawQueue.push(drawExplosion);
             }
         }
     }

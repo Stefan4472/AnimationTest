@@ -19,11 +19,6 @@ public class AlienBullet extends Sprite {
 
     // Angle at which bullet travels
     private double fireAngle;
-    // DrawParam used to draw the AlienBullet
-    private DrawImage DRAW_BULLET;
-
-    private static final BitmapID BITMAP_ID = BitmapID.ALIEN_BULLET;
-
 
     public AlienBullet(
             int spriteId,
@@ -33,14 +28,11 @@ public class AlienBullet extends Sprite {
             double targetY,
             GameContext gameContext
     ) { // todo: damage as a parameter?
-        super(spriteId, SpriteType.ALIEN_BULLET, x, y, BITMAP_ID, gameContext);
+        super(spriteId, SpriteType.ALIEN_BULLET, x, y, BitmapID.ALIEN_BULLET, gameContext);
 
-        // DrawParam used to draw the AlienBullet
-        DRAW_BULLET = new DrawImage(BITMAP_ID);
         setHealth(10);
-
-        // SpeedX is fixed
-        setSpeedX(-0.008f * gameContext.gameWidthPx);
+        // SpeedX is fixed TODO: use current scrollspeed
+//        setSpeedX(-0.008f * gameContext.gameWidthPx);
 
         // Calculate fireAngle based on distance to target in x and y.
         // Keep in mind this gets tricky because we're in canvas coordinates
@@ -73,7 +65,9 @@ public class AlienBullet extends Sprite {
 
     @Override
     public void updateSpeeds(UpdateContext updateContext) {
-        // Do nothing
+        // TODO: speed should be fixed at construction
+        setSpeedX(-updateContext.scrollSpeedPx * 2);
+
     }
 
     @Override
@@ -95,9 +89,8 @@ public class AlienBullet extends Sprite {
 
     @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
-        DRAW_BULLET.setCanvasX0((float) getX());
-        DRAW_BULLET.setCanvasY0((float) getY());
-        DRAW_BULLET.setRotation((int) fireAngle);
-        drawQueue.push(DRAW_BULLET);
+        DrawImage drawBullet = new DrawImage(BitmapID.ALIEN_BULLET, (float) getX(), (float) getY());
+        drawBullet.setRotation((int) fireAngle);
+        drawQueue.push(drawBullet);
     }
 }

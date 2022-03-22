@@ -13,9 +13,6 @@ import com.plainsimple.spaceships.util.ProtectedQueue;
  */
 public class Bullet extends Sprite {
 
-    private static final BitmapID BITMAP_ID = BitmapID.BULLET_0;
-    private DrawImage DRAW_BULLET;
-
     public static final int DAMAGE = 5;
     // Bullet speed per second, as percentage of screen width
     // TODO: WOULD BE COOL TO INCREASE SPEED AS A FUNCTION OF DIFFICULTY
@@ -23,7 +20,7 @@ public class Bullet extends Sprite {
 
 
     public Bullet(int spriteId, double x, double y, GameContext gameContext) {
-        super(spriteId, SpriteType.BULLET, x, y, BITMAP_ID, gameContext);
+        super(spriteId, SpriteType.BULLET, x, y, BitmapID.BULLET_0, gameContext);
 
         setHitboxOffsetX(getWidth() * 0.7);
         setHitboxOffsetY(-getHeight() * 0.2);
@@ -32,8 +29,6 @@ public class Bullet extends Sprite {
 
         setHealth(DAMAGE);
         setSpeedX(SPEED_PERCENT_PER_SEC * gameContext.gameWidthPx);
-
-        DRAW_BULLET = new DrawImage(BITMAP_ID);
     }
 
     @Override
@@ -72,8 +67,6 @@ public class Bullet extends Sprite {
 
     @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
-        DRAW_BULLET.setCanvasX0((float) getX());
-        DRAW_BULLET.setCanvasY0((float) getY());
-        drawQueue.push(DRAW_BULLET);
+        drawQueue.push(new DrawImage(BitmapID.BULLET_0, (float) getX(), (float) getY()));
     }
 }

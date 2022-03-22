@@ -25,14 +25,11 @@ import java.util.List;
 
 public class Asteroid extends Sprite {
 
-    private static final BitmapID BITMAP_ID = BitmapID.ASTEROID;
     // current rotation, in degrees, of asteroid
     private float currentRotation;
     // degrees rotated per frame (positive or negative)
     // TODO: base on game time elapsed
     private float rotationRate;
-
-    private DrawImage DRAW_ASTEROID;
 
     // draws animated healthbar above Asteroid if Asteroid takes damage
     private HealthBarAnimation healthBarAnimation;
@@ -44,25 +41,22 @@ public class Asteroid extends Sprite {
             double x,
             double y,
             double difficulty,
-            GameContext gameContext
+            GameContext gameContext,
+            double scrollSpeedPx
     ) {
-        super(spriteId, SpriteType.ASTEROID, x, y, BITMAP_ID, gameContext);
-        // Set speedX slower than scrollspeed (give the player a chance to destroy it)
-//        speedX = scrollSpeed * 0.6f;
-        setSpeedX(-gameContext.gameWidthPx * 0.1);
-        // Set speedY to some randomized positive/negative value up to |0.03|
-        // of screen width
-        double rel_speed = (random.nextBoolean() ? -1 : +1) * random.nextDouble() * 0.03;
-        setSpeedY(rel_speed * gameContext.gameWidthPx);
+        super(spriteId, SpriteType.ASTEROID, x, y, BitmapID.ASTEROID, gameContext);
+
+        // Set SpeedX to a random value between 60% and 120% of current scrollSpeed
+        setSpeedX(-scrollSpeedPx * (0.6 + random.nextInt(60) / 100.0));
+        // Set SpeedY to a random value between -20% and +20% of current scrollSpeed
+        setSpeedY(-scrollSpeedPx * (-0.2 + random.nextInt(40) / 100.0));
         // Set health relatively high
-        setHealth(10 + (int) (difficulty / 100));
+        setHealth(10 + (int) (difficulty * 20));
         // Make hitbox 20% smaller than sprite
         setHitboxWidth(getWidth() * 0.8);
         setHitboxHeight(getHeight() * 0.8);
         setHitboxOffsetX(getWidth() * 0.1);
         setHitboxOffsetY(getHealth() * 0.1);
-
-        DRAW_ASTEROID = new DrawImage(BITMAP_ID);
 
         // Set the current rotation to a random angle
         currentRotation = random.nextInt(360);
@@ -161,10 +155,9 @@ public class Asteroid extends Sprite {
     @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         // update DRAW_ASTEROID params with new coordinates and rotation
-        DRAW_ASTEROID.setCanvasX0((float) getX());
-        DRAW_ASTEROID.setCanvasY0((float) getY());
-        DRAW_ASTEROID.setRotation((int) currentRotation);
-        drawQueue.push(DRAW_ASTEROID);
+        DrawImage drawAsteroid = new DrawImage(BitmapID.ASTEROID, (float) getX(), (float) getY());
+        drawAsteroid.setRotation((int) currentRotation);
+        drawQueue.push(drawAsteroid);
 
         // Draw loseHealthAnimations
         for (LoseHealthAnimation anim : loseHealthAnimations) {

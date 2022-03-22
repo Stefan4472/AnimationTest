@@ -70,6 +70,7 @@ public abstract class Sprite {
     protected static final Random random = new Random();
 
     // TODO: ADD OPTIONAL `PARENT` PARAM
+    // TODO: remove `spriteId`? Isn't used for anything. Plus, we can just use the underlying Java object
     public Sprite(
             int spriteId,
             SpriteType spriteType,

@@ -26,6 +26,7 @@ public class GameContext {
     public final int screenHeightPx;
     public final int fullHealth;
     private int nextSpriteId = 1;
+    // TODO: add a Random instance
 
     public GameContext(
             Context appContext,
@@ -61,9 +62,9 @@ public class GameContext {
         return new AlienBullet(getNextSpriteId(), x, y, targetX, targetY, this);
     }
 
-    public Asteroid createAsteroid(double x, double y, double difficulty) {
-        return new Asteroid(getNextSpriteId(), x, y, difficulty, this);
-    }
+//    public Asteroid createAsteroid(double x, double y, double difficulty) {
+//        return new Asteroid(getNextSpriteId(), x, y, difficulty, this);
+//    }
 
     public Bullet createBullet(double x, double y) {
         return new Bullet(getNextSpriteId(), x, y, this);
