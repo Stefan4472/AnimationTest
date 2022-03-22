@@ -36,7 +36,9 @@ public class MapGenerator {
                 nextChunkType,
                 difficulty
         );
-        return TileGenerator.mergeTiles(leadEmpty, feature);
+        TileType[][] chunk = TileGenerator.mergeTiles(leadEmpty, feature);
+        PathFinder.findPath(chunk, 200);
+        return chunk;
     }
 
     private ChunkType decideChunkType(double difficulty) {
