@@ -71,19 +71,19 @@ public class Map {
             Log.d("Map", String.format("Runtime is %f, difficult is %f, scrollSpeed is %f",
                     gameTime.runTimeMs / 1000.0, chunkDifficulty, chunkScrollSpeedPx));
             // Generate the next chunk
-            TileType[][] currTiles = mapGenerator.generateNextChunk(chunkDifficulty);
-            Log.d("Map", TileGenerator.chunkToString(currTiles));
+            Chunk currChunk = mapGenerator.generateChunk(chunkDifficulty);
+            Log.d("Map", currChunk.toString());
 
             // Calculate where to begin spawning in the new chunk
             long offset = (long) numPixelsScrolled % tileWidthPx; // TODO: sure this shouldn't be a "+ offset"?
             double spawnX = gameContext.gameWidthPx + spawnBeyondScreenPx - offset;
 
             // Spawn in all non-empty tiles
-            for (int i = 0; i < currTiles.length; i++) {
-                for (int j = 0; j < currTiles[i].length; j++) {
-                    if (currTiles[i][j] != TileType.EMPTY) {
+            for (int i = 0; i < currChunk.numRows; i++) {
+                for (int j = 0; j < currChunk.numCols; j++) {
+                    if (currChunk.tiles[i][j] != TileType.EMPTY) {
                         createdSprites.push(createMapTile(
-                                currTiles[i][j],
+                                currChunk.tiles[i][j],
                                 spawnX + j * tileWidthPx,
                                 i * tileWidthPx
                         ));
@@ -91,7 +91,7 @@ public class Map {
                 }
             }
 
-            nextSpawnAtPx = numPixelsScrolled + currTiles[0].length * tileWidthPx;
+            nextSpawnAtPx = numPixelsScrolled + currChunk.numCols * tileWidthPx;
             Log.d("Map", String.format("nextSpawnAtX = %f", nextSpawnAtPx));
         }
     }

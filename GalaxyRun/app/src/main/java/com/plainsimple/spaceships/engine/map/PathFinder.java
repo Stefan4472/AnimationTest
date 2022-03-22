@@ -45,10 +45,10 @@ public class PathFinder {
         }
     }
 
-    public static void findPath(TileType[][] chunk, int maxSteps) {
+    public static void findPath(Chunk chunk, int maxSteps) {
         List<Pair<Integer, Integer>> possibleStarts = new ArrayList<>(6);
-        for (int i = 0; i < chunk.length; i++) {
-            if (chunk[i][0] == TileType.EMPTY) {
+        for (int i = 0; i < chunk.numRows; i++) {
+            if (chunk.tiles[i][0] == TileType.EMPTY) {
                 possibleStarts.add(new Pair<>(i, 0));
             }
         }
@@ -56,7 +56,7 @@ public class PathFinder {
         findPath(chunk, possibleStarts, maxSteps);
     }
 
-    public static void findPath(TileType[][] chunk, List<Pair<Integer, Integer>> startLocs, int maxSteps) {
+    public static void findPath(Chunk chunk, List<Pair<Integer, Integer>> startLocs, int maxSteps) {
         PriorityQueue<PathNode> pathQueue = new PriorityQueue<>();
 
         for (Pair<Integer, Integer> start : startLocs) {
@@ -76,7 +76,7 @@ public class PathFinder {
         }
     }
 
-    private static PathNode runDijkstra(TileType[][] chunk, PriorityQueue<PathNode> pathQueue, int maxSteps) {
+    private static PathNode runDijkstra(Chunk chunk, PriorityQueue<PathNode> pathQueue, int maxSteps) {
         HashSet<PathNode> explored = new HashSet<>();
         int numSteps = 0;
 
@@ -87,7 +87,7 @@ public class PathFinder {
                 continue;
             }
             // TODO: is the first one found the solution?... can't remember
-            if (next.col + 1 == chunk[0].length) {
+            if (next.col + 1 == chunk.numCols) {
                 return next;
             }
             if (isFlyable(chunk, next.row, next.col + 1)) {
@@ -104,8 +104,8 @@ public class PathFinder {
         return null; // TODO: throw exception?
     }
 
-    private static boolean isFlyable(TileType[][] chunk, int i, int j) {
-        return i >= 0 && i < chunk.length && j >= 0 && j < chunk[0].length && chunk[i][j] == TileType.EMPTY;
+    private static boolean isFlyable(Chunk chunk, int i, int j) {
+        return i >= 0 && i < chunk.numRows && j >= 0 && j < chunk.numCols && chunk.tiles[i][j] == TileType.EMPTY;
     }
 
     private static List<PathNode> unrollPath(PathNode end) {
