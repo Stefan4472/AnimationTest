@@ -123,4 +123,16 @@ public class ChunkProbabilities {
             return 0.15;
         }
     }
+
+    public static double getProbabilityOfCoins(double difficulty) {
+        if (difficulty < 0.2) {
+            return 0;
+        } else if (difficulty < 0.4) {
+            return 0.2;
+        } else if (difficulty < 0.8) {
+            return 0.4;
+        } else {
+            return 0.6;
+        }
+    }
 }

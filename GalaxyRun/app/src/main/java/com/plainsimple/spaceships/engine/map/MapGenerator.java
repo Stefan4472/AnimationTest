@@ -25,17 +25,21 @@ public class MapGenerator {
         }
 
         ChunkType nextChunkType = decideChunkType(difficulty);
-        boolean shouldGenerateCoins = decideGenerateCoins(difficulty);
+        boolean generateCoins = decideGenerateCoins(difficulty);
         Log.d("Map", "Generating a chunk of " + nextChunkType.name());
-        Log.d("Map", "ShouldGenerateCoins = " + shouldGenerateCoins);
+        Log.d("Map", "ShouldGenerateCoins = " + generateCoins);
 
         // Generate next chunk with several columns of leading EMPTY
         Chunk leadEmpty = TileGenerator.generateEmpty(LEADING_BUFFER_LENGTH);
         Chunk feature = TileGenerator.generateChunk(rand, nextChunkType, difficulty);
         Chunk fullChunk = Chunk.concatenateChunks(leadEmpty, feature);
         try {
+            // TODO: would be cool to draw the path on the game while debugging
             Path foundPath = PathFinder.findPath(fullChunk, 200);
             Log.d("PathFinder", "Found a path! " + foundPath);
+            if (generateCoins) {
+                CoinGenerator.generateCoins(fullChunk, foundPath, rand, difficulty);
+            }
         } catch (NoPathFoundException e) {
             Log.e("PathFinder", "No path found");
         }
@@ -52,7 +56,6 @@ public class MapGenerator {
     }
 
     private boolean decideGenerateCoins(double difficulty) {
-//        return (rand.nextDouble() <= 0.3);
-        return true;
+        return rand.nextDouble() <= ChunkProbabilities.getProbabilityOfCoins(difficulty);
     }
 }
