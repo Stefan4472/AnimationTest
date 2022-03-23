@@ -2,7 +2,6 @@ package com.plainsimple.spaceships.engine;
 
 import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.sprite.Sprite;
-import com.plainsimple.spaceships.util.GameEngineUtil;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
 import java.util.LinkedList;
@@ -31,16 +30,16 @@ public class DrawLayers {
         layers[sprite.getDrawLayer()].add(sprite);
     }
 
-    // TODO: RETURN A NEW LIST OR SOMETHING
     public void getDrawParams(
             ProtectedQueue<DrawParams> drawQueue,
-            boolean drawHitboxes
+            boolean drawHitboxes  // TODO: use a globally-set DEBUG flag
     ) {
         for (List<Sprite> sprite_layer : layers) {
             for (Sprite sprite : sprite_layer) {
                 sprite.getDrawParams(drawQueue);
                 if (drawHitboxes) {
-                    drawQueue.push(GameEngineUtil.drawHitbox(sprite));
+                    // TODO: this is unclean
+                    drawQueue.push(sprite.drawHitbox());
                 }
             }
         }

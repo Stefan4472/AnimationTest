@@ -23,7 +23,6 @@ import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.stats.GameTimer;
 import com.plainsimple.spaceships.util.FastQueue;
-import com.plainsimple.spaceships.util.GameEngineUtil;
 import com.plainsimple.spaceships.util.Pair;
 
 import java.util.Iterator;
@@ -168,7 +167,12 @@ public class GameEngine implements IExternalGameController {
                 it_sprites.remove();
                 continue;
             }
-            GameEngineUtil.updateSprite(sprite, updateContext);
+
+            sprite.updateSpeeds(updateContext);
+            sprite.move(updateContext);
+            sprite.updateActions(updateContext);
+            sprite.updateAnimations(updateContext);
+
             hitDetector.addSprite(sprite);
             drawLayers.addSprite(sprite);
         }

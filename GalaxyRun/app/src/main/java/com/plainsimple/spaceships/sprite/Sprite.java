@@ -2,8 +2,12 @@ package com.plainsimple.spaceships.sprite;
 
 ;
 
+import android.graphics.Color;
+import android.graphics.Paint;
+
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
+import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
@@ -71,9 +75,9 @@ public abstract class Sprite {
     /* Begin core abstract methods */
     // NOTE: TODO: CURRENTLY WE ARE JUST USING THE SPRITETYPE AS COLLISION LAYER
     // TODO: update
-    public int getCollisionLayer() {
-        return 0; //spriteType.ordinal();
-    }
+//    public int getCollisionLayer() {
+//        return 0; //spriteType.ordinal();
+//    }
 
     public abstract int getDrawLayer();
 
@@ -103,9 +107,7 @@ public abstract class Sprite {
     Sprite should push its DrawParams onto the provided queue.
     Draw calls are executed in the order of addition to the queue (FIFO).
      */
-    public abstract void getDrawParams(
-            ProtectedQueue<DrawParams> drawQueue
-    );
+    public abstract void getDrawParams(ProtectedQueue<DrawParams> drawQueue);
 
     /* Begin utility methods */
     // Moves the sprite based on current speeds and the number of
@@ -164,6 +166,15 @@ public abstract class Sprite {
     // Sprite's hitbox to the center of the specified Sprite's hitbox.
     public double distanceTo(Sprite s) {
         return hitbox.getCenter().calcDistance(s.hitbox.getCenter());
+    }
+
+    /*
+    Utility method: draw red rectangle where sprite's hitbox is.
+     */
+    public DrawParams drawHitbox() {
+        DrawRect drawHitbox = new DrawRect(Color.RED, Paint.Style.STROKE, 3);
+        drawHitbox.setBounds(hitbox);
+        return drawHitbox;
     }
 
     /* Begin getters and setters */
