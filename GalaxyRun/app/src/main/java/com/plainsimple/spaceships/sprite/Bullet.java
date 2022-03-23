@@ -15,12 +15,12 @@ public class Bullet extends Sprite {
 
     public static final int DAMAGE = 5;
     // Bullet speed per second, as percentage of screen width
-    // TODO: WOULD BE COOL TO INCREASE SPEED AS A FUNCTION OF DIFFICULTY
+    // TODO: WOULD BE COOL TO INCREASE SPEED AS A FUNCTION OF SCROLL SPEED
     public static final double SPEED_PERCENT_PER_SEC = 0.3;
 
 
-    public Bullet(int spriteId, double x, double y, GameContext gameContext) {
-        super(spriteId, SpriteType.BULLET, x, y, BitmapID.BULLET_0, gameContext);
+    public Bullet(double x, double y, GameContext gameContext) {
+        super(SpriteType.BULLET, x, y, BitmapID.BULLET_0, gameContext);
 
         setHitboxOffsetX(getWidth() * 0.7);
         setHitboxOffsetY(-getHeight() * 0.2);

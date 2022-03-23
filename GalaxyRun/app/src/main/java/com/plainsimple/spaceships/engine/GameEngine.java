@@ -96,7 +96,7 @@ public class GameEngine implements IExternalGameController {
         );
 
         // Init everything that requires GameContext
-        spaceship = new Spaceship(gameContext.getNextSpriteId(), 0, 0, gameContext);
+        spaceship = new Spaceship(0, 0, gameContext);
         background = new Background(gameContext);
         ui = new GameUI(gameContext);
         map = new Map(gameContext, System.currentTimeMillis());
@@ -163,6 +163,7 @@ public class GameEngine implements IExternalGameController {
         Iterator<Sprite> it_sprites = sprites.iterator();
         while (it_sprites.hasNext()) {
             Sprite sprite = it_sprites.next();
+            // sprite.update(updateContext);
             if (sprite.shouldTerminate()) {
                 it_sprites.remove();
                 continue;

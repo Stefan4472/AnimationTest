@@ -40,8 +40,6 @@ public abstract class Sprite {
         TERMINATED
     }
 
-    // Unique identifier assigned to this sprite
-    private int spriteId;
     private SpriteType spriteType;
 
     // Coordinates of sprite, top-left
@@ -72,7 +70,6 @@ public abstract class Sprite {
     // TODO: ADD OPTIONAL `PARENT` PARAM
     // TODO: remove `spriteId`? Isn't used for anything. Plus, we can just use the underlying Java object
     public Sprite(
-            int spriteId,
             SpriteType spriteType,
             double x,
             double y,
@@ -80,7 +77,6 @@ public abstract class Sprite {
             int height,
             GameContext gameContext
     ) {
-        this.spriteId = spriteId;
         this.spriteType = spriteType;
 
         this.x = x;
@@ -99,35 +95,32 @@ public abstract class Sprite {
     }
 
     public Sprite(
-            int spriteId,
             SpriteType spriteType,
             double x,
             double y,
             GameContext gameContext
     ) {
-        this(spriteId, spriteType, x, y, 0, 0, gameContext);
+        this(spriteType, x, y, 0, 0, gameContext);
     }
 
     public Sprite(
-            int spriteId,
             SpriteType spriteType,
             double x,
             double y,
             BitmapData bitmapData,
             GameContext gameContext
     ) {
-        this(spriteId, spriteType, x, y, bitmapData.getWidth(), bitmapData.getHeight(), gameContext);
+        this(spriteType, x, y, bitmapData.getWidth(), bitmapData.getHeight(), gameContext);
     }
 
     public Sprite(
-            int spriteId,
             SpriteType spriteType,
             double x,
             double y,
             BitmapID bitmapID,
             GameContext gameContext
     ) {
-        this(spriteId, spriteType, x, y, gameContext.bitmapCache.getData(bitmapID), gameContext);
+        this(spriteType, x, y, gameContext.bitmapCache.getData(bitmapID), gameContext);
     }
 
     /* Begin core abstract methods */
@@ -232,10 +225,6 @@ public abstract class Sprite {
     }
 
     /* Begin getters and setters */
-    public int getSpriteId() {
-        return spriteId;
-    }
-
     public SpriteType getSpriteType() {
         return spriteType;
     }

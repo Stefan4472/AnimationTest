@@ -15,18 +15,18 @@ public class Coin extends Sprite {
 
     private SpriteAnimation spin;
 
-    public Coin(int spriteId, double x, double y, GameContext gameContext) {
-        super(spriteId, SpriteType.COIN, x, y, gameContext);
-
-        setHitboxOffsetX(getWidth() * 0.15);
-        setHitboxOffsetY(getHeight() * 0.1);
-        setHitboxWidth(getWidth() * 0.7);
-        setHitboxHeight(getHeight() * 0.8);
+    public Coin(double x, double y, GameContext gameContext) {
+        super(SpriteType.COIN, x, y, gameContext);
 
         spin = gameContext.animFactory.get(AnimID.COIN_SPIN);
         setWidth(spin.getFrameW());
         setHeight(spin.getFrameH());
         spin.start();
+
+        setHitboxOffsetX(getWidth() * 0.15);
+        setHitboxOffsetY(getHeight() * 0.1);
+        setHitboxWidth(getWidth() * 0.7);
+        setHitboxHeight(getHeight() * 0.8);
     }
 
     @Override

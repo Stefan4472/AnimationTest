@@ -25,7 +25,6 @@ public class GameContext {
     public final int screenWidthPx;
     public final int screenHeightPx;
     public final int fullHealth;
-    private int nextSpriteId = 1;
     // TODO: add a Random instance
 
     public GameContext(
@@ -45,36 +44,5 @@ public class GameContext {
         this.screenWidthPx = screenWidthPx;
         this.screenHeightPx = screenHeightPx;
         this.fullHealth = fullHealth;
-    }
-
-    //
-    public int getNextSpriteId() {
-        return nextSpriteId++;
-    }
-
-    /* Begin Sprite creation factory methods */
-    // TODO: probably don't need these methods
-    public Alien createAlien(double x, double y, double difficulty) {
-        return new Alien(getNextSpriteId(), x, y, difficulty, this);
-    }
-
-    public AlienBullet createAlienBullet(double x, double y, double targetX, double targetY) {
-        return new AlienBullet(getNextSpriteId(), x, y, targetX, targetY, this);
-    }
-
-//    public Asteroid createAsteroid(double x, double y, double difficulty) {
-//        return new Asteroid(getNextSpriteId(), x, y, difficulty, this);
-//    }
-
-    public Bullet createBullet(double x, double y) {
-        return new Bullet(getNextSpriteId(), x, y, this);
-    }
-
-    public Coin createCoin(double x, double y) {
-        return new Coin(getNextSpriteId(), x, y, this);
-    }
-
-    public Obstacle createObstacle(double x, double y, int width, int height) {
-        return new Obstacle(getNextSpriteId(), x, y, width, height, this);
     }
 }

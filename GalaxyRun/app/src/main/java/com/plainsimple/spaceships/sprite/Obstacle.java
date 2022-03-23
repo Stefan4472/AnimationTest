@@ -29,14 +29,13 @@ public class Obstacle extends Sprite {
     // TODO: PROVIDE SCROLLSPEED AS AN ARGUMENT. OBSTACLE SPEED SHOULDN'T CHANGE--THAT
     // WAY, THERE WILL BE A NOTICEABLE CHANGE IN SPEEDS AS EACH NEW CHUNK IS SPAWNED
     public Obstacle(
-            int spriteId,
             double x,
             double y,
             int width,
             int height,
             GameContext gameContext
     ) {
-        super(spriteId, SpriteType.OBSTACLE, x, y, width, height, gameContext);
+        super(SpriteType.OBSTACLE, x, y, width, height, gameContext);
         setHealth(OBSTACLE_DAMAGE);
         // Init DrawRect instance with specified color and fill Paint Style
         DRAW_OBSTACLE = new DrawRect(color, Paint.Style.FILL, 1);

@@ -96,6 +96,7 @@ public class GameEngineUtil {
         }
     }
 
+    // TODO: move to Sprite class
     public static DrawParams drawHitbox(Sprite sprite) {
         DrawRect draw_hitbox = new DrawRect(
                 debugPaintRed.getColor(),

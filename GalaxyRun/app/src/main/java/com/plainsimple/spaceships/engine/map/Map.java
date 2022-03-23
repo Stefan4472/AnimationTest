@@ -4,7 +4,10 @@ import android.util.Log;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.GameTime;
+import com.plainsimple.spaceships.sprite.Alien;
 import com.plainsimple.spaceships.sprite.Asteroid;
+import com.plainsimple.spaceships.sprite.Coin;
+import com.plainsimple.spaceships.sprite.Obstacle;
 import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
@@ -127,16 +130,16 @@ public class Map {
     ) throws IndexOutOfBoundsException {
         switch (tileType) {
             case ALIEN: {
-                return gameContext.createAlien(x, y, chunkDifficulty);
+                return new Alien(x, y, chunkDifficulty, gameContext);
             }
             case ASTEROID: {
-                return new Asteroid(gameContext.getNextSpriteId(), x, y, chunkDifficulty, gameContext, chunkScrollSpeedPx);
+                return new Asteroid(x, y, chunkDifficulty, gameContext, chunkScrollSpeedPx);
             }
             case COIN: {
-                return gameContext.createCoin(x, y);
+                return new Coin(x, y, gameContext);
             }
             case OBSTACLE: {
-                return gameContext.createObstacle(x, y, tileWidthPx, tileWidthPx);
+                return new Obstacle(x, y, tileWidthPx, tileWidthPx, gameContext);
             }
             default: {
                 throw new IllegalArgumentException(String.format(

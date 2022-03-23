@@ -37,14 +37,13 @@ public class Asteroid extends Sprite {
     private List<LoseHealthAnimation> loseHealthAnimations = new LinkedList<>();
 
     public Asteroid(
-            int spriteId,
             double x,
             double y,
             double difficulty,
             GameContext gameContext,
             double scrollSpeedPx
     ) {
-        super(spriteId, SpriteType.ASTEROID, x, y, BitmapID.ASTEROID, gameContext);
+        super(SpriteType.ASTEROID, x, y, BitmapID.ASTEROID, gameContext);
 
         // Set SpeedX to a random value between 60% and 120% of current scrollSpeed
         setSpeedX(-scrollSpeedPx * (0.6 + random.nextInt(60) / 100.0));
@@ -148,7 +147,7 @@ public class Asteroid extends Sprite {
 
     @Override
     public void die(UpdateContext updateContext) {
-        updateContext.createEvent(EventID.ASTEROID_DIED);
+        updateContext.createEvent(EventID.ASTEROID_DIED);  // TODO: rename "asteroid_destroyed"
         setCurrState(SpriteState.TERMINATED);
     }
 
