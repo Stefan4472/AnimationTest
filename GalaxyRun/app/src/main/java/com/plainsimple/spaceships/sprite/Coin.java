@@ -16,7 +16,7 @@ public class Coin extends Sprite {
 
     private SpriteAnimation spin;
 
-    public Coin(double x, double y, GameContext gameContext) {
+    public Coin(GameContext gameContext, double x, double y) {
         super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.COIN));
 
         setHitboxOffsetX(getWidth() * 0.15);

@@ -37,10 +37,10 @@ public class Asteroid extends Sprite {
     private List<LoseHealthAnimation> loseHealthAnimations = new LinkedList<>();
 
     public Asteroid(
+            GameContext gameContext,
             double x,
             double y,
             double difficulty,
-            GameContext gameContext,
             double scrollSpeedPx
     ) {
         super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.ASTEROID));

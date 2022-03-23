@@ -35,6 +35,7 @@ public class Map {
     // X-coordinate at which the next chunk will be spawned
     private double nextSpawnAtPx;
 
+    // TODO: put NUM_ROWS and tileWidthPx in GameContext?
     // The number of rows of tiles the game has. Does not change.
     public static final int NUM_ROWS = 6;
     // Width (px) of the side of a tile (equal to one-sixth of game height px)
@@ -130,16 +131,16 @@ public class Map {
     ) throws IndexOutOfBoundsException {
         switch (tileType) {
             case ALIEN: {
-                return new Alien(x, y, chunkDifficulty, gameContext);
+                return new Alien(gameContext, x, y, chunkDifficulty);
             }
             case ASTEROID: {
-                return new Asteroid(x, y, chunkDifficulty, gameContext, chunkScrollSpeedPx);
+                return new Asteroid(gameContext, x, y, chunkDifficulty, chunkScrollSpeedPx);
             }
             case COIN: {
-                return new Coin(x, y, gameContext);
+                return new Coin(gameContext, x, y);
             }
             case OBSTACLE: {
-                return new Obstacle(x, y, tileWidthPx, tileWidthPx, gameContext);
+                return new Obstacle(gameContext, x, y, tileWidthPx, tileWidthPx);
             }
             default: {
                 throw new IllegalArgumentException(String.format(

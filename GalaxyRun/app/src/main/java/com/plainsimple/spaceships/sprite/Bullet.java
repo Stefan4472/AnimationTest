@@ -19,7 +19,7 @@ public class Bullet extends Sprite {
     public static final double SPEED_PERCENT_PER_SEC = 0.3;
 
 
-    public Bullet(double x, double y, GameContext gameContext) {
+    public Bullet(GameContext gameContext, double x, double y) {
         super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.BULLET_0));
 
         setHitboxOffsetX(getWidth() * 0.7);

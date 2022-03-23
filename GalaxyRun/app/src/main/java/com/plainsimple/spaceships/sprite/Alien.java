@@ -62,10 +62,10 @@ public class Alien extends Sprite {
     private List<LoseHealthAnimation> loseHealthAnimations = new LinkedList<>();
 
     public Alien(
+            GameContext gameContext,
             double x,
             double y,
-            double currDifficulty,
-            GameContext gameContext
+            double currDifficulty
     ) {
         super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.ALIEN));
 //        speedX = scrollSpeed / 2.5f;
@@ -145,12 +145,12 @@ public class Alien extends Sprite {
     // current coordinates. Bullet initialized halfway down the alien on the left side
     public void fireBullet(Sprite s, UpdateContext updateContext) {
         Point2D target_center = s.getHitbox().getCenter();
-        updateContext.registerChild(new AlienBullet(
+        updateContext.registerSprite(new AlienBullet(
+                gameContext,
                 getX(),
                 getY() + getHeight() * 0.5,
                 (float) target_center.getX(),
-                (float) target_center.getY() + (random.nextBoolean() ? -1 : +1) * random.nextInt(50),
-                gameContext
+                (float) target_center.getY() + (random.nextBoolean() ? -1 : +1) * random.nextInt(50)
         ));
     }
 

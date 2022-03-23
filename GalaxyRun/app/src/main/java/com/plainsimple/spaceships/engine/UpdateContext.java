@@ -1,7 +1,5 @@
 package com.plainsimple.spaceships.engine;
 
-import android.util.Log;
-
 import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.sprite.Sprite;
@@ -23,7 +21,7 @@ public class UpdateContext {
     public final boolean isMuted;
     public final Spaceship.Direction playerDirection;
     public final Sprite playerSprite;
-    private ProtectedQueue<Sprite> createdChildren;
+    private ProtectedQueue<Sprite> createdSprites;
     private ProtectedQueue<EventID> createdEvents;
     private ProtectedQueue<SoundID> createdSounds;
 
@@ -38,7 +36,7 @@ public class UpdateContext {
             boolean isMuted,
             Spaceship.Direction playerDirection,
             Sprite playerSprite,
-            ProtectedQueue<Sprite> createdChildren,
+            ProtectedQueue<Sprite> createdSprites,
             ProtectedQueue<EventID> createdEvents,
             ProtectedQueue<SoundID> createdSounds
     ) {
@@ -52,7 +50,7 @@ public class UpdateContext {
         this.isMuted = isMuted;
         this.playerDirection = playerDirection;
         this.playerSprite = playerSprite;
-        this.createdChildren = createdChildren;
+        this.createdSprites = createdSprites;
         this.createdEvents = createdEvents;
         this.createdSounds = createdSounds;
     }
@@ -65,8 +63,8 @@ public class UpdateContext {
         return difficulty;
     }
 
-    public void registerChild(Sprite childSprite) {
-        createdChildren.push(childSprite);
+    public void registerSprite(Sprite childSprite) {
+        createdSprites.push(childSprite);
         createEvent(EventID.SPRITE_SPAWNED);
 
     }

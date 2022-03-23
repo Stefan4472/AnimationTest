@@ -95,7 +95,7 @@ public class GameEngine implements IExternalGameController {
         );
 
         // Init everything that requires GameContext
-        spaceship = new Spaceship(0, 0, gameContext);
+        spaceship = new Spaceship(gameContext, 0, 0);
         background = new Background(gameContext);
         ui = new GameUI(gameContext);
         map = new Map(gameContext, System.currentTimeMillis());
@@ -139,14 +139,12 @@ public class GameEngine implements IExternalGameController {
         FastQueue<DrawParams> drawParams = new FastQueue<>();
 
         map.update(gameTime, createdSprites);
-        double difficulty = map.getDifficulty();
-        double scrollSpeed = map.getScrollSpeed();
 
         UpdateContext updateContext = new UpdateContext(
                 gameTime,
                 currState,
-                difficulty,
-                scrollSpeed,
+                map.getDifficulty(),
+                map.getScrollSpeed(),
                 score,
                 spaceship.getHealth(),
                 isPaused,
@@ -157,6 +155,8 @@ public class GameEngine implements IExternalGameController {
                 createdEvents,
                 createdSounds
         );
+
+//        map.spawnNewSprites(updateContext);
 
         // Update sprites, removing any that should be "terminated"
         Iterator<Sprite> it_sprites = sprites.iterator();
@@ -195,8 +195,7 @@ public class GameEngine implements IExternalGameController {
 
         // Give points for being alive
         if (currState == GameState.PLAYING) {
-            double scorePerSecond = calcScorePerSecond(difficulty);
-            score += gameTime.msSincePrevUpdate / 1000.0 * scorePerSecond;
+            score += gameTime.msSincePrevUpdate / 1000.0 * calcScorePerSecond(updateContext.difficulty);
         }
 
         background.update(updateContext);

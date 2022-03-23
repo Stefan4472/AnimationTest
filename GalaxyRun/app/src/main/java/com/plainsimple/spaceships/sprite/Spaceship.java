@@ -54,11 +54,7 @@ public class Spaceship extends Sprite {
     private static final SoundID BULLET_SOUND = SoundID.LASER;
     private static final SoundID EXPLODE_SOUND = SoundID.EXPLOSION;
 
-    public Spaceship(
-            double x,
-            double y,
-            GameContext gameContext
-    ) {
+    public Spaceship(GameContext gameContext, double x, double y) {
         super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.SPACESHIP));
 
         // Position hitbox
@@ -128,15 +124,15 @@ public class Spaceship extends Sprite {
             throw new AssertionError("canShoot() must be true before calling fireCannons()");
         }
 
-        updateContext.registerChild(new Bullet(
+        updateContext.registerSprite(new Bullet(
+                gameContext,
                 getX() + getWidth() * 0.78f,
-                getY() + 0.28f * getHeight(),
-                gameContext
+                getY() + 0.28f * getHeight()
         ));
-        updateContext.registerChild(new Bullet(
+        updateContext.registerSprite(new Bullet(
+                gameContext,
                 getX() + getWidth() * 0.78f,
-                getY() + 0.66f * getHeight(),
-                gameContext
+                getY() + 0.66f * getHeight()
         ));
         updateContext.createSound(BULLET_SOUND);
         updateContext.createEvent(EventID.BULLET_FIRED);

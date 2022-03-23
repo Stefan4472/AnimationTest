@@ -21,12 +21,12 @@ public class AlienBullet extends Sprite {
     private double fireAngle;
 
     public AlienBullet(
+            GameContext gameContext,
             double x,
             double y,
             double targetX,
-            double targetY,
-            GameContext gameContext
-    ) { // todo: damage as a parameter?
+            double targetY
+    ) {
         super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.ALIEN_BULLET));
 
         setHealth(10);
