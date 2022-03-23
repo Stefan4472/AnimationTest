@@ -37,15 +37,11 @@ public abstract class Sprite {
     private boolean canCollide = true;
     // Whether or not this sprite should be shown on screen.
     // NOTE: ACTUALLY, IT'S THE SPRITE'S RESPONSIBILITY TO IMPLEMENT THIS IN GETDRAWPARAMS() -- TODO: WOULD BE NICE TO HAVE A HIGHER-LEVEL MECHANISM TO DO THAT
-    private boolean isVisible;
+    private boolean isVisible;  // TODO: remove?
     // Hitbox for collision detection
     private Rectangle hitbox;
     // Offset from Sprite's coordinates to hitbox coordinates
     private double hitboxOffsetX, hitboxOffsetY;
-
-    // Random number generator
-    // TODO: PUT IN GAMECONTEXT?
-    protected static final Random random = new Random();
 
     public Sprite(
             GameContext gameContext,
@@ -202,18 +198,8 @@ public abstract class Sprite {
         return width;
     }
 
-    // Note: does not update the hitbox
-    protected void setWidth(int width) {
-        this.width = width;
-    }
-
     public int getHeight() {
         return height;
-    }
-
-    // Note: does not update the hitbox
-    protected void setHeight(int height) {
-        this.height = height;
     }
 
     public double getSpeedX() {

@@ -28,6 +28,7 @@ import com.plainsimple.spaceships.util.Pair;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -87,6 +88,7 @@ public class GameEngine implements IExternalGameController {
                 appContext,
                 bitmapCache,
                 animFactory,
+                new Random(System.currentTimeMillis()),
                 gameWidthPx,
                 gameHeightPx,
                 screenWidthPx,
@@ -98,7 +100,7 @@ public class GameEngine implements IExternalGameController {
         spaceship = new Spaceship(gameContext, 0, 0);
         background = new Background(gameContext);
         ui = new GameUI(gameContext);
-        map = new Map(gameContext, System.currentTimeMillis());
+        map = new Map(gameContext);
         hitDetector = HitDetector.MakeDefaultHitDetector();
         drawLayers = new DrawLayers(7);
 
@@ -257,7 +259,7 @@ public class GameEngine implements IExternalGameController {
 
     private void enterWaitingState() {
         currState = GameState.WAITING;
-        map = new Map(gameContext, System.currentTimeMillis());
+        map = new Map(gameContext);
         // Move spaceship just off the left of the screen, centered vertically
         BitmapData ship_data = gameContext.bitmapCache.getData(BitmapID.SPACESHIP);
         spaceship.setX(-ship_data.getWidth());
@@ -280,7 +282,7 @@ public class GameEngine implements IExternalGameController {
         sprites.add(spaceship);
         // TODO: how to avoid re-creating the Map multiple times?
         //   -> may in fact need a reset() function for certain objects
-        map = new Map(gameContext, System.currentTimeMillis());
+        map = new Map(gameContext);
 
         // Set speed to slowly fly onto screen
         spaceship.setSpeedX(gameContext.gameWidthPx * 0.12);

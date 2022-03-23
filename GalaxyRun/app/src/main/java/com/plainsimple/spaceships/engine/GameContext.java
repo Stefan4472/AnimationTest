@@ -12,6 +12,8 @@ import com.plainsimple.spaceships.sprite.Obstacle;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.sprite.Sprite;
 
+import java.util.Random;
+
 /**
  * Context.
  */
@@ -20,6 +22,7 @@ public class GameContext {
     public final Context appContext;
     public final BitmapCache bitmapCache;
     public final AnimFactory animFactory;
+    public final Random rand;
     public final int gameWidthPx;
     public final int gameHeightPx;
     public final int screenWidthPx;
@@ -31,6 +34,7 @@ public class GameContext {
             Context appContext,
             BitmapCache bitmapCache,
             AnimFactory animCache,
+            Random rand,
             int gameWidthPx,
             int gameHeightPx,
             int screenWidthPx,
@@ -39,6 +43,7 @@ public class GameContext {
         this.appContext = appContext;
         this.bitmapCache = bitmapCache;
         this.animFactory = animCache;
+        this.rand = rand;
         this.gameWidthPx = gameWidthPx;
         this.gameHeightPx = gameHeightPx;
         this.screenWidthPx = screenWidthPx;

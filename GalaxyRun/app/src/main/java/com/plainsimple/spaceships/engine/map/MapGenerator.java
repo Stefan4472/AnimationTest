@@ -12,8 +12,8 @@ public class MapGenerator {
     // Set the number of columns of empty space before each created chunk
     private static final int LEADING_BUFFER_LENGTH = 3;
 
-    public MapGenerator(long seed) {
-        rand = new Random(seed);
+    public MapGenerator(Random rand) {
+        this.rand = rand;
     }
 
     public Chunk generateChunk(double difficulty) {

@@ -56,11 +56,11 @@ public class Map {
         return numPixelsScrolled;
     }
 
-    public Map(GameContext gameContext, long randomSeed) {
+    public Map(GameContext gameContext) {
         this.gameContext = gameContext;
         tileWidthPx = gameContext.gameHeightPx / NUM_ROWS;
         spawnBeyondScreenPx = tileWidthPx;
-        mapGenerator = new MapGenerator(randomSeed);
+        mapGenerator = new MapGenerator(gameContext.rand);
         nextSpawnAtPx = 0;
     }
 

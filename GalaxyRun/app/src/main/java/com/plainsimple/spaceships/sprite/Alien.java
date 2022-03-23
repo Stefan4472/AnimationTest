@@ -80,10 +80,10 @@ public class Alien extends Sprite {
         setHitboxHeight(getHeight() * 0.8);
 
         startingY = y;
-        amplitude = 70 + random.nextInt(60);
-        period = 250 + random.nextInt(100);
-        vShift = random.nextInt(20);
-        hShift = -random.nextInt(3);
+        amplitude = 70 + gameContext.rand.nextInt(60);
+        period = 250 + gameContext.rand.nextInt(100);
+        vShift = gameContext.rand.nextInt(20);
+        hShift = -gameContext.rand.nextInt(3);
         // TODO: BETTER FORMULA
         setHealth((int) (currDifficulty * 30));
         bulletDelay = 20;
@@ -137,7 +137,7 @@ public class Alien extends Sprite {
                 framesSinceLastBullet >= bulletDelay &&
                 updateContext.playerSprite.isAlive() &&
                 bulletsLeft > 0 &&
-                random.nextFloat() <= 0.3f &&
+                gameContext.rand.nextFloat() <= 0.3f &&
                 getX() > gameContext.gameWidthPx / 2.0;
     }
 
@@ -150,7 +150,7 @@ public class Alien extends Sprite {
                 getX(),
                 getY() + getHeight() * 0.5,
                 (float) target_center.getX(),
-                (float) target_center.getY() + (random.nextBoolean() ? -1 : +1) * random.nextInt(50)
+                (float) target_center.getY() + (gameContext.rand.nextBoolean() ? -1 : +1) * gameContext.rand.nextInt(50)
         ));
     }
 

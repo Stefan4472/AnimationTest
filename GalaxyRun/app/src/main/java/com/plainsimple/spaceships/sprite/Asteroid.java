@@ -46,9 +46,9 @@ public class Asteroid extends Sprite {
         super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.ASTEROID));
 
         // Set SpeedX to a random value between 60% and 120% of current scrollSpeed
-        setSpeedX(-scrollSpeedPx * (0.6 + random.nextInt(60) / 100.0));
+        setSpeedX(-scrollSpeedPx * (0.6 + gameContext.rand.nextInt(60) / 100.0));
         // Set SpeedY to a random value between -20% and +20% of current scrollSpeed
-        setSpeedY(-scrollSpeedPx * (-0.2 + random.nextInt(40) / 100.0));
+        setSpeedY(-scrollSpeedPx * (-0.2 + gameContext.rand.nextInt(40) / 100.0));
         // Set health relatively high
         setHealth(10 + (int) (difficulty * 20));
         // Make hitbox 20% smaller than sprite
@@ -58,7 +58,7 @@ public class Asteroid extends Sprite {
         setHitboxOffsetY(getHealth() * 0.1);
 
         // Set the current rotation to a random angle
-        currentRotation = random.nextInt(360);
+        currentRotation = gameContext.rand.nextInt(360);
         // Set rotation rate as function fo speedY (faster speed = faster rotation)
         rotationRate = (float) (getSpeedY() * 200.0 / gameContext.gameHeightPx);
         // Init HealthBarAnimation for use if Asteroid takes damage
