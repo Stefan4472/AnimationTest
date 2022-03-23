@@ -185,7 +185,7 @@ public class GameEngine implements IExternalGameController {
 
         // Add all created sprites
         for (Sprite sprite : createdSprites) {
-            Log.d("GameEngine", String.format("Adding sprite of type %s", sprite.getSpriteType().toString()));
+            Log.d("GameEngine", String.format("Adding sprite of type %s", sprite.getClass().getSimpleName()));
             sprites.add(sprite);
         }
 

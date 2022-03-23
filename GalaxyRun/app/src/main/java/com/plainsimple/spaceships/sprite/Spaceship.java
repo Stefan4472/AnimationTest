@@ -59,7 +59,7 @@ public class Spaceship extends Sprite {
             double y,
             GameContext gameContext
     ) {
-        super(SpriteType.SPACESHIP, x, y, BitmapID.SPACESHIP, gameContext);
+        super(x, y, BitmapID.SPACESHIP, gameContext);
         this.gameContext = gameContext;
 
         // Position hitbox
@@ -206,7 +206,7 @@ public class Spaceship extends Sprite {
         takeDamage(damage, updateContext);
 
         // Handle coin collision
-        if (otherSprite.getSpriteType() == SpriteType.COIN) {
+        if (otherSprite instanceof Coin) {
             updateContext.createEvent(EventID.COIN_COLLECTED);
             updateContext.createSound(SoundID.COIN_COLLECTED);
         }

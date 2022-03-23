@@ -43,7 +43,7 @@ public class Asteroid extends Sprite {
             GameContext gameContext,
             double scrollSpeedPx
     ) {
-        super(SpriteType.ASTEROID, x, y, BitmapID.ASTEROID, gameContext);
+        super(x, y, BitmapID.ASTEROID, gameContext);
 
         // Set SpeedX to a random value between 60% and 120% of current scrollSpeed
         setSpeedX(-scrollSpeedPx * (0.6 + random.nextInt(60) / 100.0));
@@ -124,7 +124,7 @@ public class Asteroid extends Sprite {
     public void handleCollision(Sprite s, int damage, UpdateContext updateContext) {
         takeDamage(damage, updateContext);
 
-        if (s.getSpriteType() == SpriteType.BULLET) {
+        if (s instanceof Bullet) {
             updateContext.createEvent(EventID.ASTEROID_SHOT);
         }
 

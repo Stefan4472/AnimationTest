@@ -16,7 +16,7 @@ public class Coin extends Sprite {
     private SpriteAnimation spin;
 
     public Coin(double x, double y, GameContext gameContext) {
-        super(SpriteType.COIN, x, y, gameContext);
+        super(x, y, gameContext);
 
         spin = gameContext.animFactory.get(AnimID.COIN_SPIN);
         setWidth(spin.getFrameW());
@@ -54,7 +54,7 @@ public class Coin extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage, UpdateContext updateContext) {
-        if (s.getSpriteType() == SpriteType.SPACESHIP) {
+        if (s instanceof Spaceship) {
             setCurrState(SpriteState.TERMINATED);
         }
     }

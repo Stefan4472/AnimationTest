@@ -1,16 +1,26 @@
 package com.plainsimple.spaceships.engine;
 
-import android.content.res.ColorStateList;
-
+import com.plainsimple.spaceships.sprite.Alien;
+import com.plainsimple.spaceships.sprite.AlienBullet;
+import com.plainsimple.spaceships.sprite.Asteroid;
+import com.plainsimple.spaceships.sprite.Bullet;
+import com.plainsimple.spaceships.sprite.Coin;
+import com.plainsimple.spaceships.sprite.Obstacle;
+import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.sprite.Sprite;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Super-simple layer-based collision detection.
- * TODO: improve. Make chunk-based?
+ * TODO: this isn't the right way. Sprites should be able to decide themselves
+ *   how to react to collisions with other Sprites. Rather than reducing
+ *   collision checks this way, we should implement some kind of bucket-
+ *   based checking
  */
 public class HitDetector {
     // Stores the references of two sprites that are in collision
@@ -24,40 +34,41 @@ public class HitDetector {
     }
 
     public static class CollisionLayer {
-        public int layer;
-        public int[] collidingLayers;
+        public String layerName;
+        public String[] collidingLayers;
 
-        public CollisionLayer(int layer, int[] collidingLayers) {
-            this.layer = layer;
+        public CollisionLayer(String layerName, String[] collidingLayers) {
+            this.layerName = layerName;
             this.collidingLayers = collidingLayers;
         }
     }
 
-    private int numLayers;
-    private List<Sprite>[] layers;  // TODO: NAMING IS HORRIBLE
-    private CollisionLayer[] collisionLayers;
+    // TODO: NAMING IS HORRIBLE
+    // Configured CollisionLayers
+    private HashMap<String, CollisionLayer> layers;
+    // Existing Sprites, mapped to the corresponding layer
+    private HashMap<String, List<Sprite>> sprites;
 
-    public HitDetector(CollisionLayer[] collisionLayers) {
-        this.collisionLayers = collisionLayers;
-        numLayers = collisionLayers.length;
-        layers = new LinkedList[numLayers];
-        // TODO: `FASTLIST` STRUCTURE?
-        for (int i = 0; i < numLayers; i++){
-            layers[i] = new LinkedList<>();
+    public HitDetector(List<CollisionLayer> collisionLayers) {
+        layers = new HashMap<>();
+        sprites = new HashMap<>();
+        for (CollisionLayer layer : collisionLayers) {
+            layers.put(layer.layerName, layer);
+            sprites.put(layer.layerName, new ArrayList<>());
         }
     }
 
     public void addSprite(Sprite sprite) {
-        layers[sprite.getCollisionLayer()].add(sprite);
+        sprites.get(sprite.getClass().getSimpleName()).add(sprite);
     }
 
     public List<CollisionTuple> determineCollisions() {
         List<CollisionTuple> collisions = new LinkedList<>();
-        for (CollisionLayer layer_def : collisionLayers) {
-            for (int colliding_layer : layer_def.collidingLayers) {
+        for (CollisionLayer layerDef : layers.values()) {
+            for (String collidingLayer : layerDef.collidingLayers) {
                 checkCollisionsBtwnLayers(
-                        layer_def.layer,
-                        colliding_layer,
+                        layerDef.layerName,
+                        collidingLayer,
                         collisions
                 );
             }
@@ -66,26 +77,26 @@ public class HitDetector {
     }
 
     public void clear() {
-        for (List<Sprite> layer : layers) {
-            layer.clear();
+        for (String layerName : layers.keySet()) {
+            sprites.get(layerName).clear();
         }
     }
 
     private void checkCollisionsBtwnLayers(
-            int layerOne,
-            int layerTwo,
+            String layerOne,
+            String layerTwo,
             List<CollisionTuple> collisionsList
     ) {
-        List<Sprite> spritesLayerOne = layers[layerOne];
-        List<Sprite> spritesLayerTwo = layers[layerTwo];
+        List<Sprite> spritesLayerOne = sprites.get(layerOne);
+        List<Sprite> spritesLayerTwo = sprites.get(layerTwo);
 
-        for (Sprite l1_sprite : spritesLayerOne) {
-            if (l1_sprite.canCollide()) {
-                for (Sprite l2_sprite : spritesLayerTwo) {
-                    if (l1_sprite.collidesWith(l2_sprite)) {
+        for (Sprite l1Sprite : spritesLayerOne) {
+            if (l1Sprite.canCollide()) {
+                for (Sprite l2Sprite : spritesLayerTwo) {
+                    if (l1Sprite.collidesWith(l2Sprite)) {
                         collisionsList.add(new CollisionTuple(
-                                l1_sprite,
-                                l2_sprite
+                                l1Sprite,
+                                l2Sprite
                         ));
                     }
                 }
@@ -94,45 +105,45 @@ public class HitDetector {
     }
 
     public static HitDetector MakeDefaultHitDetector() {
-        return new HitDetector(new HitDetector.CollisionLayer[] {
+        return new HitDetector(new ArrayList<>(Arrays.asList(
                 new HitDetector.CollisionLayer(
-                        Sprite.SpriteType.ALIEN.ordinal(),
-                        new int[]{}
+                        Alien.class.getSimpleName(),
+                        new String[]{}
                 ),
                 new HitDetector.CollisionLayer(
-                        Sprite.SpriteType.ALIEN_BULLET.ordinal(),
-                        new int[]{}
+                        AlienBullet.class.getSimpleName(),
+                        new String[]{}
                 ),
                 new HitDetector.CollisionLayer(
-                        Sprite.SpriteType.ASTEROID.ordinal(),
-                        new int[]{}
+                        Asteroid.class.getSimpleName(),
+                        new String[]{}
                 ),
                 new HitDetector.CollisionLayer(
-                        Sprite.SpriteType.BULLET.ordinal(),
-                        new int[] {
-                                Sprite.SpriteType.OBSTACLE.ordinal(),
-                                Sprite.SpriteType.ALIEN.ordinal(),
-                                Sprite.SpriteType.ASTEROID.ordinal()
+                        Bullet.class.getSimpleName(),
+                        new String[] {
+                                Obstacle.class.getSimpleName(),
+                                Alien.class.getSimpleName(),
+                                Asteroid.class.getSimpleName(),
                         }
                 ),
                 new HitDetector.CollisionLayer(
-                        Sprite.SpriteType.COIN.ordinal(),
-                        new int[]{}
+                        Coin.class.getSimpleName(),
+                        new String[]{}
                 ),
                 new HitDetector.CollisionLayer(
-                        Sprite.SpriteType.OBSTACLE.ordinal(),
-                        new int[]{}
+                        Obstacle.class.getSimpleName(),
+                        new String[]{}
                 ),
                 new HitDetector.CollisionLayer(
-                        Sprite.SpriteType.SPACESHIP.ordinal(),
-                        new int[] {
-                                Sprite.SpriteType.OBSTACLE.ordinal(),
-                                Sprite.SpriteType.COIN.ordinal(),
-                                Sprite.SpriteType.ALIEN.ordinal(),
-                                Sprite.SpriteType.ALIEN_BULLET.ordinal(),
-                                Sprite.SpriteType.ASTEROID.ordinal()
+                        Spaceship.class.getSimpleName(),
+                        new String[] {
+                                Obstacle.class.getSimpleName(),
+                                Coin.class.getSimpleName(),
+                                Alien.class.getSimpleName(),
+                                AlienBullet.class.getSimpleName(),
+                                Asteroid.class.getSimpleName(),
                         }
                 )
-        });
+        )));
     }
 }

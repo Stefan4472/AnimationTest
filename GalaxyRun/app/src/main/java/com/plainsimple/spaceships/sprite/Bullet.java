@@ -20,7 +20,7 @@ public class Bullet extends Sprite {
 
 
     public Bullet(double x, double y, GameContext gameContext) {
-        super(SpriteType.BULLET, x, y, BitmapID.BULLET_0, gameContext);
+        super(x, y, BitmapID.BULLET_0, gameContext);
 
         setHitboxOffsetX(getWidth() * 0.7);
         setHitboxOffsetY(-getHeight() * 0.2);

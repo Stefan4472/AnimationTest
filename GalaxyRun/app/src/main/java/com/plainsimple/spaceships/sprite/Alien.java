@@ -67,7 +67,7 @@ public class Alien extends Sprite {
             double currDifficulty,
             GameContext gameContext
     ) {
-        super(SpriteType.ALIEN, x, y, BitmapID.ALIEN, gameContext);
+        super(x, y, BitmapID.ALIEN, gameContext);
 //        speedX = scrollSpeed / 2.5f;
         // TODO: NEED A WAY TO CALCULATE SPEED
 
@@ -199,7 +199,7 @@ public class Alien extends Sprite {
     public void handleCollision(Sprite s, int damage, UpdateContext updateContext) {
         takeDamage(damage, updateContext);
 
-        if (s.getSpriteType() == SpriteType.SPACESHIP) {
+        if (s instanceof Spaceship) {
             updateContext.createEvent(EventID.ALIEN_SHOT);
         }
 

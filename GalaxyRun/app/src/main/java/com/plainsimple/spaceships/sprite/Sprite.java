@@ -19,17 +19,6 @@ public abstract class Sprite {
 
     protected GameContext gameContext;
 
-    // Enumeration of implemented Sprite types
-    public enum SpriteType {
-        ALIEN,
-        ALIEN_BULLET,
-        ASTEROID,
-        BULLET,
-        COIN,
-        OBSTACLE,
-        SPACESHIP
-    };
-
     public enum SpriteState {
         // Sprite is "alive" and executing normal logic
         ALIVE,
@@ -39,8 +28,6 @@ public abstract class Sprite {
         // from the game
         TERMINATED
     }
-
-    private SpriteType spriteType;
 
     // Coordinates of sprite, top-left
     private double x, y;
@@ -70,15 +57,12 @@ public abstract class Sprite {
     // TODO: ADD OPTIONAL `PARENT` PARAM
     // TODO: remove `spriteId`? Isn't used for anything. Plus, we can just use the underlying Java object
     public Sprite(
-            SpriteType spriteType,
             double x,
             double y,
             int width,
             int height,
             GameContext gameContext
     ) {
-        this.spriteType = spriteType;
-
         this.x = x;
         this.y = y;
         this.width = width;
@@ -95,38 +79,36 @@ public abstract class Sprite {
     }
 
     public Sprite(
-            SpriteType spriteType,
             double x,
             double y,
             GameContext gameContext
     ) {
-        this(spriteType, x, y, 0, 0, gameContext);
+        this(x, y, 0, 0, gameContext);
     }
 
     public Sprite(
-            SpriteType spriteType,
             double x,
             double y,
             BitmapData bitmapData,
             GameContext gameContext
     ) {
-        this(spriteType, x, y, bitmapData.getWidth(), bitmapData.getHeight(), gameContext);
+        this(x, y, bitmapData.getWidth(), bitmapData.getHeight(), gameContext);
     }
 
     public Sprite(
-            SpriteType spriteType,
             double x,
             double y,
             BitmapID bitmapID,
             GameContext gameContext
     ) {
-        this(spriteType, x, y, gameContext.bitmapCache.getData(bitmapID), gameContext);
+        this(x, y, gameContext.bitmapCache.getData(bitmapID), gameContext);
     }
 
     /* Begin core abstract methods */
     // NOTE: TODO: CURRENTLY WE ARE JUST USING THE SPRITETYPE AS COLLISION LAYER
+    // TODO: update
     public int getCollisionLayer() {
-        return spriteType.ordinal();
+        return 0; //spriteType.ordinal();
     }
 
     public abstract int getDrawLayer();
@@ -225,10 +207,6 @@ public abstract class Sprite {
     }
 
     /* Begin getters and setters */
-    public SpriteType getSpriteType() {
-        return spriteType;
-    }
-
     public double getX() {
         return x;
     }

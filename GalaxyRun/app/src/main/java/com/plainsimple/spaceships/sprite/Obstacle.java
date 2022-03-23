@@ -35,7 +35,7 @@ public class Obstacle extends Sprite {
             int height,
             GameContext gameContext
     ) {
-        super(SpriteType.OBSTACLE, x, y, width, height, gameContext);
+        super(x, y, width, height, gameContext);
         setHealth(OBSTACLE_DAMAGE);
         // Init DrawRect instance with specified color and fill Paint Style
         DRAW_OBSTACLE = new DrawRect(color, Paint.Style.FILL, 1);
@@ -67,9 +67,9 @@ public class Obstacle extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage, UpdateContext updateContext) {
-        if (s.getSpriteType() == SpriteType.SPACESHIP) {
+//        if (s.getSpriteType() == SpriteType.SPACESHIP) {
 //            hp += 2; // todo: too high?
-        }
+//        }
     }
 
     @Override
