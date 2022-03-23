@@ -27,7 +27,7 @@ public class AlienBullet extends Sprite {
             double targetY,
             GameContext gameContext
     ) { // todo: damage as a parameter?
-        super(x, y, BitmapID.ALIEN_BULLET, gameContext);
+        super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.ALIEN_BULLET));
 
         setHealth(10);
         // SpeedX is fixed TODO: use current scrollspeed

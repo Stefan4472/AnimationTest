@@ -5,6 +5,7 @@ import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawImage;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
@@ -16,17 +17,15 @@ public class Coin extends Sprite {
     private SpriteAnimation spin;
 
     public Coin(double x, double y, GameContext gameContext) {
-        super(x, y, gameContext);
-
-        spin = gameContext.animFactory.get(AnimID.COIN_SPIN);
-        setWidth(spin.getFrameW());
-        setHeight(spin.getFrameH());
-        spin.start();
+        super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.COIN));
 
         setHitboxOffsetX(getWidth() * 0.15);
         setHitboxOffsetY(getHeight() * 0.1);
         setHitboxWidth(getWidth() * 0.7);
         setHitboxHeight(getHeight() * 0.8);
+
+        spin = gameContext.animFactory.get(AnimID.COIN_SPIN);
+        spin.start();
     }
 
     @Override

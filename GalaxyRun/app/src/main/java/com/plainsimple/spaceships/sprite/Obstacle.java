@@ -35,7 +35,7 @@ public class Obstacle extends Sprite {
             int height,
             GameContext gameContext
     ) {
-        super(x, y, width, height, gameContext);
+        super(gameContext, x, y, width, height);
         setHealth(OBSTACLE_DAMAGE);
         // Init DrawRect instance with specified color and fill Paint Style
         DRAW_OBSTACLE = new DrawRect(color, Paint.Style.FILL, 1);

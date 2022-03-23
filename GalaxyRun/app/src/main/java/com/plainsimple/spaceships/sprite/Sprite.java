@@ -13,22 +13,11 @@ import com.plainsimple.spaceships.util.ProtectedQueue;
 import java.util.*;
 
 /**
- * Sprite parent class.
+ * Base class for all Sprite implementations.
  */
 public abstract class Sprite {
 
     protected GameContext gameContext;
-
-    public enum SpriteState {
-        // Sprite is "alive" and executing normal logic
-        ALIVE,
-        // Sprite has "died" (hit 0 health)
-        DEAD,
-        // Sprite has finished all logic and should be removed
-        // from the game
-        TERMINATED
-    }
-
     // Coordinates of sprite, top-left
     private double x, y;
     // Dimensions specifying bounds of Sprite's image
@@ -54,54 +43,29 @@ public abstract class Sprite {
     // TODO: PUT IN GAMECONTEXT?
     protected static final Random random = new Random();
 
-    // TODO: ADD OPTIONAL `PARENT` PARAM
-    // TODO: remove `spriteId`? Isn't used for anything. Plus, we can just use the underlying Java object
     public Sprite(
+            GameContext gameContext,
             double x,
             double y,
             int width,
-            int height,
-            GameContext gameContext
+            int height
     ) {
+        this.gameContext = gameContext;
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        hitbox = new Rectangle(
-                this.x + hitboxOffsetX,
-                this.y + hitboxOffsetY,
-                this.width,
-                this.height
-        );
-
-        this.gameContext = gameContext;
+        hitbox = new Rectangle(x, y, width, height);
         setCurrState(SpriteState.ALIVE);
     }
 
     public Sprite(
+            GameContext gameContext,
             double x,
             double y,
-            GameContext gameContext
+            BitmapData bitmapData
     ) {
-        this(x, y, 0, 0, gameContext);
-    }
-
-    public Sprite(
-            double x,
-            double y,
-            BitmapData bitmapData,
-            GameContext gameContext
-    ) {
-        this(x, y, bitmapData.getWidth(), bitmapData.getHeight(), gameContext);
-    }
-
-    public Sprite(
-            double x,
-            double y,
-            BitmapID bitmapID,
-            GameContext gameContext
-    ) {
-        this(x, y, gameContext.bitmapCache.getData(bitmapID), gameContext);
+        this(gameContext, x, y, bitmapData.getWidth(), bitmapData.getHeight());
     }
 
     /* Begin core abstract methods */
@@ -193,11 +157,7 @@ public abstract class Sprite {
     // the specified sprite
     // TODO: some methods could be made static or put in a SpriteUtil or GameEngineUtil class
     public boolean collidesWith(Sprite s) {
-        if (canCollide && s.canCollide) {
-            return hitbox.intersects(s.hitbox);
-        } else {
-            return false;
-        }
+        return canCollide && s.canCollide && hitbox.intersects(s.hitbox);
     }
 
     // Calculates and returns the distance between the center of this

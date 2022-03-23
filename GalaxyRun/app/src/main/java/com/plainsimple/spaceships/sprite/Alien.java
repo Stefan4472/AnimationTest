@@ -67,7 +67,7 @@ public class Alien extends Sprite {
             double currDifficulty,
             GameContext gameContext
     ) {
-        super(x, y, BitmapID.ALIEN, gameContext);
+        super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.ALIEN));
 //        speedX = scrollSpeed / 2.5f;
         // TODO: NEED A WAY TO CALCULATE SPEED
 

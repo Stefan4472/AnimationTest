@@ -43,7 +43,7 @@ public class Asteroid extends Sprite {
             GameContext gameContext,
             double scrollSpeedPx
     ) {
-        super(x, y, BitmapID.ASTEROID, gameContext);
+        super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.ASTEROID));
 
         // Set SpeedX to a random value between 60% and 120% of current scrollSpeed
         setSpeedX(-scrollSpeedPx * (0.6 + random.nextInt(60) / 100.0));

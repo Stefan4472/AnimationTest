@@ -59,8 +59,7 @@ public class Spaceship extends Sprite {
             double y,
             GameContext gameContext
     ) {
-        super(x, y, BitmapID.SPACESHIP, gameContext);
-        this.gameContext = gameContext;
+        super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.SPACESHIP));
 
         // Position hitbox
         setHitboxWidth(getWidth() * 0.7);
