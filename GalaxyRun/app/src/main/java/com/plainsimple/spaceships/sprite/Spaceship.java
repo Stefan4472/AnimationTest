@@ -26,7 +26,7 @@ public class Spaceship extends Sprite {
     private SpriteAnimation explodeAnim;
 
     // used to create the spaceship flash animation when hit
-    private ColorMatrixAnimator colorMatrixAnimator = new ColorMatrixAnimator(3, 4, 2);
+    private ColorMatrixAnimator colorMatrixAnimator = new ColorMatrixAnimator(90, 120, 60);
 
     // whether user has control over spaceship
     private boolean isControllable;
@@ -174,10 +174,7 @@ public class Spaceship extends Sprite {
 
     @Override
     public void updateAnimations(UpdateContext updateContext) {
-        // Update ColorMatrixAnimator  TODO: USE TIME
-        colorMatrixAnimator.update();
-
-        // Update animations
+        colorMatrixAnimator.update(updateContext.getGameTime().msSincePrevUpdate);
         if (moveAnim.isPlaying()) {
             moveAnim.update(updateContext.getGameTime().msSincePrevUpdate);
         }
