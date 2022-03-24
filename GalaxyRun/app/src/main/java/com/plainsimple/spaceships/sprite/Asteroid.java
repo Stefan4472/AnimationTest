@@ -62,13 +62,7 @@ public class Asteroid extends Sprite {
         // Set rotation rate as function fo speedY (faster speed = faster rotation)
         rotationRate = (float) (getSpeedY() * 200.0 / gameContext.gameHeightPx);
         // Init HealthBarAnimation for use if Asteroid takes damage
-        healthBarAnimation = new HealthBarAnimation(
-                gameContext.gameWidthPx,
-                gameContext.gameHeightPx,
-                getWidth(),
-                getHeight(),
-                getHealth()
-        );
+        healthBarAnimation = new HealthBarAnimation(this);
     }
 
     @Override
@@ -114,10 +108,8 @@ public class Asteroid extends Sprite {
             }
         }
 
-        // Update HealthbarAnimation
-        if (healthBarAnimation.isShowing()) {
-            healthBarAnimation.update(updateContext.getGameTime().msSincePrevUpdate);
-        }
+        // Update HealthBarAnimation
+        healthBarAnimation.update(this, updateContext.getGameTime().msSincePrevUpdate);
     }
 
     @Override
@@ -127,7 +119,7 @@ public class Asteroid extends Sprite {
                 updateContext.createEvent(EventID.ASTEROID_SHOT);
             }
 
-            takeDamage(damage, updateContext);
+            takeDamage(damage);
             if (getState() == SpriteState.ALIVE && getHealth() == 0) {
                 updateContext.createEvent(EventID.ASTEROID_DESTROYED);
                 setCurrState(SpriteState.TERMINATED);
@@ -135,10 +127,7 @@ public class Asteroid extends Sprite {
 
             // Start HealthBarAnimation and LoseHealthAnimations
             if (damage > 0) {
-                Log.d("Asteroid", "Creating LoseHealthAnimation");
-                healthBarAnimation.setHealth(getHealth());
-                healthBarAnimation.start();
-
+                healthBarAnimation.triggerShow();
                 loseHealthAnimations.add(new LoseHealthAnimation(
                         getWidth(),
                         getHeight(),
@@ -163,8 +152,6 @@ public class Asteroid extends Sprite {
         }
 
         // Draw healthBarAnimation
-        if (healthBarAnimation.isShowing()) {
-            healthBarAnimation.getDrawParams(getX(), getY(), getHealth(), drawQueue);
-        }
+        healthBarAnimation.getDrawParams(drawQueue);
     }
 }

@@ -197,7 +197,7 @@ public class Spaceship extends Sprite {
                 updateContext.createEvent(EventID.SPACESHIP_DAMAGED);
             }
 
-            takeDamage(damage, updateContext);
+            takeDamage(damage);
             if (getState() == SpriteState.ALIVE && getHealth() == 0) {
                 updateContext.createEvent(EventID.SPACESHIP_KILLED);
                 updateContext.createSound(EXPLODE_SOUND);

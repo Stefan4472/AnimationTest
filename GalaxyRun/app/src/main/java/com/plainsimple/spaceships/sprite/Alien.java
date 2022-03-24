@@ -68,8 +68,7 @@ public class Alien extends Sprite {
             double currDifficulty
     ) {
         super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.ALIEN));
-//        speedX = scrollSpeed / 2.5f;
-        // TODO: NEED A WAY TO CALCULATE SPEED
+        setHealth((int) (currDifficulty * 30));
 
         bulletBitmapData = gameContext.bitmapCache.getData(BitmapID.ALIEN_BULLET);
         explodeAnim = gameContext.animFactory.get(AnimID.ALIEN_EXPLODE);
@@ -85,17 +84,10 @@ public class Alien extends Sprite {
         vShift = gameContext.rand.nextInt(20);
         hShift = -gameContext.rand.nextInt(3);
         // TODO: BETTER FORMULA
-        setHealth((int) (currDifficulty * 30));
         bulletDelay = 20;
         framesSinceLastBullet = -bulletDelay;
         bulletsLeft = 4;
-        healthBarAnimation = new HealthBarAnimation(
-                gameContext.gameWidthPx,
-                gameContext.gameHeightPx,
-                getWidth(),
-                getHeight(),
-                getHealth()
-        );
+        healthBarAnimation = new HealthBarAnimation(this);
     }
 
     @Override
@@ -190,9 +182,7 @@ public class Alien extends Sprite {
         }
 
         // Update HealthbarAnimation
-        if (healthBarAnimation.isShowing()) {
-            healthBarAnimation.update(updateContext.getGameTime().msSincePrevUpdate);
-        }
+        healthBarAnimation.update(this, updateContext.getGameTime().msSincePrevUpdate);
     }
 
     @Override
@@ -202,7 +192,7 @@ public class Alien extends Sprite {
                 updateContext.createEvent(EventID.ALIEN_SHOT);
             }
 
-            takeDamage(damage, updateContext);
+            takeDamage(damage);
             if (getState() == SpriteState.ALIVE && health == 0) {
                 setCurrState(SpriteState.DEAD);
                 explodeAnim.start();
@@ -210,9 +200,7 @@ public class Alien extends Sprite {
 
             // Start HealthBarAnimation and LoseHealthAnimations
             if (damage > 0) {
-                healthBarAnimation.setHealth(getHealth());
-                healthBarAnimation.start();
-
+                healthBarAnimation.triggerShow();
                 loseHealthAnimations.add(new LoseHealthAnimation(
                         gameContext.gameWidthPx,
                         gameContext.gameHeightPx,
@@ -234,10 +222,9 @@ public class Alien extends Sprite {
         for (LoseHealthAnimation anim : loseHealthAnimations) {
             anim.getDrawParams(getX(), getY(), drawQueue);
         }
-        // Draw healthBarAnimation if showing
-        if (healthBarAnimation.isShowing()) {
-            healthBarAnimation.getDrawParams(getX(), getY(), getHealth(), drawQueue);
-        }
+        // Draw HealthBarAnimation if showing
+        healthBarAnimation.getDrawParams(drawQueue);
+
         // Draw explosion
         if (explodeAnim.isPlaying()) {
             DrawImage explodeImg = new DrawImage(explodeAnim.getBitmapID(), (float) getX(), (float) getY());

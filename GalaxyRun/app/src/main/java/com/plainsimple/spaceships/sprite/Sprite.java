@@ -120,7 +120,7 @@ public abstract class Sprite {
     Subtracts the specified damage from the sprite's health and floors
     health at 0.
      */
-    public void takeDamage(int damage, UpdateContext updateContext) {
+    public void takeDamage(int damage) {
         health = damage > health ? 0 : health - damage;
     }
 
