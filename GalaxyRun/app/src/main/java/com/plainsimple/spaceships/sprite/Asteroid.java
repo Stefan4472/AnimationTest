@@ -122,33 +122,32 @@ public class Asteroid extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage, UpdateContext updateContext) {
-        takeDamage(damage, updateContext);
+        if (s instanceof Spaceship || s instanceof Bullet) {
+            if (s instanceof Bullet) {
+                updateContext.createEvent(EventID.ASTEROID_SHOT);
+            }
 
-        if (s instanceof Bullet) {
-            updateContext.createEvent(EventID.ASTEROID_SHOT);
+            takeDamage(damage, updateContext);
+            if (getCurrState() == SpriteState.ALIVE && getHealth() == 0) {
+                updateContext.createEvent(EventID.ASTEROID_DESTROYED);
+                setCurrState(SpriteState.TERMINATED);
+            }
+
+            // Start HealthBarAnimation and LoseHealthAnimations
+            if (damage > 0) {
+                Log.d("Asteroid", "Creating LoseHealthAnimation");
+                healthBarAnimation.setHealth(getHealth());
+                healthBarAnimation.start();
+
+                loseHealthAnimations.add(new LoseHealthAnimation(
+                        getWidth(),
+                        getHeight(),
+                        s.getX() - getX(),
+                        s.getY() - getY(),
+                        damage
+                ));
+            }
         }
-
-        Log.d("Asteroid", String.format("Took damage %d, state is %s", damage, getCurrState().toString()));
-        // Start HealthBarAnimation and LoseHealthAnimations
-        if (damage > 0) {
-            Log.d("Asteroid", "Creating LoseHealthAnimation");
-            healthBarAnimation.setHealth(getHealth());
-            healthBarAnimation.start();
-
-            loseHealthAnimations.add(new LoseHealthAnimation(
-                    getWidth(),
-                    getHeight(),
-                    s.getX() - getX(),
-                    s.getY() - getY(),
-                    damage
-            ));
-        }
-    }
-
-    @Override
-    public void die(UpdateContext updateContext) {
-        updateContext.createEvent(EventID.ASTEROID_DIED);  // TODO: rename "asteroid_destroyed"
-        setCurrState(SpriteState.TERMINATED);
     }
 
     @Override

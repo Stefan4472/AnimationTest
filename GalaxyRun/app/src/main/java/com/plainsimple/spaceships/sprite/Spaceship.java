@@ -120,10 +120,7 @@ public class Spaceship extends Sprite {
     // the cannons can be fired before calling this method. This method does not
     // check for validity.
     private void fireCannons(UpdateContext updateContext) {
-        if (BuildConfig.DEBUG && !canShoot(updateContext)) {
-            throw new AssertionError("canShoot() must be true before calling fireCannons()");
-        }
-
+        assert canShoot(updateContext);
         updateContext.registerSprite(new Bullet(
                 gameContext,
                 getX() + getWidth() * 0.78f,
@@ -194,37 +191,35 @@ public class Spaceship extends Sprite {
 
     @Override
     public void handleCollision(
-            Sprite otherSprite,
+            Sprite s,
             int damage,
             UpdateContext updateContext
     ) {
-        takeDamage(damage, updateContext);
+        if (!(s instanceof Bullet)) {
+            if (damage > 0) {
+                updateContext.createEvent(EventID.SPACESHIP_DAMAGED);
+            }
 
-        // Handle coin collision
-        if (otherSprite instanceof Coin) {
-            updateContext.createEvent(EventID.COIN_COLLECTED);
-            updateContext.createSound(SoundID.COIN_COLLECTED);
+            takeDamage(damage, updateContext);
+            if (getCurrState() == SpriteState.ALIVE && getHealth() == 0) {
+                updateContext.createEvent(EventID.SPACESHIP_KILLED);
+                updateContext.createSound(EXPLODE_SOUND);
+                explodeAnim.start();
+                setCurrState(SpriteState.DEAD);
+            }
+
+            // Handle coin collision
+            if (s instanceof Coin) {
+                updateContext.createEvent(EventID.COIN_COLLECTED);
+                updateContext.createSound(SoundID.COIN_COLLECTED);
+            }
+
+            // Trigger flash if we are alive and took damage
+            if (getCurrState() == SpriteState.ALIVE && damage > 0) {
+                updateContext.createEvent(EventID.SPACESHIP_DAMAGED);
+                colorMatrixAnimator.flash();
+            }
         }
-
-        // Trigger flash if we are alive and took damage
-        if (getCurrState() == SpriteState.ALIVE && damage > 0) {
-            updateContext.createEvent(EventID.SPACESHIP_DAMAGED);
-            colorMatrixAnimator.flash();
-        }
-    }
-
-    @Override
-    public void takeDamage(int damage, UpdateContext updateContext) {
-        updateContext.createEvent(EventID.SPACESHIP_DAMAGED);
-        super.takeDamage(damage, updateContext);
-    }
-
-    @Override
-    public void die(UpdateContext updateContext) {
-        updateContext.createSound(EXPLODE_SOUND);
-        explodeAnim.start();
-        updateContext.createEvent(EventID.SPACESHIP_KILLED);
-        setCurrState(SpriteState.DEAD);
     }
 
     @Override

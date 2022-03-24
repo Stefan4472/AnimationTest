@@ -32,7 +32,7 @@ public abstract class Sprite {
     private SpriteState currState;
     // The sprite's health. Also the amount of damage the sprite will
     // inflict upon collision.
-    private int health;
+    protected int health;
     // Whether or not this sprite can collide with other sprites
     private boolean canCollide = true;
     // Whether or not this sprite should be shown on screen.
@@ -94,11 +94,6 @@ public abstract class Sprite {
             UpdateContext updateContext
     );
 
-    // Called to tell the sprite to die.
-    // TODO: SHOULD THE SPRITE DECIDE WHEN IT TAKES DAMAGE/HOW MUCH DAMAGE IT TAKES?
-    // TODO: PROVIDE "KILLER" SPRITE?
-    protected abstract void die(UpdateContext updateContext);
-
     /*
     Sprite should push its DrawParams onto the provided queue.
     Draw calls are executed in the order of addition to the queue (FIFO).
@@ -115,16 +110,6 @@ public abstract class Sprite {
         hitbox.setY(y + hitboxOffsetY);
     }
 
-    // Returns whether the sprite's hitbox is in game bounds.
-    public boolean isHitboxInBounds() {
-        return hitbox.intersects(
-                0,
-                0,
-                gameContext.gameWidthPx,
-                gameContext.gameHeightPx
-        );
-    }
-
     // Returns whether the sprite's coordinates + width/height
     // are in game bounds.
     public boolean isVisibleInBounds() {
@@ -134,26 +119,17 @@ public abstract class Sprite {
                 y < gameContext.gameHeightPx;
     }
 
-    // Subtracts specified damage from sprite's health and floors
-    // its health at 0. Calls `die()` if the sprite's health is now
-    // zero or below zero.
-    // NOTE: This method will call `die()` if health drops below 1
-    // TODO: REMOVE? SHOULD IT CALL `DIE()`?
+    /*
+    Subtracts the specified damage from the sprite's health and floors
+    health at 0.
+     */
     public void takeDamage(int damage, UpdateContext updateContext) {
-        // Do nothing if sprite is dead
-        if (currState == SpriteState.ALIVE) {
-            if (damage > health) {
-                health = 0;
-                die(updateContext);
-            } else {
-                health -= damage;
-            }
-        }
+        health = damage > health ? 0 : health - damage;
     }
 
-    // Returns whether this Sprite's hitbox intersects the hitbox of
-    // the specified sprite
-    // TODO: some methods could be made static or put in a SpriteUtil or GameEngineUtil class
+    /*
+    Returns whether this sprite collides with the specified other sprite.
+     */
     public boolean collidesWith(Sprite s) {
         return canCollide && s.canCollide && hitbox.intersects(s.hitbox);
     }

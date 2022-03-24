@@ -82,11 +82,6 @@ public class AlienBullet extends Sprite {
     }
 
     @Override
-    public void die(UpdateContext updateContext) {
-        // Do nothing (already handled in collision)
-    }
-
-    @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         DrawImage drawBullet = new DrawImage(BitmapID.ALIEN_BULLET, (float) getX(), (float) getY());
         drawBullet.setRotation((int) fireAngle);

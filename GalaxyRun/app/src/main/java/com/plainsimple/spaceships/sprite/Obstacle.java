@@ -65,11 +65,6 @@ public class Obstacle extends Sprite {
     }
 
     @Override
-    public void die(UpdateContext updateContext) {
-
-    }
-
-    @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         // todo: only draw what's on screen
         DRAW_OBSTACLE.setBounds(getHitbox());

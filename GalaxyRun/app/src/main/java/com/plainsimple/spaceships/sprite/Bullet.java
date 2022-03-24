@@ -55,14 +55,11 @@ public class Bullet extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage, UpdateContext updateContext) {
-        updateContext.createEvent(EventID.BULLET_COLLIDED);
-        setCollidable(false);
-        setCurrState(SpriteState.TERMINATED);
-    }
-
-    @Override
-    public void die(UpdateContext updateContext) {
-
+        if (!(s instanceof Spaceship)) {
+            updateContext.createEvent(EventID.BULLET_COLLIDED);
+            setCollidable(false);
+            setCurrState(SpriteState.TERMINATED);
+        }
     }
 
     @Override

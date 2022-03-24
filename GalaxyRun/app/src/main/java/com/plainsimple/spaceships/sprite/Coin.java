@@ -59,11 +59,6 @@ public class Coin extends Sprite {
     }
 
     @Override
-    public void die(UpdateContext updateContext) {
-
-    }
-
-    @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         DrawImage img = new DrawImage(spin.getBitmapID(), (float) getX(), (float) getY());
         img.setDrawRegion(spin.getCurrentFrameSrc());

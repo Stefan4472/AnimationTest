@@ -197,30 +197,31 @@ public class Alien extends Sprite {
 
     @Override
     public void handleCollision(Sprite s, int damage, UpdateContext updateContext) {
-        takeDamage(damage, updateContext);
+        if (s instanceof Spaceship || s instanceof Bullet) {
+            if (s instanceof Bullet) {
+                updateContext.createEvent(EventID.ALIEN_SHOT);
+            }
 
-        if (s instanceof Spaceship) {
-            updateContext.createEvent(EventID.ALIEN_SHOT);
+            takeDamage(damage, updateContext);
+            if (getCurrState() == SpriteState.ALIVE && health == 0) {
+                setCurrState(SpriteState.DEAD);
+                explodeAnim.start();
+            }
+
+            // Start HealthBarAnimation and LoseHealthAnimations
+            if (damage > 0) {
+                healthBarAnimation.setHealth(getHealth());
+                healthBarAnimation.start();
+
+                loseHealthAnimations.add(new LoseHealthAnimation(
+                        gameContext.gameWidthPx,
+                        gameContext.gameHeightPx,
+                        s.getX() - getX(),
+                        s.getY() - getY(),
+                        damage
+                ));
+            }
         }
-
-        // Start HealthBarAnimation and LoseHealthAnimations
-        if (damage > 0) {
-            healthBarAnimation.setHealth(getHealth());
-            healthBarAnimation.start();
-
-            loseHealthAnimations.add(new LoseHealthAnimation(
-                    gameContext.gameWidthPx,
-                    gameContext.gameHeightPx,
-                    s.getX() - getX(),
-                    s.getY() - getY(),
-                    damage
-            ));
-        }
-    }
-
-    @Override
-    public void die(UpdateContext updateContext) {
-        explodeAnim.start();
     }
 
     @Override
@@ -237,7 +238,7 @@ public class Alien extends Sprite {
         if (healthBarAnimation.isShowing()) {
             healthBarAnimation.getDrawParams(getX(), getY(), getHealth(), drawQueue);
         }
-        // add explodeAnim params if showing
+        // Draw explosion
         if (explodeAnim.isPlaying()) {
             DrawImage explodeImg = new DrawImage(explodeAnim.getBitmapID(), (float) getX(), (float) getY());
             explodeImg.setDrawRegion(explodeAnim.getCurrentFrameSrc());
