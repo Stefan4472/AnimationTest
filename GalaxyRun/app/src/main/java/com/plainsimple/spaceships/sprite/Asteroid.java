@@ -1,7 +1,5 @@
 package com.plainsimple.spaceships.sprite;
 
-import android.util.Log;
-
 import com.plainsimple.spaceships.engine.EventID;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
@@ -25,11 +23,10 @@ import java.util.List;
 
 public class Asteroid extends Sprite {
 
-    // current rotation, in degrees, of asteroid
+    // Current rotation, in degrees, of asteroid
     private float currentRotation;
-    // degrees rotated per frame (positive or negative)
-    // TODO: base on game time elapsed
-    private float rotationRate;
+    // Degrees rotated per frame (positive or negative)
+    private final double degRotationPerSecond;
 
     // draws animated healthbar above Asteroid if Asteroid takes damage
     private HealthBarAnimation healthBarAnimation;
@@ -51,17 +48,16 @@ public class Asteroid extends Sprite {
         setSpeedY(-scrollSpeedPx * (-0.2 + gameContext.rand.nextInt(40) / 100.0));
         // Set health relatively high
         setHealth(10 + (int) (difficulty * 20));
-        // Make hitbox 20% smaller than sprite
+        // Make Hitbox 20% smaller than sprite
         setHitboxWidth(getWidth() * 0.8);
         setHitboxHeight(getHeight() * 0.8);
         setHitboxOffsetX(getWidth() * 0.1);
-        setHitboxOffsetY(getHealth() * 0.1);
-
+        setHitboxOffsetY(getHeight() * 0.1);
         // Set the current rotation to a random angle
         currentRotation = gameContext.rand.nextInt(360);
-        // Set rotation rate as function fo speedY (faster speed = faster rotation)
-        rotationRate = (float) (getSpeedY() * 200.0 / gameContext.gameHeightPx);
-        // Init HealthBarAnimation for use if Asteroid takes damage
+        // Set rotation rate as function of speedY (faster speed = faster rotation)
+        degRotationPerSecond = 60 + getSpeedY() / gameContext.gameHeightPx * 400;
+        // Init HealthBarAnimation
         healthBarAnimation = new HealthBarAnimation(this);
     }
 
@@ -80,13 +76,11 @@ public class Asteroid extends Sprite {
     @Override
     public void updateSpeeds(UpdateContext updateContext) {
         // Reverse speedY if it is nearly headed off a screen edge (i.e. "bounce")
-        boolean leaving_above =
-                getY() >= (gameContext.gameHeightPx - getHeight()) &&
-                getSpeedY() > 0;
-        boolean leaving_below =
-                getY() <= 0 && getSpeedY() < 0;
+        boolean leavingAbove =
+                getY() + getHeight() >= gameContext.gameHeightPx && getSpeedY() > 0;
+        boolean leavingBelow = getY() <= 0 && getSpeedY() < 0;
 
-        if (leaving_above || leaving_below) {
+        if (leavingAbove || leavingBelow) {
             setSpeedY(-1 * getSpeedY());
         }
     }
@@ -94,7 +88,7 @@ public class Asteroid extends Sprite {
     @Override
     public void updateAnimations(UpdateContext updateContext) {
         // Increment currentRotation to create the rotating animation
-        currentRotation += rotationRate;
+        currentRotation += degRotationPerSecond * updateContext.gameTime.secSincePrevUpdate;
 
         // Update LoseHealthAnimations
         Iterator<LoseHealthAnimation> health_anims = loseHealthAnimations.iterator();
@@ -140,17 +134,14 @@ public class Asteroid extends Sprite {
 
     @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
-        // update DRAW_ASTEROID params with new coordinates and rotation
         DrawImage drawAsteroid = new DrawImage(BitmapID.ASTEROID, (float) getX(), (float) getY());
         drawAsteroid.setRotation((int) currentRotation);
         drawQueue.push(drawAsteroid);
 
-        // Draw loseHealthAnimations
         for (LoseHealthAnimation anim : loseHealthAnimations) {
             anim.getDrawParams(drawQueue);
         }
 
-        // Draw healthBarAnimation
         healthBarAnimation.getDrawParams(drawQueue);
     }
 }
