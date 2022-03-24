@@ -35,9 +35,6 @@ public abstract class Sprite {
     protected int health;
     // Whether or not this sprite can collide with other sprites
     private boolean canCollide = true;
-    // Whether or not this sprite should be shown on screen.
-    // NOTE: ACTUALLY, IT'S THE SPRITE'S RESPONSIBILITY TO IMPLEMENT THIS IN GETDRAWPARAMS() -- TODO: WOULD BE NICE TO HAVE A HIGHER-LEVEL MECHANISM TO DO THAT
-    private boolean isVisible;  // TODO: remove?
     // Hitbox for collision detection
     private Rectangle hitbox;
     // Offset from Sprite's coordinates to hitbox coordinates
@@ -194,7 +191,7 @@ public abstract class Sprite {
         this.speedY = speedY;
     }
 
-    public SpriteState getCurrState() {
+    public SpriteState getState() {
         return currState;
     }
 
@@ -216,14 +213,6 @@ public abstract class Sprite {
 
     protected void setCollidable(boolean canCollide) {
         this.canCollide = canCollide;
-    }
-
-    public boolean isVisible() {
-        return isVisible;
-    }
-
-    protected void setVisible(boolean visible) {
-        isVisible = visible;
     }
 
     public Rectangle getHitbox() {
@@ -256,13 +245,5 @@ public abstract class Sprite {
 
     protected void setHitboxHeight(double height) {
         hitbox.setHeight(height);
-    }
-
-    public boolean isAlive() {
-        return this.currState == SpriteState.ALIVE;
-    }
-
-    public boolean shouldTerminate() {
-        return this.currState == SpriteState.TERMINATED;
     }
 }

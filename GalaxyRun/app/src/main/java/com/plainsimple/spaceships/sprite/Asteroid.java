@@ -128,7 +128,7 @@ public class Asteroid extends Sprite {
             }
 
             takeDamage(damage, updateContext);
-            if (getCurrState() == SpriteState.ALIVE && getHealth() == 0) {
+            if (getState() == SpriteState.ALIVE && getHealth() == 0) {
                 updateContext.createEvent(EventID.ASTEROID_DESTROYED);
                 setCurrState(SpriteState.TERMINATED);
             }

@@ -1,6 +1,7 @@
 package com.plainsimple.spaceships.engine;
 
 import com.plainsimple.spaceships.sprite.Spaceship;
+import com.plainsimple.spaceships.sprite.SpriteState;
 
 import static com.plainsimple.spaceships.engine.GameState.WAITING;
 import static com.plainsimple.spaceships.engine.GameState.STARTING;
@@ -28,7 +29,7 @@ public class GameStateMachine {
             }
             case PLAYING: {
                 // Move to DEAD if the player sprite has died
-                if (!player.isAlive()) {
+                if (player.getState() != SpriteState.ALIVE) {
                     return DEAD;
                 }
                 return PLAYING;
@@ -37,7 +38,7 @@ public class GameStateMachine {
                 // Move to FINISHED once the player sprite is ready to be
                 // terminated.
                 // TODO: a different criterion--all sprites have left the screen
-                if (player.shouldTerminate()) {
+                if (player.getState() == SpriteState.TERMINATED) {
                     return FINISHED;
                 }
                 return DEAD;

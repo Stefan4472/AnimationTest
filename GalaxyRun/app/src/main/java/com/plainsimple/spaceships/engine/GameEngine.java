@@ -21,6 +21,7 @@ import com.plainsimple.spaceships.engine.map.Map;
 import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.sprite.Sprite;
+import com.plainsimple.spaceships.sprite.SpriteState;
 import com.plainsimple.spaceships.stats.GameTimer;
 import com.plainsimple.spaceships.util.FastQueue;
 import com.plainsimple.spaceships.util.Pair;
@@ -165,7 +166,7 @@ public class GameEngine implements IExternalGameController {
         while (it_sprites.hasNext()) {
             Sprite sprite = it_sprites.next();
             // sprite.update(updateContext);
-            if (sprite.shouldTerminate()) {
+            if (sprite.getState() == SpriteState.TERMINATED) {
                 it_sprites.remove();
                 continue;
             }

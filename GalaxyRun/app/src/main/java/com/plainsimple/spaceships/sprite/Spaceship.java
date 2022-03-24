@@ -13,8 +13,6 @@ import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
-import plainsimple.spaceships.BuildConfig;
-
 import static com.plainsimple.spaceships.sprite.Spaceship.Direction.DOWN;
 import static com.plainsimple.spaceships.sprite.Spaceship.Direction.UP;
 
@@ -99,9 +97,8 @@ public class Spaceship extends Sprite {
         }
 
         // Checks if explosion has played, in which case terminate should be set to true and onInvisible() called
-        if (getCurrState() == SpriteState.DEAD && explodeAnim.hasPlayed()) {
+        if (getState() == SpriteState.DEAD && explodeAnim.hasPlayed()) {
             setCollidable(false);
-            setVisible(false);
             setCurrState(SpriteState.TERMINATED);
             updateContext.createEvent(EventID.SPACESHIP_INVISIBLE);
         }
@@ -113,7 +110,7 @@ public class Spaceship extends Sprite {
         return isControllable &&
                 isShooting &&
                 (ms_since_last_shot >= SHOOTING_DELAY_MS || prevCannonShotTime == 0) &&
-                getCurrState() == SpriteState.ALIVE;
+                getState() == SpriteState.ALIVE;
     }
 
     // It is assumed that the programmer has called `canShoot()` to make sure that
@@ -201,7 +198,7 @@ public class Spaceship extends Sprite {
             }
 
             takeDamage(damage, updateContext);
-            if (getCurrState() == SpriteState.ALIVE && getHealth() == 0) {
+            if (getState() == SpriteState.ALIVE && getHealth() == 0) {
                 updateContext.createEvent(EventID.SPACESHIP_KILLED);
                 updateContext.createSound(EXPLODE_SOUND);
                 explodeAnim.start();
@@ -215,7 +212,7 @@ public class Spaceship extends Sprite {
             }
 
             // Trigger flash if we are alive and took damage
-            if (getCurrState() == SpriteState.ALIVE && damage > 0) {
+            if (getState() == SpriteState.ALIVE && damage > 0) {
                 updateContext.createEvent(EventID.SPACESHIP_DAMAGED);
                 colorMatrixAnimator.flash();
             }

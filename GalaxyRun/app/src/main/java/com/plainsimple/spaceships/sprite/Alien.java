@@ -125,7 +125,7 @@ public class Alien extends Sprite {
         // Terminate if dead and explosion has finished playing,
         // or if no longer visible
         // TODO: RATHER THAN CHECKING WHETHER VISIBLE, SHOULD WE CHECK IF WE'RE OFF THE LEFT OF THE SCREEN?
-        return (getCurrState() == SpriteState.DEAD && explodeAnim.hasPlayed()) || getX() < 0;
+        return (getState() == SpriteState.DEAD && explodeAnim.hasPlayed()) || getX() < 0;
     }
 
     private boolean canFire(UpdateContext updateContext) {
@@ -133,9 +133,9 @@ public class Alien extends Sprite {
         // has bullets left to fire, and alien is on right half of the screen.
         // To slightly randomize fire rate there is also only a 30% chance it will fire
         // in this frame, even if all conditions are met
-        return getCurrState() == SpriteState.ALIVE &&
+        return getState() == SpriteState.ALIVE &&
                 framesSinceLastBullet >= bulletDelay &&
-                updateContext.playerSprite.isAlive() &&
+                updateContext.playerSprite.getState() == SpriteState.ALIVE &&
                 bulletsLeft > 0 &&
                 gameContext.rand.nextFloat() <= 0.3f &&
                 getX() > gameContext.gameWidthPx / 2.0;
@@ -203,7 +203,7 @@ public class Alien extends Sprite {
             }
 
             takeDamage(damage, updateContext);
-            if (getCurrState() == SpriteState.ALIVE && health == 0) {
+            if (getState() == SpriteState.ALIVE && health == 0) {
                 setCurrState(SpriteState.DEAD);
                 explodeAnim.start();
             }
