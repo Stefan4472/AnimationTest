@@ -104,7 +104,7 @@ public class Asteroid extends Sprite {
             if (anim.isFinished()) {
                 health_anims.remove();
             } else {  // Update animation
-                anim.update(updateContext.getGameTime().msSincePrevUpdate);
+                anim.update(this, updateContext.getGameTime().msSincePrevUpdate);
             }
         }
 
@@ -125,9 +125,8 @@ public class Asteroid extends Sprite {
                 setCurrState(SpriteState.TERMINATED);
             }
 
-            // Start HealthBarAnimation and LoseHealthAnimations
-            if (damage > 0) {
-                healthBarAnimation.triggerShow();
+            healthBarAnimation.triggerShow();
+            if (getState() == SpriteState.ALIVE) {
                 loseHealthAnimations.add(new LoseHealthAnimation(
                         getWidth(),
                         getHeight(),
@@ -148,7 +147,7 @@ public class Asteroid extends Sprite {
 
         // Draw loseHealthAnimations
         for (LoseHealthAnimation anim : loseHealthAnimations) {
-            anim.getDrawParams(getX(), getY(), drawQueue);
+            anim.getDrawParams(drawQueue);
         }
 
         // Draw healthBarAnimation

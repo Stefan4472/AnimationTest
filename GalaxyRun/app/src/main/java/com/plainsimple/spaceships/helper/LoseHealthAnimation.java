@@ -1,41 +1,42 @@
 package com.plainsimple.spaceships.helper;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.engine.draw.DrawText;
+import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
 /**
- * Class used to draw the sprite's health floating up from it when damaged.
- * Tracks with the sprite and moves relative to the sprite to the right and up.
- */ // todo: optimizations, variable direction of movement (left/right) and better color?
+ * Class used to draw the damage floating up from a sprite.
+ * Tracks with the sprite and moves relative to it.
+ */
 
 public class LoseHealthAnimation {
 
-    // x-offset from sprite's x-coordinate where text will be drawn
-    private double offsetX;
-    // y-offset from sprite's y-coordinate where text will be drawn
-    private double offsetY;
-    // Dimensions of the game (px)
-    private int gameWidthPx, gameHeightPx;
+    // Draw coordinates
+    private double x, y;
+    // Remaining amount of time to show the animation
+    private long elapsedTimeMs;
+
+    private final int textSize;
     // amount of health lost, which will be displayed
-    private int healthLost;
-    // whether text/animation is still running/showing
-    private boolean showing;
-    // counts number of milliseconds elapsed
-    private int timeShownMs;
+    private final int damage;
+    private final double totalMovementX, totalMovementY;
+    // Offset from sprite's coordinates (px)
+    private final double baseOffsetX, baseOffsetY;
+
+    // Duration of the animation
+    private static final long DURATION_MS = 1000;
     // color of text to be drawn
     private static final int TEXT_COLOR = Color.WHITE;
     // size of text to be drawn
-    private static final int TEXT_SIZE = 25;
-    // Duration of the animation
-    private static final int DURATION_MS = 1000;
+    private static final double REL_TEXT_SIZE = 0.05;
     // movement of the text in x (as fraction of game width)
     private static final double REL_MOVEMENT_X = 0.1;
     // movement of the text in y (as fraction of game height)
-    private static final double REL_MOVEMENT_Y = 0.1;
-
+    private static final double REL_MOVEMENT_Y = -0.1;
 
     /*
     Create and start the animation.
@@ -45,47 +46,44 @@ public class LoseHealthAnimation {
             int gameHeightPx,
             double offsetX,
             double offsetY,
-            int healthLost
+            int damage
     ) {
-        this.gameWidthPx = gameWidthPx;
-        this.gameHeightPx = gameHeightPx;
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
-        this.healthLost = healthLost;
-        showing = true;
+        totalMovementX = gameWidthPx * REL_MOVEMENT_X;
+        totalMovementY = gameHeightPx * REL_MOVEMENT_Y;
+        textSize = (int) (gameHeightPx * REL_TEXT_SIZE);
+        baseOffsetX = offsetX;
+        baseOffsetY = offsetY;
+        this.damage = damage;
     }
 
-    // TODO: MOVE MORE LOGIC INTO UPDATE()
-    public void update(long milliseconds) {
-        timeShownMs += milliseconds;
-        offsetX += (REL_MOVEMENT_X * gameWidthPx) * (milliseconds / (double) DURATION_MS);
-        offsetY += (REL_MOVEMENT_Y * gameHeightPx) * (milliseconds / (double) DURATION_MS);
-
-        if (timeShownMs >= DURATION_MS) {
-            showing = false;
-        }
+    /*
+    Updates the animation if it is playing, including shifting based on the updated
+    sprite coordinates.
+     */
+    public void update(Sprite sprite, long ms) {
+        elapsedTimeMs += ms;
+        double fractionElapsed = elapsedTimeMs * 1.0 / DURATION_MS;
+        x = sprite.getX() + baseOffsetX + fractionElapsed * totalMovementX;
+        y = sprite.getY() + baseOffsetY + fractionElapsed * totalMovementY;
     }
 
-    // updates the animation if it is playing, including shifting based on the updated
-    // sprite coordinates. Adds the animation's DrawParams to the given queue.
-    public void getDrawParams(
-            double spriteX,
-            double spriteY,
-            ProtectedQueue<DrawParams> drawQueue
-    ) {
-        if (showing) {
+    public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
+        if (!isFinished()) {
+            Log.d("LoseHealth", "Drawing to " + x + ", " + y + " with size " + textSize);
             drawQueue.push(new DrawText(
-                    Integer.toString(healthLost),
-                    (float) (spriteX + offsetX),
-                    (float) (spriteY - offsetY),
+                    Integer.toString(damage),
+                    (float) x,
+                    (float) y,
                     TEXT_COLOR,
-                    TEXT_SIZE
+                    textSize
             ));
         }
     }
 
-    // returns whether animation has finished
+    /*
+    Returns whether animation has finished
+     */
     public boolean isFinished() {
-        return !showing;
+        return elapsedTimeMs > DURATION_MS;
     }
 }
