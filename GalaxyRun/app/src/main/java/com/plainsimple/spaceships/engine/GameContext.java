@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.engine;
 
 import android.content.Context;
 
+import com.plainsimple.spaceships.engine.map.Map;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.sprite.Alien;
 import com.plainsimple.spaceships.sprite.AlienBullet;
@@ -28,7 +29,8 @@ public class GameContext {
     public final int screenWidthPx;
     public final int screenHeightPx;
     public final int fullHealth;
-    // TODO: add a Random instance
+    // Width of a (square) tile in the game
+    public final int tileWidthPx;
 
     public GameContext(
             Context appContext,
@@ -49,5 +51,6 @@ public class GameContext {
         this.screenWidthPx = screenWidthPx;
         this.screenHeightPx = screenHeightPx;
         this.fullHealth = fullHealth;
+        tileWidthPx = gameHeightPx / Map.NUM_ROWS;
     }
 }

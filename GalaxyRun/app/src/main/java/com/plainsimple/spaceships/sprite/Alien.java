@@ -4,7 +4,6 @@ import com.plainsimple.spaceships.engine.AnimID;
 import com.plainsimple.spaceships.engine.EventID;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.engine.draw.DrawImage;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
@@ -33,26 +32,21 @@ import java.util.List;
  */
 public class Alien extends Sprite {
 
-    // frames to wait between firing bullets
-    private int bulletDelay;
-    // number of frames since last bullet was fired
-    private int framesSinceLastBullet = 0;
-    // number of bullets left alien can fire
-    private int bulletsLeft;
+    private enum AlienState {
+        FLYING_IN,
+        HOVERING
+    };
 
-    // frames since alien was constructed
-    // used for calculating trajectory
-    private int elapsedFrames = 1;
-
-    // starting y-coordinate
-    // used as a reference for calculating trajectory
-    private double startingY;
-
-    // defines sine wave that describes alien's trajectory
-    private int amplitude;
-    private int period;
-    private int vShift;
-    private int hShift;
+    private AlienState alienState;
+    // Time since the last bullet was fired
+    private int msSinceLastBullet;
+    // X-Coordinate at which the Alien will hover
+    private final double hoverX;
+    // Defines sine wave of Alien's trajectory while hovering
+    private int amplitudePx;
+    private long periodMs;
+    // Minimum amount of time that must elapse between each shot
+    private final int bulletWaitMs;
 
     private BitmapData bulletBitmapData;
     private SpriteAnimation explodeAnim;
@@ -68,25 +62,22 @@ public class Alien extends Sprite {
             double currDifficulty
     ) {
         super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.ALIEN));
-        setHealth((int) (currDifficulty * 30));
-
-        bulletBitmapData = gameContext.bitmapCache.getData(BitmapID.ALIEN_BULLET);
-        explodeAnim = gameContext.animFactory.get(AnimID.ALIEN_EXPLODE);
+        setHealth((int) (currDifficulty * 20));
 
         setHitboxOffsetX(getWidth() * 0.2);
         setHitboxOffsetY(getHeight() * 0.2);
         setHitboxWidth(getWidth() * 0.8);
         setHitboxHeight(getHeight() * 0.8);
 
-        startingY = y;
-        amplitude = 70 + gameContext.rand.nextInt(60);
-        period = 250 + gameContext.rand.nextInt(100);
-        vShift = gameContext.rand.nextInt(20);
-        hShift = -gameContext.rand.nextInt(3);
-        // TODO: BETTER FORMULA
-        bulletDelay = 20;
-        framesSinceLastBullet = -bulletDelay;
-        bulletsLeft = 4;
+        alienState = AlienState.FLYING_IN;
+        // Set to between 7/10 and 8/10ths of screenWidth
+        hoverX = gameContext.gameWidthPx * (0.7 + gameContext.rand.nextDouble() / 10);
+        // Configure sine wave to fly in while hovering
+        amplitudePx = (int) (gameContext.tileWidthPx * (1 + gameContext.rand.nextDouble()));
+        periodMs = 800 + gameContext.rand.nextInt(400);
+
+        bulletWaitMs = 2000 - (int) (currDifficulty * 1000);
+        explodeAnim = gameContext.animFactory.get(AnimID.ALIEN_EXPLODE);
         healthBarAnimation = new HealthBarAnimation(this);
     }
 
@@ -104,27 +95,27 @@ public class Alien extends Sprite {
             setCurrState(SpriteState.TERMINATED);
         }
 
-        if (canFire(updateContext)) {
+        if (canShoot(updateContext)) {
             updateContext.createEvent(EventID.ALIEN_FIRED_BULLET);
             updateContext.createSound(SoundID.ALIEN_FIRED_BULLET);
             fireBullet(updateContext.playerSprite, updateContext);
             framesSinceLastBullet = 0;
             bulletsLeft--;
         }
+
+        if (alienState == AlienState.FLYING_IN && getX() < hoverX) {
+            // Switch to HOVERING
+            alienState = AlienState.HOVERING;
+        }
     }
 
     private boolean shouldTerminate(UpdateContext updateContext) {
         // Terminate if dead and explosion has finished playing,
         // or if no longer visible
-        // TODO: RATHER THAN CHECKING WHETHER VISIBLE, SHOULD WE CHECK IF WE'RE OFF THE LEFT OF THE SCREEN?
-        return (getState() == SpriteState.DEAD && explodeAnim.hasPlayed()) || getX() < 0;
+        return getState() == SpriteState.DEAD && explodeAnim.hasPlayed();
     }
 
-    private boolean canFire(UpdateContext updateContext) {
-        // rules for firing: alien has waited long enough, spaceship is alive, alien
-        // has bullets left to fire, and alien is on right half of the screen.
-        // To slightly randomize fire rate there is also only a 30% chance it will fire
-        // in this frame, even if all conditions are met
+    private boolean canShoot(UpdateContext updateContext) {
         return getState() == SpriteState.ALIVE &&
                 framesSinceLastBullet >= bulletDelay &&
                 updateContext.playerSprite.getState() == SpriteState.ALIVE &&
@@ -133,16 +124,21 @@ public class Alien extends Sprite {
                 getX() > gameContext.gameWidthPx / 2.0;
     }
 
-    // fires bullet at sprite with small randomized inaccuracy, based on
-    // current coordinates. Bullet initialized halfway down the alien on the left side
-    public void fireBullet(Sprite s, UpdateContext updateContext) {
+    /*
+    Shoots a bullet at the specified sprite. Introduces some randomized inaccuracy.
+    The Bullet is initialized halfway down the alien on the left side
+     */
+    public void shootBullet(UpdateContext updateContext, Sprite s) {
         Point2D target_center = s.getHitbox().getCenter();
+        double vertInaccuracy = (gameContext.rand.nextBoolean() ? -1 : +1) *
+                gameContext.tileWidthPx * gameContext.rand.nextDouble();
         updateContext.registerSprite(new AlienBullet(
                 gameContext,
                 getX(),
                 getY() + getHeight() * 0.5,
-                (float) target_center.getX(),
-                (float) target_center.getY() + (gameContext.rand.nextBoolean() ? -1 : +1) * gameContext.rand.nextInt(50)
+                target_center.getX(),
+                target_center.getY() + vertInaccuracy,
+                updateContext.scrollSpeedPx
         ));
     }
 
@@ -194,6 +190,7 @@ public class Alien extends Sprite {
 
             takeDamage(damage);
             if (getState() == SpriteState.ALIVE && health == 0) {
+                updateContext.createEvent(EventID.ALIEN_DIED);
                 setCurrState(SpriteState.DEAD);
                 explodeAnim.start();
 

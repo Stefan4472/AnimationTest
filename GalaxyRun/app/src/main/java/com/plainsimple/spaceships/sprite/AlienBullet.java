@@ -18,35 +18,31 @@ import com.plainsimple.spaceships.util.ProtectedQueue;
 public class AlienBullet extends Sprite {
 
     // Angle at which bullet travels
-    private double fireAngle;
+    private final double travelAngle;
 
     public AlienBullet(
             GameContext gameContext,
             double x,
             double y,
             double targetX,
-            double targetY
+            double targetY,
+            double scrollSpeedPx
     ) {
         super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.ALIEN_BULLET));
 
         setHealth(10);
         // SpeedX is fixed TODO: use current scrollspeed
-//        setSpeedX(-0.008f * gameContext.gameWidthPx);
+        setSpeedX(-scrollSpeedPx * 0.8);
 
-        // Calculate fireAngle based on distance to target in x and y.
+        // Calculate travelAngle based on distance to target in x and y.
         // Keep in mind this gets tricky because we're in canvas coordinates
-        double dist_x = x - targetX;
-        double dist_y = y - targetY;
-        fireAngle = Math.toDegrees(Math.atan(dist_y / dist_x));
+        double distX = x - targetX;
+        double distY = y - targetY;
+        travelAngle = Math.toDegrees(Math.atan(distY / distX));
 
-        // TODO: UPDATE
         // Calculate speedY using relative screen dimensions
-        double frames_to_impact = Math.abs(dist_x / gameContext.gameWidthPx / getSpeedX());
-        setSpeedY(-dist_y / gameContext.gameHeightPx / frames_to_impact);
-        // Cap speedY if abs. value greater than 0.012f
-        if (Math.abs(getSpeedY()) > 0.012) {
-            setSpeedY(Math.signum(getSpeedY()) * 0.012);
-        }
+        double timeToImpactSec = Math.abs(distX / getSpeedX());
+        setSpeedY(-distY / timeToImpactSec);
     }
 
     @Override
@@ -64,14 +60,12 @@ public class AlienBullet extends Sprite {
 
     @Override
     public void updateSpeeds(UpdateContext updateContext) {
-        // TODO: speed should be fixed at construction
-        setSpeedX(-updateContext.scrollSpeedPx * 2);
 
     }
 
     @Override
     public void updateAnimations(UpdateContext updateContext) {
-        // Do nothing
+
     }
 
     @Override
@@ -84,7 +78,7 @@ public class AlienBullet extends Sprite {
     @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         DrawImage drawBullet = new DrawImage(BitmapID.ALIEN_BULLET, (float) getX(), (float) getY());
-        drawBullet.setRotation((int) fireAngle);
+        drawBullet.setRotation((int) travelAngle);
         drawQueue.push(drawBullet);
     }
 }

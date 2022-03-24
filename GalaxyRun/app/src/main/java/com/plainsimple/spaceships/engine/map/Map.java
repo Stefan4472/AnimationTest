@@ -35,14 +35,12 @@ public class Map {
     // X-coordinate at which the next chunk will be spawned
     private double nextSpawnAtPx;
 
-    // TODO: put NUM_ROWS and tileWidthPx in GameContext?
-    // The number of rows of tiles the game has. Does not change.
-    public static final int NUM_ROWS = 6;
-    // Width (px) of the side of a tile (equal to one-sixth of game height px)
-    private final int tileWidthPx;
     // How many pixels past the right of the screen edge to spawn in new
     // chunks
     private final int spawnBeyondScreenPx;
+
+    // Number of rows of tiles in the game. Doesn't change.
+    public static final int NUM_ROWS = 6;
 
     public double getDifficulty() {
         return chunkDifficulty;
@@ -58,8 +56,7 @@ public class Map {
 
     public Map(GameContext gameContext) {
         this.gameContext = gameContext;
-        tileWidthPx = gameContext.gameHeightPx / NUM_ROWS;
-        spawnBeyondScreenPx = tileWidthPx;
+        spawnBeyondScreenPx = gameContext.tileWidthPx;
         mapGenerator = new MapGenerator(gameContext.rand);
         nextSpawnAtPx = 0;
     }
@@ -81,7 +78,7 @@ public class Map {
             Log.d("Map", currChunk.toString());
 
             // Calculate where to begin spawning in the new chunk
-            long offset = (long) numPixelsScrolled % tileWidthPx; // TODO: sure this shouldn't be a "+ offset"?
+            long offset = (long) numPixelsScrolled % gameContext.tileWidthPx; // TODO: sure this shouldn't be a "+ offset"?
             double spawnX = gameContext.gameWidthPx + spawnBeyondScreenPx - offset;
 
             // Spawn in all non-empty tiles
@@ -90,14 +87,14 @@ public class Map {
                     if (currChunk.tiles[i][j] != TileType.EMPTY) {
                         createdSprites.push(createMapTile(
                                 currChunk.tiles[i][j],
-                                spawnX + j * tileWidthPx,
-                                i * tileWidthPx
+                                spawnX + j * gameContext.tileWidthPx,
+                                i * gameContext.tileWidthPx
                         ));
                     }
                 }
             }
 
-            nextSpawnAtPx = numPixelsScrolled + currChunk.numCols * tileWidthPx;
+            nextSpawnAtPx = numPixelsScrolled + currChunk.numCols * gameContext.tileWidthPx;
             Log.d("Map", String.format("nextSpawnAtX = %f", nextSpawnAtPx));
         }
     }
@@ -140,7 +137,7 @@ public class Map {
                 return new Coin(gameContext, x, y);
             }
             case OBSTACLE: {
-                return new Obstacle(gameContext, x, y, tileWidthPx, tileWidthPx);
+                return new Obstacle(gameContext, x, y, gameContext.tileWidthPx, gameContext.tileWidthPx);
             }
             default: {
                 throw new IllegalArgumentException(String.format(

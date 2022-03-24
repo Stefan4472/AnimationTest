@@ -157,7 +157,7 @@ public class TileGenerator {
         // Higher difficulty -> smaller chunk (less time)
         int chunkLength = 3 + (int) (9 * (1.0 - difficulty));
         Chunk chunk = generateEmpty(chunkLength);
-        chunk.tiles[1 + rand.nextInt(Map.NUM_ROWS - 1)][0] = TileType.ALIEN;
+        chunk.tiles[2 + rand.nextInt(Map.NUM_ROWS - 4)][0] = TileType.ALIEN;
         return chunk;
     }
 
@@ -170,7 +170,7 @@ public class TileGenerator {
         int chunkLength = 8 * numAliens;
         Chunk chunk = generateEmpty(chunkLength);
         for (int j = 0; j < numAliens; j++) {
-            chunk.tiles[1 + rand.nextInt(Map.NUM_ROWS - 1)][j * 8] = TileType.ALIEN;
+            chunk.tiles[2 + rand.nextInt(Map.NUM_ROWS - 4)][j * 8] = TileType.ALIEN;
         }
         return chunk;
     }
