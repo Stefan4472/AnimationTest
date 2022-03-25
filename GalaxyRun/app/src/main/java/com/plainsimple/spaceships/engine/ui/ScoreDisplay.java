@@ -66,8 +66,8 @@ public class ScoreDisplay extends UIElement {
     private static Rectangle calcLayout(GameContext gameContext) {
         return new Rectangle(
                 gameContext.screenWidthPx * PADDING_PCT,
-                gameContext.screenHeightPx * PADDING_PCT,
-                gameContext.screenHeightPx * BASE_TEXT_SIZE_PCT,
+                gameContext.screenWidthPx * PADDING_PCT,
+                gameContext.screenWidthPx * BASE_TEXT_SIZE_PCT,
                 gameContext.screenWidthPx * BASE_TEXT_SIZE_PCT
         );
     }

@@ -6,6 +6,7 @@ import android.graphics.Rect;
 
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
+import com.plainsimple.spaceships.helper.BitmapID;
 
 public class DrawImage2 implements DrawParams {
     private final Bitmap bitmap;

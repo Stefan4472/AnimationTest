@@ -32,16 +32,9 @@ part of the bottom of the screen.
 public class GameUI {
 
     private final GameContext gameContext;
-
-    private HashMap<Integer, Touch> currTouches;
-
-    /* UI Elements */
+    // Note: order of elements is also the order that touches are checked.
     private final UIElement[] uiElements;
-    private final HealthBar healthBar;
-    private final ScoreDisplay scoreDisplay;
-    private final PauseButton pauseButton;
-    private final MuteButton muteButton;
-    private final Controls controls;
+    private HashMap<Integer, Touch> currTouches;
 
     // TODO: a better way of doing this
     private boolean isGameOver;
@@ -51,19 +44,14 @@ public class GameUI {
     public GameUI(GameContext gameContext) {
         this.gameContext = gameContext;
         currTouches = new HashMap<>();
-        healthBar = new HealthBar(gameContext);
-        scoreDisplay = new ScoreDisplay(gameContext);
-        pauseButton = new PauseButton(gameContext);
-        muteButton = new MuteButton(gameContext);
-        controls = new Controls(gameContext);
 
         uiElements = new UIElement[] {
-            healthBar,
-            scoreDisplay,
-            pauseButton,
-            muteButton,
-            controls,
+            new PauseButton(gameContext),
+            new MuteButton(gameContext),
+            new Controls(gameContext),
             new ShootButton(gameContext),
+            new HealthBar(gameContext),
+            new ScoreDisplay(gameContext),
         };
     }
 
@@ -121,17 +109,6 @@ public class GameUI {
                 Log.d("GameUI", index + " " + action + " " + e.getPointerCount());
             }
         }
-//
-//        // Events not processed by other elements get registered as shooting
-//        switch (e.getAction()) {
-//            case MotionEvent.ACTION_DOWN:
-//                createdInput.add(UIInputId.START_SHOOTING);
-//                break;
-//            case MotionEvent.ACTION_UP:
-//                createdInput.add(UIInputId.STOP_SHOOTING);
-//                break;
-//        }
-//
 //        // Restart game on button press when game is over
 //        if (isGameOver && e.getAction() == MotionEvent.ACTION_DOWN) {
 //            createdInput.add(UIInputId.RESTART_GAME);
