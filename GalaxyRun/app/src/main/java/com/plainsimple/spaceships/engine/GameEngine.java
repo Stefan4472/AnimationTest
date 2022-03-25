@@ -9,7 +9,6 @@ import com.plainsimple.spaceships.engine.external.ExternalInputId;
 import com.plainsimple.spaceships.engine.external.GameUpdateMessage;
 import com.plainsimple.spaceships.engine.external.MotionExternalInput;
 import com.plainsimple.spaceships.engine.external.SimpleExternalInput;
-import com.plainsimple.spaceships.engine.ui.Background;
 import com.plainsimple.spaceships.engine.ui.GameUI;
 import com.plainsimple.spaceships.engine.ui.UIInputId;
 import com.plainsimple.spaceships.helper.BitmapCache;

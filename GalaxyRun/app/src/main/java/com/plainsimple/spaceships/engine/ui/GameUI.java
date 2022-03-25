@@ -63,6 +63,7 @@ public class GameUI {
             pauseButton,
             muteButton,
             controls,
+            new ShootButton(gameContext),
         };
     }
 

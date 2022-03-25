@@ -1,4 +1,4 @@
-package com.plainsimple.spaceships.engine.ui;
+package com.plainsimple.spaceships.engine;
 
 import android.graphics.*;
 
