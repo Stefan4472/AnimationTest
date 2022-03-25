@@ -30,6 +30,8 @@ import plainsimple.spaceships.R;
  * The Controls is essentially a large button that displays two vertical arrows (one pointing
  * up, the other pointing down). It uses Spaceship.Direction values to keep track of its current
  * state.
+ *
+ * TODO: split into `ControlUpButton` and `ControlDownButton`
  */
 
 public class Controls extends UIElement {

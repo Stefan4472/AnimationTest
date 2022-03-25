@@ -1,5 +1,6 @@
 package com.plainsimple.spaceships.engine.ui;
 
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.plainsimple.spaceships.engine.GameContext;
@@ -25,4 +26,15 @@ public abstract class UIElement {
             Queue<UIInputId> createdInput
     );
 
+    public void onTouchEnter(float x, float y) {
+        Log.d("UIElement", "onTouchEnter " + x + ", " + y);
+    }
+
+    public void onTouchMove(float x, float y) {
+        Log.d("UIElement", "onTouchMove " + x + ", " + y);
+    }
+
+    public void onTouchLeave(float x, float y) {
+        Log.d("UIElement", "onTouchLeave " + x + ", " + y);
+    }
 }
