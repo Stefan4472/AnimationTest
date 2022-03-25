@@ -35,7 +35,7 @@ public class SoundPlayer {
         if (resId == null) {
             resId = loadSound(sound);
         }
-        soundPool.play(resId, 1.0f, 1.0f, 1, 0, 1.0f);
+//        soundPool.play(resId, 1.0f, 1.0f, 1, 0, 1.0f);
     }
 
     // Release all associated memory TODO

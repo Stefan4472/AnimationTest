@@ -22,8 +22,6 @@ import java.util.Queue;
 
 public class HealthBar extends UIElement {
 
-    private GameContext gameContext;
-
     // current health level
     int currentHealth;
     // full health level
@@ -31,13 +29,13 @@ public class HealthBar extends UIElement {
     // health level the bar is transitioning to
     int movingToHealth;
     // width of health bar on screen
-    float width;
+    double width;
     // height of health bar on screen
-    float height;
+    double height;
     // starting x-coordinate
-    float startX;
+    double startX;
     // starting y-coordinate
-    float startY;
+    double startY;
 
     // left, right, and bottom padding (dp)
     private static final int PADDING = 10;
@@ -51,18 +49,23 @@ public class HealthBar extends UIElement {
     // viewWidth and Height will be used to determine size and location of healthbar
     // startHealth and fullHealth configure healthbar values
     public HealthBar(GameContext gameContext) {
-        this.gameContext = gameContext;
-
-        DisplayMetrics metrics = gameContext.appContext.getResources().getDisplayMetrics();
-        float padding = PADDING * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-        width = gameContext.screenWidthPx - 2 * padding;
-        height = gameContext.screenHeightPx * 0.03f;
-        startX = padding;
-        startY = gameContext.screenHeightPx - height - padding; // todo: padding?
-        Log.d("HealthBar", "Coordinates are " + startX + "," + startY + " with w/h " + width + "," + height);
-
+        super(gameContext, calcLayout(gameContext));
+        startX = bounds.getX();
+        startY = bounds.getY();
+        width = bounds.getWidth();
+        height = bounds.getHeight();
         setFullHealth(gameContext.fullHealth);
         setCurrentHealth(gameContext.fullHealth);
+    }
+
+    private static Rectangle calcLayout(GameContext gameContext) {
+        DisplayMetrics metrics = gameContext.appContext.getResources().getDisplayMetrics();
+        float padding = PADDING * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        float width = gameContext.screenWidthPx - 2 * padding;
+        float height = gameContext.screenHeightPx * 0.03f;
+        float x = padding;
+        float y = gameContext.screenHeightPx - height - padding;
+        return new Rectangle(x, y, width, height);
     }
 
     // sets currentHealth to given value without triggering animated change
@@ -95,8 +98,8 @@ public class HealthBar extends UIElement {
 
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         // Draw outline
-        DrawRect outline = new DrawRect(Color.GRAY, Paint.Style.STROKE, height * 0.1f);
-        outline.setBounds(startX, startY, startX + width, startY + height);
+        DrawRect outline = new DrawRect(Color.GRAY, Paint.Style.STROKE, (float) (height * 0.1));
+        outline.setBounds((float) startX, (float) startY, (float) (startX + width), (float) (startY + height));
         drawQueue.push(outline);
 
         if (currentHealth != movingToHealth) {
@@ -106,14 +109,14 @@ public class HealthBar extends UIElement {
         }
 
         // Draw fill
-        float inner_padding = height * 0.1f;
+        float innerPadding = (float) (height * 0.1);
         float pctHealth = currentHealth / (float) fullHealth;
         DrawRect fill = new DrawRect(getHealthBarColor(), Paint.Style.FILL, 0);
         fill.setBounds(
-                startX + inner_padding,
-                startY + inner_padding,
-                startX + inner_padding + pctHealth * (width - height * 0.1f),
-                startY + height - inner_padding
+                (float) startX + innerPadding,
+                (float) startY + innerPadding,
+                (float) (startX + innerPadding + pctHealth * (width - height * 0.1f)),
+                (float) (startY + height - innerPadding)
         );
         drawQueue.push(fill);
 
@@ -121,7 +124,7 @@ public class HealthBar extends UIElement {
         String hpString = currentHealth + "/" + fullHealth;
         DrawText text = new DrawText(
                 hpString,
-                startX + width * 0.9f, startY + height * 0.85f,
+                (float) (startX + width * 0.9), (float) (startY + height * 0.85),
                 Color.GRAY,
                 (int) (height * 0.8f)
         );

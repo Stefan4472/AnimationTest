@@ -8,6 +8,7 @@ import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.engine.draw.DrawText;
+import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
 import java.util.Queue;
@@ -25,8 +26,6 @@ import java.util.Queue;
  * TODO: custom font
  */
 public class ScoreDisplay extends UIElement {
-
-    private GameContext gameContext;
 
     // score to display
     private int score;
@@ -58,9 +57,18 @@ public class ScoreDisplay extends UIElement {
     private static final float BASE_TEXT_SIZE_PCT = 0.10f;
 
     public ScoreDisplay(GameContext gameContext) {
-        this.gameContext = gameContext;
-        startX = gameContext.screenWidthPx * PADDING_PCT;
-        startY = gameContext.screenHeightPx * PADDING_PCT;
+        super(gameContext, calcLayout(gameContext));
+        startX = (float) bounds.getX();
+        startY = (float) bounds.getY();
+    }
+
+    private static Rectangle calcLayout(GameContext gameContext) {
+        return new Rectangle(
+                gameContext.screenWidthPx * PADDING_PCT,
+                gameContext.screenHeightPx * PADDING_PCT,
+                gameContext.screenHeightPx * BASE_TEXT_SIZE_PCT,
+                gameContext.screenWidthPx * BASE_TEXT_SIZE_PCT
+        );
     }
 
     /*

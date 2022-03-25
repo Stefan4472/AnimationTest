@@ -34,8 +34,6 @@ import plainsimple.spaceships.R;
 
 public class Controls extends UIElement {
 
-    private GameContext gameContext;
-
     // R.drawable id of the arrow to use. Should be oriented upwards
     private static final int UP_ARROW_IMG_ID = R.drawable.up_arrow;
     // dp each arrow should be from the vertical center of the view
@@ -54,7 +52,7 @@ public class Controls extends UIElement {
     private boolean isInteractable;
 
     public Controls(GameContext gameContext) {
-        this.gameContext = gameContext;
+        super(gameContext, calcLayout(gameContext));
         currentDirection = Spaceship.Direction.NONE;
 
         // Set width to 30% of game width and height to full game height
@@ -78,38 +76,14 @@ public class Controls extends UIElement {
         boundingBoxDown = new Rectangle(0, downArrowTop, widthPx, downArrow.getHeight());
     }
 
-//    @Override // handle user touching the view. Update currentState based on event
-//    public boolean onTouchEvent(MotionEvent event) {
-//        switch (event.getAction()) {
-//            // determine which arrow button user intended to press. This is done by checking which
-//            // half of the view was touched (top or bottom). Applies equally to ACTION_DOWN and
-//            // ACTION_MOVE (we'd want to detect if the user started pressing the other button)
-//            case MotionEvent.ACTION_DOWN:
-//            case MotionEvent.ACTION_MOVE:
-//                Spaceship.Direction new_direction;
-//                if (event.getY() > getHeight() / 2) {
-//                    new_direction = Spaceship.Direction.DOWN;
-//                } else {
-//                    new_direction = Spaceship.Direction.UP;
-//                }
-//                // check if new state is different. If so, fire OnDirectionChanged and redraw
-//                if (new_direction != currentDirection) {
-//                    currentDirection = new_direction;
-//                    listener.onDirectionChanged(currentDirection);
-//                    Log.d("ArrowButtonView", "Input Direction changed to " + currentDirection);
-//                    invalidate();
-//                }
-//                break;
-//            // user stopped touching buttons: revert to Direction.NONE and call method to redraw
-//            case MotionEvent.ACTION_UP: // end of touch
-//                currentDirection = Spaceship.Direction.NONE;
-//                listener.onDirectionChanged(currentDirection);
-//                Log.d("ArrowButtonView", "Direction changed to None");
-//                invalidate();
-//                break;
-//        }
-//        return true;
-//    }
+    public static Rectangle calcLayout(GameContext gameContext) {
+        return new Rectangle(
+                0,
+                0,
+                gameContext.gameWidthPx * 0.3,
+                gameContext.gameHeightPx
+        );
+    }
 
     public void update(UpdateContext updateContext) {
         currentDirection = updateContext.playerDirection;

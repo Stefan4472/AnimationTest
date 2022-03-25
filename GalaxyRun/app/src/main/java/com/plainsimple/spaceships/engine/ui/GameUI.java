@@ -1,6 +1,7 @@
 package com.plainsimple.spaceships.engine.ui;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.plainsimple.spaceships.engine.GameContext;
@@ -53,6 +54,7 @@ public class GameUI {
 
     public void handleMotionEvent(MotionEvent e) {
 //        Log.d("GameUI", String.format("Processing motion %s", e.toString()));
+        Log.d("GameUI", "Healthbar.IsInBouds=" + healthBar.isInBounds(e.getX(), e.getY()));
         if (healthBar.handleEvent(e, createdInput)) {
             return;
         }
