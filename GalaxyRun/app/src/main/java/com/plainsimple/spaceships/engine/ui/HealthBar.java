@@ -145,9 +145,15 @@ public class HealthBar extends UIElement {
         return Color.rgb((int) red, (int) green, BLUE);
     }
 
-    @Override
-    public boolean handleEvent(MotionEvent e, Queue<UIInputId> createdInput) {
-        // This element is not interactable
-        return false;
+    public void onTouchEnter(float x, float y) {
+        Log.d("HealthBar", "onTouchEnter " + x + ", " + y);
+    }
+
+    public void onTouchMove(float x, float y) {
+        Log.d("HealthBar", "onTouchMove " + x + ", " + y);
+    }
+
+    public void onTouchLeave(float x, float y) {
+        Log.d("HealthBar", "onTouchLeave " + x + ", " + y);
     }
 }

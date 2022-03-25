@@ -51,8 +51,6 @@ public class Controls extends UIElement {
     private final int widthPx, heightPx;
     private Rectangle boundingBoxUp, boundingBoxDown;
 
-    private boolean isInteractable;
-
     public Controls(GameContext gameContext) {
         super(gameContext, calcLayout(gameContext));
         currentDirection = Spaceship.Direction.NONE;
@@ -87,12 +85,12 @@ public class Controls extends UIElement {
         );
     }
 
+    @Override
     public void update(UpdateContext updateContext) {
         currentDirection = updateContext.playerDirection;
-        // Disable changes while game is paused
-        isInteractable = (!updateContext.isPaused);
     }
 
+    @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
         DrawImage3 drawDown = new DrawImage3(downArrow, paddingLeft, downArrowTop);
         DrawImage3 drawUp = new DrawImage3(upArrow, paddingLeft, upArrowTop);
@@ -116,34 +114,33 @@ public class Controls extends UIElement {
     }
 
     @Override
-    public boolean handleEvent(MotionEvent e, Queue<UIInputId> createdInput) {
-        if (!isInteractable) {
-            return false;
-        }
+    public void onTouchEnter(float x, float y) {
+        Log.d("Controls", "onTouchEnter " + x + ", " + y);
+        boolean inUp = boundingBoxUp.isInBounds(x, y);
+        boolean inDown = boundingBoxDown.isInBounds(x, y);
 
-        boolean inUp = boundingBoxUp.isInBounds(e.getX(), e.getY());
-        boolean inDown = boundingBoxDown.isInBounds(e.getX(), e.getY());
-
-        switch (e.getAction()) {
-            case (MotionEvent.ACTION_DOWN): {
-                if (inUp) {
-                    createdInput.add(UIInputId.START_MOVING_UP);
-                    return true;
-                } else if (inDown) {
-                    createdInput.add(UIInputId.START_MOVING_DOWN);
-                    return true;
-                }
-            }
-            case (MotionEvent.ACTION_UP): {
-                // Stop direction input, regardless of where on the screen
-                // is being released
-                createdInput.add(UIInputId.STOP_MOVING);
-                // Consume input if within a bounding box
-                return inUp || inDown;
-            }
-            default: {
-                return false;
-            }
+        if (inUp) {
+            createdInput.add(UIInputId.START_MOVING_UP);
+        } else if (inDown) {
+            createdInput.add(UIInputId.START_MOVING_DOWN);
         }
+    }
+
+    @Override
+    public void onTouchMove(float x, float y) {
+        Log.d("Controls", "onTouchMove " + x + ", " + y);
+        boolean inUp = boundingBoxUp.isInBounds(x, y);
+        boolean inDown = boundingBoxDown.isInBounds(x, y);
+        if (inUp) {
+            createdInput.add(UIInputId.START_MOVING_UP);
+        } else if (inDown) {
+            createdInput.add(UIInputId.START_MOVING_DOWN);
+        }
+    }
+
+    @Override
+    public void onTouchLeave(float x, float y) {
+        Log.d("Controls", "onTouchLeave " + x + ", " + y);
+        createdInput.add(UIInputId.STOP_MOVING);
     }
 }

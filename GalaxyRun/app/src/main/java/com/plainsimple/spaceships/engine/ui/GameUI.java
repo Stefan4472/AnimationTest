@@ -34,6 +34,7 @@ public class GameUI {
     private HashMap<Integer, Touch> currTouches;
 
     /* UI Elements */
+    private final UIElement[] uiElements;
     private final HealthBar healthBar;
     private final ScoreDisplay scoreDisplay;
     private final PauseButton pauseButton;
@@ -44,9 +45,6 @@ public class GameUI {
     private boolean isGameOver;
     private boolean isPaused;
 
-    // TODO: ProtectedQueue?
-    private Queue<UIInputId> createdInput = new ArrayDeque<>();
-
     // TODO: how to reset the UI? (e.g., on game restart?)
     public GameUI(GameContext gameContext) {
         this.gameContext = gameContext;
@@ -56,6 +54,14 @@ public class GameUI {
         pauseButton = new PauseButton(gameContext);
         muteButton = new MuteButton(gameContext);
         controls = new Controls(gameContext);
+
+        uiElements = new UIElement[] {
+            healthBar,
+            scoreDisplay,
+            pauseButton,
+            muteButton,
+            controls,
+        };
     }
 
     private enum MyTouchEvent {
@@ -110,25 +116,8 @@ public class GameUI {
                 int action = e.getActionMasked();
                 int index = e.getActionIndex();
                 Log.d("GameUI", index + " " + action + " " + e.getPointerCount());
-
             }
         }
-
-//        if (healthBar.handleEvent(e, createdInput)) {
-//            return;
-//        }
-//        if (scoreDisplay.handleEvent(e, createdInput)) {
-//            return;
-//        }
-//        if (pauseButton.handleEvent(e, createdInput)) {
-//            return;
-//        }
-//        if (muteButton.handleEvent(e, createdInput)) {
-//            return;
-//        }
-//        if (controls.handleEvent(e, createdInput)) {
-//            return;
-//        }
 //
 //        // Events not processed by other elements get registered as shooting
 //        switch (e.getAction()) {
@@ -176,7 +165,9 @@ public class GameUI {
                     if (touchedElement == currTouch.touchedElement && touchedElement != null) {
                         currTouch.touchedElement.onTouchMove(x, y);
                     } else {
-                        currTouch.touchedElement.onTouchLeave(x, y);
+                        if (currTouch.touchedElement != null) {
+                            currTouch.touchedElement.onTouchLeave(x, y);
+                        }
                         currTouch.touchedElement = touchedElement;
                         if (touchedElement != null) {
                             touchedElement.onTouchEnter(x, y);
@@ -221,45 +212,35 @@ public class GameUI {
     }
 
     private UIElement getElementAt(float x, float y) {
-        if (healthBar.isInBounds(x, y)) {
-            return healthBar;
-        } else if (scoreDisplay.isInBounds(x, y)) {
-            return scoreDisplay;
-        } else if (pauseButton.isInBounds(x, y)) {
-            return pauseButton;
-        } else if (muteButton.isInBounds(x, y)) {
-            return muteButton;
-        } else if (controls.isInBounds(x, y)) {
-            return controls;
-        } else {
-            return null;
+        for (UIElement elem : uiElements) {
+            if (elem.isInBounds(x, y)) {
+                return elem;
+            }
         }
+        return null;
     }
 
-    public List<UIInputId> pollAllInput() {
-        List<UIInputId> copied = new ArrayList<>();
-        while (!createdInput.isEmpty()) {
-            copied.add(createdInput.poll());
+    public Queue<UIInputId> pollAllInput() {
+        Queue<UIInputId> createdInput = new ArrayDeque<>();
+        for (UIElement elem : uiElements) {
+            elem.pollAllInputs(createdInput);
         }
-        return copied;
+        return createdInput;
     }
 
     public void update(UpdateContext updateContext) {
-        healthBar.update(updateContext);
-        scoreDisplay.update(updateContext);
-        pauseButton.update(updateContext);
-        muteButton.update(updateContext);
-        controls.update(updateContext);
+        for (UIElement elem : uiElements) {
+            elem.update(updateContext);
+        }
+
         isGameOver = (updateContext.gameState == GameState.FINISHED);
         isPaused = updateContext.isPaused;
     }
 
     public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
-        healthBar.getDrawParams(drawParams);
-        scoreDisplay.getDrawParams(drawParams);
-        pauseButton.getDrawParams(drawParams);
-        muteButton.getDrawParams(drawParams);
-        controls.getDrawParams(drawParams);
+        for (UIElement elem : uiElements) {
+            elem.getDrawParams(drawParams);
+        }
 
         // TODO: an actual dialog
         if (isGameOver) {

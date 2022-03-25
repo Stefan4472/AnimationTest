@@ -51,15 +51,17 @@ public class MuteButton extends UIElement {
         drawParams.push(drawBtn);
     }
 
-    @Override
-    public boolean handleEvent(MotionEvent e, Queue<UIInputId> createdInput) {
-        if (e.getAction() == MotionEvent.ACTION_DOWN) {
-            if (isInBounds(e.getX(), e.getY())) {
-                // Create event to toggle state
-                createdInput.add((isMuted ? UIInputId.UNMUTE_GAME : UIInputId.MUTE_GAME));
-                return true;
-            }
-        }
-        return false;
+    public void onTouchEnter(float x, float y) {
+        Log.d("MuteButton", "onTouchEnter " + x + ", " + y);
+    }
+
+    public void onTouchMove(float x, float y) {
+        Log.d("MuteButton", "onTouchMove " + x + ", " + y);
+    }
+
+    public void onTouchLeave(float x, float y) {
+        Log.d("MuteButton", "onTouchLeave " + x + ", " + y);
+        // Create event to toggle state
+        createdInput.add((isMuted ? UIInputId.UNMUTE_GAME : UIInputId.MUTE_GAME));
     }
 }

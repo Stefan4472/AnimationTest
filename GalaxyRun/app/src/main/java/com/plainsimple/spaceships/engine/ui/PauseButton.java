@@ -51,15 +51,17 @@ public class PauseButton extends UIElement {
         drawParams.push(drawBtn);
     }
 
-    @Override
-    public boolean handleEvent(MotionEvent e, Queue<UIInputId> createdInput) {
-        if (e.getAction() == MotionEvent.ACTION_DOWN) {
-            if (isInBounds(e.getX(), e.getY())) {
-                // Register event to toggle state
-                createdInput.add((isPaused ? UIInputId.RESUME_GAME : UIInputId.PAUSE_GAME));
-                return true;
-            }
-        }
-        return false;
+    public void onTouchEnter(float x, float y) {
+        Log.d("PauseButton", "onTouchEnter " + x + ", " + y);
+    }
+
+    public void onTouchMove(float x, float y) {
+        Log.d("PauseButton", "onTouchMove " + x + ", " + y);
+    }
+
+    public void onTouchLeave(float x, float y) {
+        Log.d("PauseButton", "onTouchLeave " + x + ", " + y);
+        // Register event to toggle state
+        createdInput.add((isPaused ? UIInputId.RESUME_GAME : UIInputId.PAUSE_GAME));
     }
 }

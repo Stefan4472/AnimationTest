@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.engine.ui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.plainsimple.spaceships.engine.GameContext;
@@ -141,9 +142,15 @@ public class ScoreDisplay extends UIElement {
         return "A:" + Color.alpha(color) + " R:" + Color.red(color) + " G:" + Color.green(color) + " B:" + Color.blue(color);
     }
 
-    @Override
-    public boolean handleEvent(MotionEvent e, Queue<UIInputId> createdInput) {
-        // This element is not interactable
-        return false;
+    public void onTouchEnter(float x, float y) {
+        Log.d("ScoreDisplay", "onTouchEnter " + x + ", " + y);
+    }
+
+    public void onTouchMove(float x, float y) {
+        Log.d("ScoreDisplay", "onTouchMove " + x + ", " + y);
+    }
+
+    public void onTouchLeave(float x, float y) {
+        Log.d("ScoreDisplay", "onTouchLeave " + x + ", " + y);
     }
 }
