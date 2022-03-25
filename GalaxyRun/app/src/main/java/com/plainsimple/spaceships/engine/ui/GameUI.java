@@ -1,6 +1,7 @@
 package com.plainsimple.spaceships.engine.ui;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -8,6 +9,7 @@ import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.GameState;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.engine.draw.DrawText;
 import com.plainsimple.spaceships.util.Pair;
 import com.plainsimple.spaceships.util.ProtectedQueue;
@@ -240,6 +242,10 @@ public class GameUI {
     public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
         for (UIElement elem : uiElements) {
             elem.getDrawParams(drawParams);
+            // Draw bounds TODO: debugging flag
+            DrawRect bounds = new DrawRect(Color.GREEN, Paint.Style.STROKE, 2.0f);
+            bounds.setBounds(elem.bounds);
+            drawParams.push(bounds);
         }
 
         // TODO: an actual dialog

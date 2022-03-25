@@ -43,8 +43,8 @@ public enum BitmapID {
     PAUSE_BUTTON_PAUSED(R.drawable.pause),
     PAUSE_BUTTON_UNPAUSED(R.drawable.play),
     MUTE_BUTTON_MUTED(R.drawable.sound_off),
-    MUTE_BUTTON_UNMUTED(R.drawable.sound_on);
-
+    MUTE_BUTTON_UNMUTED(R.drawable.sound_on),
+    UP_ARROW(R.drawable.up_arrow);
     // r.drawable id specifying bitmap
     private int rId;
 

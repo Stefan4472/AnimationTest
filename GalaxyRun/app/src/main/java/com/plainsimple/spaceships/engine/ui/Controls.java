@@ -1,28 +1,22 @@
 package com.plainsimple.spaceships.engine.ui;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.AttributeSet;
+import android.graphics.Rect;
 import android.util.Log;
-import android.view.MotionEvent;
 
 import com.plainsimple.spaceships.engine.GameContext;
-import com.plainsimple.spaceships.engine.GameState;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.engine.draw.DrawImage2;
 import com.plainsimple.spaceships.engine.draw.DrawImage3;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.engine.draw.DrawRect;
+import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.util.ImageUtil;
 import com.plainsimple.spaceships.util.ProtectedQueue;
-
-import java.util.Queue;
 
 import plainsimple.spaceships.R;
 
@@ -30,58 +24,65 @@ import plainsimple.spaceships.R;
  * The Controls is essentially a large button that displays two vertical arrows (one pointing
  * up, the other pointing down). It uses Spaceship.Direction values to keep track of its current
  * state.
- *
- * TODO: split into `ControlUpButton` and `ControlDownButton`
  */
 
 public class Controls extends UIElement {
 
-    // R.drawable id of the arrow to use. Should be oriented upwards
-    private static final int UP_ARROW_IMG_ID = R.drawable.up_arrow;
-    // dp each arrow should be from the vertical center of the view
-    private static final int DP_FROM_CENTER = 5;
-
-    // bitmaps for the upArrow and downArrow
-    private Bitmap upArrow, downArrow;
-    // calculated top- and left-coordinate values for drawing upArrow and downArrow
-    private int upArrowTop, downArrowTop, paddingLeft;
-    // current state of ArrowButtons, using a Spaceship.Direction value
+    // Current control state
     private Spaceship.Direction currentDirection;
+    // Bounding boxes for the arrows
+    private final Rectangle boundingBoxUp, boundingBoxDown;
+    // Bitmaps for the upArrow and downArrow
+    private final Bitmap upArrow, downArrow;
 
-    private final int widthPx, heightPx;
-    private Rectangle boundingBoxUp, boundingBoxDown;
+    // Left margin as percentage of screen width
+    private static final double MARGIN_LEFT_PCT = 0.03;
+    // Width as percentage of screen width
+    private static final double WIDTH_PCT = 0.25;
+    // Height as percentage of screen height
+    private static final double HEIGHT_PCT = 0.7;
+    // Vertical margin of each arrow as percentage of screen height
+    private static final double MARGIN_FROM_MIDDLE_PCT = 0.01;
 
     public Controls(GameContext gameContext) {
         super(gameContext, calcLayout(gameContext));
         currentDirection = Spaceship.Direction.NONE;
 
-        // Set width to 30% of game width and height to full game height
-        widthPx = (int) (0.3 * gameContext.screenWidthPx);
-        heightPx = gameContext.screenHeightPx;
-
-        // load upArrow and downArrow todo: need to be scaled?
-        upArrow = BitmapFactory.decodeResource(
-                gameContext.appContext.getResources(), UP_ARROW_IMG_ID);
+        // Calculate boxes for up arrow and down arrow
+        double arrowMargin = MARGIN_FROM_MIDDLE_PCT * gameContext.gameHeightPx;
+        double arrowHeight = bounds.getHeight() / 2 - arrowMargin;
+        boundingBoxUp = new Rectangle(
+                bounds.getX(),
+                bounds.getY(),
+                bounds.getWidth(),
+                arrowHeight
+        );
+        boundingBoxDown = new Rectangle(
+                bounds.getX(),
+                gameContext.gameHeightPx / 2.0 + arrowMargin,
+                bounds.getWidth(),
+                arrowHeight
+        );
+        // Load and scale bitmaps based on height only
+        Bitmap upOriginal = gameContext.bitmapCache.getBitmap(BitmapID.UP_ARROW);
+        double scalingFactor = arrowHeight / upOriginal.getHeight();
+        upArrow = Bitmap.createScaledBitmap(
+                upOriginal,
+                (int) (upOriginal.getWidth() * scalingFactor),
+                (int) (upOriginal.getHeight() * scalingFactor),
+                true
+        );
         downArrow = ImageUtil.rotate180(upArrow);
-        Log.d("ArrowButtonView", "Size set to " + widthPx + "," + heightPx);
-
-        // calculate top-left for upArrow and downArrow. We want them mirrored about vertical
-        // center, with a small offset of DP_FROM_CENTER pixels
-        int y_offset = (int) (DP_FROM_CENTER * gameContext.appContext.getResources().getDisplayMetrics().density);
-        upArrowTop = /*getPaddingTop()*/ 0 + heightPx / 2 - upArrow.getHeight() - y_offset;
-        downArrowTop = /*getPaddingTop()*/ 0 + heightPx / 2 + y_offset;
-        paddingLeft = 0;
-
-        boundingBoxUp = new Rectangle(0, upArrowTop, widthPx, upArrow.getHeight() - y_offset);
-        boundingBoxDown = new Rectangle(0, downArrowTop, widthPx, downArrow.getHeight());
     }
 
     public static Rectangle calcLayout(GameContext gameContext) {
+        double width = gameContext.gameWidthPx * WIDTH_PCT;
+        double height = gameContext.gameHeightPx * HEIGHT_PCT;
         return new Rectangle(
-                0,
-                0,
-                gameContext.gameWidthPx * 0.3,
-                gameContext.gameHeightPx
+                gameContext.gameWidthPx * MARGIN_LEFT_PCT,
+                (gameContext.gameHeightPx - height) / 2,
+                width,
+                height
         );
     }
 
@@ -92,36 +93,28 @@ public class Controls extends UIElement {
 
     @Override
     public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
-        DrawImage3 drawDown = new DrawImage3(downArrow, paddingLeft, downArrowTop);
-        DrawImage3 drawUp = new DrawImage3(upArrow, paddingLeft, upArrowTop);
+        DrawImage3 drawUp = new DrawImage3(
+                upArrow, (int) boundingBoxUp.getX(), (int) boundingBoxUp.getY());
+        DrawImage3 drawDown = new DrawImage3(
+                downArrow, (int) boundingBoxDown.getX(), (int) boundingBoxDown.getY());
 
         if (currentDirection == Spaceship.Direction.DOWN) {
             drawParams.push(drawDown);
         } else if (currentDirection == Spaceship.Direction.UP) {
             drawParams.push(drawUp);
         } else {
-            // Draw both
+            // No direction input: draw both
             drawParams.push(drawUp);
             drawParams.push(drawDown);
         }
-
-        DrawRect upHitbox = new DrawRect(Color.GREEN, Paint.Style.STROKE, 2.0f);
-        upHitbox.setBounds(boundingBoxUp);
-        DrawRect downHitbox = new DrawRect(Color.BLUE, Paint.Style.STROKE, 2.0f);
-        downHitbox.setBounds(boundingBoxDown);
-        drawParams.push(upHitbox);
-        drawParams.push(downHitbox);
     }
 
     @Override
     public void onTouchEnter(float x, float y) {
         Log.d("Controls", "onTouchEnter " + x + ", " + y);
-        boolean inUp = boundingBoxUp.isInBounds(x, y);
-        boolean inDown = boundingBoxDown.isInBounds(x, y);
-
-        if (inUp) {
+        if (boundingBoxUp.isInBounds(x, y)) {
             createdInput.add(UIInputId.START_MOVING_UP);
-        } else if (inDown) {
+        } else if (boundingBoxDown.isInBounds(x, y)) {
             createdInput.add(UIInputId.START_MOVING_DOWN);
         }
     }
@@ -129,11 +122,9 @@ public class Controls extends UIElement {
     @Override
     public void onTouchMove(float x, float y) {
         Log.d("Controls", "onTouchMove " + x + ", " + y);
-        boolean inUp = boundingBoxUp.isInBounds(x, y);
-        boolean inDown = boundingBoxDown.isInBounds(x, y);
-        if (inUp) {
+        if (boundingBoxUp.isInBounds(x, y)) {
             createdInput.add(UIInputId.START_MOVING_UP);
-        } else if (inDown) {
+        } else if (boundingBoxDown.isInBounds(x, y)) {
             createdInput.add(UIInputId.START_MOVING_DOWN);
         }
     }
