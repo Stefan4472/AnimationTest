@@ -63,52 +63,41 @@ public class GameUI {
     }
 
     public void handleMotionEvent(MotionEvent e) {
+        // Handle all pointers
         // Read the docs: https://developer.android.com/reference/android/view/MotionEvent.html
-        switch (e.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN: {
-                assert(e.getPointerCount() == 1);
-                int pointerId = e.getPointerId(0);
-                updateTouchState(pointerId, MyTouchEvent.DOWN, e.getX(), e.getY());
-                break;
-            }
-            case MotionEvent.ACTION_UP: {
-                assert(e.getPointerCount() == 1);
-                int pointerId = e.getPointerId(0);
-                updateTouchState(pointerId, MyTouchEvent.UP, e.getX(), e.getY());
-                break;
-            }
-            case MotionEvent.ACTION_MOVE: {
-                for (int i = 0; i < e.getPointerCount(); i++) {
-                    int pointerId = e.getPointerId(i);
-                    int pointerIndex = e.findPointerIndex(pointerId);
-                    float x = e.getX(pointerIndex);
-                    float y = e.getY(pointerIndex);
-                    updateTouchState(pointerId, MyTouchEvent.MOVE, x, y);
+        for (int i = 0; i < e.getPointerCount(); i++) {
+            int pointerId = e.getPointerId(i);
+            int pointerIndex = e.findPointerIndex(pointerId);
+            float x = e.getX(pointerIndex);
+            float y = e.getY(pointerIndex);
+
+            // Convert MotionEvent actions into `MyTouchEvent`
+            switch (e.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                case MotionEvent.ACTION_POINTER_DOWN: {
+                    updateTouchState(pointerId, MyTouchEvent.DOWN, x, y);
+                    break;
                 }
-                break;
-            }
-            case MotionEvent.ACTION_POINTER_DOWN: {
-//                assert(e.getPointerCount() == 1);
-                int pointerId = e.getPointerId(0);
-                updateTouchState(pointerId, MyTouchEvent.DOWN, e.getX(), e.getY());
-                break;
-            }
-            case MotionEvent.ACTION_POINTER_UP: {
-//                assert(e.getPointerCount() == 1);
-                int pointerId = e.getPointerId(0);
-                updateTouchState(pointerId, MyTouchEvent.UP, e.getX(), e.getY());
-                break;
-            }
-            case MotionEvent.ACTION_CANCEL: {
-                updateTouchState(e.getPointerId(0), MyTouchEvent.CANCEL, e.getX(), e.getY());
-                break;
-            }
-            default: {
-                int action = e.getActionMasked();
-                int index = e.getActionIndex();
-                Log.d("GameUI", index + " " + action + " " + e.getPointerCount());
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_POINTER_UP: {
+                    updateTouchState(pointerId, MyTouchEvent.UP, x, y);
+                    break;
+                }
+                case MotionEvent.ACTION_MOVE: {
+                    updateTouchState(pointerId, MyTouchEvent.MOVE, x, y);
+                    break;
+                }
+                case MotionEvent.ACTION_CANCEL: {
+                    updateTouchState(e.getPointerId(0), MyTouchEvent.CANCEL, e.getX(), e.getY());
+                    break;
+                }
+                default: {
+                    int action = e.getActionMasked();
+                    Log.w("GameUI", "Unhandled action: " + MotionEvent.actionToString(action));
+                }
             }
         }
+
 //        // Restart game on button press when game is over
 //        if (isGameOver && e.getAction() == MotionEvent.ACTION_DOWN) {
 //            createdInput.add(UIInputId.RESTART_GAME);
@@ -116,78 +105,84 @@ public class GameUI {
     }
 
     private void updateTouchState(int pointerId, MyTouchEvent event, float x, float y) {
-//        Log.d("GameUI", "updateTouchState(" + pointerId + ") = " + event.name() + " at " + x + ", " + y);
-        // This is unfortunately complicated by the fact that the MotionEvents we get
-        // from Android aren't always well-formed. Theoretically, there should always
-        // be a MOTION_DOWN, followed by some number of MOTION_MOVE, followed by a single
-        // MOTION_UP. This is not always the case!
-        boolean alreadyExists = currTouches.containsKey(pointerId);
-        UIElement touchedElement = getElementAt(x, y);
-
+        // Note: MotionEvents we get from Android aren't always well-formed.
+        // We may receive a MOTION_MOVE without first receiving a MOTION_DOWN.
+        // We may receive two MOTION_UPs in a row.
+        // Therefore we have to be careful when handling these events.
         switch (event) {
             case DOWN: {
-                if (alreadyExists) {
-                    // Ignore
-                    Log.w("GameUI", "Got DOWN but alreadyExists = true");
-                } else {
-                    if (touchedElement == null) {
-                        currTouches.put(pointerId, new Touch(null));
-                    } else {
-                        touchedElement.onTouchEnter(x, y);
-                        currTouches.put(pointerId, new Touch(touchedElement));
-                    }
-                }
+                addTouch(pointerId, x, y);
                 break;
             }
             case MOVE: {
-                if (alreadyExists) {
-                    Touch currTouch = currTouches.get(pointerId);
-                    if (touchedElement == currTouch.touchedElement && touchedElement != null) {
-                        currTouch.touchedElement.onTouchMove(x, y);
-                    } else {
-                        if (currTouch.touchedElement != null) {
-                            currTouch.touchedElement.onTouchLeave(x, y);
-                        }
-                        currTouch.touchedElement = touchedElement;
-                        if (touchedElement != null) {
-                            touchedElement.onTouchEnter(x, y);
-                        }
-                    }
+                if (currTouches.containsKey(pointerId)) {
+                    updateTouch(pointerId, x, y);
                 } else {
-                    if (touchedElement == null) {
-                        currTouches.put(pointerId, new Touch(null));
-                    } else {
-                        touchedElement.onTouchEnter(x, y);
-                        currTouches.put(pointerId, new Touch(touchedElement));
-                    }
-                    Log.w("GameUI", "Got MOVE but alreadyExists = false");
+                    // MOVE without a DOWN
+                    addTouch(pointerId, x, y);
                 }
                 break;
             }
-            case UP: {
-                if (alreadyExists) {
-                    Touch currTouch = currTouches.get(pointerId);
-                    if (currTouch.touchedElement != null) {
-                        currTouch.touchedElement.onTouchLeave(x, y);
-                    }
-                    currTouches.remove(pointerId);
-                } else {
-                    Log.w("GameUI", "Got UP but alreadyExists = false");
-                }
-                break;
-            }
+            case UP:
             case CANCEL: {
-                if (alreadyExists) {
-                    Touch currTouch = currTouches.get(pointerId);
-                    if (currTouch != null) {
-                        currTouch.touchedElement.onTouchLeave(x, y);
-                    }
-                    currTouches.remove(pointerId);
-                } else {
-                    Log.w("GameUI", "Got CANCEL but alreadyExists = false");
-                }
+                removeTouch(pointerId, x, y);
                 break;
             }
+        }
+    }
+
+    private void addTouch(int pointerId, float x, float y) {
+        if (currTouches.containsKey(pointerId)) {
+            // Likely a double DOWN
+            Log.w("GameUI", "Want to add a touch that already exists");
+        } else {
+            UIElement touchedElement = getElementAt(x, y);
+            currTouches.put(pointerId, new Touch(touchedElement));
+            if (touchedElement != null) {
+                touchedElement.onTouchEnter(x, y);
+            }
+        }
+    }
+
+    private void updateTouch(int pointerId, float x, float y) {
+        Touch currTouch = currTouches.get(pointerId);
+        assert(currTouch != null);
+        UIElement touchedElement = getElementAt(x, y);
+
+        if (touchedElement == null && currTouch.touchedElement == null) {
+            // Do nothing
+        } else if (touchedElement == null && currTouch.touchedElement != null) {
+            // Touch was previously in an element, now not anymore
+            currTouch.touchedElement.onTouchLeave(x, y);
+            currTouch.touchedElement = null;
+        } else if (touchedElement != null && currTouch.touchedElement == null) {
+            // Move onto an element
+            touchedElement.onTouchEnter(x, y);
+            currTouch.touchedElement = touchedElement;
+        } else if (touchedElement != null && currTouch.touchedElement != null) {
+            // Was on an element before, and is on an element now
+            if (touchedElement == currTouch.touchedElement) {
+                // Same element
+                currTouch.touchedElement.onTouchMove(x, y);
+            } else {
+                // Different element
+                currTouch.touchedElement.onTouchLeave(x, y);
+                touchedElement.onTouchEnter(x, y);
+                currTouch.touchedElement = touchedElement;
+            }
+        }
+    }
+
+    private void removeTouch(int pointerId, float x, float y) {
+        if (currTouches.containsKey(pointerId)) {
+            Touch currTouch = currTouches.get(pointerId);
+            if (currTouch.touchedElement != null) {
+                currTouch.touchedElement.onTouchLeave(x, y);
+            }
+            currTouches.remove(pointerId);
+        } else {
+            // Likely a double UP
+            Log.w("GameUI", "Want to remove a touch that doesn't exist");
         }
     }
 
