@@ -7,9 +7,9 @@ GameModes in PlayScreenActivity. Displays name of GameMode. -->
     android:layout_height="wrap_content"
     android:background="@drawable/difficultybutton_selected">
     <!-- displays GameMode's name -->
-    <com.plainsimple.spaceships.view.FontTextView
+    <TextView
         android:id="@+id/gamemode_name"
-        style="@style/GalaxyMonkey.TextStyle"
+        style="TextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="start"

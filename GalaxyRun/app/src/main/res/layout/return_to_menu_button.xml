@@ -3,8 +3,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content" android:gravity="center" >
-    <com.plainsimple.spaceships.view.FontButton
-        style="@style/GalaxyMonkey.TextStyle"
+    <Button
+        style="@style/TextStyle"
         android:padding="10dp"
         android:layout_margin="10dp"
         android:text="@string/return_to_menu"

@@ -3,8 +3,8 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!-- dialog's title: displays name of selected GameMode -->
-    <com.plainsimple.spaceships.view.FontTextView
-        style="@style/GalaxyMonkey.TextStyle"
+    <TextView
+        style="@style/TextStyle"
         android:id="@+id/title"
         android:textSize="40dp"
         android:layout_width="wrap_content"
@@ -12,8 +12,8 @@
         android:lines="1"
         android:maxLines="1"/>
     <!-- displays GameMode's highscore -->
-    <com.plainsimple.spaceships.view.FontTextView
-        style="@style/GalaxyMonkey.TextStyle"
+    <TextView
+        style="@style/TextStyle"
         android:id="@+id/highscore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,8 +31,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal">
-        <com.plainsimple.spaceships.view.FontButton
-            style="@style/GalaxyMonkey.ButtonTextStyle"
+        <Button
+            style="@style/ButtonTextStyle"
             android:id="@+id/set_easy"
             android:text="@string/easy_difficulty"
             android:background="@drawable/difficultybutton"
@@ -41,8 +41,8 @@
             android:padding="2dp"
             android:layout_margin="3dp"
             android:layout_weight="1"/>
-        <com.plainsimple.spaceships.view.FontButton
-            style="@style/GalaxyMonkey.ButtonTextStyle"
+        <Button
+            style="@style/ButtonTextStyle"
             android:id="@+id/set_medium"
             android:text="@string/medium_difficulty"
             android:background="@drawable/difficultybutton"
@@ -51,8 +51,8 @@
             android:padding="2dp"
             android:layout_margin="3dp"
             android:layout_weight="1"/>
-        <com.plainsimple.spaceships.view.FontButton
-            style="@style/GalaxyMonkey.ButtonTextStyle"
+        <Button
+            style="@style/ButtonTextStyle"
             android:id="@+id/set_hard"
             android:text="@string/hard_difficulty"
             android:background="@drawable/difficultybutton"
@@ -62,8 +62,8 @@
             android:layout_margin="3dp"
             android:layout_weight="1" />
     </LinearLayout>
-    <com.plainsimple.spaceships.view.FontButton
-        style="@style/GalaxyMonkey.ButtonTextStyle"
+    <Button
+        style="@style/ButtonTextStyle"
         android:id="@+id/start_game"
         android:text="@string/go"
         android:layout_width="wrap_content"

@@ -6,9 +6,9 @@
     android:layout_gravity="center"
     android:background="@drawable/dialog_shape">
     <!-- Title -->
-    <com.plainsimple.spaceships.view.FontTextView
+    <TextView
         android:id="@+id/title_message"
-        style="@style/GalaxyMonkey.TextStyle"
+        style="@style/TextStyle"
         android:layout_width="wrap_content"
         android:gravity="center"
         android:textSize="60dp"
@@ -23,9 +23,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"/>
     <!-- optional small italicized text field for another message (default to GONE) -->
-    <com.plainsimple.spaceships.view.FontTextView
+    <TextView
         android:id="@+id/message"
-        style="@style/GalaxyMonkey.TextStyle"
+        style="@style/TextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
@@ -33,24 +33,24 @@
         android:lines="1"
         android:visibility="gone"/>
     <!-- displays round score -->
-    <com.plainsimple.spaceships.view.FontTextView
+    <TextView
         android:id="@+id/game_score"
-        style="@style/GalaxyMonkey.TextStyle"
+        style="@style/TextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lines="1"/>
     <!-- made visible if this game was a highscore. "Gone" by default -->
-    <com.plainsimple.spaceships.view.FontTextView
+    <TextView
         android:id="@+id/highscore"
-        style="@style/GalaxyMonkey.TextStyle"
+        style="@style/TextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/highscore"
         android:visibility="gone"/>
-    <com.plainsimple.spaceships.view.FontTextView
+    <TextView
         android:id="@+id/other_stats"
-        style="@style/GalaxyMonkey.TextStyle"
+        style="@style/TextStyle"
         android:textSize="25sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -59,8 +59,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <com.plainsimple.spaceships.view.FontButton
-            style="@style/GalaxyMonkey.ButtonTextStyle"
+        <Button
+            style="@style/ButtonTextStyle"
             android:id="@+id/restartbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,8 +68,8 @@
             android:layout_margin="5dp"
             android:layout_marginRight="0dp"
             android:text="@string/play_again" />
-        <com.plainsimple.spaceships.view.FontButton
-            style="@style/GalaxyMonkey.ButtonTextStyle"
+        <Button
+            style="@style/ButtonTextStyle"
             android:id="@+id/quitbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

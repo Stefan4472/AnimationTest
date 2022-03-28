@@ -14,9 +14,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-
-import com.plainsimple.spaceships.view.FontButton;
-import com.plainsimple.spaceships.view.FontTextView;
+import android.widget.Button;
+import android.widget.TextView;
 
 import plainsimple.spaceships.R;
 
@@ -35,13 +34,13 @@ public class MainActivity extends Activity {
         setContentView(R.layout.mainscreen_layout);
 
         // Animate the Title to "inflate"/zoom in on start
-        FontTextView title = findViewById(R.id.title);
+        TextView title = findViewById(R.id.title);
         AnimatorSet title_zoom = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.zoom_in_out);
         title_zoom.setTarget(title);
         title_zoom.start();
 
         // Animate the PlayButton to fade in after slight delay
-        FontButton play_button = findViewById(R.id.playbutton);
+        Button play_button = findViewById(R.id.playbutton);
         AnimatorSet fade_in_1 = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.menubuttons_fadein);
         fade_in_1.setStartDelay(200);
         fade_in_1.setTarget(play_button);

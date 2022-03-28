@@ -5,14 +5,14 @@ in StatsActivity -->
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"> <!-- todo: how to make this better? -->
-    <com.plainsimple.spaceships.view.FontTextView
+    <TextView
         android:id="@+id/statitem_label"
-        style="@style/GalaxyMonkey.TextStyle"
+        style="@style/TextStyle"
         android:textSize="20dp"
         android:layout_alignParentLeft="true"/>
-    <com.plainsimple.spaceships.view.FontTextView
+    <TextView
         android:id="@+id/statitem_value"
-        style="@style/GalaxyMonkey.TextStyle"
+        style="@style/TextStyle"
         android:textSize="20dp"
         android:layout_alignParentRight="true"/>
 </RelativeLayout>

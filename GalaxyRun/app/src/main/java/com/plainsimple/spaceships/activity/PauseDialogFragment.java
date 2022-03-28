@@ -9,9 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.SeekBar;
-
-import com.plainsimple.spaceships.view.FontButton;
 
 import androidx.annotation.Nullable;
 import plainsimple.spaceships.R;
@@ -133,7 +132,7 @@ public class PauseDialogFragment extends DialogFragment {
             }
         });
 
-        FontButton resume_button = (FontButton) view.findViewById(R.id.resumebutton);
+        Button resume_button = (Button) view.findViewById(R.id.resumebutton);
         resume_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -141,7 +140,7 @@ public class PauseDialogFragment extends DialogFragment {
             }
         });
 
-        FontButton quit_button = (FontButton) view.findViewById(R.id.quitbutton);
+        Button quit_button = (Button) view.findViewById(R.id.quitbutton);
         quit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,7 +148,7 @@ public class PauseDialogFragment extends DialogFragment {
             }
         });
 
-        FontButton restart_button = (FontButton) view.findViewById(R.id.restartbutton);
+        Button restart_button = (Button) view.findViewById(R.id.restartbutton);
         restart_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

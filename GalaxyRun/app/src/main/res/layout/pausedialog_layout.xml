@@ -7,8 +7,8 @@
     android:layout_gravity="center"
     android:background="@drawable/dialog_shape">
     <!-- Title -->
-    <com.plainsimple.spaceships.view.FontTextView
-        style="@style/GalaxyMonkey.TextStyle"
+    <TextView
+        style="@style/TextStyle"
         android:layout_width="fill_parent"
         android:textSize="60dp"
         android:layout_marginTop="10dp"
@@ -26,18 +26,18 @@
             android:orientation="vertical"
             android:layout_weight="1"
             android:paddingLeft="10dp">
-            <com.plainsimple.spaceships.view.FontTextView
-                style="@style/GalaxyMonkey.TextStyle"
+            <TextView
+                style="@style/TextStyle"
                 android:id="@+id/gamevolume_display"
                 android:textSize="25dp"
                 android:text="@string/game_volume" >
-            </com.plainsimple.spaceships.view.FontTextView>
-            <com.plainsimple.spaceships.view.FontTextView
-                style="@style/GalaxyMonkey.TextStyle"
+            </TextView>
+            <TextView
+                style="@style/TextStyle"
                 android:id="@+id/musicvolume_display"
                 android:textSize="25dp"
                 android:text="@string/music_volume" >
-            </com.plainsimple.spaceships.view.FontTextView>
+            </TextView>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/seekbars"
@@ -61,8 +61,8 @@
     </LinearLayout>
     <!-- restart button -->
     <!-- Resume Button -->
-    <com.plainsimple.spaceships.view.FontButton
-        style="@style/GalaxyMonkey.ButtonTextStyle"
+    <Button
+        style="@style/ButtonTextStyle"
         android:id="@+id/resumebutton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -73,8 +73,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <!-- Restart Button -->
-        <com.plainsimple.spaceships.view.FontButton
-            style="@style/GalaxyMonkey.ButtonTextStyle"
+        <Button
+            style="@style/ButtonTextStyle"
             android:id="@+id/restartbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -82,8 +82,8 @@
             android:layout_marginTop="10dp"
             android:text="@string/restart"/>
         <!-- Quit Button -->
-        <com.plainsimple.spaceships.view.FontButton
-            style="@style/GalaxyMonkey.ButtonTextStyle"
+        <Button
+            style="@style/ButtonTextStyle"
             android:id="@+id/quitbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -1,23 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Applies the Cyanotype font -->
-    <style name="Cyanotype" parent="@android:style/Widget.Button">
-<!--        <item name="font">fonts/Cyanotype.ttf</item>-->
-    </style>
-    <!-- Applies the EngineerHand font -->
-    <style name="EngineerHand" parent="@android:style/Widget.Button">
-<!--        <item name="font">fonts/EngineerHand.ttf</item>-->
-    </style>
-    <!-- Applies Andromeda font -->
-    <style name="Andromeda"> <!-- setting parent doesn't appear to do much -->
-<!--        <item name="font">fonts/AndromedaTV.TTF</item>-->
-    </style>
-    <!-- Applies Galaxy Monkey font -->
-    <style name="GalaxyMonkey">
-<!--        <item name="font">fonts/galax___.ttf</item>-->
-    </style>
     <!-- Style used for menu buttons -->
-    <style name="Andromeda.MenuStyle">
+    <style name="MenuStyle">
         <item name="android:textColor">@drawable/button_textcolor</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:textSize">80dp</item>
@@ -25,11 +9,8 @@
         <item name="android:gravity">center_horizontal</item>
         <item name="android:layout_centerHorizontal">true</item>
     </style>
-    <style name="GalaxyMonkey.MenuStyle">
-        <item name="android:background">@android:color/transparent</item>
-    </style>
     <!-- Base style used for most text -->
-    <style name="GalaxyMonkey.TextStyle">
+    <style name="TextStyle">
         <item name="android:textColor">@color/orange</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -38,7 +19,7 @@
         <item name="android:gravity">center_horizontal</item>
     </style>
     <!-- Base style used for most text in FontButtons -->
-    <style name="GalaxyMonkey.ButtonTextStyle">
+    <style name="ButtonTextStyle">
         <item name="android:textColor">@color/orange</item>
         <item name="android:textSize">30dp</item>
         <item name="android:gravity">center_horizontal</item>

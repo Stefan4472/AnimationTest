@@ -6,8 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-
-import com.plainsimple.spaceships.view.FontTextView;
+import android.widget.TextView;
 
 import plainsimple.spaceships.R;
 
@@ -52,11 +51,11 @@ public class StatsRowAdapter extends ArrayAdapter<String> {
             convertView = inflater.inflate(rId, parent, false);
         }
         // set row's label
-        FontTextView label = (FontTextView) convertView.findViewById(R.id.statitem_label);
+        TextView label = (TextView) convertView.findViewById(R.id.statitem_label);
         label.setText(keys[position]);
 
         // set row's value
-        FontTextView value = (FontTextView) convertView.findViewById(R.id.statitem_value);
+        TextView value = (TextView) convertView.findViewById(R.id.statitem_value);
         value.setText(values[position]);
         return convertView;
     }

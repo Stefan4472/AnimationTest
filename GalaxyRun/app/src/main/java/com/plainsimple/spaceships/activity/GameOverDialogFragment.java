@@ -9,12 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 
 import com.plainsimple.spaceships.stats.GameStats;
 import com.plainsimple.spaceships.stats.StatsRowAdapter;
-import com.plainsimple.spaceships.view.FontButton;
-import com.plainsimple.spaceships.view.FontTextView;
 import com.plainsimple.spaceships.view.StarsEarnedView;
 
 import plainsimple.spaceships.R;
@@ -117,7 +118,7 @@ public class GameOverDialogFragment extends DialogFragment {
         Bundle bundle = getArguments();
 
         // set main message (depends on whether game was won or lost)
-        FontTextView main_msg = (FontTextView) view.findViewById(R.id.message);
+        TextView main_msg = (TextView) view.findViewById(R.id.message);
         main_msg.setText(bundle.getString(MAIN_MSG_KEY));
 
         // display how many stars were earned
@@ -127,7 +128,7 @@ public class GameOverDialogFragment extends DialogFragment {
         // display sub-message if desired
 
         // display GameScore
-        FontTextView game_score = (FontTextView) view.findViewById(R.id.game_score);
+        TextView game_score = (TextView) view.findViewById(R.id.game_score);
         if (bundle.getBoolean(HIGHSCORE_KEY)) {
             game_score.setText("Score: " + bundle.getString(GAME_SCORE_KEY) + " (Highscore!)");
         } else {
@@ -135,14 +136,14 @@ public class GameOverDialogFragment extends DialogFragment {
         }
 
         // display other stats
-        FontTextView other_stats = (FontTextView) view.findViewById(R.id.other_stats);
+        TextView other_stats = (TextView) view.findViewById(R.id.other_stats);
         String stats_str = bundle.getString(DIST_TRAVELED_KEY) + " / " +
                 bundle.getString(ROUND_DURATION_KEY) + " / " +
                 bundle.getString(COINS_COLLECTED_KEY) + " Coins";
         other_stats.setText(stats_str);
 
         // button to quit game
-        FontButton quit_button = (FontButton) view.findViewById(R.id.quitbutton);
+        Button quit_button = (Button) view.findViewById(R.id.quitbutton);
         quit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,7 +152,7 @@ public class GameOverDialogFragment extends DialogFragment {
         });
 
         // button to restart game i.e. directly launch a new game
-        FontButton restart_button = (FontButton) view.findViewById(R.id.restartbutton);
+        Button restart_button = (Button) view.findViewById(R.id.restartbutton);
         restart_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
