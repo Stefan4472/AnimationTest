@@ -1,7 +1,6 @@
 package com.plainsimple.spaceships.engine.ui;
 
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -32,7 +31,7 @@ public class GameUI {
     private final UIElement[] uiElements;
     private HashMap<Integer, Touch> currTouches;
 
-    private GameOverOverlay gameoverOverlay;
+    private GameoverOverlay gameoverOverlay;
     private PauseOverlay pauseOverlay;
 
     // TODO: how to reset the UI? (e.g., on game restart?)
@@ -40,7 +39,7 @@ public class GameUI {
         this.gameContext = gameContext;
         currTouches = new HashMap<>();
 
-        gameoverOverlay = new GameOverOverlay(gameContext);
+        gameoverOverlay = new GameoverOverlay(gameContext);
         pauseOverlay = new PauseOverlay(gameContext);
 
         uiElements = new UIElement[] {

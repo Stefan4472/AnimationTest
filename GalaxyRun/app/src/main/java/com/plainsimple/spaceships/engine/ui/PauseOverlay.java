@@ -1,28 +1,43 @@
 package com.plainsimple.spaceships.engine.ui;
 
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
+import android.graphics.Typeface;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawInstruction;
-import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.engine.draw.DrawText;
 import com.plainsimple.spaceships.helper.FontId;
 import com.plainsimple.spaceships.helper.Rectangle;
+import com.plainsimple.spaceships.util.Dimension2D;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
-// TODO: needs a lot of cleanup
 public class PauseOverlay extends UIElement {
-    private final static double WIDTH_PCT = 0.4;
+    private final int fontSize;
+    private final Typeface font;
+    // Draw coordinates for text
+    private final int drawX, drawY;
+
+    // Overlay width/height
+    private final static double WIDTH_PCT = 0.5;
     private final static double HEIGHT_PCT = 0.3;
+
+    // Configure text
+    private final static String TEXT = "Paused";
     private final static double TEXT_SIZE_PCT = 0.2;
+    private final static FontId FONT = FontId.GALAXY_MONKEY;
+    private final int TEXT_COLOR = Color.parseColor("#ffb30f");
 
     public PauseOverlay(GameContext gameContext) {
         super(gameContext, calcLayout(gameContext));
         isTouchable = false;
         isVisible = false;
+
+        font = gameContext.fontCache.get(FONT);
+        fontSize = (int) (gameContext.gameHeightPx * TEXT_SIZE_PCT);
+        Dimension2D textDims = Util.calcTextDimensions(TEXT, fontSize, font);
+        drawX = (int) (bounds.getX() + (bounds.getWidth() - textDims.width) / 2);
+        drawY = (int) (bounds.getY() + (bounds.getHeight() - textDims.height) / 2 + textDims.height);
     }
 
     private static Rectangle calcLayout(GameContext gameContext) {
@@ -53,24 +68,15 @@ public class PauseOverlay extends UIElement {
 
     @Override
     public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
-        drawInstructions.push(DrawRect.filled(bounds.toRect(), Color.BLACK));
+//        drawInstructions.push(DrawRect.filled(bounds.toRect(), Color.BLACK));
 
-        // https://stackoverflow.com/a/26975371
-        Paint paint = new Paint();
-        Rect textBounds = new Rect();
-        paint.setTypeface(gameContext.fontCache.get(FontId.GALAXY_MONKEY));
-        paint.setTextSize((int) (gameContext.gameHeightPx * TEXT_SIZE_PCT));
-        String text = "Paused";
-        paint.getTextBounds(text, 0, text.length(), textBounds);
-        int text_width =  textBounds.width();
-        int text_height =  textBounds.height();
         drawInstructions.push(new DrawText(
-                "Paused",
-                (float) (bounds.getX() + (bounds.getWidth() - text_width) / 2),
-                (float) (bounds.getY() + (bounds.getHeight() - text_height) / 2 + text_height),
-                Color.YELLOW,
-                (int) (gameContext.gameHeightPx * TEXT_SIZE_PCT),
-                gameContext.fontCache.get(FontId.GALAXY_MONKEY)
+                TEXT,
+                drawX,
+                drawY,
+                TEXT_COLOR,
+                fontSize,
+                font
         ));
     }
 
