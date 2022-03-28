@@ -1,8 +1,5 @@
 package com.plainsimple.spaceships.engine.ui;
 
-import android.util.Log;
-import android.view.MotionEvent;
-
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
@@ -16,6 +13,16 @@ public abstract class UIElement {
     protected final GameContext gameContext;
     protected final Rectangle bounds;
     protected Queue<UIInputId> createdInput;
+    protected boolean isVisible = true;
+    protected boolean isTouchable = true;
+
+    public boolean getIsVisible() {
+        return isVisible;
+    }
+
+    public boolean getIsTouchable() {
+        return isTouchable;
+    }
 
     public UIElement(GameContext gameContext, Rectangle bounds) {
         this.gameContext = gameContext;

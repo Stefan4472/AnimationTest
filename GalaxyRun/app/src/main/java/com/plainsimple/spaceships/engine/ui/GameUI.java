@@ -33,8 +33,11 @@ public class GameUI {
 
     private final GameContext gameContext;
     // Note: order of elements is also the order that touches are checked.
+    // Elements are drawn in reverse order.
     private final UIElement[] uiElements;
     private HashMap<Integer, Touch> currTouches;
+
+    private PauseOverlay pauseOverlay;
 
     // TODO: a better way of doing this
     private boolean isGameOver;
@@ -45,7 +48,10 @@ public class GameUI {
         this.gameContext = gameContext;
         currTouches = new HashMap<>();
 
+        pauseOverlay = new PauseOverlay(gameContext);
+
         uiElements = new UIElement[] {
+            pauseOverlay,
             new PauseButton(gameContext),
             new MuteButton(gameContext),
             new Controls(gameContext),
@@ -188,7 +194,7 @@ public class GameUI {
 
     private UIElement getElementAt(float x, float y) {
         for (UIElement elem : uiElements) {
-            if (elem.isInBounds(x, y)) {
+            if (elem.getIsTouchable() && elem.isInBounds(x, y)) {
                 return elem;
             }
         }
@@ -209,31 +215,30 @@ public class GameUI {
         }
 
         isGameOver = (updateContext.gameState == GameState.FINISHED);
-        isPaused = updateContext.isPaused;
+        if (updateContext.isPaused) {
+            pauseOverlay.show();
+        } else {
+            pauseOverlay.hide();
+        }
     }
 
     public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
-        for (UIElement elem : uiElements) {
-            elem.getDrawParams(drawParams);
-            // Draw bounds TODO: debugging flag
-            DrawRect bounds = new DrawRect(Color.GREEN, Paint.Style.STROKE, 2.0f);
-            bounds.setBounds(elem.bounds);
-            drawParams.push(bounds);
+        // Draw in reverse order
+        for (int i = uiElements.length - 1; i >= 0; i--) {
+            UIElement elem = uiElements[i];
+            if (elem.getIsVisible()) {
+                elem.getDrawParams(drawParams);
+                // Draw bounds TODO: debugging flag
+                DrawRect bounds = new DrawRect(Color.GREEN, Paint.Style.STROKE, 2.0f);
+                bounds.setBounds(elem.bounds);
+                drawParams.push(bounds);
+            }
         }
 
         // TODO: an actual dialog
         if (isGameOver) {
             drawParams.push(new DrawText(
                     "GAME OVER",
-                    gameContext.gameWidthPx / 2.0f,
-                    gameContext.gameHeightPx / 2.0f,
-                    Color.YELLOW,
-                    70
-            ));
-        }
-        if (isPaused) {
-            drawParams.push(new DrawText(
-                    "PAUSED",
                     gameContext.gameWidthPx / 2.0f,
                     gameContext.gameHeightPx / 2.0f,
                     Color.YELLOW,

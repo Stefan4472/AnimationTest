@@ -13,6 +13,7 @@ import com.plainsimple.spaceships.helper.BitmapCache;
 
 public class DrawText implements DrawParams {
 
+    // TODO: take convention of x,y as top-left?
     // text to draw
     private String text;
     // bottom-left x-coordinate

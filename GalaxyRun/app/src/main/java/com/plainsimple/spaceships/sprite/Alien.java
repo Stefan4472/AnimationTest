@@ -23,9 +23,7 @@ import java.util.List;
  * in a sine wave. Its hp is calculated based on the difficulty,
  * and Aliens become steadily stronger as difficulty increases.
  * An Alien fires AlienBullets at the Spaceship, with this behavior
- * determined by the bulletDelay. These bullets are stored in
- * the projectiles LinkedList, which is accessible and clearable
- * via the getAndClearProjectiles() method.
+ * determined by the bulletDelay.
  * The Alien also has a HealthBarAnimation, which
  * displays when it loses health, and additionally displays
  * LoseHealthAnimations when it loses damage.
@@ -48,7 +46,6 @@ public class Alien extends Sprite {
     // Minimum amount of time that must elapse between each shot
     private final int bulletWaitMs;
 
-    private BitmapData bulletBitmapData;
     private SpriteAnimation explodeAnim;
     // draws animated healthbar above Alien if Alien is damaged
     private HealthBarAnimation healthBarAnimation;
@@ -88,19 +85,19 @@ public class Alien extends Sprite {
 
     @Override
     public void updateActions(UpdateContext updateContext) {
-        framesSinceLastBullet++;
+        if (alienState == AlienState.HOVERING) {
+            msSinceLastBullet += updateContext.getGameTime().msSincePrevUpdate;
+        }
 
-        if (shouldTerminate(updateContext)) {
-            updateContext.createEvent(EventID.ALIEN_DIED);
+        if (shouldTerminate()) {
             setCurrState(SpriteState.TERMINATED);
         }
 
         if (canShoot(updateContext)) {
             updateContext.createEvent(EventID.ALIEN_FIRED_BULLET);
             updateContext.createSound(SoundID.ALIEN_FIRED_BULLET);
-            fireBullet(updateContext.playerSprite, updateContext);
-            framesSinceLastBullet = 0;
-            bulletsLeft--;
+            shootBullet(updateContext, updateContext.playerSprite);
+            msSinceLastBullet = 0;
         }
 
         if (alienState == AlienState.FLYING_IN && getX() < hoverX) {
@@ -109,7 +106,7 @@ public class Alien extends Sprite {
         }
     }
 
-    private boolean shouldTerminate(UpdateContext updateContext) {
+    private boolean shouldTerminate() {
         // Terminate if dead and explosion has finished playing,
         // or if no longer visible
         return getState() == SpriteState.DEAD && explodeAnim.hasPlayed();
@@ -117,11 +114,9 @@ public class Alien extends Sprite {
 
     private boolean canShoot(UpdateContext updateContext) {
         return getState() == SpriteState.ALIVE &&
-                framesSinceLastBullet >= bulletDelay &&
+                alienState == AlienState.HOVERING &&
                 updateContext.playerSprite.getState() == SpriteState.ALIVE &&
-                bulletsLeft > 0 &&
-                gameContext.rand.nextFloat() <= 0.3f &&
-                getX() > gameContext.gameWidthPx / 2.0;
+                msSinceLastBullet >= bulletWaitMs;
     }
 
     /*
@@ -144,18 +139,12 @@ public class Alien extends Sprite {
 
     @Override
     public void updateSpeeds(UpdateContext updateContext) {
-        // TODO: comment, improve
-//        double projected_y;
-//        // if sprite in top half of screen, start flying down. Else start flying up
-//        if (startingY <= gameContext.gameWidthPx / 2.0) {
-//            projected_y = amplitude * Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
-//        } else { // todo: flying up
-//            projected_y = amplitude * Math.sin(2 * Math.PI / period * (elapsedFrames + hShift)) + startingY + vShift;
-//        }
-//        setSpeedY((projected_y - getY()) / 600);
-//        elapsedFrames++;
-        setSpeedX(-updateContext.scrollSpeedPx / 3);
-        setSpeedY(0);
+        if (alienState == AlienState.FLYING_IN) {
+            setSpeedX(-updateContext.scrollSpeedPx);
+        } else {
+            setSpeedX(0);
+        }
+        setSpeedY(Math.cos(updateContext.getGameTime().runTimeMs * 1.0 / periodMs) * amplitudePx);
     }
 
     @Override
