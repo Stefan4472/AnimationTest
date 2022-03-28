@@ -13,6 +13,7 @@ import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.Dimension2D;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
+// TODO: add score display, stars earned, etc.
 public class GameoverOverlay extends UIElement {
 
     private boolean isButtonTouched;
