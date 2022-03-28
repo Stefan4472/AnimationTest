@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.helper;
 
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.engine.draw.DrawRect;
@@ -69,22 +70,25 @@ public class HealthBarAnimation {
     public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawQueue) {
         if (remainingShowTimeMs > 0) {
             // Draw outline
-            DrawRect drawOutline = new DrawRect(OUTLINE_COLOR, Paint.Style.STROKE, innerPadding);
-            drawOutline.setBounds(new Rectangle(x, y, healthBarWidth, healthBarHeight));
-            drawQueue.push(drawOutline);
+            drawQueue.push(DrawRect.outline(
+                    new Rect((int) x, (int) y, (int) healthBarWidth, (int) healthBarHeight),
+                    OUTLINE_COLOR,
+                    innerPadding
+            ));
 
             // Draw fill
             int fillColor = calcFillColor(health, maxHealth);
             double fillWidth = (healthBarWidth - 2 * innerPadding) * (1.0 * health / maxHealth);
             double fillHeight = (healthBarHeight - 2 * innerPadding);
-            DrawRect drawFill = new DrawRect(fillColor, Paint.Style.FILL, 0);
-            drawFill.setBounds(new Rectangle(
-                    x + innerPadding,
-                    y + innerPadding,
-                    fillWidth,
-                    fillHeight
+            drawQueue.push(DrawRect.filled(
+                    new Rect(
+                            (int) (x + innerPadding),
+                            (int) (y + innerPadding),
+                            (int) (fillWidth),
+                            (int) (fillHeight)
+                    ),
+                    fillColor
             ));
-            drawQueue.push(drawFill);
         }
     }
 

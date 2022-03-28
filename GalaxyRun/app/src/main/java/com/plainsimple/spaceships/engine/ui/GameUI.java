@@ -227,9 +227,8 @@ public class GameUI {
             if (elem.getIsVisible()) {
                 elem.getDrawInstructions(drawInstructions);
                 // Draw bounds TODO: debugging flag
-                DrawRect bounds = new DrawRect(Color.GREEN, Paint.Style.STROKE, 2.0f);
-                bounds.setBounds(elem.bounds);
-                drawInstructions.push(bounds);
+                drawInstructions.push(
+                        DrawRect.outline(elem.bounds.toRect(), Color.GREEN, 2.0f));
             }
         }
     }

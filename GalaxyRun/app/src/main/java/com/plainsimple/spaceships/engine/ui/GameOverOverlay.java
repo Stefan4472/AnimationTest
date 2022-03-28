@@ -71,9 +71,7 @@ public class GameOverOverlay extends UIElement {
 
     @Override
     public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
-        DrawRect box = new DrawRect(Color.BLACK, Paint.Style.FILL, 0);
-        box.setBounds(bounds);
-        drawInstructions.push(box);
+        drawInstructions.push(DrawRect.filled(bounds.toRect(), Color.BLACK));
 
         // https://stackoverflow.com/a/26975371
         Paint paint = new Paint();
@@ -93,9 +91,7 @@ public class GameOverOverlay extends UIElement {
                 gameContext.fontCache.get(FontId.GALAXY_MONKEY)
         ));
 
-        DrawRect buttonFill = new DrawRect(Color.GRAY, Paint.Style.FILL, 0);
-        buttonFill.setBounds(playAgainBounds);
-        drawInstructions.push(buttonFill);
+        drawInstructions.push(DrawRect.filled(playAgainBounds.toRect(), Color.GRAY));
 
         Paint paint2 = new Paint();
         Rect textBounds2 = new Rect();

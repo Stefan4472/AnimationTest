@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.engine.draw;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.Rectangle;
@@ -12,56 +13,37 @@ import com.plainsimple.spaceships.helper.Rectangle;
 
 public class DrawRect implements DrawInstruction {
 
-
-    // top-left x-coordinate todo: simply use Rect?
-    private float x;
-    // top-left y-coordinate
-    private float y;
-    // bottom-right x-coordinate
-    private float x1;
-    // bottom-right y-coordinate
-    private float y1;
-    // color of rectangle
-    private int color;
-    // style to use in drawing
-    private Paint.Style style;
-    // width of stroke
-    private float strokeWidth;
+    private Rect rect;
     private Paint paint;
 
-    // initializes properties without setting coordinates
-    public DrawRect(int color, Paint.Style style, float strokeWidth) {
-        this.color = color;
-        this.style = style;
-        this.strokeWidth = strokeWidth;
+    public DrawRect(Rect rect, Paint paint) {
+        this.rect = rect;
+        this.paint = paint;
+    }
 
-        paint = new Paint();
+    /*
+    Create a DrawRect filled with the specified color.
+     */
+    public static DrawRect filled(Rect rect, int color) {
+        Paint paint = new Paint();
         paint.setColor(color);
-        paint.setStyle(style);
+        paint.setStyle(Paint.Style.FILL);
+        return new DrawRect(rect, paint);
+    }
+
+    /*
+    Create a DrawRect to draw an outline with the specified color and thickness.
+     */
+    public static DrawRect outline(Rect rect, int color, float strokeWidth) {
+        Paint paint = new Paint();
+        paint.setColor(color);
+        paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(strokeWidth);
-    }
-
-    // sets bounds of rectangle to those specified by given Rectangle
-    public void setBounds(Rectangle bounds) {
-        x = (float) bounds.getX();
-        y = (float) bounds.getY();
-        x1 = (float) (bounds.getX() + bounds.getWidth());
-        y1 = (float) (bounds.getY() + bounds.getHeight());
-    }
-
-    public void setBounds(float x, float y, float x1, float y1) {
-        this.x = x;
-        this.y = y;
-        this.x1 = x1;
-        this.y1 = y1;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
+        return new DrawRect(rect, paint);
     }
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawRect(x, y, x1, y1, paint);
+        canvas.drawRect(rect, paint);
     }
 }

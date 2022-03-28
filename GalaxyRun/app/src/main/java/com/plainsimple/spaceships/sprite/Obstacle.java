@@ -20,17 +20,14 @@ import com.plainsimple.spaceships.util.ProtectedQueue;
  */
 public class Obstacle extends Sprite {
 
-    // Obstacle color
-    private int color = Color.rgb(103, 103, 103);
-    private DrawRect DRAW_OBSTACLE;
-
+    // Color
+    private static final int OBSTACLE_COLOR = Color.rgb(103, 103, 103);
+    // Amount of damage done
     public static final int OBSTACLE_DAMAGE = 5;
 
     public Obstacle(GameContext gameContext, double x, double y, int width, int height) {
         super(gameContext, x, y, width, height);
         setHealth(OBSTACLE_DAMAGE);
-        // Init DrawRect instance with specified color and fill Paint Style
-        DRAW_OBSTACLE = new DrawRect(color, Paint.Style.FILL, 1);
     }
 
     @Override
@@ -66,8 +63,6 @@ public class Obstacle extends Sprite {
 
     @Override
     public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawQueue) {
-        // todo: only draw what's on screen
-        DRAW_OBSTACLE.setBounds(getHitbox());
-        drawQueue.push(DRAW_OBSTACLE);
+        drawQueue.push(DrawRect.filled(getHitbox().toRect(), OBSTACLE_COLOR));
     }
 }

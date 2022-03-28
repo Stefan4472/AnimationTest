@@ -53,9 +53,7 @@ public class PauseOverlay extends UIElement {
 
     @Override
     public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
-        DrawRect box = new DrawRect(Color.BLACK, Paint.Style.FILL, 0);
-        box.setBounds(bounds);
-        drawInstructions.push(box);
+        drawInstructions.push(DrawRect.filled(bounds.toRect(), Color.BLACK));
 
         // https://stackoverflow.com/a/26975371
         Paint paint = new Paint();

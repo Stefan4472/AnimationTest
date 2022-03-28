@@ -138,9 +138,7 @@ public abstract class Sprite {
     Utility method: draw red rectangle where sprite's hitbox is.
      */
     public DrawInstruction drawHitbox() {
-        DrawRect drawHitbox = new DrawRect(Color.RED, Paint.Style.STROKE, 3);
-        drawHitbox.setBounds(hitbox);
-        return drawHitbox;
+        return DrawRect.outline(hitbox.toRect(), Color.RED, 3);
     }
 
     /* Begin getters and setters */

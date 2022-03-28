@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.engine.ui;
 
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -95,9 +96,11 @@ public class HealthBar extends UIElement {
 
     public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
         // Draw outline
-        DrawRect outline = new DrawRect(Color.GRAY, Paint.Style.STROKE, (float) (height * 0.1));
-        outline.setBounds((float) startX, (float) startY, (float) (startX + width), (float) (startY + height));
-        drawInstructions.push(outline);
+        drawInstructions.push(DrawRect.outline(
+                new Rect((int) startX, (int) startY, (int) (startX + width), (int) (startY + height)),
+                Color.GRAY,
+                (float) (height * 0.1)
+        ));
 
         if (currentHealth != movingToHealth) {
             // Transition down 20% of the remaining distance between
@@ -108,12 +111,13 @@ public class HealthBar extends UIElement {
         // Draw fill
         float innerPadding = (float) (height * 0.1);
         float pctHealth = currentHealth / (float) fullHealth;
-        DrawRect fill = new DrawRect(getHealthBarColor(), Paint.Style.FILL, 0);
-        fill.setBounds(
-                (float) startX + innerPadding,
-                (float) startY + innerPadding,
-                (float) (startX + innerPadding + pctHealth * (width - height * 0.1f)),
-                (float) (startY + height - innerPadding)
+        DrawRect fill = DrawRect.filled(
+                new Rect(
+                        (int) (startX + innerPadding),
+                        (int) (startY + innerPadding),
+                        (int) (startX + innerPadding + pctHealth * (width - height * 0.1f)),
+                        (int) (startY + height - innerPadding)
+                ), getHealthBarColor()
         );
         drawInstructions.push(fill);
 
