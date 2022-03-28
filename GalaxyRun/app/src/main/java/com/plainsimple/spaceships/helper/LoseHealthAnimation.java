@@ -69,7 +69,6 @@ public class LoseHealthAnimation {
 
     public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
         if (!isFinished()) {
-            Log.d("LoseHealth", "Drawing to " + x + ", " + y + " with size " + textSize);
             drawQueue.push(new DrawText(
                     Integer.toString(damage),
                     (float) x,

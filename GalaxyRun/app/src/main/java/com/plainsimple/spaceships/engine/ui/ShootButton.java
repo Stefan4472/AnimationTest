@@ -7,7 +7,6 @@ import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
 public class ShootButton extends UIElement {
-    private boolean changedSinceUpdate;
     private boolean isShooting;
     private static final double WIDTH_PCT = 0.6;
     private static final double HEIGHT_PCT = 0.8;
@@ -29,10 +28,8 @@ public class ShootButton extends UIElement {
 
     @Override
     public void update(UpdateContext updateContext) {
-        if (changedSinceUpdate) {
-            createdInput.add(
-                    isShooting ? UIInputId.START_SHOOTING : UIInputId.STOP_SHOOTING);
-            changedSinceUpdate = false;
+        if (isShooting) {
+            createdInput.add(UIInputId.SHOOT);
         }
     }
 
@@ -44,7 +41,6 @@ public class ShootButton extends UIElement {
     @Override
     public void onTouchEnter(float x, float y) {
         isShooting = true;
-        changedSinceUpdate = true;
     }
 
     @Override
@@ -55,6 +51,5 @@ public class ShootButton extends UIElement {
     @Override
     public void onTouchLeave(float x, float y) {
         isShooting = false;
-        changedSinceUpdate = true;
     }
 }

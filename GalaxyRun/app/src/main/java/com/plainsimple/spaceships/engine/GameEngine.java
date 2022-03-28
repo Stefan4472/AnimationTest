@@ -28,6 +28,7 @@ import com.plainsimple.spaceships.util.Pair;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -125,9 +126,7 @@ public class GameEngine implements IExternalGameController {
         }
         // Process UI inputs (which can be created by handling
         // external inputs, e.g. screen touches)
-        for (UIInputId input : ui.pollAllInput()) {
-            processUIInput(input);
-        }
+        processUIInput(ui.pollAllInput());
 
         GameState shouldState = GameStateMachine.calcState(gameContext, spaceship, currState);
         if (shouldState != currState) {
@@ -305,6 +304,11 @@ public class GameEngine implements IExternalGameController {
         gameTimer.pause();
     }
 
+    private void restart() {
+        // TODO: also need to reset the UI
+        enterStartingState();
+    }
+
     private void setPaused(boolean shouldPause) {
         // Note: have to be careful in WAITING and FINISHED states,
         // because the timer should not be running
@@ -347,53 +351,53 @@ public class GameEngine implements IExternalGameController {
         }
     }
 
-    private void processUIInput(UIInputId input) {
-        switch (input) {
-            case PAUSE_GAME: {
-                setPaused(true);
-                break;
-            }
-            case RESUME_GAME: {
-                setPaused(false);
-                break;
-            }
-            case RESTART_GAME: {
-                // TODO: also need to reset the UI
-                enterStartingState();
-                break;
-            }
-            case START_SHOOTING: {
-                spaceship.setShooting(true);
-                break;
-            }
-            case STOP_SHOOTING: {
-                spaceship.setShooting(false);
-                break;
-            }
-            case START_MOVING_UP: {
-                spaceship.setDirection(Spaceship.Direction.UP);
-                break;
-            }
-            case START_MOVING_DOWN: {
-                spaceship.setDirection(Spaceship.Direction.DOWN);
-                break;
-            }
-            case STOP_MOVING: {
-                spaceship.setDirection(Spaceship.Direction.NONE);
-                break;
-            }
-            case MUTE_GAME: {
-                setMuted(true);
-                break;
-            }
-            case UNMUTE_GAME: {
-                setMuted(false);
-                break;
-            }
-            default: {
-                throw new IllegalArgumentException();
+    private void processUIInput(Queue<UIInputId> inputs) {
+        // Set defaults in the absence of input
+        boolean isShooting = false;
+        Spaceship.Direction moveInput = Spaceship.Direction.NONE;
+
+        for (UIInputId input : inputs) {
+            switch (input) {
+                case PAUSE: {
+                    setPaused(true);
+                    break;
+                }
+                case RESUME: {
+                    setPaused(false);
+                    break;
+                }
+                case RESTART: {
+                    restart();
+                    break;
+                }
+                case SHOOT: {
+                    isShooting = true;
+                    break;
+                }
+                case MOVE_UP: {
+                    moveInput = Spaceship.Direction.UP;
+                    break;
+                }
+                case MOVE_DOWN: {
+                    moveInput = Spaceship.Direction.DOWN;
+                    break;
+                }
+                case MUTE: {
+                    setMuted(true);
+                    break;
+                }
+                case UN_MUTE: {
+                    setMuted(false);
+                    break;
+                }
+                default: {
+                    throw new IllegalArgumentException();
+                }
             }
         }
+        // TODO: check if isControllable()
+        spaceship.setShooting(isShooting);
+        spaceship.setDirection(moveInput);
     }
 
     /* IExternalGameController interface. */
@@ -412,43 +416,8 @@ public class GameEngine implements IExternalGameController {
         externalInputQueue.add(new MotionExternalInput(e));
     }
 
+    // TODO: refactor out
     public void inputStartGame() {
         externalInputQueue.add(new SimpleExternalInput(ExternalInputId.START_GAME));
     }
-
-    public void inputPauseGame() {
-        externalInputQueue.add(new SimpleExternalInput(ExternalInputId.PAUSE_GAME));
-    }
-
-    public void inputMotionEvent(MotionEvent e) {
-        externalInputQueue.add(new MotionExternalInput(e));
-    }
-
-//    public void inputResumeGame() {
-//        gameInputQueue.add(new SimpleGameInput(GameInputId.RESUME_GAME));
-//    }
-//
-//    public void inputRestartGame() {
-//        gameInputQueue.add(new SimpleGameInput(GameInputId.RESTART_GAME));
-//    }
-//
-//    public void inputStartShooting() {
-//        gameInputQueue.add(new SimpleGameInput(GameInputId.START_SHOOTING));
-//    }
-//
-//    public void inputStopShooting() {
-//        gameInputQueue.add(new SimpleGameInput(GameInputId.STOP_SHOOTING));
-//    }
-//
-//    public void inputStartMoveUp() {
-//        gameInputQueue.add(new SimpleGameInput(GameInputId.START_MOVING_UP));
-//    }
-//
-//    public void inputStartMoveDown() {
-//        gameInputQueue.add(new SimpleGameInput(GameInputId.START_MOVING_DOWN));
-//    }
-//
-//    public void inputStopMoving() {
-//        gameInputQueue.add(new SimpleGameInput(GameInputId.STOP_MOVING));
-//    }
 }

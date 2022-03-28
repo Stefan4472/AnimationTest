@@ -58,6 +58,6 @@ public class PauseButton extends UIElement {
     public void onTouchLeave(float x, float y) {
         Log.d("PauseButton", "onTouchLeave " + x + ", " + y);
         // Register event to toggle state
-        createdInput.add((isPaused ? UIInputId.RESUME_GAME : UIInputId.PAUSE_GAME));
+        createdInput.add((isPaused ? UIInputId.RESUME : UIInputId.PAUSE));
     }
 }

@@ -61,6 +61,6 @@ public class MuteButton extends UIElement {
     public void onTouchLeave(float x, float y) {
         Log.d("MuteButton", "onTouchLeave " + x + ", " + y);
         // Create event to toggle state
-        createdInput.add((isMuted ? UIInputId.UNMUTE_GAME : UIInputId.MUTE_GAME));
+        createdInput.add((isMuted ? UIInputId.UN_MUTE : UIInputId.MUTE));
     }
 }

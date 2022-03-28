@@ -1,24 +1,17 @@
 package com.plainsimple.spaceships.engine.ui;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.util.Log;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawImage3;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
-import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.sprite.Spaceship;
 import com.plainsimple.spaceships.util.ImageUtil;
 import com.plainsimple.spaceships.util.ProtectedQueue;
-
-import plainsimple.spaceships.R;
 
 /**
  * The Controls is essentially a large button that displays two vertical arrows (one pointing
@@ -29,7 +22,9 @@ import plainsimple.spaceships.R;
 public class Controls extends UIElement {
 
     // Current control state
-    private Spaceship.Direction currentDirection;
+    private Spaceship.Direction currDirection;
+    // Current input
+    private Spaceship.Direction currInput;
     // Bounding boxes for the arrows
     private final Rectangle boundingBoxUp, boundingBoxDown;
     // Bitmaps for the upArrow and downArrow
@@ -46,8 +41,8 @@ public class Controls extends UIElement {
 
     public Controls(GameContext gameContext) {
         super(gameContext, calcLayout(gameContext));
-        currentDirection = Spaceship.Direction.NONE;
-
+        currDirection = Spaceship.Direction.NONE;
+        currInput = null;
         // Calculate boxes for up arrow and down arrow
         double arrowMargin = MARGIN_FROM_MIDDLE_PCT * gameContext.gameHeightPx;
         double arrowHeight = bounds.getHeight() / 2 - arrowMargin;
@@ -88,7 +83,12 @@ public class Controls extends UIElement {
 
     @Override
     public void update(UpdateContext updateContext) {
-        currentDirection = updateContext.playerDirection;
+        currDirection = updateContext.playerDirection;
+        if (currInput == Spaceship.Direction.UP) {
+            createdInput.add(UIInputId.MOVE_UP);
+        } else if (currInput == Spaceship.Direction.DOWN) {
+            createdInput.add(UIInputId.MOVE_DOWN);
+        }
     }
 
     @Override
@@ -98,9 +98,9 @@ public class Controls extends UIElement {
         DrawImage3 drawDown = new DrawImage3(
                 downArrow, (int) boundingBoxDown.getX(), (int) boundingBoxDown.getY());
 
-        if (currentDirection == Spaceship.Direction.DOWN) {
+        if (currDirection == Spaceship.Direction.DOWN) {
             drawParams.push(drawDown);
-        } else if (currentDirection == Spaceship.Direction.UP) {
+        } else if (currDirection == Spaceship.Direction.UP) {
             drawParams.push(drawUp);
         } else {
             // No direction input: draw both
@@ -113,9 +113,11 @@ public class Controls extends UIElement {
     public void onTouchEnter(float x, float y) {
         Log.d("Controls", "onTouchEnter " + x + ", " + y);
         if (boundingBoxUp.isInBounds(x, y)) {
-            createdInput.add(UIInputId.START_MOVING_UP);
+            currInput = Spaceship.Direction.UP;
         } else if (boundingBoxDown.isInBounds(x, y)) {
-            createdInput.add(UIInputId.START_MOVING_DOWN);
+            currInput = Spaceship.Direction.DOWN;
+        } else {
+            currInput = Spaceship.Direction.NONE;
         }
     }
 
@@ -123,15 +125,17 @@ public class Controls extends UIElement {
     public void onTouchMove(float x, float y) {
         Log.d("Controls", "onTouchMove " + x + ", " + y);
         if (boundingBoxUp.isInBounds(x, y)) {
-            createdInput.add(UIInputId.START_MOVING_UP);
+            currInput = Spaceship.Direction.UP;
         } else if (boundingBoxDown.isInBounds(x, y)) {
-            createdInput.add(UIInputId.START_MOVING_DOWN);
+            currInput = Spaceship.Direction.DOWN;
+        } else {
+            currInput = Spaceship.Direction.NONE;
         }
     }
 
     @Override
     public void onTouchLeave(float x, float y) {
         Log.d("Controls", "onTouchLeave " + x + ", " + y);
-        createdInput.add(UIInputId.STOP_MOVING);
+        currInput = Spaceship.Direction.NONE;
     }
 }
