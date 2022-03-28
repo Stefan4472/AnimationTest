@@ -13,6 +13,8 @@ import com.plainsimple.spaceships.engine.draw.DrawText;
 import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
+import plainsimple.spaceships.R;
+
 // TODO: needs a lot of cleanup
 public class PauseOverlay extends UIElement {
     private final static double WIDTH_PCT = 0.4;
@@ -60,7 +62,7 @@ public class PauseOverlay extends UIElement {
         // https://stackoverflow.com/a/26975371
         Paint paint = new Paint();
         Rect textBounds = new Rect();
-//        paint.setTypeface(Typeface.DEFAULT);
+//        paint.setTypeface();
         paint.setTextSize((int) (gameContext.gameHeightPx * TEXT_SIZE_PCT));
         String text = "Paused";
         paint.getTextBounds(text, 0, text.length(), textBounds);

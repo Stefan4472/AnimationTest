@@ -1,6 +1,7 @@
 package com.plainsimple.spaceships.engine;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -15,6 +16,7 @@ import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.helper.FontCache;
 import com.plainsimple.spaceships.helper.FpsCalculator;
 import com.plainsimple.spaceships.engine.map.Map;
 import com.plainsimple.spaceships.engine.audio.SoundID;
@@ -41,6 +43,7 @@ public class GameEngine implements IExternalGameController {
 
     private GameContext gameContext;
     private BitmapCache bitmapCache;
+    private FontCache fontCache;
     private AnimFactory animFactory;
     private HitDetector hitDetector;
     private DrawLayers drawLayers;
@@ -82,12 +85,14 @@ public class GameEngine implements IExternalGameController {
         int gameHeightPx = gameDimensions.second;
 
         bitmapCache = new BitmapCache(appContext, gameWidthPx, gameHeightPx);
+        fontCache = new FontCache(appContext, Typeface.MONOSPACE);
         animFactory = new AnimFactory(bitmapCache);
 
         // Create GameContext TODO: add "debug" flag to GameContext?
         gameContext = new GameContext(
                 appContext,
                 bitmapCache,
+                fontCache,
                 animFactory,
                 new Random(System.currentTimeMillis()),
                 gameWidthPx,

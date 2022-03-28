@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.plainsimple.spaceships.engine.map.Map;
 import com.plainsimple.spaceships.helper.BitmapCache;
+import com.plainsimple.spaceships.helper.FontCache;
 import com.plainsimple.spaceships.sprite.Alien;
 import com.plainsimple.spaceships.sprite.AlienBullet;
 import com.plainsimple.spaceships.sprite.Asteroid;
@@ -22,7 +23,8 @@ import java.util.Random;
 public class GameContext {
     public final Context appContext;
     public final BitmapCache bitmapCache;
-    public final AnimFactory animFactory;
+    public final FontCache fontCache;
+    public final AnimFactory animFactory;  // TODO: remove (unnecessary)
     public final Random rand;
     public final int gameWidthPx;
     public final int gameHeightPx;
@@ -35,6 +37,7 @@ public class GameContext {
     public GameContext(
             Context appContext,
             BitmapCache bitmapCache,
+            FontCache fontCache,
             AnimFactory animCache,
             Random rand,
             int gameWidthPx,
@@ -44,6 +47,7 @@ public class GameContext {
             int fullHealth) {
         this.appContext = appContext;
         this.bitmapCache = bitmapCache;
+        this.fontCache = fontCache;
         this.animFactory = animCache;
         this.rand = rand;
         this.gameWidthPx = gameWidthPx;

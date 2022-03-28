@@ -5,25 +5,33 @@ import android.graphics.Typeface;
 
 import java.util.Hashtable;
 
+import androidx.core.content.res.ResourcesCompat;
+
 /**
- * Created by Stefan on 6/22/2016.
+ * Simple cache for loaded Typefaces.
  */
 public class FontCache {
 
-    private static Hashtable<String, Typeface> fontCache = new Hashtable<String, Typeface>();
+    private final Context context;
+    // Fallback used if a font cannot be loaded
+    private final Typeface fallback;
+    private Hashtable<FontId, Typeface> fontCache = new Hashtable<>();
 
-    public static Typeface get(String name, Context context) {
-        // attempts to get the font from the Hashtable
-        Typeface tf = fontCache.get(name);
-        if(tf == null) {
-            // loads in the font if it hasn't already been loaded
+    public FontCache(Context context, Typeface fallback) {
+        this.context = context;
+        this.fallback = fallback;
+    }
+
+    public Typeface get(FontId fontId) {
+        Typeface tf = fontCache.get(fontId);
+        if (tf == null) {
             try {
-                tf = Typeface.createFromAsset(context.getAssets(), name);
+                tf = ResourcesCompat.getFont(context, fontId.getRId());
             }
             catch (Exception e) {
-                return null;
+                tf = fallback;  // fallback
             }
-            fontCache.put(name, tf);
+            fontCache.put(fontId, tf);
         }
         return tf;
     }
