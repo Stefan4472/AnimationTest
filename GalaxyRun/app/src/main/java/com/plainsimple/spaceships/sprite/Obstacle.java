@@ -5,7 +5,7 @@ import android.graphics.Paint;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
@@ -65,7 +65,7 @@ public class Obstacle extends Sprite {
     }
 
     @Override
-    public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawQueue) {
         // todo: only draw what's on screen
         DRAW_OBSTACLE.setBounds(getHitbox());
         drawQueue.push(DRAW_OBSTACLE);

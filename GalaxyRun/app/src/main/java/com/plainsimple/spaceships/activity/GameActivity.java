@@ -20,7 +20,7 @@ import plainsimple.spaceships.R;
  * Activity containing the game.
  *
  * The Game logic is run in a parallel thread (`GameRunner`).
- * The GameActivity receives `DrawParams` for the
+ * The GameActivity receives `DrawInstructions` for the
  * current game and forwards them to `GameView`, which draws them.
  */
 public class GameActivity extends FragmentActivity implements
@@ -124,7 +124,7 @@ public class GameActivity extends FragmentActivity implements
             soundPlayer.playSound(sound);
         }
 
-        gameView.queueDrawFrame(updateMessage.getDrawParams());
+        gameView.queueDrawFrame(updateMessage.getDrawInstructions());
 
         // Call the next update
         if (isActivityActive) {

@@ -6,7 +6,7 @@ import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.engine.draw.DrawImage;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.helper.HealthBarAnimation;
 import com.plainsimple.spaceships.helper.LoseHealthAnimation;
 import com.plainsimple.spaceships.helper.Point2D;
@@ -199,21 +199,29 @@ public class Alien extends Sprite {
     }
 
     @Override
-    public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawQueue) {
         // Draw alien, unless it is exploding and in the last frame of the explosion animation
         if (!(explodeAnim.isPlaying() && explodeAnim.getFramesLeft() <= 1)) {
-            drawQueue.push(new DrawImage(BitmapID.ALIEN, (float) getX(), (float) getY()));
+            drawQueue.push(new DrawImage(
+                    gameContext.bitmapCache.getBitmap(BitmapID.ALIEN),
+                    (float) getX(),
+                    (float) getY())
+            );
         }
         // Draw loseHealthAnimations
         for (LoseHealthAnimation anim : loseHealthAnimations) {
-            anim.getDrawParams(drawQueue);
+            anim.getDrawInstructions(drawQueue);
         }
         // Draw HealthBarAnimation if showing
-        healthBarAnimation.getDrawParams(drawQueue);
+        healthBarAnimation.getDrawInstructions(drawQueue);
 
         // Draw explosion
         if (explodeAnim.isPlaying()) {
-            DrawImage explodeImg = new DrawImage(explodeAnim.getBitmapID(), (float) getX(), (float) getY());
+            DrawImage explodeImg = new DrawImage(
+                    gameContext.bitmapCache.getBitmap(explodeAnim.getBitmapID()),
+                    (float) getX(),
+                    (float) getY()
+            );
             explodeImg.setDrawRegion(explodeAnim.getCurrentFrameSrc());
             drawQueue.push(explodeImg);
         }

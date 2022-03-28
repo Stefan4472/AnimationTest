@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 
+import com.plainsimple.spaceships.engine.ui.PauseOverlay;
 import com.plainsimple.spaceships.helper.BitmapCache;
 
 /**
@@ -12,7 +13,7 @@ import com.plainsimple.spaceships.helper.BitmapCache;
  * TODO: support using font
  */
 
-public class DrawText implements DrawParams {
+public class DrawText implements DrawInstruction {
 
     // TODO: take convention of x,y as top-left?
     // text to draw
@@ -26,8 +27,7 @@ public class DrawText implements DrawParams {
     // size of text to draw
     private int textSize;
     private Typeface typeface;
-    // paint used by any class member to draw text
-    private static Paint paint = new Paint();
+    private Paint paint;
 
     public DrawText(String text, float x, float y, int color, int size, Typeface typeface) {
         this.text = text;
@@ -36,6 +36,11 @@ public class DrawText implements DrawParams {
         this.textColor = color;
         this.textSize = size;
         this.typeface = typeface;
+
+        paint = new Paint();
+        paint.setColor(textColor);
+        paint.setTextSize(textSize);
+        paint.setTypeface(typeface);
     }
 
     public DrawText(String text, float x, float y, int color, int size) {
@@ -44,10 +49,7 @@ public class DrawText implements DrawParams {
 
 
     @Override
-    public void draw(Canvas canvas, BitmapCache bitmapCache) { // todo: should paint be static? should it be passed as a parameter?
-        paint.setColor(textColor);
-        paint.setTextSize(textSize);
-        paint.setTypeface(typeface);
+    public void draw(Canvas canvas) { // todo: should paint be static? should it be passed as a parameter?
         canvas.drawText(text, x, y, paint);
     }
 }

@@ -6,7 +6,7 @@ import android.util.Log;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawImage3;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.sprite.Spaceship;
@@ -92,20 +92,20 @@ public class Controls extends UIElement {
     }
 
     @Override
-    public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
         DrawImage3 drawUp = new DrawImage3(
                 upArrow, (int) boundingBoxUp.getX(), (int) boundingBoxUp.getY());
         DrawImage3 drawDown = new DrawImage3(
                 downArrow, (int) boundingBoxDown.getX(), (int) boundingBoxDown.getY());
 
         if (currDirection == Spaceship.Direction.DOWN) {
-            drawParams.push(drawDown);
+            drawInstructions.push(drawDown);
         } else if (currDirection == Spaceship.Direction.UP) {
-            drawParams.push(drawUp);
+            drawInstructions.push(drawUp);
         } else {
             // No direction input: draw both
-            drawParams.push(drawUp);
-            drawParams.push(drawDown);
+            drawInstructions.push(drawUp);
+            drawInstructions.push(drawDown);
         }
     }
 

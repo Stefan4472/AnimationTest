@@ -1,5 +1,6 @@
 package com.plainsimple.spaceships.engine.draw;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -16,10 +17,10 @@ import com.plainsimple.spaceships.helper.BitmapID;
  * TODO: refactor the various DrawImage classes
  */
 
-public class DrawImage implements DrawParams {
+public class DrawImage implements DrawInstruction {
 
     // ID of bitmap to be drawn
-    protected BitmapID bitmapID;
+    protected Bitmap bitmap;
     // x-coordinate where drawing begins on canvas
     protected float canvasX0;
     // y-coordinate where drawing begins on canvas
@@ -31,13 +32,14 @@ public class DrawImage implements DrawParams {
     // color filter used when drawing (default doesn't do anything)
     protected ColorMatrixColorFilter filter;
     // paint used for drawing
-    private static Paint paint = new Paint();
+    private Paint paint;
 
     // TODO: use double
-    public DrawImage(BitmapID bitmapID, float canvasX0, float canvasY0) {
-        this.bitmapID = bitmapID;
+    public DrawImage(Bitmap bitmap, float canvasX0, float canvasY0) {
+        this.bitmap = bitmap;
         this.canvasX0 = canvasX0;
         this.canvasY0 = canvasY0;
+        paint = new Paint();
     }
 
     public void setCanvasX0(float canvasX0) {
@@ -61,17 +63,11 @@ public class DrawImage implements DrawParams {
     }
 
     @Override
-    public void draw(Canvas canvas, BitmapCache bitmapCache) {
+    public void draw(Canvas canvas) {
         // todo: refine so data is called once and not every time. Also, set DrawRegion on init
-        // reset the paint object
-        paint.reset();
-
-        // get bitmapData for the image to be drawn
-        BitmapData data = bitmapCache.getData(bitmapID);
-
         // set drawRegion to the full image if none was specified
         if (drawRegion == null) {
-            drawRegion = new Rect(0, 0, data.getWidth(), data.getHeight());
+            drawRegion = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         }
 
         // save and rotate canvas if a rotation was specified
@@ -97,7 +93,7 @@ public class DrawImage implements DrawParams {
 
         // draw command
         canvas.drawBitmap(
-                bitmapCache.getBitmap(bitmapID),
+                bitmap,
                 drawRegion,
                 destination,
                 paint);

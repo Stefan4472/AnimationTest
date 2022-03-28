@@ -8,7 +8,7 @@ import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.helper.ColorMatrixAnimator;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.engine.draw.DrawImage;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.util.ProtectedQueue;
@@ -217,22 +217,34 @@ public class Spaceship extends Sprite {
     }
 
     @Override
-    public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawQueue) {
         if (!explodeAnim.hasPlayed()) {
             // Draw the Spaceship
-            DrawImage drawShip = new DrawImage(BitmapID.SPACESHIP, (float) getX(), (float) getY());
+            DrawImage drawShip = new DrawImage(
+                    gameContext.bitmapCache.getBitmap(BitmapID.SPACESHIP),
+                    (float) getX(),
+                    (float) getY()
+            );
             drawShip.setFilter(colorMatrixAnimator.getMatrix());
             drawQueue.push(drawShip);
 
             // Draw the moving animation behind it
-            DrawImage drawExhaust = new DrawImage(moveAnim.getBitmapID(), (float) getX(), (float) getY());
+            DrawImage drawExhaust = new DrawImage(
+                    gameContext.bitmapCache.getBitmap(moveAnim.getBitmapID()),
+                    (float) getX(),
+                    (float) getY()
+            );
             drawExhaust.setDrawRegion(moveAnim.getCurrentFrameSrc());
             drawExhaust.setFilter(colorMatrixAnimator.getMatrix());
             drawQueue.push(drawExhaust);
 
             // Draw the explosion animation if it is playing
             if (explodeAnim.isPlaying()) {
-                DrawImage drawExplosion = new DrawImage(explodeAnim.getBitmapID(), (float) getX(), (float) getY());
+                DrawImage drawExplosion = new DrawImage(
+                        gameContext.bitmapCache.getBitmap(explodeAnim.getBitmapID()),
+                        (float) getX(),
+                        (float) getY()
+                );
                 drawExplosion.setDrawRegion(explodeAnim.getCurrentFrameSrc());
                 drawQueue.push(drawExplosion);
             }

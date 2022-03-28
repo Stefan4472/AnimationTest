@@ -15,7 +15,7 @@ import com.plainsimple.spaceships.engine.ui.UIInputId;
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
 import com.plainsimple.spaceships.helper.BitmapID;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.helper.FontCache;
 import com.plainsimple.spaceships.helper.FpsCalculator;
 import com.plainsimple.spaceships.engine.map.Map;
@@ -142,7 +142,7 @@ public class GameEngine implements IExternalGameController {
         FastQueue<Sprite> createdSprites = new FastQueue<>();
         FastQueue<EventID> createdEvents = new FastQueue<>();
         FastQueue<SoundID> createdSounds = new FastQueue<>();
-        FastQueue<DrawParams> drawParams = new FastQueue<>();
+        FastQueue<DrawInstruction> drawInstructions = new FastQueue<>();
 
         map.update(gameTime, createdSprites);
 
@@ -207,11 +207,11 @@ public class GameEngine implements IExternalGameController {
         background.update(updateContext);
         ui.update(updateContext);
 
-        // Collect DrawParams.
+        // Collect DrawInstructions.
         // Draw Background first, then sprites, then UI
-        background.getDrawParams(drawParams);
-        drawLayers.getDrawParams(drawParams, true);
-        ui.getDrawParams(drawParams);
+        background.getDrawInstructions(drawInstructions);
+        drawLayers.getDrawInstructions(drawInstructions, true);
+        ui.getDrawInstructions(drawInstructions);
 
         // A little hack to easily support muting:
         // simply delete all sounds
@@ -221,7 +221,7 @@ public class GameEngine implements IExternalGameController {
 
         fpsCalculator.recordFrame();
         return new GameUpdateMessage(
-                drawParams,
+                drawInstructions,
                 createdEvents,
                 createdSounds,
                 fpsCalculator.getNumFrames(),

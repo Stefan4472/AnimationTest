@@ -5,7 +5,7 @@ import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.engine.draw.DrawImage;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
 /**
@@ -76,8 +76,12 @@ public class AlienBullet extends Sprite {
     }
 
     @Override
-    public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
-        DrawImage drawBullet = new DrawImage(BitmapID.ALIEN_BULLET, (float) getX(), (float) getY());
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawQueue) {
+        DrawImage drawBullet = new DrawImage(
+                gameContext.bitmapCache.getBitmap(BitmapID.ALIEN_BULLET),
+                (float) getX(),
+                (float) getY()
+        );
         drawBullet.setRotation((int) travelAngle);
         drawQueue.push(drawBullet);
     }

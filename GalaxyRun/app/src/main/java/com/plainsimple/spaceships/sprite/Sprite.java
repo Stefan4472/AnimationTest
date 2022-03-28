@@ -9,12 +9,9 @@ import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.helper.BitmapData;
-import com.plainsimple.spaceships.helper.BitmapID;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
-
-import java.util.*;
 
 /**
  * Base class for all Sprite implementations.
@@ -92,10 +89,10 @@ public abstract class Sprite {
     );
 
     /*
-    Sprite should push its DrawParams onto the provided queue.
+    Sprite should push its DrawInstructions onto the provided queue.
     Draw calls are executed in the order of addition to the queue (FIFO).
      */
-    public abstract void getDrawParams(ProtectedQueue<DrawParams> drawQueue);
+    public abstract void getDrawInstructions(ProtectedQueue<DrawInstruction> drawQueue);
 
     /* Begin utility methods */
     // Moves the sprite based on current speeds and the number of
@@ -140,7 +137,7 @@ public abstract class Sprite {
     /*
     Utility method: draw red rectangle where sprite's hitbox is.
      */
-    public DrawParams drawHitbox() {
+    public DrawInstruction drawHitbox() {
         DrawRect drawHitbox = new DrawRect(Color.RED, Paint.Style.STROKE, 3);
         drawHitbox.setBounds(hitbox);
         return drawHitbox;

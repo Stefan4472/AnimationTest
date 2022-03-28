@@ -1,6 +1,6 @@
 package com.plainsimple.spaceships.engine;
 
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
@@ -30,13 +30,13 @@ public class DrawLayers {
         layers[sprite.getDrawLayer()].add(sprite);
     }
 
-    public void getDrawParams(
-            ProtectedQueue<DrawParams> drawQueue,
+    public void getDrawInstructions(
+            ProtectedQueue<DrawInstruction> drawQueue,
             boolean drawHitboxes  // TODO: use a globally-set DEBUG flag
     ) {
         for (List<Sprite> sprite_layer : layers) {
             for (Sprite sprite : sprite_layer) {
-                sprite.getDrawParams(drawQueue);
+                sprite.getDrawInstructions(drawQueue);
                 if (drawHitboxes) {
                     // TODO: this is unclean
                     drawQueue.push(sprite.drawHitbox());

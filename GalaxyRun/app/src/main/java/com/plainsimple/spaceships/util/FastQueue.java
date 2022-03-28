@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
  * removed--we just set the `insertIndex` to 0).
  *
  * It also implements `ProtectedQueue`, which we can pass to
- * GameObjects to add to (e.g., events, DrawParams, etc.)
+ * GameObjects to add to (e.g., events, DrawInstructions, etc.)
  */
 
 public class FastQueue<T> implements ProtectedQueue<T>, Iterable<T> {

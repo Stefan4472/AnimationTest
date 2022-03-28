@@ -8,9 +8,8 @@ import android.view.MotionEvent;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.GameState;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.engine.draw.DrawRect;
-import com.plainsimple.spaceships.engine.draw.DrawText;
 import com.plainsimple.spaceships.util.Pair;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
@@ -221,16 +220,16 @@ public class GameUI {
         }
     }
 
-    public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
         // Draw in reverse order
         for (int i = uiElements.length - 1; i >= 0; i--) {
             UIElement elem = uiElements[i];
             if (elem.getIsVisible()) {
-                elem.getDrawParams(drawParams);
+                elem.getDrawInstructions(drawInstructions);
                 // Draw bounds TODO: debugging flag
                 DrawRect bounds = new DrawRect(Color.GREEN, Paint.Style.STROKE, 2.0f);
                 bounds.setBounds(elem.bounds);
-                drawParams.push(bounds);
+                drawInstructions.push(bounds);
             }
         }
     }

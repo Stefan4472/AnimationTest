@@ -2,7 +2,7 @@ package com.plainsimple.spaceships.engine.ui;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
@@ -34,7 +34,7 @@ public class ShootButton extends UIElement {
     }
 
     @Override
-    public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
 
     }
 

@@ -3,18 +3,14 @@ package com.plainsimple.spaceships.engine.ui;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.util.Log;
-import android.view.MotionEvent;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.engine.draw.DrawImage;
 import com.plainsimple.spaceships.engine.draw.DrawImage2;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
-
-import java.util.Queue;
 
 public class MuteButton extends UIElement {
 
@@ -42,12 +38,12 @@ public class MuteButton extends UIElement {
         isMuted = updateContext.isMuted;
     }
 
-    public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
         BitmapID bitmapId = (isMuted ? BitmapID.MUTE_BUTTON_MUTED : BitmapID.MUTE_BUTTON_UNMUTED);
         Bitmap bitmap = gameContext.bitmapCache.getBitmap(bitmapId);
         Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         DrawImage2 drawBtn = new DrawImage2(bitmap, src, bounds.toRect());
-        drawParams.push(drawBtn);
+        drawInstructions.push(drawBtn);
     }
 
     public void onTouchEnter(float x, float y) {

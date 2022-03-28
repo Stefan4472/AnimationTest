@@ -6,9 +6,8 @@ import android.util.Log;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.engine.draw.DrawImage;
 import com.plainsimple.spaceships.engine.draw.DrawImage2;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
@@ -39,12 +38,12 @@ public class PauseButton extends UIElement {
         isPaused = updateContext.isPaused;
     }
 
-    public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
         BitmapID bitmapId = (isPaused ? BitmapID.PAUSE_BUTTON_UNPAUSED : BitmapID.PAUSE_BUTTON_PAUSED);
         Bitmap bitmap = gameContext.bitmapCache.getBitmap(bitmapId);
         Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         DrawImage2 drawBtn = new DrawImage2(bitmap, src, bounds.toRect());
-        drawParams.push(drawBtn);
+        drawInstructions.push(drawBtn);
     }
 
     public void onTouchEnter(float x, float y) {

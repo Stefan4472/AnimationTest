@@ -1,7 +1,7 @@
 package com.plainsimple.spaceships.engine.external;
 
 import com.plainsimple.spaceships.engine.EventID;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.util.FastQueue;
 
@@ -10,7 +10,7 @@ import com.plainsimple.spaceships.util.FastQueue;
  */
 
 public class GameUpdateMessage {
-    private FastQueue<DrawParams> drawParams;
+    private FastQueue<DrawInstruction> drawInstructions;
     private FastQueue<EventID> events;
     private FastQueue<SoundID> sounds;
     public final long frameNumber;
@@ -18,21 +18,21 @@ public class GameUpdateMessage {
     public final double fps;
 
     public GameUpdateMessage(
-            FastQueue<DrawParams> drawParams,
+            FastQueue<DrawInstruction> drawInstructions,
             FastQueue<EventID> events,
             FastQueue<SoundID> sounds,
             long frameNumber,
             double fps
     ) {
-        this.drawParams = drawParams;
+        this.drawInstructions = drawInstructions;
         this.events = events;
         this.sounds = sounds;
         this.frameNumber = frameNumber;
         this.fps = fps;
     }
 
-    public FastQueue<DrawParams> getDrawParams() {
-        return drawParams;
+    public FastQueue<DrawInstruction> getDrawInstructions() {
+        return drawInstructions;
     }
 
     public FastQueue<EventID> getEvents() {

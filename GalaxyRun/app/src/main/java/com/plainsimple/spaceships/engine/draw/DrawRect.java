@@ -10,9 +10,8 @@ import com.plainsimple.spaceships.helper.Rectangle;
  * Stores instructions for drawing a Rectangle
  */
 
-public class DrawRect implements DrawParams {
+public class DrawRect implements DrawInstruction {
 
-    private static Paint paint = new Paint();
 
     // top-left x-coordinate todo: simply use Rect?
     private float x;
@@ -28,12 +27,18 @@ public class DrawRect implements DrawParams {
     private Paint.Style style;
     // width of stroke
     private float strokeWidth;
+    private Paint paint;
 
     // initializes properties without setting coordinates
     public DrawRect(int color, Paint.Style style, float strokeWidth) {
         this.color = color;
         this.style = style;
         this.strokeWidth = strokeWidth;
+
+        paint = new Paint();
+        paint.setColor(color);
+        paint.setStyle(style);
+        paint.setStrokeWidth(strokeWidth);
     }
 
     // sets bounds of rectangle to those specified by given Rectangle
@@ -56,10 +61,7 @@ public class DrawRect implements DrawParams {
     }
 
     @Override
-    public void draw(Canvas canvas, BitmapCache bitmapCache) {
-        paint.setColor(color);
-        paint.setStyle(style);
-        paint.setStrokeWidth(strokeWidth);
+    public void draw(Canvas canvas) {
         canvas.drawRect(x, y, x1, y1, paint);
     }
 }

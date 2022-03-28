@@ -5,10 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 
 import com.plainsimple.spaceships.helper.BitmapCache;
-import com.plainsimple.spaceships.helper.BitmapData;
-import com.plainsimple.spaceships.helper.BitmapID;
 
-public class DrawImage2 implements DrawParams {
+public class DrawImage2 implements DrawInstruction {
     private final Bitmap bitmap;
     private final Rect src, dst;
 
@@ -19,7 +17,7 @@ public class DrawImage2 implements DrawParams {
     }
 
     @Override
-    public void draw(Canvas canvas, BitmapCache bitmapCache) {
+    public void draw(Canvas canvas) {
         canvas.drawBitmap(bitmap, src, dst, null);
     }
 }

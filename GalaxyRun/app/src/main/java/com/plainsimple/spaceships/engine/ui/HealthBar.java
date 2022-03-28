@@ -4,17 +4,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.MotionEvent;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.engine.draw.DrawText;
 import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
-
-import java.util.Queue;
 
 /**
  * Draws player's health.
@@ -96,11 +93,11 @@ public class HealthBar extends UIElement {
         setMovingToHealth(updateContext.playerHealth);
     }
 
-    public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
         // Draw outline
         DrawRect outline = new DrawRect(Color.GRAY, Paint.Style.STROKE, (float) (height * 0.1));
         outline.setBounds((float) startX, (float) startY, (float) (startX + width), (float) (startY + height));
-        drawQueue.push(outline);
+        drawInstructions.push(outline);
 
         if (currentHealth != movingToHealth) {
             // Transition down 20% of the remaining distance between
@@ -118,7 +115,7 @@ public class HealthBar extends UIElement {
                 (float) (startX + innerPadding + pctHealth * (width - height * 0.1f)),
                 (float) (startY + height - innerPadding)
         );
-        drawQueue.push(fill);
+        drawInstructions.push(fill);
 
         // Draw number
         String hpString = currentHealth + "/" + fullHealth;
@@ -128,7 +125,7 @@ public class HealthBar extends UIElement {
                 Color.GRAY,
                 (int) (height * 0.8f)
         );
-        drawQueue.push(text);
+        drawInstructions.push(text);
     }
 
     /*

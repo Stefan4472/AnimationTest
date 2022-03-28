@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 
 import com.plainsimple.spaceships.helper.BitmapCache;
 
-public class DrawImage3 implements DrawParams {
+public class DrawImage3 implements DrawInstruction {
     private final Bitmap bitmap;
     private final float x, y;
 
@@ -16,7 +16,7 @@ public class DrawImage3 implements DrawParams {
     }
 
     @Override
-    public void draw(Canvas canvas, BitmapCache bitmapCache) {
+    public void draw(Canvas canvas) {
         canvas.drawBitmap(bitmap, x, y, null);
     }
 }

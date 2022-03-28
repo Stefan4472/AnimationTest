@@ -6,7 +6,7 @@ import android.graphics.Rect;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.engine.draw.DrawText;
 import com.plainsimple.spaceships.helper.FontId;
@@ -70,10 +70,10 @@ public class GameOverOverlay extends UIElement {
     }
 
     @Override
-    public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
         DrawRect box = new DrawRect(Color.BLACK, Paint.Style.FILL, 0);
         box.setBounds(bounds);
-        drawParams.push(box);
+        drawInstructions.push(box);
 
         // https://stackoverflow.com/a/26975371
         Paint paint = new Paint();
@@ -84,7 +84,7 @@ public class GameOverOverlay extends UIElement {
         paint.getTextBounds(text, 0, text.length(), textBounds);
         int text_width =  textBounds.width();
         int text_height =  textBounds.height();
-        drawParams.push(new DrawText(
+        drawInstructions.push(new DrawText(
                 "Game Over",
                 (float) (bounds.getX() + (bounds.getWidth() - text_width) / 2),
                 (float) (bounds.getY() + text_height + gameContext.gameHeightPx * 0.05),
@@ -95,7 +95,7 @@ public class GameOverOverlay extends UIElement {
 
         DrawRect buttonFill = new DrawRect(Color.GRAY, Paint.Style.FILL, 0);
         buttonFill.setBounds(playAgainBounds);
-        drawParams.push(buttonFill);
+        drawInstructions.push(buttonFill);
 
         Paint paint2 = new Paint();
         Rect textBounds2 = new Rect();
@@ -105,7 +105,7 @@ public class GameOverOverlay extends UIElement {
         paint2.getTextBounds(text2, 0, text2.length(), textBounds2);
         int text_width2 =  textBounds2.width();
         int text_height2 =  textBounds2.height();
-        drawParams.push(new DrawText(
+        drawInstructions.push(new DrawText(
                 "Play Again",
                 (float) (playAgainBounds.getX() + (playAgainBounds.getWidth() - text_width2) / 2),
                 (float) (playAgainBounds.getY() + text_height2),

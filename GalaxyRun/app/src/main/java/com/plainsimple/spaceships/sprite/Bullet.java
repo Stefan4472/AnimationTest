@@ -5,7 +5,7 @@ import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.engine.draw.DrawImage;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
 /**
@@ -63,7 +63,11 @@ public class Bullet extends Sprite {
     }
 
     @Override
-    public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
-        drawQueue.push(new DrawImage(BitmapID.BULLET_0, (float) getX(), (float) getY()));
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawQueue) {
+        drawQueue.push(new DrawImage(
+                gameContext.bitmapCache.getBitmap(BitmapID.BULLET_0),
+                (float) getX(),
+                (float) getY()
+        ));
     }
 }

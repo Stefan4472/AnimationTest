@@ -3,18 +3,15 @@ package com.plainsimple.spaceships.engine.ui;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.engine.draw.DrawText;
 import com.plainsimple.spaceships.helper.FontId;
 import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
-
-import plainsimple.spaceships.R;
 
 // TODO: needs a lot of cleanup
 public class PauseOverlay extends UIElement {
@@ -55,10 +52,10 @@ public class PauseOverlay extends UIElement {
     }
 
     @Override
-    public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
         DrawRect box = new DrawRect(Color.BLACK, Paint.Style.FILL, 0);
         box.setBounds(bounds);
-        drawParams.push(box);
+        drawInstructions.push(box);
 
         // https://stackoverflow.com/a/26975371
         Paint paint = new Paint();
@@ -69,7 +66,7 @@ public class PauseOverlay extends UIElement {
         paint.getTextBounds(text, 0, text.length(), textBounds);
         int text_width =  textBounds.width();
         int text_height =  textBounds.height();
-        drawParams.push(new DrawText(
+        drawInstructions.push(new DrawText(
                 "Paused",
                 (float) (bounds.getX() + (bounds.getWidth() - text_width) / 2),
                 (float) (bounds.getY() + (bounds.getHeight() - text_height) / 2 + text_height),

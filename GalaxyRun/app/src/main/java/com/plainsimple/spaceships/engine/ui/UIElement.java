@@ -2,7 +2,7 @@ package com.plainsimple.spaceships.engine.ui;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
@@ -36,7 +36,7 @@ public abstract class UIElement {
 
     public abstract void update(UpdateContext updateContext);
 
-    public abstract void getDrawParams(ProtectedQueue<DrawParams> drawParams);
+    public abstract void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions);
 
     public abstract void onTouchEnter(float x, float y);
 

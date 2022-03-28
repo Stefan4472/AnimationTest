@@ -2,10 +2,8 @@ package com.plainsimple.spaceships.engine;
 
 import android.graphics.*;
 
-import com.plainsimple.spaceships.engine.GameContext;
-import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawImage2;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.galaxydraw.DrawSpace;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
@@ -56,12 +54,12 @@ public class Background {
                 updateContext.gameTime.msSincePrevUpdate / 1000.0);
     }
 
-    public void getDrawParams(ProtectedQueue<DrawParams> drawParams) {
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
         // Requires two draw calls to split over the screen
         int offset = pixelsScrolled % gameContext.screenWidthPx;
         Rect src = new Rect(offset, 0, gameContext.screenWidthPx, gameContext.screenHeightPx);
         Rect dst = new Rect(0, 0, src.width(), gameContext.screenHeightPx);
-        drawParams.push(new DrawImage2(background, src, dst));
+        drawInstructions.push(new DrawImage2(background, src, dst));
 
         Rect src2 = new Rect(0, 0, offset, gameContext.screenHeightPx);
         Rect dst2 = new Rect(
@@ -70,7 +68,7 @@ public class Background {
                 gameContext.screenWidthPx,
                 gameContext.screenHeightPx
         );
-        drawParams.push(new DrawImage2(background, src2, dst2));
+        drawInstructions.push(new DrawImage2(background, src2, dst2));
     }
 
     // returns "distance" travelled: 1 screen width = 1 kilometer (for now) todo: change?

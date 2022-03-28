@@ -1,18 +1,14 @@
 package com.plainsimple.spaceships.engine.ui;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
-import android.view.MotionEvent;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.engine.draw.DrawText;
 import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
-
-import java.util.Queue;
 
 /**
  * Displays the game score in the top left of the screen.
@@ -89,12 +85,12 @@ public class ScoreDisplay extends UIElement {
         score = updateContext.score;
     }
 
-    public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
         String scoreString = Integer.toString(score);
         int textSize = (int) (BASE_TEXT_SIZE_PCT * gameContext.screenHeightPx * getMagnification());
         // TODO: support fonts
         DrawText text = new DrawText(scoreString, startX, startY + textSize, calculateColor(), textSize);
-        drawQueue.push(text);
+        drawInstructions.push(text);
     }
 
     // calculated "steps" -- change in color value for each unit of scoreChange

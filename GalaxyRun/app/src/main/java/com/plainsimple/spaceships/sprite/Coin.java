@@ -4,7 +4,7 @@ import com.plainsimple.spaceships.engine.AnimID;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawImage;
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.SpriteAnimation;
 import com.plainsimple.spaceships.util.ProtectedQueue;
@@ -59,8 +59,12 @@ public class Coin extends Sprite {
     }
 
     @Override
-    public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
-        DrawImage img = new DrawImage(spin.getBitmapID(), (float) getX(), (float) getY());
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawQueue) {
+        DrawImage img = new DrawImage(
+                gameContext.bitmapCache.getBitmap(spin.getBitmapID()),
+                (float) getX(),
+                (float) getY()
+        );
         img.setDrawRegion(spin.getCurrentFrameSrc());
         drawQueue.push(img);
     }

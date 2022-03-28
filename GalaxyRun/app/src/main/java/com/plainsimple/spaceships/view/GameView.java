@@ -8,7 +8,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.helper.*;
 import com.plainsimple.spaceships.util.FastQueue;
 
@@ -30,10 +30,9 @@ public class GameView extends SurfaceView implements Runnable {
     private final Context context;
     private boolean isRunning;
     private Thread drawThread;
-    private BitmapCache bitmapCache;
     private SurfaceHolder surfaceHolder;
     // Queue of game frames to draw
-    private ConcurrentLinkedQueue<FastQueue<DrawParams>> drawFramesQueue;
+    private ConcurrentLinkedQueue<FastQueue<DrawInstruction>> drawFramesQueue;
     // Listener registered to this view
     private IGameViewListener gameViewListener;
 
@@ -48,8 +47,8 @@ public class GameView extends SurfaceView implements Runnable {
         this.gameViewListener = gameViewListener;
     }
 
-    public void queueDrawFrame(FastQueue<DrawParams> drawParams) {
-        drawFramesQueue.add(drawParams);
+    public void queueDrawFrame(FastQueue<DrawInstruction> drawInstructions) {
+        drawFramesQueue.add(drawInstructions);
     }
 
     /*
@@ -65,18 +64,12 @@ public class GameView extends SurfaceView implements Runnable {
             return;
         }
 
-        // Ask the GameActivity what dimensions should be used by the game
-        // TODO: ExternalBitmapCache where we don't know the scale factor
-//        int playableWidth = gameActivityInterface.calcPlayableWidth(width);
-//        int playableHeight = gameActivityInterface.calcPlayableHeight(height);
-        bitmapCache = new BitmapCache(context, width, height);
-
         // Tell GameActivity that we're ready to start
         gameViewListener.onSizeSet(width, height);
     }
 
     /*
-    Runs in a separate thread. All drawing happens here. DrawParams
+    Runs in a separate thread. All drawing happens here. DrawInstructions
     are passed in via thread-safe queue.
      */
     @Override
@@ -86,20 +79,20 @@ public class GameView extends SurfaceView implements Runnable {
         while (isRunning) {
             // TODO: MAKE SURE THAT THERE ISN'T A BUILD-UP OF DRAW FRAMES
             if (!drawFramesQueue.isEmpty()) {
-                FastQueue<DrawParams> drawParams = drawFramesQueue.poll();
+                FastQueue<DrawInstruction> drawInstructions = drawFramesQueue.poll();
                 if (surfaceHolder.getSurface().isValid()) {
                     canvas = surfaceHolder.lockCanvas();
-                    drawFrame(canvas, drawParams);
+                    drawFrame(canvas, drawInstructions);
                     surfaceHolder.unlockCanvasAndPost(canvas);
                 }
             }
         }
     }
 
-    private void drawFrame(Canvas canvas, FastQueue<DrawParams> drawParams) {
+    private void drawFrame(Canvas canvas, FastQueue<DrawInstruction> drawInstructions) {
 //        Log.d("GameView", "Drawing Frame with " + drawParams.getSize() + " DrawParams");
-        for (DrawParams draw_param : drawParams) {
-            draw_param.draw(canvas, bitmapCache);
+        for (DrawInstruction drawInst : drawInstructions) {
+            drawInst.draw(canvas);
         }
     }
 

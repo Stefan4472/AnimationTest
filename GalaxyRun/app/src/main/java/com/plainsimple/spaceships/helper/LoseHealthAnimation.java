@@ -1,9 +1,8 @@
 package com.plainsimple.spaceships.helper;
 
 import android.graphics.Color;
-import android.util.Log;
 
-import com.plainsimple.spaceships.engine.draw.DrawParams;
+import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.engine.draw.DrawText;
 import com.plainsimple.spaceships.sprite.Sprite;
 import com.plainsimple.spaceships.util.ProtectedQueue;
@@ -67,7 +66,7 @@ public class LoseHealthAnimation {
         y = sprite.getY() + baseOffsetY + fractionElapsed * totalMovementY;
     }
 
-    public void getDrawParams(ProtectedQueue<DrawParams> drawQueue) {
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawQueue) {
         if (!isFinished()) {
             drawQueue.push(new DrawText(
                     Integer.toString(damage),
