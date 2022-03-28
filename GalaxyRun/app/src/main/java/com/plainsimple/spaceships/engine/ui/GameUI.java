@@ -15,12 +15,8 @@ import com.plainsimple.spaceships.util.Pair;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Queue;
-
-import androidx.core.view.MotionEventCompat;
 
 /*
 Manage in-GameEngine user interface.
@@ -37,20 +33,19 @@ public class GameUI {
     private final UIElement[] uiElements;
     private HashMap<Integer, Touch> currTouches;
 
+    private GameOverOverlay gameoverOverlay;
     private PauseOverlay pauseOverlay;
-
-    // TODO: a better way of doing this
-    private boolean isGameOver;
-    private boolean isPaused;
 
     // TODO: how to reset the UI? (e.g., on game restart?)
     public GameUI(GameContext gameContext) {
         this.gameContext = gameContext;
         currTouches = new HashMap<>();
 
+        gameoverOverlay = new GameOverOverlay(gameContext);
         pauseOverlay = new PauseOverlay(gameContext);
 
         uiElements = new UIElement[] {
+                gameoverOverlay,
             pauseOverlay,
             new PauseButton(gameContext),
             new MuteButton(gameContext),
@@ -214,11 +209,15 @@ public class GameUI {
             elem.update(updateContext);
         }
 
-        isGameOver = (updateContext.gameState == GameState.FINISHED);
         if (updateContext.isPaused) {
             pauseOverlay.show();
         } else {
             pauseOverlay.hide();
+        }
+        if (updateContext.gameState == GameState.FINISHED) {
+            gameoverOverlay.show();
+        } else {
+            gameoverOverlay.hide();
         }
     }
 
@@ -233,17 +232,6 @@ public class GameUI {
                 bounds.setBounds(elem.bounds);
                 drawParams.push(bounds);
             }
-        }
-
-        // TODO: an actual dialog
-        if (isGameOver) {
-            drawParams.push(new DrawText(
-                    "GAME OVER",
-                    gameContext.gameWidthPx / 2.0f,
-                    gameContext.gameHeightPx / 2.0f,
-                    Color.YELLOW,
-                    70
-            ));
         }
     }
 

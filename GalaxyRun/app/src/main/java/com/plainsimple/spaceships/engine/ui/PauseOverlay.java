@@ -13,6 +13,7 @@ import com.plainsimple.spaceships.engine.draw.DrawText;
 import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
+// TODO: needs a lot of cleanup
 public class PauseOverlay extends UIElement {
     private final static double WIDTH_PCT = 0.4;
     private final static double HEIGHT_PCT = 0.3;
