@@ -2,7 +2,7 @@ package com.plainsimple.spaceships.engine;
 
 import android.graphics.*;
 
-import com.plainsimple.spaceships.engine.draw.DrawImage2;
+import com.plainsimple.spaceships.engine.draw.DrawImage;
 import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.galaxydraw.DrawSpace;
 import com.plainsimple.spaceships.util.ProtectedQueue;
@@ -59,7 +59,7 @@ public class Background {
         int offset = pixelsScrolled % gameContext.screenWidthPx;
         Rect src = new Rect(offset, 0, gameContext.screenWidthPx, gameContext.screenHeightPx);
         Rect dst = new Rect(0, 0, src.width(), gameContext.screenHeightPx);
-        drawInstructions.push(new DrawImage2(background, src, dst));
+        drawInstructions.push(new DrawImage(background, src, dst));
 
         Rect src2 = new Rect(0, 0, offset, gameContext.screenHeightPx);
         Rect dst2 = new Rect(
@@ -68,7 +68,7 @@ public class Background {
                 gameContext.screenWidthPx,
                 gameContext.screenHeightPx
         );
-        drawInstructions.push(new DrawImage2(background, src2, dst2));
+        drawInstructions.push(new DrawImage(background, src2, dst2));
     }
 
     // returns "distance" travelled: 1 screen width = 1 kilometer (for now) todo: change?

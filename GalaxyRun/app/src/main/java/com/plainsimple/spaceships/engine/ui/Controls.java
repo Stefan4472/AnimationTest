@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.engine.draw.DrawImage3;
+import com.plainsimple.spaceships.engine.draw.DrawImage;
 import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.Rectangle;
@@ -93,9 +93,9 @@ public class Controls extends UIElement {
 
     @Override
     public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
-        DrawImage3 drawUp = new DrawImage3(
+        DrawImage drawUp = new DrawImage(
                 upArrow, (int) boundingBoxUp.getX(), (int) boundingBoxUp.getY());
-        DrawImage3 drawDown = new DrawImage3(
+        DrawImage drawDown = new DrawImage(
                 downArrow, (int) boundingBoxDown.getX(), (int) boundingBoxDown.getY());
 
         if (currDirection == Spaceship.Direction.DOWN) {

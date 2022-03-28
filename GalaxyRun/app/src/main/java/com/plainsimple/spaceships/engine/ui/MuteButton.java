@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
-import com.plainsimple.spaceships.engine.draw.DrawImage2;
+import com.plainsimple.spaceships.engine.draw.DrawImage;
 import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.helper.Rectangle;
@@ -42,7 +42,7 @@ public class MuteButton extends UIElement {
         BitmapID bitmapId = (isMuted ? BitmapID.MUTE_BUTTON_MUTED : BitmapID.MUTE_BUTTON_UNMUTED);
         Bitmap bitmap = gameContext.bitmapCache.getBitmap(bitmapId);
         Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        DrawImage2 drawBtn = new DrawImage2(bitmap, src, bounds.toRect());
+        DrawImage drawBtn = new DrawImage(bitmap, src, bounds.toRect());
         drawInstructions.push(drawBtn);
     }
 
