@@ -1,6 +1,7 @@
 package com.plainsimple.spaceships.engine.draw;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 
@@ -9,37 +10,28 @@ import com.plainsimple.spaceships.helper.BitmapCache;
 
 /**
  * Stores instructions for drawing text
- *
- * TODO: support using font
  */
 
 public class DrawText implements DrawInstruction {
 
-    // TODO: take convention of x,y as top-left?
-    // text to draw
+    // Text to draw
     private String text;
-    // bottom-left x-coordinate
-    private float x;
-    // bottom-left y-coordinate
-    private float y;
-    // color of text to draw
-    private int textColor;
-    // size of text to draw
-    private int textSize;
-    private Typeface typeface;
+    // Draw coordinates (bottom left)
+    private float bottomX, bottomY;
+    // Paint to use when drawing
     private Paint paint;
 
-    public DrawText(String text, float x, float y, int color, int size, Typeface typeface) {
+    public DrawText(String text, float bottomX, float bottomY, Paint paint) {
         this.text = text;
-        this.x = x;
-        this.y = y;
-        this.textColor = color;
-        this.textSize = size;
-        this.typeface = typeface;
+        this.bottomX = bottomX;
+        this.bottomY = bottomY;
+        this.paint = paint;
+    }
 
-        paint = new Paint();
-        paint.setColor(textColor);
-        paint.setTextSize(textSize);
+    public DrawText(String text, float bottomX, float bottomY, int color, int size, Typeface typeface) {
+        this(text, bottomX, bottomY, new Paint());
+        paint.setColor(color);
+        paint.setTextSize(size);
         paint.setTypeface(typeface);
     }
 
@@ -47,9 +39,8 @@ public class DrawText implements DrawInstruction {
         this(text, x, y, color, size, Typeface.DEFAULT);
     }
 
-
     @Override
-    public void draw(Canvas canvas) { // todo: should paint be static? should it be passed as a parameter?
-        canvas.drawText(text, x, y, paint);
+    public void draw(Canvas canvas) {
+        canvas.drawText(text, bottomX, bottomY, paint);
     }
 }
