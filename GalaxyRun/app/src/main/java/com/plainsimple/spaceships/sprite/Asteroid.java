@@ -136,8 +136,8 @@ public class Asteroid extends Sprite {
     public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawQueue) {
         DrawImage drawAsteroid = new DrawImage(
                 gameContext.bitmapCache.getBitmap(BitmapID.ASTEROID),
-                (float) getX(),
-                (float) getY()
+                (int) getX(),
+                (int) getY()
         );
         drawAsteroid.setRotation((int) currentRotation);
         drawQueue.push(drawAsteroid);

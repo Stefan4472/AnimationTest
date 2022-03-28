@@ -62,10 +62,10 @@ public class Coin extends Sprite {
     public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawQueue) {
         DrawImage img = new DrawImage(
                 gameContext.bitmapCache.getBitmap(spin.getBitmapID()),
-                (float) getX(),
-                (float) getY()
+                spin.getCurrentFrameSrc(),
+                (int) getX(),
+                (int) getY()
         );
-        img.setDrawRegion(spin.getCurrentFrameSrc());
         drawQueue.push(img);
     }
 }

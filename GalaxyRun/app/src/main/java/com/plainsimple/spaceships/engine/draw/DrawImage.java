@@ -6,6 +6,7 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
 import com.plainsimple.spaceships.helper.BitmapCache;
 import com.plainsimple.spaceships.helper.BitmapData;
@@ -19,87 +20,57 @@ import com.plainsimple.spaceships.helper.BitmapID;
 
 public class DrawImage implements DrawInstruction {
 
-    // ID of bitmap to be drawn
-    protected Bitmap bitmap;
-    // x-coordinate where drawing begins on canvas
-    protected float canvasX0;
-    // y-coordinate where drawing begins on canvas
-    protected float canvasY0;
-    // rectangle specifying region of this bitmap to draw (defaults to full bitmap)
-    protected Rect drawRegion;
-    // degrees image will be rotated about center when drawn (default 0)
-    protected float degreesRotation;
-    // color filter used when drawing (default doesn't do anything)
-    protected ColorMatrixColorFilter filter;
-    // paint used for drawing
+    // Bitmap to be drawn
+    private Bitmap bitmap;
+    // Source and destination rects
+    private Rect src, dst;
+    // Degrees to rotate clockwise
+    private float degRotation;
     private Paint paint;
 
-    // TODO: use double
-    public DrawImage(Bitmap bitmap, float canvasX0, float canvasY0) {
+    public DrawImage(Bitmap bitmap, Rect src, Rect dst) {
         this.bitmap = bitmap;
-        this.canvasX0 = canvasX0;
-        this.canvasY0 = canvasY0;
+        this.src = src;
+        this.dst = dst;
         paint = new Paint();
     }
 
-    public void setCanvasX0(float canvasX0) {
-        this.canvasX0 = canvasX0;
+    public DrawImage(Bitmap bitmap, Rect src, int x, int y) {
+        this(
+                bitmap,
+                src,
+                new Rect(x, y, x + src.width(), y + src.height())
+        );
     }
 
-    public void setCanvasY0(float canvasY0) {
-        this.canvasY0 = canvasY0;
+    public DrawImage(Bitmap bitmap, int x, int y) {
+        this(
+                bitmap,
+                new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()),
+                new Rect(x, y, x + bitmap.getWidth(), y + bitmap.getHeight())
+        );
     }
 
-    public void setDrawRegion(Rect drawRegion) {
-        this.drawRegion = drawRegion;
+    public void setRotation(float degRotation) {
+        this.degRotation = degRotation;
     }
 
-    public void setRotation(float degreesRotation) {
-        this.degreesRotation = degreesRotation;
-    }
-
-    public void setFilter(ColorMatrix filter) {
-        this.filter = new ColorMatrixColorFilter(filter);
+    public void setColorMatrix(ColorMatrix colorMatrix) {
+        this.paint.setColorFilter(new ColorMatrixColorFilter(colorMatrix));
     }
 
     @Override
     public void draw(Canvas canvas) {
-        // todo: refine so data is called once and not every time. Also, set DrawRegion on init
-        // set drawRegion to the full image if none was specified
-        if (drawRegion == null) {
-            drawRegion = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        }
-
-        // save and rotate canvas if a rotation was specified
-        if (degreesRotation != 0) {
-            // save canvas so we can revert it after performing the rotation
+        // Save and rotate canvas if a rotation was specified
+        if (degRotation != 0) {
             canvas.save();
-            // rotate canvas about center of drawRegion
-            canvas.rotate(degreesRotation, canvasX0 + drawRegion.width() / 2, canvasY0 + drawRegion.height() / 2);
+            canvas.rotate(degRotation, dst.centerX(), dst.centerY());
         }
 
-        // set color filter if one was specified
-        if (filter != null) {
-            paint.setColorFilter(filter);
-        }
+        canvas.drawBitmap(bitmap, src, dst, paint);
 
-        // calculate destination coordinates
-        Rect destination = new Rect(
-                (int) canvasX0,
-                (int) canvasY0,
-                (int) canvasX0 + drawRegion.width(),
-                (int) canvasY0 + drawRegion.height()
-        );
-
-        // draw command
-        canvas.drawBitmap(
-                bitmap,
-                drawRegion,
-                destination,
-                paint);
-
-        // restore canvas if it was previously rotated
-        if (degreesRotation != 0) {
+        // Restore canvas if it was previously rotated
+        if (degRotation != 0) {
             canvas.restore();
         }
     }

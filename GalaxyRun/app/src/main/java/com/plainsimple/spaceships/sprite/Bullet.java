@@ -66,8 +66,8 @@ public class Bullet extends Sprite {
     public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawQueue) {
         drawQueue.push(new DrawImage(
                 gameContext.bitmapCache.getBitmap(BitmapID.BULLET_0),
-                (float) getX(),
-                (float) getY()
+                (int) getX(),
+                (int) getY()
         ));
     }
 }

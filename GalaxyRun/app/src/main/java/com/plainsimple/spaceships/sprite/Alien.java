@@ -204,8 +204,8 @@ public class Alien extends Sprite {
         if (!(explodeAnim.isPlaying() && explodeAnim.getFramesLeft() <= 1)) {
             drawQueue.push(new DrawImage(
                     gameContext.bitmapCache.getBitmap(BitmapID.ALIEN),
-                    (float) getX(),
-                    (float) getY())
+                    (int) getX(),
+                    (int) getY())
             );
         }
         // Draw loseHealthAnimations
@@ -219,10 +219,10 @@ public class Alien extends Sprite {
         if (explodeAnim.isPlaying()) {
             DrawImage explodeImg = new DrawImage(
                     gameContext.bitmapCache.getBitmap(explodeAnim.getBitmapID()),
-                    (float) getX(),
-                    (float) getY()
+                    explodeAnim.getCurrentFrameSrc(),
+                    (int) getX(),
+                    (int) getY()
             );
-            explodeImg.setDrawRegion(explodeAnim.getCurrentFrameSrc());
             drawQueue.push(explodeImg);
         }
     }

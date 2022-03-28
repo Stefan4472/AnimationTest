@@ -222,30 +222,30 @@ public class Spaceship extends Sprite {
             // Draw the Spaceship
             DrawImage drawShip = new DrawImage(
                     gameContext.bitmapCache.getBitmap(BitmapID.SPACESHIP),
-                    (float) getX(),
-                    (float) getY()
+                    (int) getX(),
+                    (int) getY()
             );
-            drawShip.setFilter(colorMatrixAnimator.getMatrix());
+            drawShip.setColorMatrix(colorMatrixAnimator.getMatrix());
             drawQueue.push(drawShip);
 
             // Draw the moving animation behind it
             DrawImage drawExhaust = new DrawImage(
                     gameContext.bitmapCache.getBitmap(moveAnim.getBitmapID()),
-                    (float) getX(),
-                    (float) getY()
+                    moveAnim.getCurrentFrameSrc(),
+                    (int) getX(),
+                    (int) getY()
             );
-            drawExhaust.setDrawRegion(moveAnim.getCurrentFrameSrc());
-            drawExhaust.setFilter(colorMatrixAnimator.getMatrix());
+            drawExhaust.setColorMatrix(colorMatrixAnimator.getMatrix());
             drawQueue.push(drawExhaust);
 
             // Draw the explosion animation if it is playing
             if (explodeAnim.isPlaying()) {
                 DrawImage drawExplosion = new DrawImage(
                         gameContext.bitmapCache.getBitmap(explodeAnim.getBitmapID()),
-                        (float) getX(),
-                        (float) getY()
+                        explodeAnim.getCurrentFrameSrc(),
+                        (int) getX(),
+                        (int) getY()
                 );
-                drawExplosion.setDrawRegion(explodeAnim.getCurrentFrameSrc());
                 drawQueue.push(drawExplosion);
             }
         }

@@ -79,8 +79,8 @@ public class AlienBullet extends Sprite {
     public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawQueue) {
         DrawImage drawBullet = new DrawImage(
                 gameContext.bitmapCache.getBitmap(BitmapID.ALIEN_BULLET),
-                (float) getX(),
-                (float) getY()
+                (int) getX(),
+                (int) getY()
         );
         drawBullet.setRotation((int) travelAngle);
         drawQueue.push(drawBullet);
