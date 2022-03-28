@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.helper;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 
 import java.util.Hashtable;
 
@@ -27,9 +28,11 @@ public class FontCache {
         if (tf == null) {
             try {
                 tf = ResourcesCompat.getFont(context, fontId.getRId());
+                Log.d("FontCache", "Successfully loaded font " + fontId.name());
             }
             catch (Exception e) {
                 tf = fallback;  // fallback
+                Log.e("FontCache", "Failed to load font " + fontId.name());
             }
             fontCache.put(fontId, tf);
         }

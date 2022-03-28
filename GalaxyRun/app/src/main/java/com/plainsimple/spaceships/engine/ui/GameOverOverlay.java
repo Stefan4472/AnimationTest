@@ -9,6 +9,7 @@ import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.engine.draw.DrawText;
+import com.plainsimple.spaceships.helper.FontId;
 import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
@@ -77,7 +78,7 @@ public class GameOverOverlay extends UIElement {
         // https://stackoverflow.com/a/26975371
         Paint paint = new Paint();
         Rect textBounds = new Rect();
-//        paint.setTypeface(Typeface.DEFAULT);
+        paint.setTypeface(gameContext.fontCache.get(FontId.GALAXY_MONKEY));
         paint.setTextSize((int) (gameContext.gameHeightPx * TITLE_SIZE_PCT));
         String text = "Game Over";
         paint.getTextBounds(text, 0, text.length(), textBounds);
@@ -88,7 +89,8 @@ public class GameOverOverlay extends UIElement {
                 (float) (bounds.getX() + (bounds.getWidth() - text_width) / 2),
                 (float) (bounds.getY() + text_height + gameContext.gameHeightPx * 0.05),
                 Color.YELLOW,
-                (int) (gameContext.gameHeightPx * TITLE_SIZE_PCT)
+                (int) (gameContext.gameHeightPx * TITLE_SIZE_PCT),
+                gameContext.fontCache.get(FontId.GALAXY_MONKEY)
         ));
 
         DrawRect buttonFill = new DrawRect(Color.GRAY, Paint.Style.FILL, 0);
@@ -97,7 +99,7 @@ public class GameOverOverlay extends UIElement {
 
         Paint paint2 = new Paint();
         Rect textBounds2 = new Rect();
-//        paint.setTypeface(Typeface.DEFAULT);
+        paint.setTypeface(gameContext.fontCache.get(FontId.GALAXY_MONKEY));
         paint2.setTextSize((int) (bounds.getHeight() * PLAY_BUTTON_TEXT_PCT));
         String text2 = "Play Again";
         paint2.getTextBounds(text2, 0, text2.length(), textBounds2);
@@ -108,7 +110,8 @@ public class GameOverOverlay extends UIElement {
                 (float) (playAgainBounds.getX() + (playAgainBounds.getWidth() - text_width2) / 2),
                 (float) (playAgainBounds.getY() + text_height2),
                 Color.YELLOW,
-                (int) (bounds.getHeight() * PLAY_BUTTON_TEXT_PCT)
+                (int) (bounds.getHeight() * PLAY_BUTTON_TEXT_PCT),
+                gameContext.fontCache.get(FontId.GALAXY_MONKEY)
         ));
     }
 

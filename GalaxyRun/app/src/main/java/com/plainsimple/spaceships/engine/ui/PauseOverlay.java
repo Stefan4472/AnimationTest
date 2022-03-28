@@ -10,6 +10,7 @@ import com.plainsimple.spaceships.engine.UpdateContext;
 import com.plainsimple.spaceships.engine.draw.DrawParams;
 import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.engine.draw.DrawText;
+import com.plainsimple.spaceships.helper.FontId;
 import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
 
@@ -62,7 +63,7 @@ public class PauseOverlay extends UIElement {
         // https://stackoverflow.com/a/26975371
         Paint paint = new Paint();
         Rect textBounds = new Rect();
-//        paint.setTypeface();
+        paint.setTypeface(gameContext.fontCache.get(FontId.GALAXY_MONKEY));
         paint.setTextSize((int) (gameContext.gameHeightPx * TEXT_SIZE_PCT));
         String text = "Paused";
         paint.getTextBounds(text, 0, text.length(), textBounds);
@@ -73,7 +74,8 @@ public class PauseOverlay extends UIElement {
                 (float) (bounds.getX() + (bounds.getWidth() - text_width) / 2),
                 (float) (bounds.getY() + (bounds.getHeight() - text_height) / 2 + text_height),
                 Color.YELLOW,
-                (int) (gameContext.gameHeightPx * TEXT_SIZE_PCT)
+                (int) (gameContext.gameHeightPx * TEXT_SIZE_PCT),
+                gameContext.fontCache.get(FontId.GALAXY_MONKEY)
         ));
     }
 

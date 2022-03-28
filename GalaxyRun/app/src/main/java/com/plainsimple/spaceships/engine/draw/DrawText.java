@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.engine.draw;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 
 import com.plainsimple.spaceships.helper.BitmapCache;
 
@@ -24,21 +25,29 @@ public class DrawText implements DrawParams {
     private int textColor;
     // size of text to draw
     private int textSize;
+    private Typeface typeface;
     // paint used by any class member to draw text
     private static Paint paint = new Paint();
 
-    public DrawText(String text, float x, float y, int textColor, int textSize) {
+    public DrawText(String text, float x, float y, int color, int size, Typeface typeface) {
         this.text = text;
         this.x = x;
         this.y = y;
-        this.textColor = textColor;
-        this.textSize = textSize;
+        this.textColor = color;
+        this.textSize = size;
+        this.typeface = typeface;
     }
+
+    public DrawText(String text, float x, float y, int color, int size) {
+        this(text, x, y, color, size, Typeface.DEFAULT);
+    }
+
 
     @Override
     public void draw(Canvas canvas, BitmapCache bitmapCache) { // todo: should paint be static? should it be passed as a parameter?
         paint.setColor(textColor);
         paint.setTextSize(textSize);
+        paint.setTypeface(typeface);
         canvas.drawText(text, x, y, paint);
     }
 }
