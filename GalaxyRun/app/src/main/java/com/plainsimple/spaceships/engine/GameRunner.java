@@ -34,8 +34,7 @@ public class GameRunner extends HandlerThread {
     Send the signal to start the game.
      */
     public void startGame() {
-        // TODO: could just do this on the first queueUpdate()
-        mGameEngine.inputStartGame();
+        mGameEngine.inputExternalStartGame();
     }
 
     /*

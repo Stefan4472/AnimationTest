@@ -139,14 +139,14 @@ public class ScoreDisplay extends UIElement {
     }
 
     public void onTouchEnter(float x, float y) {
-        Log.d("ScoreDisplay", "onTouchEnter " + x + ", " + y);
+//        Log.d("ScoreDisplay", "onTouchEnter " + x + ", " + y);
     }
 
     public void onTouchMove(float x, float y) {
-        Log.d("ScoreDisplay", "onTouchMove " + x + ", " + y);
+//        Log.d("ScoreDisplay", "onTouchMove " + x + ", " + y);
     }
 
     public void onTouchLeave(float x, float y) {
-        Log.d("ScoreDisplay", "onTouchLeave " + x + ", " + y);
+//        Log.d("ScoreDisplay", "onTouchLeave " + x + ", " + y);
     }
 }

@@ -15,7 +15,7 @@ public class GameTimer {
     // Whether the timer is currently paused
     private boolean isPaused;
     // Total number of milliseconds tracked
-    private long msTracked;
+    public long msTracked;
 
     public GameTimer() {
 

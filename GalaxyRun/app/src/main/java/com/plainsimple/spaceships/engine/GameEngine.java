@@ -36,15 +36,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Core game logic.
- *
- * TODO: think more about how to handle restarts.
  */
 public class GameEngine implements IExternalGameController {
 
-    private GameContext gameContext;
-    private BitmapCache bitmapCache;
-    private FontCache fontCache;
-    private AnimFactory animFactory;
+    private final GameContext gameContext;
+    private final BitmapCache bitmapCache;
+    private final FontCache fontCache;
+    private final AnimFactory animFactory;
+
     private HitDetector hitDetector;
     private DrawLayers drawLayers;
     private Map map;
@@ -52,18 +51,18 @@ public class GameEngine implements IExternalGameController {
     private GameUI ui;
 
     private GameState currState = null;
+    private int score;
     private boolean isPaused;
     private boolean isMuted;
-    private int score;
 
     // Tracks game duration (non-paused)  TODO: handle pause() and resume()
     // Note: game difficulty is purely time-based.
-    private GameTimer gameTimer = new GameTimer();
-    private FpsCalculator fpsCalculator = new FpsCalculator(100);
+    private GameTimer gameTimer;
+    private FpsCalculator fpsCalculator;
     // The player's spaceship
     private Spaceship spaceship;
     // All other sprites
-    private List<Sprite> sprites = new LinkedList<>();
+    private List<Sprite> sprites;
 
     // Queue for game input events coming from outside
     private ConcurrentLinkedQueue<ExternalInput> externalInputQueue =
@@ -102,36 +101,58 @@ public class GameEngine implements IExternalGameController {
                 GameEngine.STARTING_PLAYER_HEALTH
         );
 
-        // Init everything that requires GameContext
-        spaceship = new Spaceship(gameContext, 0, 0);
-        background = new Background(gameContext);
-        ui = new GameUI(gameContext);
-        map = new Map(gameContext);
-        hitDetector = HitDetector.MakeDefaultHitDetector();
-        drawLayers = new DrawLayers(7);
+        initGameObjects();
 
         // Start in WAITING state
         enterState(GameState.WAITING);
+    }
+
+    private void initGameObjects() {
+        Log.d("GameEngine", "Initializing game objects");
+        gameTimer = new GameTimer();
+        fpsCalculator = new FpsCalculator(100);
+        score = 0;
+
+        // Move spaceship just off the left of the screen, centered vertically
+        BitmapData shipData = gameContext.bitmapCache.getData(BitmapID.SPACESHIP);
+        spaceship = new Spaceship(
+                gameContext,
+                -shipData.getWidth(),
+                gameContext.gameHeightPx / 2.0 - shipData.getHeight() / 2.0
+        );
+
+        sprites = new LinkedList<>();
+        sprites.add(spaceship);
+
+        map = new Map(gameContext);
+        background = new Background(gameContext);
+        ui = new GameUI(gameContext);
+        hitDetector = HitDetector.MakeDefaultHitDetector();
+        drawLayers = new DrawLayers(7);
+        Log.d("GameEngine", "Finished initializing game objects");
+    }
+
+    /*
+    Destroy current game state and start a new game.
+     */
+    private void restart() {
+        initGameObjects();
+        enterState(GameState.STARTING);
     }
 
     /*
     Update all game logic.
      */
     public GameUpdateMessage update() {
+        processExternalInput();
+        processUIInput();
+
+        // Note: we take GameTime *after* processing input because the input
+        // may restart the game
         GameTime gameTime = gameTimer.recordUpdate();
+        fpsCalculator.recordFrame();
         hitDetector.clear();
         drawLayers.clear();
-
-        // Process any external inputs on queue
-        while (!externalInputQueue.isEmpty()) {
-            ExternalInput input = externalInputQueue.poll();
-            if (input != null) {
-                processExternalInput(input);
-            }
-        }
-        // Process UI inputs (which can be created by handling
-        // external inputs, e.g. screen touches)
-        processUIInput(ui.pollAllInput());
 
         GameState shouldState = GameStateMachine.calcState(gameContext, spaceship, currState);
         if (shouldState != currState) {
@@ -219,7 +240,6 @@ public class GameEngine implements IExternalGameController {
             createdSounds.clear();
         }
 
-        fpsCalculator.recordFrame();
         return new GameUpdateMessage(
                 drawInstructions,
                 createdEvents,
@@ -263,31 +283,14 @@ public class GameEngine implements IExternalGameController {
 
     private void enterWaitingState() {
         currState = GameState.WAITING;
-        map = new Map(gameContext);
-        // Move spaceship just off the left of the screen, centered vertically
-        BitmapData ship_data = gameContext.bitmapCache.getData(BitmapID.SPACESHIP);
-        spaceship.setX(-ship_data.getWidth());
-        spaceship.setY(gameContext.gameHeightPx / 2.0 - ship_data.getHeight() / 2.0);
-        // Make non-controllable
-        // TODO: this can be done at the GameEngine level with a flag and suppressing input
-        spaceship.setControllable(false);
     }
 
     private void enterStartingState() {
         currState = GameState.STARTING;
-        score = 0;
-        gameTimer = new GameTimer();
         gameTimer.start();
-
-        // Create Spaceship and position off the screen to the left,
-        // centered vertically
-        spaceship.reset();
-        sprites.clear();
-        sprites.add(spaceship);
-        // TODO: how to avoid re-creating the Map multiple times?
-        //   -> may in fact need a reset() function for certain objects
-        map = new Map(gameContext);
-
+        // Make non-controllable
+        // TODO: this can be done at the GameEngine level with a flag and suppressing input
+        spaceship.setControllable(false);
         // Set speed to slowly fly onto screen
         spaceship.setSpeedX(gameContext.gameWidthPx * 0.12);
     }
@@ -307,11 +310,6 @@ public class GameEngine implements IExternalGameController {
     private void enterFinishedState() {
         currState = GameState.FINISHED;
         gameTimer.pause();
-    }
-
-    private void restart() {
-        // TODO: also need to reset the UI
-        enterStartingState();
     }
 
     private void setPaused(boolean shouldPause) {
@@ -334,34 +332,38 @@ public class GameEngine implements IExternalGameController {
         this.isMuted = shouldMute;
     }
 
-    private void processExternalInput(ExternalInput input) {
-//        Log.d("GameEngine", String.format("Processing external input event %s", input.toString()));
-        if (input instanceof SimpleExternalInput) {
-            switch (((SimpleExternalInput) input).inputId) {
-                case START_GAME: {
-                    enterStartingState();
-                    break;
-                }
-                default: {
-                    throw new IllegalArgumentException(
-                            String.format("Unsupported GameInputID %s", ((SimpleExternalInput) input).inputId)
-                    );
+    private void processExternalInput() {
+        while (!externalInputQueue.isEmpty()) {
+            ExternalInput input = externalInputQueue.poll();
+            if (input != null) {
+                if (input instanceof SimpleExternalInput) {
+                    switch (((SimpleExternalInput) input).inputId) {
+                        case START_GAME: {
+                            enterStartingState();
+                            break;
+                        }
+                        default: {
+                            throw new IllegalArgumentException(
+                                    String.format("Unsupported GameInputID %s", ((SimpleExternalInput) input).inputId)
+                            );
+                        }
+                    }
+                } else if (input instanceof MotionExternalInput) {
+                    MotionEvent e = ((MotionExternalInput) input).motion;
+                    ui.handleMotionEvent(e);
+                } else {
+                    throw new IllegalArgumentException("Unsupported input type");
                 }
             }
-        } else if (input instanceof MotionExternalInput) {
-            MotionEvent e = ((MotionExternalInput) input).motion;
-            ui.handleMotionEvent(e);
-        } else {
-            throw new IllegalArgumentException("Unsupported input type");
         }
     }
 
-    private void processUIInput(Queue<UIInputId> inputs) {
+    private void processUIInput() {
         // Set defaults in the absence of input
         boolean isShooting = false;
         Spaceship.Direction moveInput = Spaceship.Direction.NONE;
 
-        for (UIInputId input : inputs) {
+        for (UIInputId input : ui.pollAllInput()) {
             switch (input) {
                 case PAUSE: {
                     setPaused(true);
@@ -419,10 +421,5 @@ public class GameEngine implements IExternalGameController {
     @Override
     public void inputExternalMotionEvent(MotionEvent e) {
         externalInputQueue.add(new MotionExternalInput(e));
-    }
-
-    // TODO: refactor out
-    public void inputStartGame() {
-        externalInputQueue.add(new SimpleExternalInput(ExternalInputId.START_GAME));
     }
 }

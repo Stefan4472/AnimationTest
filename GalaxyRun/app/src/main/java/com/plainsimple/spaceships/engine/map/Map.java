@@ -20,7 +20,7 @@ import com.plainsimple.spaceships.util.ProtectedQueue;
 public class Map {
 
     private final GameContext gameContext;
-    private MapGenerator mapGenerator;
+    private final MapGenerator mapGenerator;
     // Difficulty calculated for this chunk.
     // Re-calculated each time a new chunk is generated.
     private double chunkDifficulty;
@@ -61,7 +61,6 @@ public class Map {
         nextSpawnAtPx = 0;
     }
 
-    // TODO: would be really great to have access to UpdateContext here...
     public void update(GameTime gameTime, ProtectedQueue<Sprite> createdSprites) {
         numPixelsScrolled += chunkScrollSpeedPx * (gameTime.msSincePrevUpdate / 1000.0);
 

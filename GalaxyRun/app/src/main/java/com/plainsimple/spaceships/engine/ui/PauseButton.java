@@ -47,15 +47,15 @@ public class PauseButton extends UIElement {
     }
 
     public void onTouchEnter(float x, float y) {
-        Log.d("PauseButton", "onTouchEnter " + x + ", " + y);
+//        Log.d("PauseButton", "onTouchEnter " + x + ", " + y);
     }
 
     public void onTouchMove(float x, float y) {
-        Log.d("PauseButton", "onTouchMove " + x + ", " + y);
+//        Log.d("PauseButton", "onTouchMove " + x + ", " + y);
     }
 
     public void onTouchLeave(float x, float y) {
-        Log.d("PauseButton", "onTouchLeave " + x + ", " + y);
+//        Log.d("PauseButton", "onTouchLeave " + x + ", " + y);
         // Register event to toggle state
         createdInput.add((isPaused ? UIInputId.RESUME : UIInputId.PAUSE));
     }

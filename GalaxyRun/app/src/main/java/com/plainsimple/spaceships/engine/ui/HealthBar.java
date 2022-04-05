@@ -92,6 +92,12 @@ public class HealthBar extends UIElement {
 
     public void update(UpdateContext updateContext) {
         setMovingToHealth(updateContext.playerHealth);
+
+        if (currentHealth != movingToHealth) {
+            // Transition down 20% of the remaining distance between
+            // currentHealth and movingToHealth
+            currentHealth -= (double) (currentHealth - movingToHealth) * 0.2;
+        }
     }
 
     public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
@@ -101,12 +107,6 @@ public class HealthBar extends UIElement {
                 Color.GRAY,
                 (float) (height * 0.1)
         ));
-
-        if (currentHealth != movingToHealth) {
-            // Transition down 20% of the remaining distance between
-            // currentHealth and movingToHealth
-            currentHealth -= (double) (currentHealth - movingToHealth) * 0.2;
-        }
 
         // Draw fill
         float innerPadding = (float) (height * 0.1);
@@ -147,14 +147,14 @@ public class HealthBar extends UIElement {
     }
 
     public void onTouchEnter(float x, float y) {
-        Log.d("HealthBar", "onTouchEnter " + x + ", " + y);
+//        Log.d("HealthBar", "onTouchEnter " + x + ", " + y);
     }
 
     public void onTouchMove(float x, float y) {
-        Log.d("HealthBar", "onTouchMove " + x + ", " + y);
+//        Log.d("HealthBar", "onTouchMove " + x + ", " + y);
     }
 
     public void onTouchLeave(float x, float y) {
-        Log.d("HealthBar", "onTouchLeave " + x + ", " + y);
+//        Log.d("HealthBar", "onTouchLeave " + x + ", " + y);
     }
 }

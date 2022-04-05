@@ -111,7 +111,7 @@ public class Controls extends UIElement {
 
     @Override
     public void onTouchEnter(float x, float y) {
-        Log.d("Controls", "onTouchEnter " + x + ", " + y);
+//        Log.d("Controls", "onTouchEnter " + x + ", " + y);
         if (boundingBoxUp.isInBounds(x, y)) {
             currInput = Spaceship.Direction.UP;
         } else if (boundingBoxDown.isInBounds(x, y)) {
@@ -123,7 +123,7 @@ public class Controls extends UIElement {
 
     @Override
     public void onTouchMove(float x, float y) {
-        Log.d("Controls", "onTouchMove " + x + ", " + y);
+//        Log.d("Controls", "onTouchMove " + x + ", " + y);
         if (boundingBoxUp.isInBounds(x, y)) {
             currInput = Spaceship.Direction.UP;
         } else if (boundingBoxDown.isInBounds(x, y)) {
@@ -135,7 +135,7 @@ public class Controls extends UIElement {
 
     @Override
     public void onTouchLeave(float x, float y) {
-        Log.d("Controls", "onTouchLeave " + x + ", " + y);
+//        Log.d("Controls", "onTouchLeave " + x + ", " + y);
         currInput = Spaceship.Direction.NONE;
     }
 }

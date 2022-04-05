@@ -47,15 +47,15 @@ public class MuteButton extends UIElement {
     }
 
     public void onTouchEnter(float x, float y) {
-        Log.d("MuteButton", "onTouchEnter " + x + ", " + y);
+//        Log.d("MuteButton", "onTouchEnter " + x + ", " + y);
     }
 
     public void onTouchMove(float x, float y) {
-        Log.d("MuteButton", "onTouchMove " + x + ", " + y);
+//        Log.d("MuteButton", "onTouchMove " + x + ", " + y);
     }
 
     public void onTouchLeave(float x, float y) {
-        Log.d("MuteButton", "onTouchLeave " + x + ", " + y);
+//        Log.d("MuteButton", "onTouchLeave " + x + ", " + y);
         // Create event to toggle state
         createdInput.add((isMuted ? UIInputId.UN_MUTE : UIInputId.MUTE));
     }

@@ -18,10 +18,10 @@ public class MapGenerator {
 
     public Chunk generateChunk(double difficulty) {
         Log.d("MapGenerator", "Generating chunk with difficulty " + difficulty);
-        // Generate five columns of EMPTY to start the game TODO: is this necessary?
+        // Generate a few columns of EMPTY to start the game TODO: is this necessary?
         if (difficulty == 0) {
             Log.d("MapGenerator", "Generating empty chunk for game start");
-            return TileGenerator.generateEmpty(5);
+            return TileGenerator.generateEmpty(3);
         }
 
         ChunkType nextChunkType = decideChunkType(difficulty);
