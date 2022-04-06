@@ -67,40 +67,39 @@ public class GameUI {
         for (int i = 0; i < e.getPointerCount(); i++) {
             int pointerId = e.getPointerId(i);
             int pointerIndex = e.findPointerIndex(pointerId);
-            float x = e.getX(pointerIndex);
-            float y = e.getY(pointerIndex);
-
-            // Convert MotionEvent actions into `MyTouchEvent`
-            switch (e.getActionMasked()) {
-                case MotionEvent.ACTION_DOWN:
-                case MotionEvent.ACTION_POINTER_DOWN: {
-                    updateTouchState(pointerId, MyTouchEvent.DOWN, x, y);
-                    break;
+            try {
+                float x = e.getX(pointerIndex);
+                float y = e.getY(pointerIndex);
+                // Convert MotionEvent actions into `MyTouchEvent`
+                switch (e.getActionMasked()) {
+                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_POINTER_DOWN: {
+                        updateTouchState(pointerId, MyTouchEvent.DOWN, x, y);
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_POINTER_UP: {
+                        updateTouchState(pointerId, MyTouchEvent.UP, x, y);
+                        break;
+                    }
+                    case MotionEvent.ACTION_MOVE: {
+                        updateTouchState(pointerId, MyTouchEvent.MOVE, x, y);
+                        break;
+                    }
+                    case MotionEvent.ACTION_CANCEL: {
+                        updateTouchState(e.getPointerId(0), MyTouchEvent.CANCEL, e.getX(), e.getY());
+                        break;
+                    }
+                    default: {
+                        int action = e.getActionMasked();
+                        Log.w("GameUI", "Unhandled action: " + MotionEvent.actionToString(action));
+                    }
                 }
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_POINTER_UP: {
-                    updateTouchState(pointerId, MyTouchEvent.UP, x, y);
-                    break;
-                }
-                case MotionEvent.ACTION_MOVE: {
-                    updateTouchState(pointerId, MyTouchEvent.MOVE, x, y);
-                    break;
-                }
-                case MotionEvent.ACTION_CANCEL: {
-                    updateTouchState(e.getPointerId(0), MyTouchEvent.CANCEL, e.getX(), e.getY());
-                    break;
-                }
-                default: {
-                    int action = e.getActionMasked();
-                    Log.w("GameUI", "Unhandled action: " + MotionEvent.actionToString(action));
-                }
+            } catch (IllegalArgumentException ex) {
+                // Can happen on e.get(pointerIndex)
+                Log.w("GameUI", "MotionEvent had a pointerIndex out of range.");
             }
         }
-
-//        // Restart game on button press when game is over
-//        if (isGameOver && e.getAction() == MotionEvent.ACTION_DOWN) {
-//            createdInput.add(UIInputId.RESTART_GAME);
-//        }
     }
 
     private void updateTouchState(int pointerId, MyTouchEvent event, float x, float y) {
