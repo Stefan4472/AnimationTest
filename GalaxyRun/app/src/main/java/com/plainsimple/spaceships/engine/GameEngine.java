@@ -75,7 +75,8 @@ public class GameEngine implements IExternalGameController {
     public GameEngine(
             Context appContext,
             int screenWidthPx,
-            int screenHeightPx
+            int screenHeightPx,
+            boolean inDebugMode
     ) {
         // Calculate game dimensions based on screen dimensions.
         Pair<Integer, Integer> gameDimensions =
@@ -87,9 +88,10 @@ public class GameEngine implements IExternalGameController {
         fontCache = new FontCache(appContext, Typeface.MONOSPACE);
         animFactory = new AnimFactory(bitmapCache);
 
-        // Create GameContext TODO: add "debug" flag to GameContext?
+        // Create GameContext
         gameContext = new GameContext(
                 appContext,
+                inDebugMode,
                 bitmapCache,
                 fontCache,
                 animFactory,
@@ -128,7 +130,7 @@ public class GameEngine implements IExternalGameController {
         background = new Background(gameContext);
         ui = new GameUI(gameContext);
         hitDetector = HitDetector.MakeDefaultHitDetector();
-        drawLayers = new DrawLayers(7);
+        drawLayers = new DrawLayers(gameContext, 7);
         Log.d("GameEngine", "Finished initializing game objects");
     }
 
@@ -231,7 +233,7 @@ public class GameEngine implements IExternalGameController {
         // Collect DrawInstructions.
         // Draw Background first, then sprites, then UI
         background.getDrawInstructions(drawInstructions);
-        drawLayers.getDrawInstructions(drawInstructions, true);
+        drawLayers.getDrawInstructions(drawInstructions);
         ui.getDrawInstructions(drawInstructions);
 
         // A little hack to easily support muting:

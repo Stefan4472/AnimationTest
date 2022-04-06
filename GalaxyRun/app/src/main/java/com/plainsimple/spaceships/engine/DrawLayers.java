@@ -12,12 +12,14 @@ import java.util.List;
  */
 
 public class DrawLayers {
+    private final GameContext gameContext;
     private int numLayers;
     private List<Sprite>[] layers;  // TODO: NAMING IS HORRIBLE
 
 
     // TODO: HAVE A WAY TO ASSIGN A DRAW LAYER TO A SPRITE TYPE
-    public DrawLayers(int numLayers) {
+    public DrawLayers(GameContext gameContext, int numLayers) {
+        this.gameContext = gameContext;
         this.numLayers = numLayers;
         layers = new LinkedList[numLayers];
         // TODO: `FASTLIST` STRUCTURE?
@@ -30,15 +32,12 @@ public class DrawLayers {
         layers[sprite.getDrawLayer()].add(sprite);
     }
 
-    public void getDrawInstructions(
-            ProtectedQueue<DrawInstruction> drawQueue,
-            boolean drawHitboxes  // TODO: use a globally-set DEBUG flag
-    ) {
+    public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawQueue)
+    {
         for (List<Sprite> sprite_layer : layers) {
             for (Sprite sprite : sprite_layer) {
                 sprite.getDrawInstructions(drawQueue);
-                if (drawHitboxes) {
-                    // TODO: this is unclean
+                if (gameContext.inDebugMode) {
                     drawQueue.push(sprite.drawHitbox());
                 }
             }

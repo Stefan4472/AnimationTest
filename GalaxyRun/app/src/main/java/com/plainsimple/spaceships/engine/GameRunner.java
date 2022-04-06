@@ -21,13 +21,23 @@ public class GameRunner extends HandlerThread {
         void onGameStateUpdated(GameUpdateMessage message);
     }
 
-    public GameRunner(Handler responseHandler, Callback callback,
-                      Context context, int screenWidthPx, int screenHeightPx) {
+    public GameRunner(
+            Handler responseHandler,
+            Callback callback,
+            Context context,
+            int screenWidthPx,
+            int screenHeightPx,
+            boolean inDebugMode
+    ) {
         super(GameRunner.class.getSimpleName());
         mResponseHandler = responseHandler;
         mCallback = callback;
-        mGameEngine = new GameEngine(context.getApplicationContext(), screenWidthPx, screenHeightPx);
-
+        mGameEngine = new GameEngine(
+                context.getApplicationContext(),
+                screenWidthPx,
+                screenHeightPx,
+                inDebugMode
+        );
     }
 
     /*

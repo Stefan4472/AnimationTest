@@ -22,6 +22,7 @@ import java.util.Random;
 
 public class GameContext {
     public final Context appContext;
+    public final boolean inDebugMode;
     public final BitmapCache bitmapCache;
     public final FontCache fontCache;
     public final AnimFactory animFactory;  // TODO: remove (unnecessary)
@@ -36,6 +37,7 @@ public class GameContext {
 
     public GameContext(
             Context appContext,
+            boolean inDebugMode,
             BitmapCache bitmapCache,
             FontCache fontCache,
             AnimFactory animCache,
@@ -46,6 +48,7 @@ public class GameContext {
             int screenHeightPx,
             int fullHealth) {
         this.appContext = appContext;
+        this.inDebugMode = inDebugMode;
         this.bitmapCache = bitmapCache;
         this.fontCache = fontCache;
         this.animFactory = animCache;

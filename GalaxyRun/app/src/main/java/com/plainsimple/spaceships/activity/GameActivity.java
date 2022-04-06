@@ -14,6 +14,7 @@ import com.plainsimple.spaceships.engine.external.SoundPlayer;
 import com.plainsimple.spaceships.view.GameView;
 
 import androidx.fragment.app.FragmentActivity;
+import plainsimple.spaceships.BuildConfig;
 import plainsimple.spaceships.R;
 
 /**
@@ -95,7 +96,13 @@ public class GameActivity extends FragmentActivity implements
 
         // Create GameRunner background thread
         mGameRunner = new GameRunner(
-                new Handler(), this, getApplicationContext(), screenWidthPx, screenHeightPx);
+                new Handler(),
+                this,
+                getApplicationContext(),
+                screenWidthPx,
+                screenHeightPx,
+                BuildConfig.DEBUG
+        );
         mGameRunner.start();
         mGameRunner.prepareHandler();
         // Send START signal and queue the first update
@@ -108,13 +115,6 @@ public class GameActivity extends FragmentActivity implements
      */
     @Override
     public void onGameStateUpdated(GameUpdateMessage updateMessage) {
-        // Log debugging info every 150 frames
-//        if (updateMessage.frameNumber > 0 && updateMessage.frameNumber % 150 == 0) {
-//            Log.d("GameActivity", "FrameNumber = " + updateMessage.frameNumber);
-//            Log.d("GameActivity", "FPS = " + updateMessage.fps);
-//            Log.d("GameActivity", "Got " + updateMessage.getDrawParams().getSize() + " drawParams");
-//        }
-
         if (updateMessage.fps != 0 && updateMessage.fps < 30) {
             Log.w("GameActivity", "FPS below 30! FPS = " + updateMessage.fps);
         }

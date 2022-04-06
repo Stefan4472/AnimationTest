@@ -43,7 +43,7 @@ public class GameUI {
         pauseOverlay = new PauseOverlay(gameContext);
 
         uiElements = new UIElement[] {
-                gameoverOverlay,
+            gameoverOverlay,
             pauseOverlay,
             new PauseButton(gameContext),
             new MuteButton(gameContext),
@@ -225,9 +225,12 @@ public class GameUI {
             UIElement elem = uiElements[i];
             if (elem.getIsVisible()) {
                 elem.getDrawInstructions(drawInstructions);
-                // Draw bounds TODO: debugging flag
-                drawInstructions.push(
-                        DrawRect.outline(elem.bounds.toRect(), Color.GREEN, 2.0f));
+                if (gameContext.inDebugMode) {
+                    // Draw bounds
+                    drawInstructions.push(
+                            DrawRect.outline(elem.bounds.toRect(), Color.GREEN, 2.0f)
+                    );
+                }
             }
         }
     }
