@@ -2,6 +2,7 @@ package com.plainsimple.spaceships.engine.ui;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
+import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.helper.Rectangle;
 import com.plainsimple.spaceships.util.ProtectedQueue;
@@ -13,6 +14,7 @@ public abstract class UIElement {
     protected final GameContext gameContext;
     protected final Rectangle bounds;
     protected Queue<UIInputId> createdInput;
+    protected Queue<SoundID> createdSounds;
     protected boolean isVisible = true;
     protected boolean isTouchable = true;
 
@@ -28,6 +30,7 @@ public abstract class UIElement {
         this.gameContext = gameContext;
         this.bounds = bounds;
         createdInput = new ArrayDeque<>();
+        createdSounds = new ArrayDeque<>();
     }
 
     public boolean isInBounds(float x, float y) {
@@ -47,5 +50,10 @@ public abstract class UIElement {
     public void pollAllInputs(Queue<UIInputId> input) {
         input.addAll(createdInput);
         createdInput.clear();
+    }
+
+    public void pollAllSounds(Queue<SoundID> sounds) {
+        sounds.addAll(createdSounds);
+        createdSounds.clear();
     }
 }

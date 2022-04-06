@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
+import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.engine.draw.DrawImage;
 import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.helper.BitmapID;
@@ -58,5 +59,6 @@ public class MuteButton extends UIElement {
 //        Log.d("MuteButton", "onTouchLeave " + x + ", " + y);
         // Create event to toggle state
         createdInput.add((isMuted ? UIInputId.UN_MUTE : UIInputId.MUTE));
+        createdSounds.add(SoundID.UI_CLICK_BUTTON);
     }
 }

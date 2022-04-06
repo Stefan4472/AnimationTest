@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.GameState;
 import com.plainsimple.spaceships.engine.UpdateContext;
+import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.util.Pair;
@@ -199,6 +200,14 @@ public class GameUI {
             elem.pollAllInputs(createdInput);
         }
         return createdInput;
+    }
+
+    public Queue<SoundID> pollAllSounds() {
+        Queue<SoundID> createdSounds = new ArrayDeque<>();
+        for (UIElement elem : uiElements) {
+            elem.pollAllSounds(createdSounds);
+        }
+        return createdSounds;
     }
 
     public void update(UpdateContext updateContext) {

@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
+import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.engine.draw.DrawImage;
 import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.helper.BitmapID;
@@ -58,5 +59,6 @@ public class PauseButton extends UIElement {
 //        Log.d("PauseButton", "onTouchLeave " + x + ", " + y);
         // Register event to toggle state
         createdInput.add((isPaused ? UIInputId.RESUME : UIInputId.PAUSE));
+        createdSounds.add(SoundID.UI_CLICK_BUTTON);
     }
 }

@@ -146,8 +146,17 @@ public class GameEngine implements IExternalGameController {
     Update all game logic.
      */
     public GameUpdateMessage update() {
+        // Create queues for this update
+        FastQueue<Sprite> createdSprites = new FastQueue<>();
+        FastQueue<EventID> createdEvents = new FastQueue<>();
+        FastQueue<SoundID> createdSounds = new FastQueue<>();
+        FastQueue<DrawInstruction> drawInstructions = new FastQueue<>();
+
         processExternalInput();
         processUIInput();
+        for (SoundID sound : ui.pollAllSounds()) {
+            createdSounds.push(sound);
+        }
 
         // Note: we take GameTime *after* processing input because the input
         // may restart the game
@@ -160,12 +169,6 @@ public class GameEngine implements IExternalGameController {
         if (shouldState != currState) {
             enterState(shouldState);
         }
-
-        // Create queues for this update
-        FastQueue<Sprite> createdSprites = new FastQueue<>();
-        FastQueue<EventID> createdEvents = new FastQueue<>();
-        FastQueue<SoundID> createdSounds = new FastQueue<>();
-        FastQueue<DrawInstruction> drawInstructions = new FastQueue<>();
 
         map.update(gameTime, createdSprites);
 

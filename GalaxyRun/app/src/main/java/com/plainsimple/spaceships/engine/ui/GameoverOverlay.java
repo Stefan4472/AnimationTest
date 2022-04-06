@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
+import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.engine.draw.DrawInstruction;
 import com.plainsimple.spaceships.engine.draw.DrawRect;
 import com.plainsimple.spaceships.engine.draw.DrawText;
@@ -147,6 +148,7 @@ public class GameoverOverlay extends UIElement {
     @Override
     public void onTouchLeave(float x, float y) {
         if (playAgainBounds.isInBounds(x, y)) {
+            createdSounds.add(SoundID.UI_CLICK_BUTTON);
             createdInput.add(UIInputId.RESTART);
         }
         isButtonTouched = false;
