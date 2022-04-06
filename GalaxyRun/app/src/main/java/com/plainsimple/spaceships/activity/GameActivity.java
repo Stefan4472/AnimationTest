@@ -1,5 +1,6 @@
 package com.plainsimple.spaceships.activity;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -34,7 +35,10 @@ public class GameActivity extends FragmentActivity implements
     private GameView gameView;
     // Plays game audio
     private SoundPlayer soundPlayer;
-
+    // Plays background song.
+    // TODO: this should really be controlled by commands from GameEngine.
+    //   I am taking a shortcut by playing the song from `GameActivity`
+    private MediaPlayer songPlayer;
     // Whether the Activity is in an active state
     private boolean isActivityActive;
 
@@ -53,6 +57,10 @@ public class GameActivity extends FragmentActivity implements
         gameView = findViewById(R.id.spaceships);
         gameView.setListener(this);
         soundPlayer = new SoundPlayer(getApplicationContext());
+        // TODO: activity lifecycle
+        songPlayer = MediaPlayer.create(getApplicationContext(), R.raw.game_song);
+        songPlayer.setLooping(true);
+        songPlayer.setVolume(0.25f, 0.25f);
     }
 
     @Override
@@ -60,6 +68,7 @@ public class GameActivity extends FragmentActivity implements
         super.onResume();
         isActivityActive = true;
         gameView.startThread();
+        songPlayer.start();
     }
 
     @Override
@@ -67,6 +76,14 @@ public class GameActivity extends FragmentActivity implements
         super.onPause();
         isActivityActive = false;
         gameView.stopThread();
+        songPlayer.pause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        songPlayer.release();
+        songPlayer = null;
     }
 
     /*
