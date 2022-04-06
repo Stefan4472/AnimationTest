@@ -51,7 +51,7 @@ public class ScoreDisplay extends UIElement {
     }
 
     public void update(UpdateContext updateContext) {
-        score = updateContext.score;
+        score = (int) updateContext.score;
     }
 
     public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {

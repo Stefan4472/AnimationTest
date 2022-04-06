@@ -51,7 +51,7 @@ public class GameEngine implements IExternalGameController {
     private GameUI ui;
 
     private GameState currState = null;
-    private int score;
+    private double score;
     private boolean isPaused;
     private boolean isMuted;
 
@@ -227,7 +227,15 @@ public class GameEngine implements IExternalGameController {
 
         // Give points for being alive
         if (currState == GameState.PLAYING) {
+//            Log.d("GameEngine", "scorepersec = " + calcScorePerSecond(updateContext.difficulty));
             score += gameTime.msSincePrevUpdate / 1000.0 * calcScorePerSecond(updateContext.difficulty);
+        }
+        // Give points for any collected coins
+        // TODO: more sophisticated event handling
+        for (EventID event : createdEvents) {
+            if (event == EventID.COIN_COLLECTED) {
+                score += COIN_VALUE;
+            }
         }
 
         background.update(updateContext);

@@ -15,7 +15,7 @@ public class UpdateContext {
     public final GameState gameState;
     public final double difficulty;
     public final double scrollSpeedPx;
-    public final int score;
+    public final double score;
     public final int playerHealth;
     public final boolean isPaused;
     public final boolean isMuted;
@@ -30,7 +30,7 @@ public class UpdateContext {
             GameState gameState,
             double difficulty,
             double scrollSpeedPx,
-            int score,
+            double score,
             int playerHealth,
             boolean isPaused,
             boolean isMuted,
