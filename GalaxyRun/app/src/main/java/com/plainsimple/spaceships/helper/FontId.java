@@ -3,7 +3,6 @@ package com.plainsimple.spaceships.helper;
 import plainsimple.spaceships.R;
 
 public enum FontId {
-    ANDROMEDA(R.font.andromeda),
     GALAXY_MONKEY(R.font.galaxy_monkey);
 
     // R.font ID

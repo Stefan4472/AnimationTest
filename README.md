@@ -19,3 +19,7 @@ Other graphics (sprites and animations) should start in vector format and be pla
 - Sound effects: phoenix1291 (https://opengameart.org/content/sfx-the-ultimate-2017-16-bit-mini-pack) (CC0 license)
 - Game theme: teknoaxe (http://teknoaxe.com/Link_Code_3.php?q=1314&genre=Loop) (CC4.0 https://creativecommons.org/licenses/by/4.0/) (no changes made)
 - Main theme: Juhani Junkala (https://opengameart.org/content/4-chiptunes-adventure) (CC0 license)
+
+## Font Attributions
+
+I use the "Galaxy Monkey" font by Tepid Monkey Fonts. See the license in `GalaxyMonkeyLicense.txt`
