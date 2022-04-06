@@ -21,6 +21,8 @@ import plainsimple.spaceships.R;
 
 public class MainActivity extends Activity {
 
+    private MediaPlayer songPlayer;
+
     // TODO: play a song? play an animation?
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,29 @@ public class MainActivity extends Activity {
         fade_in_1.setStartDelay(200);
         fade_in_1.setTarget(play_button);
         fade_in_1.start();
+
+        songPlayer = MediaPlayer.create(getApplicationContext(), R.raw.main_song);
+        songPlayer.setLooping(true);
+        songPlayer.setVolume(0.3f, 0.3f);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        songPlayer.start();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        songPlayer.pause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        songPlayer.release();
+        songPlayer = null;
     }
 
     /*

@@ -11,3 +11,11 @@ Android files can be found in the android folder. The java folder contains graph
 Vector (.svg) graphics are used for launcher icons as well as layout components (buttons, logos, etc.). These should be stored in android/res/drawable. 
 
 Other graphics (sprites and animations) should start in vector format and be placed in the vector-graphics folder. The android/res folder contains folders for drawables for different screen densities (-hdpi, -ldpi, -mdpi, -xhdpi) and the vector graphics should be scaled and placed in appropriate folders (see [Provide Alternative Bitmaps](http://developer.android.com/training/multiscreen/screendensities.html#TaskProvideAltBmp) in the Android Documentation). 
+
+
+## Audio Attributions
+
+- Sound effects: Juhani Junkala (https://opengameart.org/content/512-sound-effects-8-bit-style) (CC0 License)
+- Sound effects: phoenix1291 (https://opengameart.org/content/sfx-the-ultimate-2017-16-bit-mini-pack) (CC0 license)
+- Game theme: teknoaxe (http://teknoaxe.com/Link_Code_3.php?q=1314&genre=Loop) (CC4.0 https://creativecommons.org/licenses/by/4.0/) (no changes made)
+- Main theme: Juhani Junkala (https://opengameart.org/content/4-chiptunes-adventure) (CC0 license)
