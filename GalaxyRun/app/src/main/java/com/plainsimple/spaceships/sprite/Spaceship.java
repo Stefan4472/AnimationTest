@@ -49,8 +49,8 @@ public class Spaceship extends Sprite {
     private Direction direction;
 
     // SoundIDs Spaceship uses
-    private static final SoundID BULLET_SOUND = SoundID.LASER;
-    private static final SoundID EXPLODE_SOUND = SoundID.EXPLOSION;
+    private static final SoundID BULLET_SOUND = SoundID.PLAYER_SHOOT;
+    private static final SoundID EXPLODE_SOUND = SoundID.PLAYER_EXPLODE;
 
     public Spaceship(GameContext gameContext, double x, double y) {
         super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.SPACESHIP));
@@ -190,28 +190,26 @@ public class Spaceship extends Sprite {
             UpdateContext updateContext
     ) {
         if (!(s instanceof Bullet)) {
-            if (damage > 0) {
-                updateContext.createEvent(EventID.SPACESHIP_DAMAGED);
-            }
-
             takeDamage(damage);
-            if (getState() == SpriteState.ALIVE && getHealth() == 0) {
-                updateContext.createEvent(EventID.SPACESHIP_KILLED);
-                updateContext.createSound(EXPLODE_SOUND);
-                explodeAnim.start();
-                setCurrState(SpriteState.DEAD);
-            }
 
             // Handle coin collision
             if (s instanceof Coin) {
                 updateContext.createEvent(EventID.COIN_COLLECTED);
-                updateContext.createSound(SoundID.COIN_COLLECTED);
+                updateContext.createSound(SoundID.PLAYER_COLLECT_COIN);
             }
 
-            // Trigger flash if we are alive and took damage
-            if (getState() == SpriteState.ALIVE && damage > 0) {
+            if (getState() == SpriteState.ALIVE && damage > 0 && getHealth() > 0) {
+                // Took damage but still alive
                 updateContext.createEvent(EventID.SPACESHIP_DAMAGED);
+                updateContext.createSound(SoundID.PLAYER_TAKE_DAMAGE);
                 colorMatrixAnimator.flash();
+            }
+            else if (getState() == SpriteState.ALIVE && getHealth() == 0) {
+                // The damage just killed us
+                updateContext.createEvent(EventID.SPACESHIP_KILLED);
+                updateContext.createSound(EXPLODE_SOUND);
+                explodeAnim.start();
+                setCurrState(SpriteState.DEAD);
             }
         }
     }

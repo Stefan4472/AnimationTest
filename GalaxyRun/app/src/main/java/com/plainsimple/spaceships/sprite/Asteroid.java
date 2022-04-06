@@ -3,6 +3,7 @@ package com.plainsimple.spaceships.sprite;
 import com.plainsimple.spaceships.engine.EventID;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
+import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.engine.draw.DrawImage;
 import com.plainsimple.spaceships.engine.draw.DrawInstruction;
@@ -117,6 +118,7 @@ public class Asteroid extends Sprite {
             if (getState() == SpriteState.ALIVE && getHealth() == 0) {
                 updateContext.createEvent(EventID.ASTEROID_DESTROYED);
                 setCurrState(SpriteState.TERMINATED);
+                updateContext.createSound(SoundID.ASTEROID_EXPLODE);
             }
 
             healthBarAnimation.triggerShow();
@@ -128,6 +130,7 @@ public class Asteroid extends Sprite {
                         s.getY() - getY(),
                         damage
                 ));
+                updateContext.createSound(SoundID.ASTEROID_TAKE_DAMAGE);
             }
         }
     }

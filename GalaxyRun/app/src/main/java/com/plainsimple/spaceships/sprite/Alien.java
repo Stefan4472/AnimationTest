@@ -95,7 +95,7 @@ public class Alien extends Sprite {
 
         if (canShoot(updateContext)) {
             updateContext.createEvent(EventID.ALIEN_FIRED_BULLET);
-            updateContext.createSound(SoundID.ALIEN_FIRED_BULLET);
+            updateContext.createSound(SoundID.ALIEN_SHOOT);
             shootBullet(updateContext, updateContext.playerSprite);
             msSinceLastBullet = 0;
         }
@@ -182,7 +182,7 @@ public class Alien extends Sprite {
                 updateContext.createEvent(EventID.ALIEN_DIED);
                 setCurrState(SpriteState.DEAD);
                 explodeAnim.start();
-
+                updateContext.createSound(SoundID.ALIEN_EXPLODE);
             }
 
             healthBarAnimation.triggerShow();
@@ -194,6 +194,7 @@ public class Alien extends Sprite {
                         s.getY() - getY(),
                         damage
                 ));
+                updateContext.createSound(SoundID.ALIEN_TAKE_DAMAGE);
             }
         }
     }

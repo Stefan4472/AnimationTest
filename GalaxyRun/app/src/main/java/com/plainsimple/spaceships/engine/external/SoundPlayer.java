@@ -13,10 +13,10 @@ import java.util.HashMap;
 // TODO: support releasing() / activity lifecycle
 // TODO: does this belong in GameEngine?
 public class SoundPlayer {
-    private Context appContext;
-    private SoundPool soundPool;
+    private final Context appContext;
+    private final SoundPool soundPool;
     // Map SoundID to "resID" loaded by the SoundPool
-    private HashMap<SoundID, Integer> resIds;
+    private final HashMap<SoundID, Integer> resIds;
 
     public SoundPlayer(Context appContext) {
         this.appContext = appContext;
@@ -28,20 +28,15 @@ public class SoundPlayer {
                 .build());
         soundPool = builder.build();
         resIds = new HashMap<>();
+        // Load all sounds on init so that there is no delay when playing for the first time
+        loadAllSounds();
     }
 
-    public void playSound(SoundID sound) {
-        Integer resId = resIds.get(sound);
-        if (resId == null) {
-            resId = loadSound(sound);
+    private void loadAllSounds() {
+        for (SoundID soundID : SoundID.values()) {
+            loadSound(soundID);
         }
-//        soundPool.play(resId, 1.0f, 1.0f, 1, 0, 1.0f);
     }
-
-    // Release all associated memory TODO
-//    public void release() {
-//
-//    }
 
     // TODO: Pretty sure this will never return null, but *could* it?
     private int loadSound(SoundID sound) {
@@ -50,4 +45,17 @@ public class SoundPlayer {
         return resId;
     }
 
+    public void playSound(SoundID sound) {
+        Integer resId = resIds.get(sound);
+        if (resId == null) {
+            resId = loadSound(sound);
+        }
+        // TODO: guard against null
+        soundPool.play(resId, 1.0f, 1.0f, 1, 0, 1.0f);
+    }
+
+    // Release all associated memory TODO
+//    public void release() {
+//
+//    }
 }

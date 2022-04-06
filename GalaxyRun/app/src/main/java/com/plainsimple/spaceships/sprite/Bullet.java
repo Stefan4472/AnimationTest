@@ -3,6 +3,7 @@ package com.plainsimple.spaceships.sprite;
 import com.plainsimple.spaceships.engine.EventID;
 import com.plainsimple.spaceships.engine.GameContext;
 import com.plainsimple.spaceships.engine.UpdateContext;
+import com.plainsimple.spaceships.engine.audio.SoundID;
 import com.plainsimple.spaceships.helper.BitmapID;
 import com.plainsimple.spaceships.engine.draw.DrawImage;
 import com.plainsimple.spaceships.engine.draw.DrawInstruction;
@@ -59,6 +60,7 @@ public class Bullet extends Sprite {
             updateContext.createEvent(EventID.BULLET_COLLIDED);
             setCollidable(false);
             setCurrState(SpriteState.TERMINATED);
+            updateContext.createSound(SoundID.BULLET_DESTROYED);
         }
     }
 
