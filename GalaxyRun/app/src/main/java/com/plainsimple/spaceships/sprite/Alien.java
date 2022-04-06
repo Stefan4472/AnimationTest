@@ -41,8 +41,8 @@ public class Alien extends Sprite {
     // X-Coordinate at which the Alien will hover
     private final double hoverX;
     // Defines sine wave of Alien's trajectory while hovering
-    private int amplitudePx;
-    private long periodMs;
+    private final int amplitudePx;
+    private final long periodMs;
     // Minimum amount of time that must elapse between each shot
     private final int bulletWaitMs;
 
