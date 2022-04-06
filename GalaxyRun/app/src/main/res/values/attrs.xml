@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Declares a new attribute that can be assigned to xml components -->
-<resources>
-    <!-- CustomFont attribute to note that element will use a custom font -->
-<!--    <declare-styleable name="CustomFont">-->
-<!--        <attr name="font" format="string"/>-->
-<!--    </declare-styleable>-->
-</resources>
