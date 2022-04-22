@@ -10,41 +10,23 @@ import plainsimple.spaceships.R;
  */
 public enum BitmapID {
     SPACESHIP(R.drawable.spaceship),
-    SPACESHIP_BASE(R.drawable.spaceship_base),
     SPACESHIP_EXPLODE(R.drawable.spaceship_explode),
     SPACESHIP_FIRE(R.drawable.spaceship_fire_rocket),
     SPACESHIP_MOVE(R.drawable.spaceship_move),
-    BULLET_0(R.drawable.bullet_0),
-    CANNONS_0(R.drawable.cannons_0),
-    BULLET_1(R.drawable.bullet_1),
-    CANNONS_1(R.drawable.cannons_1),
-    BULLET_2(R.drawable.bullet_2),
-    CANNONS_2(R.drawable.cannons_2),
-    BULLET_3(R.drawable.bullet_3),
-    CANNONS_3(R.drawable.cannons_3),
-    ROCKET_0(R.drawable.rocket_0),
-    ROCKET0_OVERLAY(R.drawable.rocket0_overlay),
-    ROCKET_1(R.drawable.rocket_1),
-    ROCKET1_OVERLAY(R.drawable.rocket1_overlay),
-    ROCKET_2(R.drawable.rocket_2),
-    ROCKET2_OVERLAY(R.drawable.rocket2_overlay),
-    ROCKET_3(R.drawable.rocket_3),
-    ROCKET3_OVERLAY(R.drawable.rocket3_overlay),
-    ROCKET_MOVE(R.drawable.rocket_move),
+    BULLET_0(R.drawable.bullet),
     PROJECTILE_EXPLODE(R.drawable.projectile_explode),
-    EXPLOSION_1(R.drawable.exp_1),
     ALIEN(R.drawable.alien),
     ALIEN_BULLET(R.drawable.alienbullet),
     ASTEROID(R.drawable.asteroid),
     COIN(R.drawable.coin),
     COIN_SPIN(R.drawable.coin_spin),
     OBSTACLE(R.drawable.obstacle),
-
     PAUSE_BUTTON_PAUSED(R.drawable.pause),
     PAUSE_BUTTON_UNPAUSED(R.drawable.play),
     MUTE_BUTTON_MUTED(R.drawable.sound_off),
     MUTE_BUTTON_UNMUTED(R.drawable.sound_on),
     UP_ARROW(R.drawable.up_arrow);
+
     // r.drawable id specifying bitmap
     private int rId;
 

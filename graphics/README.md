@@ -1,1 +1,1 @@
-Some old graphics created for the game. I'm not sure how much of this is useful (and I think some of the SVGs are broken) but just leaving this here for now.
+These are graphics that I created for this game, but am not currently using. Rather than throwing them away, I decided to archive them here.
