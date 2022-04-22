@@ -4,33 +4,36 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical">
+    android:orientation="horizontal">
     <!-- Displays background todo: behind relative layout-->
     <com.plainsimple.spaceships.view.MainMenuBackground
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>
     <!-- "Spaceships" Title -->
     <TextView
-        style="@style/MenuStyle"
         android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textSize="100sp"
         android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:textSize="100sp"
         android:textColor="#FFFFFF"
         android:text="@string/app_name"
-        android:fontFamily="@font/galaxy_monkey"
-        android:gravity="center" />
+        android:fontFamily="@font/galaxy_monkey" />
     <!-- Play Button -->
     <Button
-        style="@style/MenuStyle"
         android:id="@+id/playbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/title"
-        android:alpha="0"
+        android:layout_marginTop="10dp"
         android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
         android:text="@string/button_play"
+        android:textSize="80sp"
+        android:textColor="@drawable/button_textcolor"
+        android:background="@android:color/transparent"
         android:fontFamily="@font/galaxy_monkey"
         android:onClick="onPlayPressed"/>
 </RelativeLayout>
