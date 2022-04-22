@@ -18,7 +18,6 @@ public class MainActivity extends Activity {
 
     private MediaPlayer songPlayer;
 
-    // TODO: play a song? play an animation?
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,16 +31,15 @@ public class MainActivity extends Activity {
 
         // Animate the Title to "inflate"/zoom in on start
         TextView title = findViewById(R.id.title);
-        AnimatorSet title_zoom = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.zoom_in_out);
-        title_zoom.setTarget(title);
-        title_zoom.start();
+        AnimatorSet titleAnimation = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.menu_button);
+        titleAnimation.setTarget(title);
+        titleAnimation.start();
 
         // Animate the PlayButton to fade in after slight delay
-        Button play_button = findViewById(R.id.playbutton);
-        AnimatorSet fade_in_1 = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.menubuttons_fadein);
-        fade_in_1.setStartDelay(200);
-        fade_in_1.setTarget(play_button);
-        fade_in_1.start();
+        Button playButton = findViewById(R.id.playbutton);
+        AnimatorSet playButtonAnimation = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.play_button);
+        playButtonAnimation.setTarget(playButton);
+        playButtonAnimation.start();
 
         songPlayer = MediaPlayer.create(getApplicationContext(), R.raw.main_song);
         songPlayer.setLooping(true);
