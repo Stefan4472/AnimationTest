@@ -34,6 +34,7 @@
         android:textSize="80sp"
         android:textColor="@drawable/button_textcolor"
         android:background="@android:color/transparent"
+        android:alpha="0"
         android:fontFamily="@font/galaxy_monkey"
         android:onClick="onPlayPressed"/>
 </RelativeLayout>
