@@ -6,7 +6,7 @@
     android:layout_height="fill_parent"
     android:orientation="horizontal">
     <!-- Displays background todo: behind relative layout-->
-    <com.plainsimple.spaceships.view.MainMenuBackground
+    <com.galaxyrun.view.MainMenuBackground
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>
     <!-- "Spaceships" Title -->

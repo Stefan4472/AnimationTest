@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
     <!-- Displays game graphics -->
-    <com.plainsimple.spaceships.view.GameView
+    <com.galaxyrun.view.GameView
         android:id="@+id/spaceships"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>
