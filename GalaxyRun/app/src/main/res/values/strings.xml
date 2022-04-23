@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">GalaxyRun</string>
     <string name="button_play">Play</string>
+    <string name="attribution">https://github.com/Stefan4472/GalaxyRun</string>
     <string name="button_store">Store</string>
     <string name="button_stats">Stats</string>
     <string name="equipped_bullet">EQUIPPED_BULLET</string>
