@@ -30,14 +30,14 @@ public class GameActivity extends FragmentActivity implements
         GameView.IGameViewListener // Receive events from GameView
 {
     // Runs the game in a separate thread
-    private GameRunner mGameRunner;
+    private GameRunner gameRunner;
     // View element that draws the game
     private GameView gameView;
     // Plays game audio
     private SoundPlayer soundPlayer;
     // Plays background song.
     // TODO: this should really be controlled by commands from GameEngine.
-    //   I am taking a shortcut by playing the song from `GameActivity`
+    //   I am taking a shortcut by directly playing the song from `GameActivity`
     private MediaPlayer songPlayer;
     // Whether the Activity is in an active state
     private boolean isActivityActive;
@@ -66,7 +66,10 @@ public class GameActivity extends FragmentActivity implements
     @Override
     public void onResume() {
         super.onResume();
-        isActivityActive = true;
+//        isActivityActive = true;
+        if (gameRunner != null) {
+            gameRunner.resumeThread();
+        }
         gameView.startThread();
         songPlayer.start();
     }
@@ -74,7 +77,8 @@ public class GameActivity extends FragmentActivity implements
     @Override
     public void onPause() {
         super.onPause();
-        isActivityActive = false;
+//        isActivityActive = false;
+        gameRunner.pauseThread();
         gameView.stopThread();
         songPlayer.pause();
     }
@@ -99,7 +103,7 @@ public class GameActivity extends FragmentActivity implements
      */
     @Override
     public void handleScreenTouch(MotionEvent motionEvent) {
-        mGameRunner.inputMotionEvent(motionEvent);
+        gameRunner.inputMotionEvent(motionEvent);
     }
 
     /*
@@ -112,7 +116,7 @@ public class GameActivity extends FragmentActivity implements
         ));
 
         // Create GameRunner background thread
-        mGameRunner = new GameRunner(
+        gameRunner = new GameRunner(
                 new Handler(),
                 this,
                 getApplicationContext(),
@@ -120,11 +124,9 @@ public class GameActivity extends FragmentActivity implements
                 screenHeightPx,
                 BuildConfig.DEBUG
         );
-        mGameRunner.start();
-        mGameRunner.prepareHandler();
-        // Send START signal and queue the first update
-        mGameRunner.startGame();
-        mGameRunner.queueUpdate();
+        gameRunner.start();
+        gameRunner.prepareHandler();
+        gameRunner.startGame();
     }
 
     /*
@@ -142,19 +144,5 @@ public class GameActivity extends FragmentActivity implements
         }
 
         gameView.queueDrawFrame(updateMessage.getDrawInstructions());
-
-        // Call the next update
-        if (isActivityActive) {
-            // Sleep--for testing  TODO: framerate management?
-            try {
-                Thread.sleep(30);
-            } catch (InterruptedException e) {
-
-            }
-            mGameRunner.queueUpdate();
-        }
-        else {
-            Log.d("GameActivity", "Activity is inactive");
-        }
     }
 }
