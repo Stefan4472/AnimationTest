@@ -136,11 +136,22 @@ public class GameActivity extends FragmentActivity implements
             Log.w("GameActivity", "FPS below 30! FPS = " + updateMessage.fps);
         }
 
-        // TODO: may need to support pausing and resuming sounds
-        for (SoundID sound : updateMessage.getSounds()) {
-            soundPlayer.playSound(sound);
+        // Pause game music while muted. This isn't strictly the same as muting,
+        // but I'm not sure how expensive the MediaPlayer.setVolume() call is.
+        // Just leaving it like this for now.
+        if (updateMessage.isMuted && songPlayer.isPlaying()) {
+            songPlayer.pause();
+        } else if (!updateMessage.isMuted && !songPlayer.isPlaying()) {
+            songPlayer.start();
         }
-        // TODO: updateMessage.isMuted()
+
+        // Play sounds if not muted
+        if (!updateMessage.isMuted) {
+            for (SoundID sound : updateMessage.getSounds()) {
+                soundPlayer.playSound(sound);
+            }
+        }
+
         gameView.queueDrawFrame(updateMessage.getDrawInstructions());
     }
 }

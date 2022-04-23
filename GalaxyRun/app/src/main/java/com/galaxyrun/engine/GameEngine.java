@@ -246,18 +246,13 @@ public class GameEngine implements IExternalGameController {
         drawLayers.getDrawInstructions(drawInstructions);
         ui.getDrawInstructions(drawInstructions);
 
-        // A little hack to easily support muting:
-        // simply delete all sounds
-        if (isMuted) {
-            createdSounds.clear();
-        }
-
         return new GameUpdateMessage(
                 drawInstructions,
                 createdEvents,
                 createdSounds,
                 fpsCalculator.getNumFrames(),
-                fpsCalculator.calcFps()
+                fpsCalculator.calcFps(),
+                isMuted
         );
     }
 
