@@ -9,7 +9,6 @@ import com.galaxyrun.engine.audio.SoundID;
 
 import java.util.HashMap;
 
-// TODO: support releasing() / activity lifecycle
 // TODO: does this belong in GameEngine?
 public class SoundPlayer {
     private final Context appContext;
@@ -53,8 +52,8 @@ public class SoundPlayer {
         soundPool.play(resId, 1.0f, 1.0f, 1, 0, 1.0f);
     }
 
-    // Release all associated memory TODO
-//    public void release() {
-//
-//    }
+    // Release all associated memory
+    public void release() {
+        soundPool.release();
+    }
 }

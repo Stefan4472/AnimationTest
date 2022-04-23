@@ -39,8 +39,6 @@ public class GameActivity extends FragmentActivity implements
     // TODO: this should really be controlled by commands from GameEngine.
     //   I am taking a shortcut by directly playing the song from `GameActivity`
     private MediaPlayer songPlayer;
-    // Whether the Activity is in an active state
-    private boolean isActivityActive;
 
     @Override
     public void onCreate(Bundle savedInstanceState) throws IllegalArgumentException {
@@ -57,7 +55,6 @@ public class GameActivity extends FragmentActivity implements
         gameView = findViewById(R.id.spaceships);
         gameView.setListener(this);
         soundPlayer = new SoundPlayer(getApplicationContext());
-        // TODO: activity lifecycle
         songPlayer = MediaPlayer.create(getApplicationContext(), R.raw.game_song);
         songPlayer.setLooping(true);
         songPlayer.setVolume(0.25f, 0.25f);
@@ -66,7 +63,6 @@ public class GameActivity extends FragmentActivity implements
     @Override
     public void onResume() {
         super.onResume();
-//        isActivityActive = true;
         if (gameRunner != null) {
             gameRunner.resumeThread();
         }
@@ -77,8 +73,9 @@ public class GameActivity extends FragmentActivity implements
     @Override
     public void onPause() {
         super.onPause();
-//        isActivityActive = false;
-        gameRunner.pauseThread();
+        if (gameRunner != null) {
+            gameRunner.pauseThread();
+        }
         gameView.stopThread();
         songPlayer.pause();
     }
@@ -86,6 +83,7 @@ public class GameActivity extends FragmentActivity implements
     @Override
     public void onDestroy() {
         super.onDestroy();
+        soundPlayer.release();
         songPlayer.release();
         songPlayer = null;
     }
@@ -142,7 +140,7 @@ public class GameActivity extends FragmentActivity implements
         for (SoundID sound : updateMessage.getSounds()) {
             soundPlayer.playSound(sound);
         }
-
+        // TODO: updateMessage.isMuted()
         gameView.queueDrawFrame(updateMessage.getDrawInstructions());
     }
 }

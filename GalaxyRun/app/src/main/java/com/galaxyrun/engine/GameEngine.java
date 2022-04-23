@@ -354,6 +354,10 @@ public class GameEngine implements IExternalGameController {
                             enterStartingState();
                             break;
                         }
+                        case PAUSE_GAME: {
+                            setPaused(true);
+                            break;
+                        }
                         default: {
                             throw new IllegalArgumentException(
                                     String.format("Unsupported GameInputID %s", ((SimpleExternalInput) input).inputId)

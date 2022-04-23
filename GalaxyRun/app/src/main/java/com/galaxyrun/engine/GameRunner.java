@@ -54,6 +54,7 @@ public class GameRunner extends HandlerThread {
     }
 
     public void pauseThread() {
+        mGameEngine.inputExternalPauseGame();
         isThreadPaused = true;
     }
 
