@@ -24,6 +24,7 @@ public class Spaceship extends Sprite {
     // SpriteAnimations used
     private SpriteAnimation moveAnim;
     private SpriteAnimation explodeAnim;
+    private SpriteAnimation shootAnim;
 
     // used to create the spaceship flash animation when hit
     private ColorMatrixAnimator colorMatrixAnimator = new ColorMatrixAnimator(90, 120, 60);
@@ -32,7 +33,7 @@ public class Spaceship extends Sprite {
     private boolean isControllable;
 
     // Timestamp *in game time* at which the cannons were last fired
-    private long prevCannonShotTime;
+    private long prevCannonShotTime = 0;
     // TODO: WOULD BE COOL IF THE SHOOTING DELAY DECREASED AS DIFFICULTY INCREASES
     private static final int SHOOTING_DELAY_MS = 500;
     // Is the player in the processes of shooting the cannons?
@@ -55,6 +56,8 @@ public class Spaceship extends Sprite {
     public Spaceship(GameContext gameContext, double x, double y) {
         super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.SPACESHIP));
 
+        setHealth(GameEngine.STARTING_PLAYER_HEALTH);
+
         // Position hitbox
         setHitboxWidth(getWidth() * 0.7);
         setHitboxHeight(getHeight() * 0.6);
@@ -64,23 +67,8 @@ public class Spaceship extends Sprite {
         // Load animations from AnimCache
         moveAnim = gameContext.animFactory.get(AnimID.SPACESHIP_MOVE);
         explodeAnim = gameContext.animFactory.get(AnimID.SPACESHIP_EXPLODE);
-
-        // Call initialization logic
-        reset();
-    }
-
-    public void reset() {
-        setHealth(GameEngine.STARTING_PLAYER_HEALTH);
-        setCurrState(SpriteState.ALIVE);
-        setCollidable(true);
-        setSpeedX(0.0);
-        setSpeedY(0.0);
-
-        moveAnim.reset();
-        explodeAnim.reset();
-
+        shootAnim = gameContext.animFactory.get(AnimID.SPACESHIP_SHOOT);
         moveAnim.start();
-        prevCannonShotTime = 0;
     }
 
     @Override
@@ -131,6 +119,8 @@ public class Spaceship extends Sprite {
         updateContext.createSound(BULLET_SOUND);
         updateContext.createEvent(EventID.BULLET_FIRED);
         updateContext.createEvent(EventID.BULLET_FIRED);
+        shootAnim.reset();
+        shootAnim.start();
     }
 
     // updates the direction the Spaceship is moving in
@@ -177,6 +167,9 @@ public class Spaceship extends Sprite {
         colorMatrixAnimator.update(updateContext.getGameTime().msSincePrevUpdate);
         if (moveAnim.isPlaying()) {
             moveAnim.update(updateContext.getGameTime().msSincePrevUpdate);
+        }
+        if (shootAnim.isPlaying()) {
+            shootAnim.update(updateContext.getGameTime().msSincePrevUpdate);
         }
         if (explodeAnim.isPlaying()) {
             explodeAnim.update(updateContext.getGameTime().msSincePrevUpdate);
@@ -226,7 +219,7 @@ public class Spaceship extends Sprite {
             drawShip.setColorMatrix(colorMatrixAnimator.getMatrix());
             drawQueue.push(drawShip);
 
-            // Draw the moving animation behind it
+            // Draw the moving animation
             DrawImage drawExhaust = new DrawImage(
                     gameContext.bitmapCache.getBitmap(moveAnim.getBitmapID()),
                     moveAnim.getCurrentFrameSrc(),
@@ -235,6 +228,18 @@ public class Spaceship extends Sprite {
             );
             drawExhaust.setColorMatrix(colorMatrixAnimator.getMatrix());
             drawQueue.push(drawExhaust);
+
+            // Draw the shooting animation
+            if (shootAnim.isPlaying()) {
+                DrawImage drawShooting = new DrawImage(
+                        gameContext.bitmapCache.getBitmap(shootAnim.getBitmapID()),
+                        shootAnim.getCurrentFrameSrc(),
+                        (int) getX(),
+                        (int) getY()
+                );
+                drawShooting.setColorMatrix(colorMatrixAnimator.getMatrix());
+                drawQueue.push(drawShooting);
+            }
 
             // Draw the explosion animation if it is playing
             if (explodeAnim.isPlaying()) {

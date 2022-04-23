@@ -6,6 +6,7 @@ package com.galaxyrun.engine;
 
 public enum AnimID {
     SPACESHIP_MOVE,
+    SPACESHIP_SHOOT,
     SPACESHIP_EXPLODE,
     COIN_SPIN,
     ALIEN_EXPLODE

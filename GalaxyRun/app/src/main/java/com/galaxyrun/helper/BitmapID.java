@@ -11,7 +11,7 @@ import galaxyrun.R;
 public enum BitmapID {
     SPACESHIP(R.drawable.spaceship),
     SPACESHIP_EXPLODE(R.drawable.spaceship_explode),
-    SPACESHIP_FIRE(R.drawable.spaceship_fire_rocket),
+    SPACESHIP_SHOOT(R.drawable.spaceship_shoot),
     SPACESHIP_MOVE(R.drawable.spaceship_move),
     BULLET_0(R.drawable.bullet),
     PROJECTILE_EXPLODE(R.drawable.projectile_explode),

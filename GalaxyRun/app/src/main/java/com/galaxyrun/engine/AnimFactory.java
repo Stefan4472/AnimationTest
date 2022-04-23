@@ -26,7 +26,16 @@ public class AnimFactory {
                         true
                 );
             }
-            case SPACESHIP_EXPLODE: {
+            case SPACESHIP_SHOOT: {
+                return new SpriteAnimation(
+                        bitmapCache.getData(BitmapID.SPACESHIP_SHOOT),
+                        new int[]{200, 150, 150},
+                        false
+                );
+            }
+            // NOTE: CURRENTLY, WE'RE JUST RE-USING THE SPACESHIP EXPLOSION ANIMATION (TODO)
+            case SPACESHIP_EXPLODE:
+            case ALIEN_EXPLODE: {
                 return new SpriteAnimation(
                         bitmapCache.getData(BitmapID.SPACESHIP_EXPLODE),
                         new int[]{150, 150, 150, 150, 150, 150, 150, 150},
@@ -38,14 +47,6 @@ public class AnimFactory {
                         bitmapCache.getData(BitmapID.COIN_SPIN),
                         new int[]{120, 120, 120, 120, 120, 120},
                         true
-                );
-            }
-            // NOTE: CURRENTLY, WE JUST RE-USE THE SPACESHIP EXPLOSION ANIMATION (TODO)
-            case ALIEN_EXPLODE: {
-                return new SpriteAnimation(
-                        bitmapCache.getData(BitmapID.SPACESHIP_EXPLODE),
-                        new int[]{150, 150, 150, 150, 150, 150, 150, 150},
-                        false
                 );
             }
             default: {
