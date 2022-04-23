@@ -63,5 +63,7 @@ public class Obstacle extends Sprite {
     @Override
     public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawQueue) {
         drawQueue.push(DrawRect.filled(getHitbox().toRect(), OBSTACLE_COLOR));
+        // Draw red outline. Makes it a little more interesting.
+        drawQueue.push(DrawRect.outline(getHitbox().toRect(), Color.RED, 3f));
     }
 }
