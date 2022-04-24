@@ -109,12 +109,14 @@ public class Spaceship extends Sprite {
         updateContext.registerSprite(new Bullet(
                 gameContext,
                 getX() + getWidth() * 0.78f,
-                getY() + 0.28f * getHeight()
+                getY() + 0.28f * getHeight(),
+                updateContext.difficulty
         ));
         updateContext.registerSprite(new Bullet(
                 gameContext,
                 getX() + getWidth() * 0.78f,
-                getY() + 0.66f * getHeight()
+                getY() + 0.66f * getHeight(),
+                updateContext.difficulty
         ));
         updateContext.createSound(BULLET_SOUND);
         updateContext.createEvent(EventID.BULLET_FIRED);

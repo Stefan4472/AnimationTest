@@ -14,13 +14,7 @@ import com.galaxyrun.util.ProtectedQueue;
  */
 public class Bullet extends Sprite {
 
-    public static final int DAMAGE = 5;
-    // Bullet speed per second, as percentage of screen width
-    // TODO: WOULD BE COOL TO INCREASE SPEED AS A FUNCTION OF SCROLL SPEED
-    public static final double SPEED_PERCENT_PER_SEC = 0.3;
-
-
-    public Bullet(GameContext gameContext, double x, double y) {
+    public Bullet(GameContext gameContext, double x, double y, double difficulty) {
         super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.BULLET_0));
 
         setHitboxOffsetX(getWidth() * 0.7);
@@ -28,8 +22,21 @@ public class Bullet extends Sprite {
         setHitboxWidth(getWidth() * 0.45);
         setHitboxHeight(getHeight() * 1.4);
 
-        setHealth(DAMAGE);
-        setSpeedX(SPEED_PERCENT_PER_SEC * gameContext.gameWidthPx);
+        // Damage and speed increase as difficulty increases
+        setHealth(calcDamage(difficulty));
+        setSpeedX(calcSpeed(gameContext.gameWidthPx, difficulty));
+    }
+
+    private static int calcDamage(double difficulty) {
+        // Damage starts at 4, maxes out at 8
+        return (int) (4 * (difficulty + 1));
+    }
+
+    private static double calcSpeed(int gameWidthPx, double difficulty) {
+        // Speed starts at 30% of screen width per second,
+        // maxes out at 50%
+        double percent_per_sec = 0.3 + difficulty * 0.2;
+        return gameWidthPx * percent_per_sec;
     }
 
     @Override
