@@ -1,17 +1,21 @@
-# SpaceShips
-A space-themed infinite runner for Android  
+# GalaxyRun
 
-Current development level: Alpha
+A space-themed infinite runner for Android. Pilot your spaceship through an infinite level of obstacles and survive as long as you can!
 
+This game is programmed from scratch. There are various interesting little features that I still want to program (check out the Issues). Contributions (code, graphics, sound effects or music) would be very welcome!
 
-**In August 2020 I decided to revisit this project and bring it to publication. Because I have other projects to work on, I don't currently have the time to realize the full vision of the game, which is pretty sophisticated and intricate. Therefore, the code is undergoing lots of simplification, and I am cutting out many features that were half-implemented and would take too long to finish. As part of this "pivot", I am renaming the app itself to "GalaxyRun". The source of GalaxyRun is in the "GalaxyRun" folder. Essentially, GalaxyRun is a stripped-down, polished revision of the original SpaceShips code.***
+A few things about the Game Engine that I'm proud of:
+- It is written completely from scratch.
+- The entire game is procedurally generated and can go on forever.
+- All game logic is executed in one place. This allows us to run the game in a separate thread. I've also designed things so that the game is drawn in a separate thread as well.
+- All GUI elements in the game actually live in the Game Engine. The game itself doesn't use any Android UI components, besides a blank view.
+- Because I implemented the GUI elements myself, I also had to implement multi-touch. This was non-trivial!
 
-Android files can be found in the android folder. The java folder contains graphics and sources for the earlier Java version of this game.
-
-Vector (.svg) graphics are used for launcher icons as well as layout components (buttons, logos, etc.). These should be stored in android/res/drawable. 
-
-Other graphics (sprites and animations) should start in vector format and be placed in the vector-graphics folder. The android/res folder contains folders for drawables for different screen densities (-hdpi, -ldpi, -mdpi, -xhdpi) and the vector graphics should be scaled and placed in appropriate folders (see [Provide Alternative Bitmaps](http://developer.android.com/training/multiscreen/screendensities.html#TaskProvideAltBmp) in the Android Documentation). 
-
+Some interesting things to look at if you're curious:
+- [The GameEngine](https://github.com/Stefan4472/GalaxyRun/tree/master/GalaxyRun/app/src/main/java/com/galaxyrun/engine/GameEngine.java)
+- [Procedural Map Generation](https://github.com/Stefan4472/GalaxyRun/tree/master/GalaxyRun/app/src/main/java/com/galaxyrun/engine/map/Map.java)
+- [A very simple Pathfinding algorithm to decide where to place coin trails](https://github.com/Stefan4472/GalaxyRun/tree/master/GalaxyRun/app/src/main/java/com/galaxyrun/engine/map/PathFinder.java)
+- [The in-engine UI](https://github.com/Stefan4472/GalaxyRun/tree/master/GalaxyRun/app/src/main/java/com/galaxyrun/engine/ui/GameUI.java)
 
 ## Audio Attributions
 
