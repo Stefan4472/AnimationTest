@@ -44,13 +44,16 @@ public class GameActivity extends FragmentActivity implements
     public void onCreate(Bundle savedInstanceState) throws IllegalArgumentException {
         super.onCreate(savedInstanceState);
 
-        // Go full screen
+        // Hide title and action bar. Make navbar transparent.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
-
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+        );
         setContentView(R.layout.game_layout);
         gameView = findViewById(R.id.spaceships);
         gameView.setListener(this);
