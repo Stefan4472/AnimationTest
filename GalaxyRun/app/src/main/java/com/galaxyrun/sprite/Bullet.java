@@ -35,8 +35,8 @@ public class Bullet extends Sprite {
     private static double calcSpeed(int gameWidthPx, double difficulty) {
         // Speed starts at 30% of screen width per second,
         // maxes out at 50%
-        double percent_per_sec = 0.3 + difficulty * 0.2;
-        return gameWidthPx * percent_per_sec;
+        double percentPerSec = 0.3 + difficulty * 0.2;
+        return gameWidthPx * percentPerSec;
     }
 
     @Override
