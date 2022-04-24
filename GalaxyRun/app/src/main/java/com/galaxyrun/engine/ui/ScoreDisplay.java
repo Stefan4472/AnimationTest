@@ -27,7 +27,7 @@ public class ScoreDisplay extends UIElement {
 
     private final static FontId FONT = FontId.GALAXY_MONKEY;
     private static final int TEXT_COLOR = Color.parseColor("#ffb30f");
-    private static final double TEXT_SIZE_PCT = 0.15;
+    private static final double TEXT_SIZE_PCT = 0.10;
     private static final float MARGIN_H_PCT = 0.1f;
     private static final float MARGIN_V_PCT = 0.03f;
 

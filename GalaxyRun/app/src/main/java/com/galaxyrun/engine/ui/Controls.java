@@ -32,9 +32,9 @@ public class Controls extends UIElement {
     // Left margin as percentage of screen width
     private static final double MARGIN_LEFT_PCT = 0.03;
     // Width as percentage of screen width
-    private static final double WIDTH_PCT = 0.25;
+    private static final double WIDTH_PCT = 0.3;
     // Height as percentage of screen height
-    private static final double HEIGHT_PCT = 0.7;
+    private static final double HEIGHT_PCT = 1.0;
     // Vertical margin of each arrow as percentage of screen height
     private static final double MARGIN_FROM_MIDDLE_PCT = 0.01;
 
