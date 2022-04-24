@@ -1,0 +1,1 @@
+These are graphics that I created for this game, but am not currently using. Rather than throwing them away, I decided to archive them here.
