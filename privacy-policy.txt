@@ -1,0 +1,1 @@
+GalaxyRun does not collect or store any sensitive or personally-identifiable user data. GalaxyRun is open-source code licensed under the GNU General Public License v3. All source code can be viewed at https://github.com/Stefan4472/GalaxyRun
