@@ -17,6 +17,8 @@ import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Queue;
 
+import androidx.core.view.MotionEventCompat;
+
 /*
 Manage in-GameEngine user interface.
 
@@ -88,7 +90,7 @@ public class GameUI {
                         break;
                     }
                     case MotionEvent.ACTION_CANCEL: {
-                        updateTouchState(e.getPointerId(0), MyTouchEvent.CANCEL, e.getX(), e.getY());
+                        updateTouchState(pointerId, MyTouchEvent.CANCEL, x, y);
                         break;
                     }
                     default: {
@@ -131,6 +133,7 @@ public class GameUI {
     }
 
     private void addTouch(int pointerId, float x, float y) {
+        Log.d("GameUI", "Adding touch with pointerId = " + pointerId);
         if (currTouches.containsKey(pointerId)) {
             // Likely a double DOWN
             Log.w("GameUI", "Want to add a touch that already exists");
@@ -173,6 +176,7 @@ public class GameUI {
     }
 
     private void removeTouch(int pointerId, float x, float y) {
+        Log.d("GameUI", "Removing touch with pointerId = " + pointerId);
         if (currTouches.containsKey(pointerId)) {
             Touch currTouch = currTouches.get(pointerId);
             if (currTouch.touchedElement != null) {

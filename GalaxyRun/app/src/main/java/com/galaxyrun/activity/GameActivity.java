@@ -142,14 +142,14 @@ public class GameActivity extends FragmentActivity implements
         // Pause game music while muted. This isn't strictly the same as muting,
         // but I'm not sure how expensive the MediaPlayer.setVolume() call is.
         // Just leaving it like this for now.
-        if (updateMessage.isMuted && songPlayer.isPlaying()) {
+        if (songPlayer != null && updateMessage.isMuted && songPlayer.isPlaying()) {
             songPlayer.pause();
-        } else if (!updateMessage.isMuted && !songPlayer.isPlaying()) {
+        } else if (songPlayer != null && !updateMessage.isMuted && !songPlayer.isPlaying()) {
             songPlayer.start();
         }
 
         // Play sounds if not muted
-        if (!updateMessage.isMuted) {
+        if (soundPlayer != null && !updateMessage.isMuted) {
             for (SoundID sound : updateMessage.getSounds()) {
                 soundPlayer.playSound(sound);
             }

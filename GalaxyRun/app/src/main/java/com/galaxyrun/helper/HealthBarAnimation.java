@@ -48,7 +48,6 @@ public class HealthBarAnimation {
         offsetY = sprite.getHeight() * (ELEVATION_RATIO + HEIGHT_RATIO) * -1;
         maxHealth = sprite.getHealth();
         innerPadding = (int) (healthBarHeight * 0.2);
-        Log.d("HealthBarAnimation", "w/h: " + healthBarWidth + ", " + healthBarHeight);
     }
 
     /*
@@ -86,7 +85,6 @@ public class HealthBarAnimation {
             int fillColor = calcFillColor(health, maxHealth);
             double fillWidth = (healthBarWidth - 2 * innerPadding) * (1.0 * health / maxHealth);
             double fillHeight = (healthBarHeight - 2 * innerPadding);
-            Log.d("HealthBarAnimation", "w/h, padding: " + fillWidth + ", " + fillHeight + ", " + innerPadding);
             drawQueue.push(DrawRect.filled(
                     new Rect(
                             (int) (x + innerPadding),
