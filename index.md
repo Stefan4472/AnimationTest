@@ -1,37 +1,9 @@
-## Welcome to GitHub Pages
+![GalaxyRun Gameplay](https://user-images.githubusercontent.com/8965354/164979059-86d64fd6-d7d8-4558-96ce-4f151fb07750.gif)
 
-You can use the [editor on GitHub](https://github.com/Stefan4472/GalaxyRun/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+GalaxyRun is a space-themed infinite runner for Android that I wrote from scratch. Pilot your spaceship through an infinite level of obstacles and survive as long as you can!
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+GalaxyRun is open-source code licensed under the GNU General Public License v3. All source code can be viewed at [https://github.com/Stefan4472/GalaxyRun](https://github.com/Stefan4472/GalaxyRun). Read more on my website, [StefanOnSoftware](https://www.stefanonsoftware.com).
 
-### Markdown
+### Privacy Policy
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/Stefan4472/GalaxyRun/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+GalaxyRun does not collect or store any sensitive or personally-identifiable user data. 
