@@ -15,7 +15,7 @@ import com.galaxyrun.engine.external.SoundPlayer;
 import com.galaxyrun.view.GameView;
 
 import androidx.fragment.app.FragmentActivity;
-import galaxyrun.BuildConfig;
+//import galaxyrun.BuildConfig;
 import galaxyrun.R;
 
 /**
@@ -123,7 +123,8 @@ public class GameActivity extends FragmentActivity implements
                 getApplicationContext(),
                 screenWidthPx,
                 screenHeightPx,
-                BuildConfig.DEBUG
+                false
+//                BuildConfig.DEBUG
         );
         gameRunner.start();
         gameRunner.prepareHandler();

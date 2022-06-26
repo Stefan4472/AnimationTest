@@ -9,7 +9,6 @@
     <com.galaxyrun.view.MainMenuBackground
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>
-    <!-- "Spaceships" Title -->
     <TextView
         android:id="@+id/title"
         android:layout_width="fill_parent"
@@ -21,7 +20,6 @@
         android:textColor="#FFFFFF"
         android:text="@string/app_name"
         android:fontFamily="@font/galaxy_monkey" />
-    <!-- Play Button -->
     <Button
         android:id="@+id/playbutton"
         android:layout_width="wrap_content"
@@ -37,15 +35,26 @@
         android:alpha="0"
         android:fontFamily="@font/galaxy_monkey"
         android:onClick="onPlayPressed"/>
-    <!-- "Spaceships" Title -->
     <TextView
         android:id="@+id/attribution"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_margin="10dp"
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:textSize="20sp"
-        android:textColor="@color/grey"
+        android:textColor="@color/white"
         android:text="@string/attribution" />
+    <TextView
+        android:id="@+id/privacy_policy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:text="Privacy Policy"
+        android:onClick="onPrivacyPolicyPressed"/>
 </RelativeLayout>

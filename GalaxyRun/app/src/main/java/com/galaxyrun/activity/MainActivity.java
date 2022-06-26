@@ -6,10 +6,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import galaxyrun.R;
@@ -79,5 +84,33 @@ public class MainActivity extends Activity {
         // Launch the GameActivity
         Intent game_intent = new Intent(this, GameActivity.class);
         startActivity(game_intent);
+    }
+
+    public void onPrivacyPolicyPressed(View view) {
+        // See: https://stackoverflow.com/a/50188704
+        // inflate the layout of the popup window
+        LayoutInflater inflater = (LayoutInflater)
+                getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.privacy_policy, null);
+
+        // Set "focusable" to true to close the window when defocused
+        final PopupWindow popupWindow = new PopupWindow(
+                popupView,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                true
+        );
+
+        // Show in screen center
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+        // Dismiss the popup window when touched
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                popupWindow.dismiss();
+                return true;
+            }
+        });
     }
 }

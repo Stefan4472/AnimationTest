@@ -30,4 +30,5 @@
     <string name="available_gamemodes">Available GameModes</string>
     <string name="highscore">Congrats! HIGHSCORE!!!</string>
     <string name="highscore_equals">Highscore: %1$s</string>
+    <string name="privacy_policy">GalaxyRun does not collect or store any sensitive or personally-identifiable user data. This privacy policy can also be found at http://stefan4472.github.io/GalaxyRun/</string>
 </resources>
