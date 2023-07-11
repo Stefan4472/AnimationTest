@@ -6,10 +6,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.galaxyrun.engine.external.ExternalInput;
-import com.galaxyrun.engine.external.ExternalInputId;
 import com.galaxyrun.engine.external.GameUpdateMessage;
-import com.galaxyrun.engine.external.MotionExternalInput;
-import com.galaxyrun.engine.external.SimpleExternalInput;
+import com.galaxyrun.engine.external.MotionInput;
+import com.galaxyrun.engine.external.PauseGameInput;
+import com.galaxyrun.engine.external.StartGameInput;
 import com.galaxyrun.engine.ui.GameUI;
 import com.galaxyrun.engine.ui.UIInputId;
 import com.galaxyrun.helper.BitmapCache;
@@ -343,27 +343,25 @@ public class GameEngine implements IExternalGameController {
         while (!externalInputQueue.isEmpty()) {
             ExternalInput input = externalInputQueue.poll();
             if (input != null) {
-                if (input instanceof SimpleExternalInput) {
-                    switch (((SimpleExternalInput) input).inputId) {
-                        case START_GAME: {
-                            enterStartingState();
-                            break;
-                        }
-                        case PAUSE_GAME: {
-                            setPaused(true);
-                            break;
-                        }
-                        default: {
-                            throw new IllegalArgumentException(
-                                    String.format("Unsupported GameInputID %s", ((SimpleExternalInput) input).inputId)
-                            );
-                        }
+                switch (input.inputId) {
+                    case START_GAME: {
+                        enterStartingState();
+                        break;
                     }
-                } else if (input instanceof MotionExternalInput) {
-                    MotionEvent e = ((MotionExternalInput) input).motion;
-                    ui.handleMotionEvent(e);
-                } else {
-                    throw new IllegalArgumentException("Unsupported input type");
+                    case PAUSE_GAME: {
+                        setPaused(true);
+                        break;
+                    }
+                    case MOTION: {
+                        MotionEvent e = ((MotionInput) input).motion;
+                        ui.handleMotionEvent(e);
+                        break;
+                    }
+                    default: {
+                        throw new IllegalArgumentException(
+                                String.format("Unsupported ExternalInputId %s", input.inputId)
+                        );
+                    }
                 }
             }
         }
@@ -421,16 +419,16 @@ public class GameEngine implements IExternalGameController {
     /* IExternalGameController interface. */
     @Override
     public void inputExternalStartGame() {
-        externalInputQueue.add(new SimpleExternalInput(ExternalInputId.START_GAME));
+        externalInputQueue.add(new StartGameInput());
     }
 
     @Override
     public void inputExternalPauseGame() {
-        externalInputQueue.add(new SimpleExternalInput(ExternalInputId.PAUSE_GAME));
+        externalInputQueue.add(new PauseGameInput());
     }
 
     @Override
     public void inputExternalMotionEvent(MotionEvent e) {
-        externalInputQueue.add(new MotionExternalInput(e));
+        externalInputQueue.add(new MotionInput(e));
     }
 }

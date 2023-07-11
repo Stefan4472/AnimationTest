@@ -2,9 +2,10 @@ package com.galaxyrun.engine.external;
 
 import android.view.MotionEvent;
 
-public class MotionExternalInput extends ExternalInput {
+public class MotionInput extends ExternalInput {
     public final MotionEvent motion;
-    public MotionExternalInput(MotionEvent motion) {
+    public MotionInput(MotionEvent motion) {
+        super(ExternalInputId.MOTION);
         this.motion = motion;
     }
 }
