@@ -1,5 +1,10 @@
 package com.galaxyrun.activity;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,7 +32,8 @@ import galaxyrun.R;
  */
 public class GameActivity extends FragmentActivity implements
         GameRunner.Callback, // Receive game state updates
-        GameView.IGameViewListener // Receive events from GameView
+        GameView.IGameViewListener, // Receive events from GameView
+        SensorEventListener
 {
     // Runs the game in a separate thread
     private GameRunner gameRunner;
@@ -39,11 +45,13 @@ public class GameActivity extends FragmentActivity implements
     // TODO: this should really be controlled by commands from GameEngine.
     //   I am taking a shortcut by directly playing the song from `GameActivity`
     private MediaPlayer songPlayer;
+    private SensorManager sensorManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) throws IllegalArgumentException {
         super.onCreate(savedInstanceState);
-
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        
         // Hide title and action bar. Make navbar transparent.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(
@@ -71,6 +79,13 @@ public class GameActivity extends FragmentActivity implements
         }
         gameView.startThread();
         songPlayer.start();
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
+            sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
+                    SensorManager.SENSOR_DELAY_GAME);
+        } else {
+            // TODO: how to handle this?
+            Log.d("GameView Class", "No Gyroscope");
+        }
     }
 
     @Override
@@ -81,6 +96,7 @@ public class GameActivity extends FragmentActivity implements
         }
         gameView.stopThread();
         songPlayer.pause();
+        sensorManager.unregisterListener(this);
     }
 
     @Override
@@ -105,6 +121,16 @@ public class GameActivity extends FragmentActivity implements
     @Override
     public void handleScreenTouch(MotionEvent motionEvent) {
         gameRunner.inputMotionEvent(motionEvent);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        gameRunner.inputSensorEvent(sensorEvent);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 
     /*

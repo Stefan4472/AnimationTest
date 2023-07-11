@@ -1,5 +1,6 @@
 package com.galaxyrun.engine;
 
+import android.hardware.SensorEvent;
 import android.view.MotionEvent;
 
 /**
@@ -10,4 +11,5 @@ public interface IExternalGameController {
     void inputExternalStartGame();
     void inputExternalPauseGame();
     void inputExternalMotionEvent(MotionEvent e);
+    void inputExternalSensorEvent(SensorEvent e);
 }

@@ -1,6 +1,7 @@
 package com.galaxyrun.engine;
 
 import android.content.Context;
+import android.hardware.SensorEvent;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -65,6 +66,10 @@ public class GameRunner extends HandlerThread {
 
     public void inputMotionEvent(MotionEvent e) {
         mGameEngine.inputExternalMotionEvent(e);
+    }
+
+    public void inputSensorEvent(SensorEvent e) {
+        mGameEngine.inputExternalSensorEvent(e);
     }
 
     public void prepareHandler() {

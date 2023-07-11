@@ -2,6 +2,7 @@ package com.galaxyrun.engine;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.hardware.SensorEvent;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -9,6 +10,7 @@ import com.galaxyrun.engine.external.ExternalInput;
 import com.galaxyrun.engine.external.GameUpdateMessage;
 import com.galaxyrun.engine.external.MotionInput;
 import com.galaxyrun.engine.external.PauseGameInput;
+import com.galaxyrun.engine.external.SensorInput;
 import com.galaxyrun.engine.external.StartGameInput;
 import com.galaxyrun.engine.ui.GameUI;
 import com.galaxyrun.engine.ui.UIInputId;
@@ -357,6 +359,10 @@ public class GameEngine implements IExternalGameController {
                         ui.handleMotionEvent(e);
                         break;
                     }
+                    case SENSOR: {
+                        SensorEvent e = ((SensorInput) input).event;
+                        break;
+                    }
                     default: {
                         throw new IllegalArgumentException(
                                 String.format("Unsupported ExternalInputId %s", input.inputId)
@@ -430,5 +436,10 @@ public class GameEngine implements IExternalGameController {
     @Override
     public void inputExternalMotionEvent(MotionEvent e) {
         externalInputQueue.add(new MotionInput(e));
+    }
+
+    @Override
+    public void inputExternalSensorEvent(SensorEvent e) {
+        externalInputQueue.add(new SensorInput(e));
     }
 }
