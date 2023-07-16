@@ -1,4 +1,4 @@
-package com.galaxyrun.engine.external;
+package com.galaxyrun.engine.controller;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -25,13 +25,14 @@ public class TiltController {
     // See https://developer.android.com/reference/android/hardware/SensorEvent#sensor.type_gyroscope
     private float currVelocity;
 
-    public void addReading(SensorEvent gyroEvent) {
+    public void inputGyroscopeEvent(SensorEvent gyroEvent) {
         if (gyroEvent.sensor.getType() != Sensor.TYPE_GYROSCOPE) {
             throw new AssertionError("Only accepts GYROSCOPE events.");
         }
         currVelocity = gyroEvent.values[1];
     }
 
+    // TODO: combine these into a single `calculateInput()` method.
     public Spaceship.Direction getDirection() {
         // TODO: a "ControlDirection" enum.
         if (currVelocity > MIN_FILTER) {

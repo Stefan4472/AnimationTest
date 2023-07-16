@@ -5,6 +5,7 @@ import com.galaxyrun.engine.EventID;
 import com.galaxyrun.engine.GameContext;
 import com.galaxyrun.engine.GameEngine;
 import com.galaxyrun.engine.UpdateContext;
+import com.galaxyrun.engine.controller.ControlState;
 import com.galaxyrun.helper.ColorMatrixAnimator;
 import com.galaxyrun.helper.BitmapID;
 import com.galaxyrun.engine.draw.DrawImage;
@@ -29,14 +30,12 @@ public class Spaceship extends Sprite {
     // used to create the spaceship flash animation when hit
     private ColorMatrixAnimator colorMatrixAnimator = new ColorMatrixAnimator(90, 120, 60);
 
-    // whether user has control over spaceship
+    // Whether user control inputs have any effect.
     private boolean isControllable;
-
+    // Current state of user control input.
+    private ControlState controlState;
     // Timestamp *in game time* at which the cannons were last fired
     private long prevCannonShotTime = 0;
-    // TODO: refactor into a "SpaceshipControls" struct.
-    // Is the player in the process of shooting the cannons?
-    private boolean isShooting;
 
     public enum Direction {
         UP,
@@ -44,17 +43,13 @@ public class Spaceship extends Sprite {
         NONE
     }
 
-    // Spaceship's current direction
-    private Direction direction;
-    private float directionMagnitude;
-
     // SoundIDs Spaceship uses
     private static final SoundID BULLET_SOUND = SoundID.PLAYER_SHOOT;
     private static final SoundID EXPLODE_SOUND = SoundID.PLAYER_EXPLODE;
 
     public Spaceship(GameContext gameContext, double x, double y) {
         super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.SPACESHIP));
-
+        controlState = new ControlState(Direction.NONE, 0, false);
         setHealth(GameEngine.STARTING_PLAYER_HEALTH);
 
         // Position hitbox
@@ -94,7 +89,7 @@ public class Spaceship extends Sprite {
     private boolean canShoot(UpdateContext updateContext) {
         long msSinceLastShot = updateContext.getGameTime().runTimeMs - prevCannonShotTime;
         long shootingDelay = calcShootingDelayMs(updateContext.difficulty);
-        return isControllable && isShooting && getState() == SpriteState.ALIVE &&
+        return isControllable && controlState.isShooting && getState() == SpriteState.ALIVE &&
                 (prevCannonShotTime == 0 || msSinceLastShot >= shootingDelay);
     }
 
@@ -128,20 +123,12 @@ public class Spaceship extends Sprite {
     }
 
     // updates the direction the Spaceship is moving in
-    public void setDirection(Direction direction, float magnitude) {
-        if (magnitude > 1 || magnitude < 0) {
-            throw new AssertionError("Invalid magnitude " + magnitude);
-        }
-        this.direction = direction;
-        this.directionMagnitude = magnitude;
+    public void setControls(ControlState controls) {
+        controlState = controls;
     }
 
     public Direction getDirection() {
-        return direction;
-    }
-
-    public void setShooting(boolean isShooting) {
-        this.isShooting = isShooting;
+        return controlState.direction;
     }
 
     @Override
@@ -149,10 +136,10 @@ public class Spaceship extends Sprite {
         // TODO: MORE NUANCED CONTROLS, WITH SIMPLE ACCELERATION/DECELLERATION
         if (isControllable) {
             double percentPerSec = 0.8 + (updateContext.difficulty * 0.2);
-            if (direction == UP) {
-                setSpeedY(-percentPerSec * gameContext.gameHeightPx * directionMagnitude);
-            } else if (direction== DOWN){
-                setSpeedY(percentPerSec * gameContext.gameHeightPx * directionMagnitude);
+            if (controlState.direction == UP) {
+                setSpeedY(-percentPerSec * gameContext.gameHeightPx * controlState.magnitude);
+            } else if (controlState.direction == DOWN){
+                setSpeedY(percentPerSec * gameContext.gameHeightPx * controlState.magnitude);
             } else {
                 // Slow down
                 setSpeedY(getSpeedY() / 1.7);
