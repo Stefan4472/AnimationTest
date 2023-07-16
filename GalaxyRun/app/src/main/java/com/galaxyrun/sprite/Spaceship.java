@@ -5,6 +5,7 @@ import com.galaxyrun.engine.EventID;
 import com.galaxyrun.engine.GameContext;
 import com.galaxyrun.engine.GameEngine;
 import com.galaxyrun.engine.UpdateContext;
+import com.galaxyrun.engine.controller.ControlDirection;
 import com.galaxyrun.engine.controller.ControlState;
 import com.galaxyrun.helper.ColorMatrixAnimator;
 import com.galaxyrun.helper.BitmapID;
@@ -13,9 +14,6 @@ import com.galaxyrun.engine.draw.DrawInstruction;
 import com.galaxyrun.engine.audio.SoundID;
 import com.galaxyrun.helper.SpriteAnimation;
 import com.galaxyrun.util.ProtectedQueue;
-
-import static com.galaxyrun.sprite.Spaceship.Direction.DOWN;
-import static com.galaxyrun.sprite.Spaceship.Direction.UP;
 
 /**
  * Created by Stefan on 8/13/2015.
@@ -37,19 +35,13 @@ public class Spaceship extends Sprite {
     // Timestamp *in game time* at which the cannons were last fired
     private long prevCannonShotTime = 0;
 
-    public enum Direction {
-        UP,
-        DOWN,
-        NONE
-    }
-
     // SoundIDs Spaceship uses
     private static final SoundID BULLET_SOUND = SoundID.PLAYER_SHOOT;
     private static final SoundID EXPLODE_SOUND = SoundID.PLAYER_EXPLODE;
 
     public Spaceship(GameContext gameContext, double x, double y) {
         super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.SPACESHIP));
-        controlState = new ControlState(Direction.NONE, 0, false);
+        controlState = new ControlState(ControlDirection.NEUTRAL, 0, false);
         setHealth(GameEngine.STARTING_PLAYER_HEALTH);
 
         // Position hitbox
@@ -122,6 +114,11 @@ public class Spaceship extends Sprite {
         shootAnim.start();
     }
 
+    // TODO: ControlDirection enum.
+    // Plus, internally a ControlState struct called `controls`
+    // Then, simple acceleration model, which will help to further smooth things out
+    // ... OR, we do the filtering at the gyroscope level (probably smarter). OR we do both.
+    // Then remove the old control UI code.
     // updates the direction the Spaceship is moving in
     public void setControls(ControlState controls) {
         controlState = controls;
@@ -132,9 +129,9 @@ public class Spaceship extends Sprite {
         // TODO: MORE NUANCED CONTROLS, WITH SIMPLE ACCELERATION/DECELLERATION
         if (isControllable) {
             double percentPerSec = 0.8 + (updateContext.difficulty * 0.2);
-            if (controlState.direction == UP) {
+            if (controlState.direction == ControlDirection.UP) {
                 setSpeedY(-percentPerSec * gameContext.gameHeightPx * controlState.magnitude);
-            } else if (controlState.direction == DOWN){
+            } else if (controlState.direction == ControlDirection.DOWN){
                 setSpeedY(percentPerSec * gameContext.gameHeightPx * controlState.magnitude);
             } else {
                 // Slow down

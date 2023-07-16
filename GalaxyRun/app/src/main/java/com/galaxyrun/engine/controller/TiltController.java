@@ -33,14 +33,14 @@ public class TiltController {
     }
 
     // TODO: combine these into a single `calculateInput()` method.
-    public Spaceship.Direction getDirection() {
+    public ControlDirection getDirection() {
         // TODO: a "ControlDirection" enum.
         if (currVelocity > MIN_FILTER) {
-            return Spaceship.Direction.UP;
+            return ControlDirection.UP;
         } else if (currVelocity < -MIN_FILTER) {
-            return Spaceship.Direction.DOWN;
+            return ControlDirection.DOWN;
         } else {
-            return Spaceship.Direction.NONE;
+            return ControlDirection.NEUTRAL;
         }
     }
 
