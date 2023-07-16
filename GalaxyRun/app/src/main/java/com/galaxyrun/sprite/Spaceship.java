@@ -34,10 +34,10 @@ public class Spaceship extends Sprite {
 
     // Timestamp *in game time* at which the cannons were last fired
     private long prevCannonShotTime = 0;
-    // Is the player in the processes of shooting the cannons?
+    // TODO: refactor into a "SpaceshipControls" struct.
+    // Is the player in the process of shooting the cannons?
     private boolean isShooting;
 
-    // available directions Spaceship can moveAnim in (up, down, or continue straight horizontally)
     public enum Direction {
         UP,
         DOWN,
@@ -46,6 +46,7 @@ public class Spaceship extends Sprite {
 
     // Spaceship's current direction
     private Direction direction;
+    private float directionMagnitude;
 
     // SoundIDs Spaceship uses
     private static final SoundID BULLET_SOUND = SoundID.PLAYER_SHOOT;
@@ -127,8 +128,12 @@ public class Spaceship extends Sprite {
     }
 
     // updates the direction the Spaceship is moving in
-    public void setDirection(Direction direction) {
+    public void setDirection(Direction direction, float magnitude) {
+        if (magnitude > 1 || magnitude < 0) {
+            throw new AssertionError("Invalid magnitude " + magnitude);
+        }
         this.direction = direction;
+        this.directionMagnitude = magnitude;
     }
 
     public Direction getDirection() {
@@ -143,11 +148,11 @@ public class Spaceship extends Sprite {
     public void updateSpeeds(UpdateContext updateContext) {
         // TODO: MORE NUANCED CONTROLS, WITH SIMPLE ACCELERATION/DECELLERATION
         if (isControllable) {
-            double percentPerSec = 0.4 + (updateContext.difficulty * 0.2);
+            double percentPerSec = 0.8 + (updateContext.difficulty * 0.2);
             if (direction == UP) {
-                setSpeedY(-percentPerSec * gameContext.gameHeightPx);
+                setSpeedY(-percentPerSec * gameContext.gameHeightPx * directionMagnitude);
             } else if (direction== DOWN){
-                setSpeedY(percentPerSec * gameContext.gameHeightPx);
+                setSpeedY(percentPerSec * gameContext.gameHeightPx * directionMagnitude);
             } else {
                 // Slow down
                 setSpeedY(getSpeedY() / 1.7);

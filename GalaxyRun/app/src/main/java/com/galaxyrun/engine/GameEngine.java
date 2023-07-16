@@ -2,6 +2,7 @@ package com.galaxyrun.engine;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -12,6 +13,7 @@ import com.galaxyrun.engine.external.MotionInput;
 import com.galaxyrun.engine.external.PauseGameInput;
 import com.galaxyrun.engine.external.SensorInput;
 import com.galaxyrun.engine.external.StartGameInput;
+import com.galaxyrun.engine.external.TiltController;
 import com.galaxyrun.engine.ui.GameUI;
 import com.galaxyrun.engine.ui.UIInputId;
 import com.galaxyrun.helper.BitmapCache;
@@ -68,6 +70,8 @@ public class GameEngine implements IExternalGameController {
     // Queue for game input events coming from outside
     private ConcurrentLinkedQueue<ExternalInput> externalInputQueue =
             new ConcurrentLinkedQueue<>();
+    // Used to process gyroscope input in order to control the spaceship.
+    private TiltController tiltController = new TiltController();
 
     // Number of points that a coin is worth
     public static final int COIN_VALUE = 100;
@@ -361,6 +365,10 @@ public class GameEngine implements IExternalGameController {
                     }
                     case SENSOR: {
                         SensorEvent e = ((SensorInput) input).event;
+                        if (e.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+                            tiltController.addReading(e);
+                        }
+                        spaceship.setDirection(tiltController.getDirection(), tiltController.getMagnitude());
                         break;
                     }
                     default: {
@@ -419,7 +427,7 @@ public class GameEngine implements IExternalGameController {
         }
         // TODO: check if isControllable()
         spaceship.setShooting(isShooting);
-        spaceship.setDirection(moveInput);
+//        spaceship.setDirection(moveInput);
     }
 
     /* IExternalGameController interface. */
