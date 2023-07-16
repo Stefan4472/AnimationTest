@@ -127,10 +127,6 @@ public class Spaceship extends Sprite {
         controlState = controls;
     }
 
-    public Direction getDirection() {
-        return controlState.direction;
-    }
-
     @Override
     public void updateSpeeds(UpdateContext updateContext) {
         // TODO: MORE NUANCED CONTROLS, WITH SIMPLE ACCELERATION/DECELLERATION

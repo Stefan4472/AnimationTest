@@ -187,7 +187,6 @@ public class GameEngine implements IExternalGameController {
                 spaceship.getHealth(),
                 isPaused,
                 isMuted,
-                spaceship.getDirection(),
                 spaceship,
                 createdSprites,
                 createdEvents,
@@ -361,7 +360,7 @@ public class GameEngine implements IExternalGameController {
                     }
                     case MOTION: {
                         MotionEvent e = ((MotionInput) input).motion;
-                        ui.handleMotionEvent(e);
+                        ui.inputMotionEvent(e);
                         break;
                     }
                     case SENSOR: {
@@ -401,19 +400,11 @@ public class GameEngine implements IExternalGameController {
                     isShooting = true;
                     break;
                 }
-                case MOVE_UP: {
-                    // TODO: remove
-                    break;
-                }
-                case MOVE_DOWN: {
-                    // TODO: remove
-                    break;
-                }
                 case MUTE: {
                     setMuted(true);
                     break;
                 }
-                case UN_MUTE: {
+                case UNMUTE: {
                     setMuted(false);
                     break;
                 }

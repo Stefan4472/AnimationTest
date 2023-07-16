@@ -19,7 +19,6 @@ public class UpdateContext {
     public final int playerHealth;
     public final boolean isPaused;
     public final boolean isMuted;
-    public final Spaceship.Direction playerDirection;
     public final Sprite playerSprite;
     private ProtectedQueue<Sprite> createdSprites;
     private ProtectedQueue<EventID> createdEvents;
@@ -34,7 +33,6 @@ public class UpdateContext {
             int playerHealth,
             boolean isPaused,
             boolean isMuted,
-            Spaceship.Direction playerDirection,
             Sprite playerSprite,
             ProtectedQueue<Sprite> createdSprites,
             ProtectedQueue<EventID> createdEvents,
@@ -48,7 +46,6 @@ public class UpdateContext {
         this.scrollSpeedPx = scrollSpeedPx;
         this.isPaused = isPaused;
         this.isMuted = isMuted;
-        this.playerDirection = playerDirection;
         this.playerSprite = playerSprite;
         this.createdSprites = createdSprites;
         this.createdEvents = createdEvents;

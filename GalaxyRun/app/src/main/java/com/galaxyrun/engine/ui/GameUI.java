@@ -17,8 +17,6 @@ import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Queue;
 
-import androidx.core.view.MotionEventCompat;
-
 /*
 Manage in-GameEngine user interface.
 
@@ -50,7 +48,6 @@ public class GameUI {
             pauseOverlay,
             new PauseButton(gameContext),
             new MuteButton(gameContext),
-            new Controls(gameContext),
             new ShootButton(gameContext),
             new HealthBar(gameContext),
             new ScoreDisplay(gameContext),
@@ -64,7 +61,7 @@ public class GameUI {
         CANCEL
     }
 
-    public void handleMotionEvent(MotionEvent e) {
+    public void inputMotionEvent(MotionEvent e) {
         // Handle all pointers
         // Read the docs: https://developer.android.com/reference/android/view/MotionEvent.html
         for (int i = 0; i < e.getPointerCount(); i++) {
@@ -133,7 +130,6 @@ public class GameUI {
     }
 
     private void addTouch(int pointerId, float x, float y) {
-        Log.d("GameUI", "Adding touch with pointerId = " + pointerId);
         if (currTouches.containsKey(pointerId)) {
             // Likely a double DOWN
             Log.w("GameUI", "Want to add a touch that already exists");
