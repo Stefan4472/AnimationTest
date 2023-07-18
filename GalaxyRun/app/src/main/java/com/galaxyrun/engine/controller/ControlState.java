@@ -18,4 +18,8 @@ public class ControlState {
         this.magnitude = magnitude;
         this.isShooting = isShooting;
     }
+
+    public ControlState(TiltState tiltState, boolean isShooting) {
+        this(tiltState.direction, tiltState.magnitude, isShooting);
+    }
 }

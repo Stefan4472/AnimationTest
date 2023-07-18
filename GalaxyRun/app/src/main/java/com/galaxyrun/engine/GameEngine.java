@@ -413,8 +413,7 @@ public class GameEngine implements IExternalGameController {
                 }
             }
         }
-        spaceship.setControls(new ControlState(
-                tiltController.getDirection(), tiltController.getMagnitude(), isShooting));
+        spaceship.setControls(new ControlState(tiltController.calculateState(), isShooting));
     }
 
     /* IExternalGameController interface. */
