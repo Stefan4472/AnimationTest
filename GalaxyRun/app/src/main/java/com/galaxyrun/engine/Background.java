@@ -4,7 +4,8 @@ import android.graphics.*;
 
 import com.galaxyrun.engine.draw.DrawImage;
 import com.galaxyrun.engine.draw.DrawInstruction;
-import com.galaxyrun.galaxydraw.DrawSpace;
+import com.galaxyrun.galaxydraw.GalaxyDrawOptions;
+import com.galaxyrun.galaxydraw.GalaxyDrawer;
 import com.galaxyrun.util.ProtectedQueue;
 
 /**
@@ -16,8 +17,8 @@ public class Background {
     private GameContext gameContext;
     // number of pixels scrolled
     private int pixelsScrolled;
-    // used to render space background
-    private DrawSpace drawSpace;
+    // Used to render a starry "galaxy" background
+    private GalaxyDrawer galaxyDrawer;
     // rendered background that scrolls
     private Bitmap background;
 
@@ -36,22 +37,24 @@ public class Background {
 
     public Background(GameContext gameContext) {
         this.gameContext = gameContext;
-        drawSpace = new DrawSpace();
-        drawSpace.setAntiAlias(true);
-        drawSpace.setVariance(0.2);
-        drawSpace.setDensity(3);
-        drawSpace.setStarSize(2);
-        drawSpace.setUseGradient(false);
-        drawSpace.setBackgroundColor(Color.BLACK);
-        background = Bitmap.createBitmap(
-                gameContext.screenWidthPx, gameContext.screenHeightPx, Bitmap.Config.ARGB_8888);
-        drawSpace.drawSpace(background);
+        galaxyDrawer = new GalaxyDrawer(gameContext.rand);
+
+        GalaxyDrawOptions options = new GalaxyDrawOptions(
+                /*startColor=*/Color.BLACK,
+                /*endColor=*/Color.BLACK,
+                /*starDensity=*/2,
+                /*starColor=*/Color.argb(200, 255, 255, 238),
+                /*starSize=*/2,
+                /*sizeVariance=*/0.5f,
+                /*colorVariance=*/0.3f
+        );
+        background = galaxyDrawer.drawGalaxy(
+                gameContext.screenWidthPx, gameContext.screenHeightPx, options);
     }
 
     public void update(UpdateContext updateContext) {
         // Scroll at 30% of Map scroll speed
-        scroll(updateContext.scrollSpeedPx * 0.3 *
-                updateContext.gameTime.msSincePrevUpdate / 1000.0);
+        scroll(updateContext.scrollSpeedPx * 0.3 * updateContext.gameTime.msSincePrevUpdate / 1000.0);
     }
 
     public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
@@ -62,17 +65,7 @@ public class Background {
         drawInstructions.push(new DrawImage(background, src, dst));
 
         Rect src2 = new Rect(0, 0, offset, gameContext.screenHeightPx);
-        Rect dst2 = new Rect(
-                gameContext.screenWidthPx - offset,
-                0,
-                gameContext.screenWidthPx,
-                gameContext.screenHeightPx
-        );
+        Rect dst2 = new Rect(gameContext.screenWidthPx - offset, 0, gameContext.screenWidthPx, gameContext.screenHeightPx);
         drawInstructions.push(new DrawImage(background, src2, dst2));
-    }
-
-    // returns "distance" travelled: 1 screen width = 1 kilometer (for now) todo: change?
-    public float getDistanceTravelled() {
-        return (float) pixelsScrolled / gameContext.screenWidthPx;
     }
 }
