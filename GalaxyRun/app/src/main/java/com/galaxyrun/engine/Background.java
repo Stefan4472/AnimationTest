@@ -9,31 +9,21 @@ import com.galaxyrun.galaxydraw.GalaxyDrawer;
 import com.galaxyrun.util.ProtectedQueue;
 
 /**
- * Draws the background of the game.
- * // todo: explanation
+ * Draws the background of the game. Renders a galaxy background using a
+ * GalaxyDrawer, then scrolls from left to right in a loop.
  */
 public class Background {
 
-    private GameContext gameContext;
-    // number of pixels scrolled
+    private final GameContext gameContext;
+    // Number of pixels that the background has scrolled.
     private int pixelsScrolled;
     // Used to render a starry "galaxy" background
-    private GalaxyDrawer galaxyDrawer;
-    // rendered background that scrolls
-    private Bitmap background;
-
-    // relative speed of background scrolling to foreground scrolling TODO
-    public static final float SCROLL_SPEED_CONST = 0.4f;
-
-    // increases scroll counter by x
-    public void scroll(double x) {
-        this.pixelsScrolled += x;
-    }
-
-    // resets Background // todo: refinement?
-    public void reset() {
-        pixelsScrolled = 0;
-    }
+    private final GalaxyDrawer galaxyDrawer;
+    // Rendered background image.
+    private final Bitmap background;
+    // Relative speed of background scrolling to foreground scrolling.
+    // A value below 1 gives a "parallax" effect.
+    public static final float SCROLL_SPEED_FACTOR = 0.3f;
 
     public Background(GameContext gameContext) {
         this.gameContext = gameContext;
@@ -53,8 +43,11 @@ public class Background {
     }
 
     public void update(UpdateContext updateContext) {
-        // Scroll at 30% of Map scroll speed
-        scroll(updateContext.scrollSpeedPx * 0.3 * updateContext.gameTime.msSincePrevUpdate / 1000.0);
+        // Only scroll the background while the rest of the game is moving.
+        if (updateContext.gameState == GameState.PLAYING || updateContext.gameState == GameState.DEAD) {
+            this.pixelsScrolled +=
+                    updateContext.scrollSpeedPx * SCROLL_SPEED_FACTOR * updateContext.gameTime.secSincePrevUpdate;
+        }
     }
 
     public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawInstructions) {
