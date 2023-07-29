@@ -7,6 +7,7 @@ import android.hardware.SensorEvent;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.galaxyrun.engine.background.Background;
 import com.galaxyrun.engine.controller.ControlState;
 import com.galaxyrun.engine.external.ExternalInput;
 import com.galaxyrun.engine.external.GameUpdateMessage;

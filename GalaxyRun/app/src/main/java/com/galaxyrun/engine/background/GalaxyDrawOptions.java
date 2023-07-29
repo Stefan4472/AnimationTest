@@ -1,4 +1,4 @@
-package com.galaxyrun.galaxydraw;
+package com.galaxyrun.engine.background;
 
 import androidx.annotation.ColorInt;
 

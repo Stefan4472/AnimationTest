@@ -1,4 +1,4 @@
-package com.galaxyrun.galaxydraw;
+package com.galaxyrun.engine.background;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
