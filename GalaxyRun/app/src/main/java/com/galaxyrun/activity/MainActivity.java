@@ -4,6 +4,7 @@ import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.app.Activity;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -60,6 +61,7 @@ public class MainActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
         songPlayer.start();
     }
 

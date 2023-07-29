@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -81,6 +82,7 @@ public class GameActivity extends FragmentActivity implements
             gameRunner.resumeThread();
         }
         gameView.startThread();
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
         songPlayer.start();
         if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
             sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
