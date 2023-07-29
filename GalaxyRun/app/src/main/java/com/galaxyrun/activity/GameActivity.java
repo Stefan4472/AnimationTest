@@ -39,6 +39,8 @@ public class GameActivity extends FragmentActivity implements
     private GameRunner gameRunner;
     // View element that draws the game
     private GameView gameView;
+    // Whether game is currently muted.
+    private boolean isMuted;
     // Plays game audio
     private SoundPlayer soundPlayer;
     // Plays background song.
@@ -46,6 +48,7 @@ public class GameActivity extends FragmentActivity implements
     //   I am taking a shortcut by directly playing the song from `GameActivity`
     private MediaPlayer songPlayer;
     private SensorManager sensorManager;
+    private static final float MUSIC_VOLUME = 0.25f;
 
     @Override
     public void onCreate(Bundle savedInstanceState) throws IllegalArgumentException {
@@ -67,8 +70,8 @@ public class GameActivity extends FragmentActivity implements
         gameView.setListener(this);
         soundPlayer = new SoundPlayer(getApplicationContext());
         songPlayer = MediaPlayer.create(getApplicationContext(), R.raw.game_song);
+        songPlayer.setVolume(MUSIC_VOLUME, MUSIC_VOLUME);
         songPlayer.setLooping(true);
-        songPlayer.setVolume(0.25f, 0.25f);
     }
 
     @Override
@@ -97,6 +100,11 @@ public class GameActivity extends FragmentActivity implements
         gameView.stopThread();
         songPlayer.pause();
         sensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     @Override
@@ -166,17 +174,17 @@ public class GameActivity extends FragmentActivity implements
             Log.w("GameActivity", "FPS below 30! FPS = " + updateMessage.fps);
         }
 
-        // Pause game music while muted. This isn't strictly the same as muting,
-        // but I'm not sure how expensive the MediaPlayer.setVolume() call is.
-        // Just leaving it like this for now.
-        if (songPlayer != null && updateMessage.isMuted && songPlayer.isPlaying()) {
-            songPlayer.pause();
-        } else if (songPlayer != null && !updateMessage.isMuted && !songPlayer.isPlaying()) {
-            songPlayer.start();
+        // Handle change of "muted" state.
+        if (isMuted != updateMessage.isMuted) {
+            if (songPlayer != null) {
+                float newVolume = updateMessage.isMuted ? 0 : MUSIC_VOLUME;
+                songPlayer.setVolume(newVolume, newVolume);
+            }
+            isMuted = updateMessage.isMuted;
         }
 
         // Play sounds if not muted
-        if (soundPlayer != null && !updateMessage.isMuted) {
+        if (soundPlayer != null && !isMuted) {
             for (SoundID sound : updateMessage.getSounds()) {
                 soundPlayer.playSound(sound);
             }
