@@ -130,12 +130,16 @@ public class GameActivity extends FragmentActivity implements
      */
     @Override
     public void handleScreenTouch(MotionEvent motionEvent) {
-        gameRunner.inputMotionEvent(motionEvent);
+        if (gameRunner != null) {
+            gameRunner.inputMotionEvent(motionEvent);
+        }
     }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        gameRunner.inputSensorEvent(sensorEvent);
+        if (gameRunner != null) {
+            gameRunner.inputSensorEvent(sensorEvent);
+        }
     }
 
     @Override
