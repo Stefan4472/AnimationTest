@@ -2,6 +2,7 @@ package com.galaxyrun.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.PixelFormat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -39,6 +40,7 @@ public class GameView extends SurfaceView implements Runnable {
         super(context, attributes);
         this.context = context;
         surfaceHolder = getHolder();
+        surfaceHolder.setFormat(PixelFormat.RGBA_8888);
         drawFramesQueue = new ConcurrentLinkedQueue<>();
     }
 
