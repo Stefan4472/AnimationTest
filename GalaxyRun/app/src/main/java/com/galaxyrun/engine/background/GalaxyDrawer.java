@@ -7,7 +7,6 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Shader;
-import android.util.Log;
 
 import java.util.Random;
 
@@ -75,7 +74,6 @@ public class GalaxyDrawer {
             int size = varySize(options.starRadiusPx, options.sizeVariance);
             int brightness = varyBrightness(
                     Color.alpha(options.starColor), options.brightnessVariance);
-            Log.d("GalaxyDrawer", "brightness=" + brightness);
             paint.setColor(Color.argb(
                     brightness,
                     Color.red(options.starColor),

@@ -10,7 +10,11 @@ import androidx.annotation.ColorInt;
 /**
  * Generates images ("panels") to be used for the game background.
  * Panels are rendered using GalaxyDraw and transition the background color
- * over time.
+ * over time. The possible background colors are defined in `BACKGROUND_COLORS`.
+ * The color always starts at `STANDARD_COLOR`, transitions to a randomly-chosen
+ * color from `BACKGROUND_COLORS`, then transitions back to `STANDARD_COLOR`.
+ * The `NUM_PANELS_STAY` and `NUM_PANELS_TRANSITION` define the length of these
+ * transitions.
  */
 public class BackgroundGenerator {
     // Width of panels to generate.
@@ -26,6 +30,7 @@ public class BackgroundGenerator {
     // For example, the first panel to be generated will use `startColor=colors[0]`,
     // `endColor=colors[1]`. For a `colors` array of size N, we can generate N-1
     // panels. Once we reach the end of the colors array, we generate the next one.
+    // `colors` is generated as a full transition at a time.
     private @ColorInt int[] colors;
     // The number of panels that have been generated using the current `colors` array.
     private int count;
@@ -34,12 +39,28 @@ public class BackgroundGenerator {
     private static final int STANDARD_COLOR = Color.BLACK;
     // The number of panels of the `STANDARD_COLOR` to generate at the start of the game.
     private static final int NUM_STANDARD_AT_START = 2;
-    // Number of panels over which the transition will occur.
+    // The number of panels over which the transition will occur.
     private static final int NUM_PANELS_TRANSITION = 2;
-    // Number of panels to stay at the chosen color before transitioning
+    // The number of panels to stay at the chosen color before transitioning
     // back to `STANDARD_COLOR`.
     private static final int NUM_PANELS_STAY = 1;
+    // The colors that the background may transition to.
+    @ColorInt
+    private static final int[] BACKGROUND_COLORS = {
+            // Light blue.
+            Color.rgb(97, 148, 194),
+            // Light green.
+            Color.rgb(99, 207, 151),
+            // Light purple.
+            Color.rgb(224, 117, 221),
+            // Turquoise.
+            Color.rgb(113, 222, 222),
+            // Pink.
+            Color.rgb(217, 80, 137)
+    };
 
+    // Construct a BackgroundGenerator that will render panels of size
+    // `panelWidthPx` by `panelHeightPx`.
     BackgroundGenerator(int panelWidthPx, int panelHeightPx, Random rand) {
         this.panelWidthPx = panelWidthPx;
         this.panelHeightPx = panelHeightPx;
@@ -50,7 +71,9 @@ public class BackgroundGenerator {
 
     public Bitmap nextPanel() {
         if (count == colors.length - 1) {
-            colors = generateColorTransition(Color.BLACK, Color.BLUE);
+            // Randomly choose the next color to transition to.
+            @ColorInt int nextColor = BACKGROUND_COLORS[rand.nextInt(BACKGROUND_COLORS.length)];
+            colors = generateColorTransition(STANDARD_COLOR, nextColor);
             count = 0;
         }
         // Transition from `colors[count]` to `colors[count+1]`.
@@ -75,7 +98,9 @@ public class BackgroundGenerator {
     private int[] generateColorTransition(@ColorInt int startColor, @ColorInt int toColor) {
         int[] transition =
                 ColorGenerator.makeTransition(startColor, toColor, NUM_PANELS_TRANSITION+1);
-        int[] stay = ColorGenerator.makeSolidColor(toColor, NUM_PANELS_STAY);
+        // Subtract one from NUM_PANELS_STAY because merging `transition` and `returnTransition`
+        // will effectively add a panel of "stay" in between.
+        int[] stay = ColorGenerator.makeSolidColor(toColor, NUM_PANELS_STAY-1);
         int[] returnTransition =
                 ColorGenerator.makeTransition(toColor, startColor, NUM_PANELS_TRANSITION+1);
 
