@@ -8,7 +8,7 @@ import com.galaxyrun.util.ProtectedQueue;
 
 public class ShootButton extends UIElement {
     private boolean isShooting;
-    private static final double WIDTH_PCT = 0.6;
+    private static final double WIDTH_PCT = 0.9;
     private static final double HEIGHT_PCT = 0.9;
 
     public ShootButton(GameContext gameContext) {
