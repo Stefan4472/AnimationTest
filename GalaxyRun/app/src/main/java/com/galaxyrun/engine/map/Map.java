@@ -104,7 +104,7 @@ public class Map {
      */
     private static double calcDifficulty(long gameRuntimeMs) {
         // Each second of runtime = 0.01 points of difficulty
-        double difficulty = (gameRuntimeMs / 1000.0) / 100.0;
+        double difficulty = 0.1 + (gameRuntimeMs / 1000.0) / 100.0;
         return Math.min(difficulty, 1.0);
     }
 
