@@ -70,10 +70,10 @@ public class GameEngine implements IExternalGameController {
     private List<Sprite> sprites;
 
     // Queue for game input events coming from outside
-    private ConcurrentLinkedQueue<ExternalInput> externalInputQueue =
+    private final ConcurrentLinkedQueue<ExternalInput> externalInputQueue =
             new ConcurrentLinkedQueue<>();
     // Used to process gyroscope input in order to control the spaceship.
-    private TiltController tiltController = new TiltController();
+    private final TiltController tiltController = new TiltController();
 
     // Number of points that a coin is worth
     public static final int COIN_VALUE = 100;
@@ -414,7 +414,10 @@ public class GameEngine implements IExternalGameController {
                 }
             }
         }
-        spaceship.setControls(new ControlState(tiltController.calculateState(), isShooting));
+        // TODO: use the gameContext time. The fact that we don't have it here indicates
+        //  something strange with the overarching logic.
+        spaceship.setControls(new ControlState(
+                tiltController.calculateState(System.currentTimeMillis()), isShooting));
     }
 
     /* IExternalGameController interface. */
