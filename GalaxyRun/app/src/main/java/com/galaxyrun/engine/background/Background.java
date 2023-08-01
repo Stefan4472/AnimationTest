@@ -31,7 +31,7 @@ public class Background {
     public Background(GameContext gameContext) {
         this.gameContext = gameContext;
         generator = new BackgroundGenerator(
-                gameContext.gameWidthPx, gameContext.gameHeightPx, gameContext.rand);
+                gameContext.screenWidthPx, gameContext.screenHeightPx, gameContext.rand);
         leftStartedAt = 0;
         panelLeft = generator.nextPanel();
         panelRight = generator.nextPanel();
