@@ -138,11 +138,11 @@ public class SpriteAnimation { // todo: pause (returns same frame each time) and
         return bitmapID;
     }
 
-    public int getFrameW() {
+    public int getFrameWidth() {
         return frameW;
     }
 
-    public int getFrameH() {
+    public int getFrameHeight() {
         return frameH;
     }
 

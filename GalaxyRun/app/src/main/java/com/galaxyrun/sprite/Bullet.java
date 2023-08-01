@@ -1,5 +1,8 @@
 package com.galaxyrun.sprite;
 
+import android.util.Log;
+
+import com.galaxyrun.engine.AnimID;
 import com.galaxyrun.engine.EventID;
 import com.galaxyrun.engine.GameContext;
 import com.galaxyrun.engine.UpdateContext;
@@ -7,24 +10,39 @@ import com.galaxyrun.engine.audio.SoundID;
 import com.galaxyrun.helper.BitmapID;
 import com.galaxyrun.engine.draw.DrawImage;
 import com.galaxyrun.engine.draw.DrawInstruction;
+import com.galaxyrun.helper.SpriteAnimation;
 import com.galaxyrun.util.ProtectedQueue;
 
 /**
+ * A bullet fired by a spaceship. Travels at a fixed speed based on the current game difficulty.
+ * Plays an explosion animation upon colliding with another sprite.
+ *
  * Created by Stefan on 8/17/2015.
  */
 public class Bullet extends Sprite {
 
+    // Animation to play when the bullet collides with a sprite and explodes.
+    private final SpriteAnimation explodeAnim;
+    // The image used for the explosion is larger than the image used for the bullet.
+    // Calculate how much the explosion image has to be offset to be "centered" on where the
+    // bullet was.
+    private final int explodeYOffset;
+
     public Bullet(GameContext gameContext, double x, double y, double difficulty) {
-        super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.BULLET_0));
+        super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.BULLET));
 
         setHitboxOffsetX(getWidth() * 0.7);
         setHitboxOffsetY(-getHeight() * 0.2);
         setHitboxWidth(getWidth() * 0.45);
         setHitboxHeight(getHeight() * 1.4);
 
-        // Damage and speed increase as difficulty increases
+        // Calculate damage and speed based on game difficulty. Bullets become more powerful as
+        // the game progresses.
         setHealth(calcDamage(difficulty));
         setSpeedX(calcSpeed(gameContext.gameWidthPx, difficulty));
+
+        explodeAnim = gameContext.animFactory.get(AnimID.BULLET_EXPLODE);
+        explodeYOffset = -(explodeAnim.getFrameHeight() - getHeight()) / 2;
     }
 
     private static int calcDamage(double difficulty) {
@@ -41,13 +59,18 @@ public class Bullet extends Sprite {
 
     @Override
     public int getDrawLayer() {
-        return 0;
+        return 6;
     }
 
     @Override
     public void updateActions(UpdateContext updateContext) {
         if (!isVisibleInBounds()) {
             setCurrState(SpriteState.TERMINATED);
+        }
+        // Terminate if the explosion has finished.
+        if (explodeAnim.hasPlayed()) {
+            setCurrState(SpriteState.TERMINATED);
+            Log.d("Bullet", "Terminating bullet");
         }
     }
 
@@ -58,25 +81,47 @@ public class Bullet extends Sprite {
 
     @Override
     public void updateAnimations(UpdateContext updateContext) {
-
+        if (explodeAnim.isPlaying()) {
+            explodeAnim.update(updateContext.gameTime.msSincePrevUpdate);
+        }
     }
 
     @Override
     public void handleCollision(Sprite s, int damage, UpdateContext updateContext) {
-        if (!(s instanceof Spaceship)) {
+        // TODO: this canCollide() should not be needed. However, I've noticed issues.
+        if (canCollide() && !(s instanceof Spaceship)) {
+            Log.d("Bullet", "Collided with sprite at " + s.getX() + ", " + s.getY());
             updateContext.createEvent(EventID.BULLET_COLLIDED);
+//            setCurrState(SpriteState.DEAD);
             setCollidable(false);
-            setCurrState(SpriteState.TERMINATED);
             updateContext.createSound(SoundID.BULLET_DESTROYED);
+
+            // Set speed to match the colliding sprite and start explosion animation.
+            setSpeedX(s.getSpeedX());
+            explodeAnim.start();
         }
     }
 
     @Override
     public void getDrawInstructions(ProtectedQueue<DrawInstruction> drawQueue) {
-        drawQueue.push(new DrawImage(
-                gameContext.bitmapCache.getBitmap(BitmapID.BULLET_0),
-                (int) getX(),
-                (int) getY()
-        ));
+        if (explodeAnim.isPlaying()) {
+            Log.d("Bullet",
+                    "Playing explodeAnim at x=" + (getX() + getWidth()) + ", y=" + (getY() + explodeYOffset) + ". src.x = " + explodeAnim.getCurrentFrameSrc().left);
+            drawQueue.push(new DrawImage(
+                    gameContext.bitmapCache.getBitmap(explodeAnim.getBitmapID()),
+                    explodeAnim.getCurrentFrameSrc(),
+                    (int) getX() + getWidth(),
+                    (int) (getY() + explodeYOffset)
+            ));
+        } else {
+            if (explodeAnim.hasPlayed()) {
+                Log.e("Bullet", "Drawing bullet after explodeAnim.hasPlayed()");
+            }
+            drawQueue.push(new DrawImage(
+                    gameContext.bitmapCache.getBitmap(BitmapID.BULLET),
+                    (int) getX(),
+                    (int) getY()
+            ));
+        }
     }
 }

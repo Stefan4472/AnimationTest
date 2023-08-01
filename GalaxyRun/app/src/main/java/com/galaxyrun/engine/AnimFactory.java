@@ -49,6 +49,12 @@ public class AnimFactory {
                         true
                 );
             }
+            case BULLET_EXPLODE:
+                return new SpriteAnimation(
+                        bitmapCache.getData(BitmapID.BULLET_EXPLODE),
+                        new int[]{70, 60, 60, 60, 60, 60},
+                        false
+                );
             default: {
                 throw new IllegalArgumentException(
                         String.format("Unsupported AnimID %s", animationID.toString())

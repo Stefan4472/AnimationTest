@@ -93,7 +93,7 @@ public class HitDetector {
         for (Sprite l1Sprite : spritesLayerOne) {
             if (l1Sprite.canCollide()) {
                 for (Sprite l2Sprite : spritesLayerTwo) {
-                    if (l1Sprite.collidesWith(l2Sprite)) {
+                    if (l2Sprite.canCollide() && l1Sprite.collidesWith(l2Sprite)) {
                         collisionsList.add(new CollisionTuple(
                                 l1Sprite,
                                 l2Sprite
