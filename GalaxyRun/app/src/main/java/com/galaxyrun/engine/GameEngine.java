@@ -75,10 +75,6 @@ public class GameEngine implements IExternalGameController {
     // Used to process gyroscope input in order to control the spaceship.
     private final TiltController tiltController = new TiltController();
 
-    // Number of points that a coin is worth
-    public static final int COIN_VALUE = 100;
-    public static final int STARTING_PLAYER_HEALTH = 100;
-
     public GameEngine(
             Context appContext,
             int screenWidthPx,
@@ -106,8 +102,7 @@ public class GameEngine implements IExternalGameController {
                 gameWidthPx,
                 gameHeightPx,
                 screenWidthPx,
-                screenHeightPx,
-                GameEngine.STARTING_PLAYER_HEALTH
+                screenHeightPx
         );
 
         initGameObjects();
@@ -240,7 +235,7 @@ public class GameEngine implements IExternalGameController {
         // TODO: more sophisticated event handling
         for (EventID event : createdEvents) {
             if (event == EventID.COIN_COLLECTED) {
-                score += COIN_VALUE;
+                score += GameConstants.COIN_VALUE;
             }
         }
 

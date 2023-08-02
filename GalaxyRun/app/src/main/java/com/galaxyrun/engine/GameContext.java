@@ -23,7 +23,6 @@ public class GameContext {
     public final int gameHeightPx;
     public final int screenWidthPx;
     public final int screenHeightPx;
-    public final int fullHealth;
     // Width of a (square) tile in the game
     public final int tileWidthPx;
 
@@ -37,8 +36,8 @@ public class GameContext {
             int gameWidthPx,
             int gameHeightPx,
             int screenWidthPx,
-            int screenHeightPx,
-            int fullHealth) {
+            int screenHeightPx
+    ) {
         this.appContext = appContext;
         this.inDebugMode = inDebugMode;
         this.bitmapCache = bitmapCache;
@@ -49,7 +48,6 @@ public class GameContext {
         this.gameHeightPx = gameHeightPx;
         this.screenWidthPx = screenWidthPx;
         this.screenHeightPx = screenHeightPx;
-        this.fullHealth = fullHealth;
         tileWidthPx = gameHeightPx / Map.NUM_ROWS;
     }
 }

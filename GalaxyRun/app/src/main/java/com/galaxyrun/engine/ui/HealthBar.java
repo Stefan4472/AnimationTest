@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
 
+import com.galaxyrun.engine.GameConstants;
 import com.galaxyrun.engine.GameContext;
 import com.galaxyrun.engine.UpdateContext;
 import com.galaxyrun.engine.draw.DrawInstruction;
@@ -50,8 +51,8 @@ public class HealthBar extends UIElement {
         startY = bounds.getY();
         width = bounds.getWidth();
         height = bounds.getHeight();
-        setFullHealth(gameContext.fullHealth);
-        setCurrentHealth(gameContext.fullHealth);
+        setFullHealth(GameConstants.FULL_PLAYER_HEALTH);
+        setCurrentHealth(GameConstants.FULL_PLAYER_HEALTH);
     }
 
     private static Rectangle calcLayout(GameContext gameContext) {

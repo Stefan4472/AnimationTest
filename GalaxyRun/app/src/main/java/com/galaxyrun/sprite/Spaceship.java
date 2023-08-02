@@ -2,6 +2,7 @@ package com.galaxyrun.sprite;
 
 import com.galaxyrun.engine.AnimID;
 import com.galaxyrun.engine.EventID;
+import com.galaxyrun.engine.GameConstants;
 import com.galaxyrun.engine.GameContext;
 import com.galaxyrun.engine.GameEngine;
 import com.galaxyrun.engine.UpdateContext;
@@ -42,7 +43,7 @@ public class Spaceship extends Sprite {
     public Spaceship(GameContext gameContext, double x, double y) {
         super(gameContext, x, y, gameContext.bitmapCache.getData(BitmapID.SPACESHIP));
         controlState = new ControlState(ControlDirection.NEUTRAL, 0, false);
-        setHealth(GameEngine.STARTING_PLAYER_HEALTH);
+        setHealth(GameConstants.FULL_PLAYER_HEALTH);
 
         // Position hitbox
         setHitboxWidth(getWidth() * 0.7);
