@@ -215,12 +215,13 @@ public class GameUI {
             elem.update(updateContext);
         }
 
+        // TODO: I don't really like this. It should be "event-driven" / controlled from GameEngine.
         if (updateContext.isPaused) {
             pauseOverlay.show();
         } else {
             pauseOverlay.hide();
         }
-        if (updateContext.gameState == GameState.FINISHED) {
+        if (updateContext.gameState == GameState.GAME_OVER) {
             gameoverOverlay.show();
         } else {
             gameoverOverlay.hide();

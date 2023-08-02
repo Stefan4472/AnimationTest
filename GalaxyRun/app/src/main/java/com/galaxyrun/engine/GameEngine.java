@@ -42,7 +42,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * Core game logic.
  */
-public class GameEngine implements IExternalGameController {
+public class GameEngine implements IExternalGameController, IGameStateReceiver {
 
     private final GameContext gameContext;
     private final BitmapCache bitmapCache;
@@ -55,7 +55,8 @@ public class GameEngine implements IExternalGameController {
     private Background background;
     private GameUI ui;
 
-    private GameState currState = null;
+    // Calculates the state of the game and triggers state transitions.
+    private GameStateMachine stateMachine;
     private double score;
     private boolean isPaused;
     private boolean isMuted;
@@ -92,6 +93,8 @@ public class GameEngine implements IExternalGameController {
         animFactory = new AnimFactory(bitmapCache);
 
         // Create GameContext
+        // TODO: export to static factory method. Have a struct for game width/height and screen
+        //  width/height
         gameContext = new GameContext(
                 appContext,
                 inDebugMode,
@@ -106,13 +109,13 @@ public class GameEngine implements IExternalGameController {
         );
 
         initGameObjects();
-
-        // Start in WAITING state
-        enterState(GameState.WAITING);
     }
 
     private void initGameObjects() {
         Log.d("GameEngine", "Initializing game objects");
+        // Init GameStateMachine and set ourselves to receive callbacks.
+        stateMachine = new GameStateMachine(gameContext, this);
+
         gameTimer = new GameTimer();
         fpsCalculator = new FpsCalculator(100);
         score = 0;
@@ -128,7 +131,9 @@ public class GameEngine implements IExternalGameController {
         sprites = new LinkedList<>();
         sprites.add(spaceship);
 
+        // TODO: rename `GameGenerator`?
         map = new Map(gameContext);
+        // TODO: rename `GameBackground`?
         background = new Background(gameContext);
         ui = new GameUI(gameContext);
         hitDetector = HitDetector.MakeDefaultHitDetector();
@@ -141,7 +146,8 @@ public class GameEngine implements IExternalGameController {
      */
     private void restart() {
         initGameObjects();
-        enterState(GameState.STARTING);
+        // TODO: this is fishy
+        stateMachine.startGame();
     }
 
     /*
@@ -166,17 +172,16 @@ public class GameEngine implements IExternalGameController {
         fpsCalculator.recordFrame();
         hitDetector.clear();
         drawLayers.clear();
+        // Calculate the current game state. This will call the appropriate callbacks.
+        stateMachine.updateState(spaceship);
 
-        GameState shouldState = GameStateMachine.calcState(gameContext, spaceship, currState);
-        if (shouldState != currState) {
-            enterState(shouldState);
-        }
-
+        // TODO: spawned_sprites = map.update() ? Rename `Map` to `Spawner`? Or `GameGenerator`?
         map.update(gameTime, createdSprites);
+        // TODO: add createdSprites to be processed in this update.
 
         UpdateContext updateContext = new UpdateContext(
                 gameTime,
-                currState,
+                stateMachine.getCurrState(),
                 map.getDifficulty(),
                 map.getScrollSpeed(),
                 score,
@@ -192,10 +197,12 @@ public class GameEngine implements IExternalGameController {
 //        map.spawnNewSprites(updateContext);
 
         // Update sprites, removing any that should be "terminated"
+        // TODO: break these into separate for-loops
         Iterator<Sprite> it_sprites = sprites.iterator();
         while (it_sprites.hasNext()) {
             Sprite sprite = it_sprites.next();
             // sprite.update(updateContext);
+            // TODO: this should be done after updating actions.
             if (sprite.getState() == SpriteState.TERMINATED) {
                 it_sprites.remove();
                 continue;
@@ -227,7 +234,7 @@ public class GameEngine implements IExternalGameController {
         }
 
         // Give points for being alive
-        if (currState == GameState.PLAYING) {
+        if (stateMachine.getCurrState() == GameState.PLAYING) {
 //            Log.d("GameEngine", "scorepersec = " + calcScorePerSecond(updateContext.difficulty));
             score += gameTime.msSincePrevUpdate / 1000.0 * calcScorePerSecond(updateContext.difficulty);
         }
@@ -262,40 +269,12 @@ public class GameEngine implements IExternalGameController {
         return difficulty * 100;
     }
 
-    /*
-    Enters the new GameState, applying the transition function.
-     */
-    private void enterState(GameState newState) {
-        if (newState != currState) {
-            Log.d("GameEngine", "Setting state to " + newState.name());
-            switch (newState) {
-                case WAITING:
-                    enterWaitingState();
-                    break;
-                case STARTING:
-                    enterStartingState();
-                    break;
-                case PLAYING:
-                    enterPlayingState();
-                    break;
-                case DEAD:
-                    enterDeadState();
-                    break;
-                case FINISHED:
-                    enterFinishedState();
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unsupported GameState");
-            }
-        }
+    @Override
+    public void enterWaitingState() {
     }
 
-    private void enterWaitingState() {
-        currState = GameState.WAITING;
-    }
-
-    private void enterStartingState() {
-        currState = GameState.STARTING;
+    @Override
+    public void enterStartingState() {
         gameTimer.start();
         // Make non-controllable
         // TODO: this can be done at the GameEngine level with a flag and suppressing input
@@ -304,27 +283,28 @@ public class GameEngine implements IExternalGameController {
         spaceship.setSpeedX(gameContext.gameWidthPx * 0.12);
     }
 
-    private void enterPlayingState() {
-        currState = GameState.PLAYING;
+    @Override
+    public void enterPlayingState() {
         spaceship.setControllable(true);
         spaceship.setX(gameContext.gameWidthPx / 4.0);
         spaceship.setSpeedX(0);
     }
 
-    private void enterDeadState() {
-        currState = GameState.DEAD;
+    @Override
+    public void enterPlayerDeadState() {
         spaceship.setControllable(false);
     }
 
-    private void enterFinishedState() {
-        currState = GameState.FINISHED;
+    @Override
+    public void enterGameOverState() {
         gameTimer.pause();
     }
 
     private void setPaused(boolean shouldPause) {
         // Note: have to be careful in WAITING and FINISHED states,
         // because the timer should not be running
-        if (isPaused != shouldPause && currState != GameState.FINISHED && currState != GameState.WAITING) {
+        if (isPaused != shouldPause && stateMachine.getCurrState() != GameState.GAME_OVER
+                && stateMachine.getCurrState() != GameState.WAITING_FOR_START) {
             Log.d("GameEngine", "Setting paused = " + shouldPause);
             isPaused = shouldPause;
             if (shouldPause) {
@@ -347,7 +327,7 @@ public class GameEngine implements IExternalGameController {
             if (input != null) {
                 switch (input.inputId) {
                     case START_GAME: {
-                        enterStartingState();
+                        stateMachine.startGame();
                         break;
                     }
                     case PAUSE_GAME: {

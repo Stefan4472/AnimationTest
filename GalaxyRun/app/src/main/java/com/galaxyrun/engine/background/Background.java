@@ -39,7 +39,7 @@ public class Background {
 
     public void update(UpdateContext updateContext) {
         // Only scroll the background while the rest of the game is moving.
-        if (updateContext.gameState == GameState.PLAYING || updateContext.gameState == GameState.DEAD) {
+        if (updateContext.gameState == GameState.PLAYING || updateContext.gameState == GameState.PLAYER_DEAD) {
             this.pixelsScrolled +=
                     updateContext.scrollSpeedPx * SCROLL_SPEED_FACTOR * updateContext.gameTime.secSincePrevUpdate;
         }
