@@ -58,11 +58,6 @@ public class Bullet extends Sprite {
     }
 
     @Override
-    public int getDrawLayer() {
-        return 6;
-    }
-
-    @Override
     public void updateActions(UpdateContext updateContext) {
         if (!isVisibleInBounds()) {
             setCurrState(SpriteState.TERMINATED);

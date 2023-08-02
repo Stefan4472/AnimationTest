@@ -79,11 +79,6 @@ public class Alien extends Sprite {
     }
 
     @Override
-    public int getDrawLayer() {
-        return 5;
-    }
-
-    @Override
     public void updateActions(UpdateContext updateContext) {
         if (alienState == AlienState.HOVERING) {
             msSinceLastBullet += updateContext.getGameTime().msSincePrevUpdate;

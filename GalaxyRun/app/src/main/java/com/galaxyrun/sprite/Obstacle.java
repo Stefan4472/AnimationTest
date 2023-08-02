@@ -30,11 +30,6 @@ public class Obstacle extends Sprite {
     }
 
     @Override
-    public int getDrawLayer() {
-        return 4;
-    }
-
-    @Override
     public void updateActions(UpdateContext updateContext) {
         // terminate when hitBox is out of bounds to the left of the screen
         if (getX() < -getWidth()) {

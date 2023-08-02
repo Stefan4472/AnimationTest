@@ -68,8 +68,6 @@ public abstract class Sprite {
 //        return 0; //spriteType.ordinal();
 //    }
 
-    public abstract int getDrawLayer();
-
     // Update/handle any actions sprite takes
     public abstract void updateActions(UpdateContext updateContext);
 

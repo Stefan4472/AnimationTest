@@ -50,7 +50,6 @@ public class GameEngine implements IExternalGameController, IGameStateReceiver {
     private final AnimFactory animFactory;
 
     private HitDetector hitDetector;
-    private DrawLayers drawLayers;
     private Map map;
     private Background background;
     private GameUI ui;
@@ -137,7 +136,6 @@ public class GameEngine implements IExternalGameController, IGameStateReceiver {
         background = new Background(gameContext);
         ui = new GameUI(gameContext);
         hitDetector = HitDetector.MakeDefaultHitDetector();
-        drawLayers = new DrawLayers(gameContext, 7);
         Log.d("GameEngine", "Finished initializing game objects");
     }
 
@@ -158,7 +156,6 @@ public class GameEngine implements IExternalGameController, IGameStateReceiver {
         FastQueue<Sprite> createdSprites = new FastQueue<>();
         FastQueue<EventID> createdEvents = new FastQueue<>();
         FastQueue<SoundID> createdSounds = new FastQueue<>();
-        FastQueue<DrawInstruction> drawInstructions = new FastQueue<>();
 
         processExternalInput();
         processUIInput();
@@ -171,7 +168,6 @@ public class GameEngine implements IExternalGameController, IGameStateReceiver {
         GameTime gameTime = gameTimer.recordUpdate();
         fpsCalculator.recordFrame();
         hitDetector.clear();
-        drawLayers.clear();
         // Calculate the current game state. This will call the appropriate callbacks.
         stateMachine.updateState(spaceship);
 
@@ -214,7 +210,6 @@ public class GameEngine implements IExternalGameController, IGameStateReceiver {
             sprite.updateAnimations(updateContext);
 
             hitDetector.addSprite(sprite);
-            drawLayers.addSprite(sprite);
         }
 
         // Handle collisions, passing the health of each as the damage
@@ -249,14 +244,20 @@ public class GameEngine implements IExternalGameController, IGameStateReceiver {
         background.update(updateContext);
         ui.update(updateContext);
 
-        // Collect DrawInstructions.
-        // Draw Background first, then sprites, then UI
-        background.getDrawInstructions(drawInstructions);
-        drawLayers.getDrawInstructions(drawInstructions);
-        ui.getDrawInstructions(drawInstructions);
+        // Collect DrawInstructions. Draw Background first, then sprites, then UI.
+        FastQueue<DrawInstruction> drawQueue = new FastQueue<>();
+        background.getDrawInstructions(drawQueue);
+        for (Sprite sprite : sprites) {
+            sprite.getDrawInstructions(drawQueue);
+            if (gameContext.inDebugMode) {
+                // Draw hitboxes for debugging purposes.
+                drawQueue.push(sprite.drawHitbox());
+            }
+        }
+        ui.getDrawInstructions(drawQueue);
 
         return new GameUpdateMessage(
-                drawInstructions,
+                drawQueue,
                 createdEvents,
                 createdSounds,
                 fpsCalculator.getNumFrames(),

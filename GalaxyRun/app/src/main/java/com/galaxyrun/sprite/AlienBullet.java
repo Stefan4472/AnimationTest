@@ -46,11 +46,6 @@ public class AlienBullet extends Sprite {
     }
 
     @Override
-    public int getDrawLayer() {
-        return 0;
-    }
-
-    @Override
     public void updateActions(UpdateContext updateContext) {
         if (!isVisibleInBounds()) {
             updateContext.createEvent(EventID.ALIEN_BULLET_OFF_SCREEN);

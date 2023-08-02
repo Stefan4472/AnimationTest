@@ -9,7 +9,7 @@ import com.galaxyrun.util.ProtectedQueue;
  * Passed to Sprites to update themselves. Meant for internal
  * GameEngine use only!
  */
-
+// TODO: this can be majorly simplified.
 public class UpdateContext {
     public final GameTime gameTime;
     public final GameState gameState;
