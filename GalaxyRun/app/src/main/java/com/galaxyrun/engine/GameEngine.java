@@ -1,7 +1,5 @@
 package com.galaxyrun.engine;
 
-import android.content.Context;
-import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.util.Log;
@@ -18,12 +16,9 @@ import com.galaxyrun.engine.external.StartGameInput;
 import com.galaxyrun.engine.controller.TiltController;
 import com.galaxyrun.engine.ui.GameUI;
 import com.galaxyrun.engine.ui.UIInputId;
-import com.galaxyrun.helper.BitmapCache;
 import com.galaxyrun.helper.BitmapData;
 import com.galaxyrun.helper.BitmapID;
 import com.galaxyrun.engine.draw.DrawInstruction;
-import com.galaxyrun.helper.FontCache;
-import com.galaxyrun.helper.FpsCalculator;
 import com.galaxyrun.engine.map.Map;
 import com.galaxyrun.engine.audio.SoundID;
 import com.galaxyrun.sprite.Spaceship;
@@ -31,12 +26,10 @@ import com.galaxyrun.sprite.Sprite;
 import com.galaxyrun.sprite.SpriteState;
 import com.galaxyrun.stats.GameTimer;
 import com.galaxyrun.util.FastQueue;
-import com.galaxyrun.util.Pair;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -45,10 +38,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class GameEngine implements IExternalGameController, IGameStateReceiver {
 
     private final GameContext gameContext;
-    private final BitmapCache bitmapCache;
-    private final FontCache fontCache;
-    private final AnimFactory animFactory;
-
     private HitDetector hitDetector;
     private Map map;
     private Background background;
@@ -63,50 +52,20 @@ public class GameEngine implements IExternalGameController, IGameStateReceiver {
     // Tracks game duration (non-paused)  TODO: handle pause() and resume()
     // Note: game difficulty is purely time-based.
     private GameTimer gameTimer;
-    private FpsCalculator fpsCalculator;
     // The player's spaceship
     private Spaceship spaceship;
     // All other sprites
     private List<Sprite> sprites;
 
-    // Queue for game input events coming from outside
+    // Queue for game input events coming from outside.
+    // TODO: we can refactor this out.
     private final ConcurrentLinkedQueue<ExternalInput> externalInputQueue =
             new ConcurrentLinkedQueue<>();
     // Used to process gyroscope input in order to control the spaceship.
     private final TiltController tiltController = new TiltController();
 
-    public GameEngine(
-            Context appContext,
-            int screenWidthPx,
-            int screenHeightPx,
-            boolean inDebugMode
-    ) {
-        // Calculate game dimensions based on screen dimensions.
-        Pair<Integer, Integer> gameDimensions =
-                GameUI.calcGameDimensions(screenWidthPx, screenHeightPx);
-        int gameWidthPx = gameDimensions.first;
-        int gameHeightPx = gameDimensions.second;
-
-        bitmapCache = new BitmapCache(appContext, gameWidthPx, gameHeightPx);
-        fontCache = new FontCache(appContext, Typeface.MONOSPACE);
-        animFactory = new AnimFactory(bitmapCache);
-
-        // Create GameContext
-        // TODO: export to static factory method. Have a struct for game width/height and screen
-        //  width/height
-        gameContext = new GameContext(
-                appContext,
-                inDebugMode,
-                bitmapCache,
-                fontCache,
-                animFactory,
-                new Random(System.currentTimeMillis()),
-                gameWidthPx,
-                gameHeightPx,
-                screenWidthPx,
-                screenHeightPx
-        );
-
+    public GameEngine(GameContext gameContext) {
+        this.gameContext = gameContext;
         initGameObjects();
     }
 
@@ -116,8 +75,6 @@ public class GameEngine implements IExternalGameController, IGameStateReceiver {
         stateMachine = new GameStateMachine(gameContext, this);
 
         gameTimer = new GameTimer();
-        // TODO: shouldn't this be in GameRunner?
-        fpsCalculator = new FpsCalculator(100);
         score = 0;
 
         // Move spaceship just off the left of the screen, centered vertically
@@ -167,7 +124,6 @@ public class GameEngine implements IExternalGameController, IGameStateReceiver {
         // Note: we take GameTime *after* processing input because the input
         // may restart the game
         GameTime gameTime = gameTimer.recordUpdate();
-        fpsCalculator.recordFrame();
         hitDetector.clear();
         // Calculate the current game state. This will call the appropriate callbacks.
         stateMachine.updateState(spaceship);
@@ -262,8 +218,6 @@ public class GameEngine implements IExternalGameController, IGameStateReceiver {
                 drawQueue,
                 createdEvents,
                 createdSounds,
-                fpsCalculator.getNumFrames(),
-                fpsCalculator.calcFps(),
                 isMuted
         );
     }

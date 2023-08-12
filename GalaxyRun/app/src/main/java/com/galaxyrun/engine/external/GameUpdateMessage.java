@@ -13,24 +13,17 @@ public class GameUpdateMessage {
     private FastQueue<DrawInstruction> drawInstructions;
     private FastQueue<EventID> events;
     private FastQueue<SoundID> sounds;
-    public final long frameNumber;
-    // FPS over the previous 100 frames
-    public final double fps;
     public final boolean isMuted;
 
     public GameUpdateMessage(
             FastQueue<DrawInstruction> drawInstructions,
             FastQueue<EventID> events,
             FastQueue<SoundID> sounds,
-            long frameNumber,
-            double fps,
             boolean isMuted
     ) {
         this.drawInstructions = drawInstructions;
         this.events = events;
         this.sounds = sounds;
-        this.frameNumber = frameNumber;
-        this.fps = fps;
         this.isMuted = isMuted;
     }
 

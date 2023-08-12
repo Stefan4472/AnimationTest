@@ -1,6 +1,7 @@
 package com.galaxyrun.engine;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.hardware.SensorEvent;
 import android.media.MediaPlayer;
 import android.os.Handler;
@@ -11,7 +12,14 @@ import android.view.MotionEvent;
 import com.galaxyrun.engine.audio.SoundID;
 import com.galaxyrun.engine.external.GameUpdateMessage;
 import com.galaxyrun.engine.external.SoundPlayer;
+import com.galaxyrun.engine.ui.GameUI;
+import com.galaxyrun.helper.BitmapCache;
+import com.galaxyrun.helper.FontCache;
+import com.galaxyrun.helper.FpsCalculator;
+import com.galaxyrun.util.Pair;
 import com.galaxyrun.view.GameView;
+
+import java.util.Random;
 
 import galaxyrun.R;
 
@@ -21,9 +29,13 @@ import galaxyrun.R;
 public class GameRunner extends HandlerThread {
     private Handler mWorkerHandler;
     private final Handler mResponseHandler;
-    private final GameEngine mGameEngine;
-    private final GameView mGameView;
+    // Whether the update thread is currently paused.
     private boolean isThreadPaused;
+    // Context passed to the Game.
+    private final GameContext mGameContext;
+    private final GameEngine mGameEngine;
+    private final FpsCalculator mFpsCalculator;
+    private final GameView mGameView;
     // Whether game is currently muted.
     private boolean isMuted;
     // Plays game audio
@@ -38,37 +50,64 @@ public class GameRunner extends HandlerThread {
     private static final int MS_PER_UPDATE = (int) (1000.0 / TARGET_FPS);
 
     public GameRunner(
-            Context context,
+            Context appContext,
             GameView gameView,
             boolean inDebugMode
     ) {
         super("GameRunner");
         mGameView = gameView;
         mResponseHandler = new Handler();
-        soundPlayer = new SoundPlayer(context);
-        songPlayer = MediaPlayer.create(context, R.raw.game_song);
+        soundPlayer = new SoundPlayer(appContext);
+        songPlayer = MediaPlayer.create(appContext, R.raw.game_song);
         songPlayer.setVolume(MUSIC_VOLUME, MUSIC_VOLUME);
         songPlayer.setLooping(true);
-        mGameEngine = new GameEngine(
-                context.getApplicationContext(),
-                mGameView.getWidth(),
-                mGameView.getHeight(),
-                inDebugMode
+
+        mGameContext = makeGameContext(appContext, gameView, inDebugMode);
+        mGameEngine = new GameEngine(mGameContext);
+        mFpsCalculator = new FpsCalculator(30);
+
+        // Start the update thread and kick off the first prepareHandler() call.
+        isThreadPaused = false;
+        start();
+        prepareHandler();
+        mGameView.startThread();
+    }
+
+    private static GameContext makeGameContext(
+            Context appContext, GameView gameView, boolean inDebugMode) {
+        // Calculate game dimensions based on screen dimensions.
+        // TODO: This should be calculated in a much more general fashion. The fact that we need
+        //  to calculate it here is a code smell.
+        Pair<Integer, Integer> gameDimensions =
+                GameUI.calcGameDimensions(gameView.getWidth(), gameView.getHeight());
+        int gameWidthPx = gameDimensions.first;
+        int gameHeightPx = gameDimensions.second;
+
+        BitmapCache bitmapCache = new BitmapCache(appContext, gameWidthPx, gameHeightPx);
+        FontCache fontCache = new FontCache(appContext, Typeface.MONOSPACE);
+        // TODO: rename "AnimationFactory"
+        AnimFactory animFactory = new AnimFactory(bitmapCache);
+
+        // TODO: Have a struct for game width/height and screen width/height?
+        return new GameContext(
+                appContext,
+                inDebugMode,
+                bitmapCache,
+                fontCache,
+                animFactory,
+                new Random(System.currentTimeMillis()),
+                gameWidthPx,
+                gameHeightPx,
+                gameView.getWidth(),
+                gameView.getHeight()
         );
     }
 
     /**
      * Starts the game.
-     * TODO: is this even necessary? Logic is partially repeated from onResume().
      */
     public void startGame() {
         Log.d("GameRunner", "Starting the game.");
-        // Start the thread and kick off the first prepareHandler() call.
-        isThreadPaused = false;
-        start();
-        prepareHandler();
-
-        mGameView.startThread();
         mGameEngine.inputExternalStartGame();
         songPlayer.start();
         queueUpdate();
@@ -112,8 +151,11 @@ public class GameRunner extends HandlerThread {
 
             // Report results
             mResponseHandler.post(() -> {
-                if (updateMessage.fps != 0 && updateMessage.fps < TARGET_FPS / 2) {
-                    Log.w("GameActivity", "Low FPS: " + updateMessage.fps);
+                mFpsCalculator.recordFrame();
+                double fps = mFpsCalculator.calcFps();
+                // FPS will be zero if not enough frames have elapsed.
+                if (fps != 0 && fps < TARGET_FPS / 2) {
+                    Log.w("GameActivity", "Low FPS: " + fps);
                 }
 
                 // Handle change of "muted" state.
