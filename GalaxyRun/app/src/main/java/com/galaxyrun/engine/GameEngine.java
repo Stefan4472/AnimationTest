@@ -10,9 +10,7 @@ import com.galaxyrun.engine.controller.ControlState;
 import com.galaxyrun.engine.external.ExternalInput;
 import com.galaxyrun.engine.external.GameUpdateMessage;
 import com.galaxyrun.engine.external.MotionInput;
-import com.galaxyrun.engine.external.PauseGameInput;
 import com.galaxyrun.engine.external.SensorInput;
-import com.galaxyrun.engine.external.StartGameInput;
 import com.galaxyrun.engine.controller.TiltController;
 import com.galaxyrun.engine.ui.GameUI;
 import com.galaxyrun.engine.ui.UIInputId;
@@ -30,12 +28,11 @@ import com.galaxyrun.util.FastQueue;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Core game logic.
  */
-public class GameEngine implements IExternalGameController, IGameStateReceiver {
+public class GameEngine implements IGameStateReceiver {
 
     private final GameContext gameContext;
     private HitDetector hitDetector;
@@ -56,11 +53,6 @@ public class GameEngine implements IExternalGameController, IGameStateReceiver {
     private Spaceship spaceship;
     // All other sprites
     private List<Sprite> sprites;
-
-    // Queue for game input events coming from outside.
-    // TODO: we can refactor this out.
-    private final ConcurrentLinkedQueue<ExternalInput> externalInputQueue =
-            new ConcurrentLinkedQueue<>();
     // Used to process gyroscope input in order to control the spaceship.
     private final TiltController tiltController = new TiltController();
 
@@ -109,13 +101,13 @@ public class GameEngine implements IExternalGameController, IGameStateReceiver {
     /*
     Update all game logic.
      */
-    public GameUpdateMessage update() {
+    public GameUpdateMessage update(List<ExternalInput> inputs) {
         // Create queues for this update
         FastQueue<Sprite> createdSprites = new FastQueue<>();
         FastQueue<EventID> createdEvents = new FastQueue<>();
         FastQueue<SoundID> createdSounds = new FastQueue<>();
 
-        processExternalInput();
+        processExternalInput(inputs);
         processUIInput();
         for (SoundID sound : ui.pollAllSounds()) {
             createdSounds.push(sound);
@@ -262,7 +254,6 @@ public class GameEngine implements IExternalGameController, IGameStateReceiver {
         // because the timer should not be running
         if (isPaused != shouldPause && stateMachine.getCurrState() != GameState.GAME_OVER
                 && stateMachine.getCurrState() != GameState.WAITING_FOR_START) {
-            Log.d("GameEngine", "Setting paused = " + shouldPause);
             isPaused = shouldPause;
             if (shouldPause) {
                 gameTimer.pause();
@@ -274,40 +265,34 @@ public class GameEngine implements IExternalGameController, IGameStateReceiver {
     }
 
     private void setMuted(boolean shouldMute) {
-        Log.d("GameEngine", "Setting muted = " + shouldMute);
         this.isMuted = shouldMute;
     }
 
-    private void processExternalInput() {
-        while (!externalInputQueue.isEmpty()) {
-            ExternalInput input = externalInputQueue.poll();
-            if (input != null) {
-                switch (input.inputId) {
-                    case START_GAME: {
-                        stateMachine.startGame();
-                        break;
+    private void processExternalInput(List<ExternalInput> inputs) {
+        for (ExternalInput input : inputs) {
+            switch (input.inputId) {
+                case START_GAME: {
+                    stateMachine.startGame();
+                    break;
+                }
+                case PAUSE_GAME: {
+                    setPaused(true);
+                    break;
+                }
+                case MOTION: {
+                    MotionEvent e = ((MotionInput) input).motion;
+                    ui.inputMotionEvent(e);
+                    break;
+                }
+                case SENSOR: {
+                    SensorEvent e = ((SensorInput) input).event;
+                    if (e.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+                        tiltController.inputGyroscopeEvent(e);
                     }
-                    case PAUSE_GAME: {
-                        setPaused(true);
-                        break;
-                    }
-                    case MOTION: {
-                        MotionEvent e = ((MotionInput) input).motion;
-                        ui.inputMotionEvent(e);
-                        break;
-                    }
-                    case SENSOR: {
-                        SensorEvent e = ((SensorInput) input).event;
-                        if (e.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-                            tiltController.inputGyroscopeEvent(e);
-                        }
-                        break;
-                    }
-                    default: {
-                        throw new IllegalArgumentException(
-                                String.format("Unsupported ExternalInputId %s", input.inputId)
-                        );
-                    }
+                    break;
+                }
+                default: {
+                    throw new IllegalArgumentException(String.format("Unsupported ExternalInputId %s", input.inputId));
                 }
             }
         }
@@ -350,26 +335,5 @@ public class GameEngine implements IExternalGameController, IGameStateReceiver {
         //  something strange with the overarching logic.
         spaceship.setControls(new ControlState(
                 tiltController.calculateState(System.currentTimeMillis()), isShooting));
-    }
-
-    /* IExternalGameController interface. */
-    @Override
-    public void inputExternalStartGame() {
-        externalInputQueue.add(new StartGameInput());
-    }
-
-    @Override
-    public void inputExternalPauseGame() {
-        externalInputQueue.add(new PauseGameInput());
-    }
-
-    @Override
-    public void inputExternalMotionEvent(MotionEvent e) {
-        externalInputQueue.add(new MotionInput(e));
-    }
-
-    @Override
-    public void inputExternalSensorEvent(SensorEvent e) {
-        externalInputQueue.add(new SensorInput(e));
     }
 }

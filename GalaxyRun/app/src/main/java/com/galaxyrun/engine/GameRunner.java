@@ -10,8 +10,13 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.galaxyrun.engine.audio.SoundID;
+import com.galaxyrun.engine.external.ExternalInput;
 import com.galaxyrun.engine.external.GameUpdateMessage;
+import com.galaxyrun.engine.external.MotionInput;
+import com.galaxyrun.engine.external.PauseGameInput;
+import com.galaxyrun.engine.external.SensorInput;
 import com.galaxyrun.engine.external.SoundPlayer;
+import com.galaxyrun.engine.external.StartGameInput;
 import com.galaxyrun.engine.ui.GameUI;
 import com.galaxyrun.helper.BitmapCache;
 import com.galaxyrun.helper.FontCache;
@@ -19,7 +24,10 @@ import com.galaxyrun.helper.FpsCalculator;
 import com.galaxyrun.util.Pair;
 import com.galaxyrun.view.GameView;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import galaxyrun.R;
 
@@ -35,7 +43,11 @@ public class GameRunner extends HandlerThread {
     private final GameContext mGameContext;
     private final GameEngine mGameEngine;
     private final FpsCalculator mFpsCalculator;
+    // The view that the game is drawn on.
     private final GameView mGameView;
+    // Event queue that will be passed into the Game. Stores SensorEvents and MotionEvents
+    // received from the GameActivity, among other things.
+    private final ConcurrentLinkedQueue<ExternalInput> externalInputQueue;
     // Whether game is currently muted.
     private boolean isMuted;
     // Plays game audio
@@ -62,6 +74,7 @@ public class GameRunner extends HandlerThread {
         songPlayer.setVolume(MUSIC_VOLUME, MUSIC_VOLUME);
         songPlayer.setLooping(true);
 
+        externalInputQueue = new ConcurrentLinkedQueue<>();
         mGameContext = makeGameContext(appContext, gameView, inDebugMode);
         mGameEngine = new GameEngine(mGameContext);
         mFpsCalculator = new FpsCalculator(30);
@@ -108,13 +121,13 @@ public class GameRunner extends HandlerThread {
      */
     public void startGame() {
         Log.d("GameRunner", "Starting the game.");
-        mGameEngine.inputExternalStartGame();
+        externalInputQueue.add(new StartGameInput());
         songPlayer.start();
         queueUpdate();
     }
 
     public void onPause() {
-        mGameEngine.inputExternalPauseGame();
+        externalInputQueue.add(new PauseGameInput());
         songPlayer.pause();
         mGameView.stopThread();
         isThreadPaused = true;
@@ -136,18 +149,26 @@ public class GameRunner extends HandlerThread {
     }
 
     public void inputMotionEvent(MotionEvent e) {
-        mGameEngine.inputExternalMotionEvent(e);
+        externalInputQueue.add(new MotionInput(e));
     }
 
     public void inputSensorEvent(SensorEvent e) {
-        mGameEngine.inputExternalSensorEvent(e);
+        externalInputQueue.add(new SensorInput(e));
     }
 
     public void prepareHandler() {
         // Run a game update.
         mWorkerHandler = new Handler(getLooper(), msg -> {
             long updateTime = System.currentTimeMillis();
-            final GameUpdateMessage updateMessage = mGameEngine.update();
+
+            // Poll all events that have been received since the previous update.
+            List<ExternalInput> queuedInputs = new LinkedList<>();
+            while (!externalInputQueue.isEmpty()) {
+                ExternalInput input = externalInputQueue.poll();
+                queuedInputs.add(input);
+            }
+
+            final GameUpdateMessage updateMessage = mGameEngine.update(queuedInputs);
 
             // Report results
             mResponseHandler.post(() -> {
