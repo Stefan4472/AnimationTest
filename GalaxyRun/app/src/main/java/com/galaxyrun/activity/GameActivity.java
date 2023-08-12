@@ -7,7 +7,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Window;
@@ -76,13 +75,10 @@ public class GameActivity extends FragmentActivity implements
     private void startGame() {
         // TODO: set inDebugMode=BuildConfig.DEBUG?
         gameRunner = new GameRunner(
-                new Handler(),
                 getApplicationContext(),
                 gameView,
                 /*inDebugMode=*/false
         );
-        gameRunner.start();
-        gameRunner.prepareHandler();
         gameRunner.startGame();
     }
 

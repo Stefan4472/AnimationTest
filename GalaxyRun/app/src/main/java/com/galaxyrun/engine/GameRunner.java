@@ -5,7 +5,6 @@ import android.hardware.SensorEvent;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -39,14 +38,13 @@ public class GameRunner extends HandlerThread {
     private static final int MS_PER_UPDATE = (int) (1000.0 / TARGET_FPS);
 
     public GameRunner(
-            Handler responseHandler,
             Context context,
             GameView gameView,
             boolean inDebugMode
     ) {
-        super(GameRunner.class.getSimpleName());
-        mResponseHandler = responseHandler;
+        super("GameRunner");
         mGameView = gameView;
+        mResponseHandler = new Handler();
         soundPlayer = new SoundPlayer(context);
         songPlayer = MediaPlayer.create(context, R.raw.game_song);
         songPlayer.setVolume(MUSIC_VOLUME, MUSIC_VOLUME);
@@ -65,8 +63,12 @@ public class GameRunner extends HandlerThread {
      */
     public void startGame() {
         Log.d("GameRunner", "Starting the game.");
-        mGameView.startThread();
+        // Start the thread and kick off the first prepareHandler() call.
         isThreadPaused = false;
+        start();
+        prepareHandler();
+
+        mGameView.startThread();
         mGameEngine.inputExternalStartGame();
         songPlayer.start();
         queueUpdate();
@@ -85,6 +87,9 @@ public class GameRunner extends HandlerThread {
         queueUpdate();
     }
 
+    /**
+     * Destroys allocated resources.
+     */
     public void finish() {
         soundPlayer.release();
         songPlayer.release();
@@ -100,72 +105,64 @@ public class GameRunner extends HandlerThread {
     }
 
     public void prepareHandler() {
-        mWorkerHandler = new Handler(getLooper(), new Handler.Callback() {
-            // Simply run GameEngine.update() and report the resulting
-            // UpdateMessage to the callback.
-            @Override
-            public boolean handleMessage(Message msg) {
-                long updateTime = System.currentTimeMillis();
+        // Run a game update.
+        mWorkerHandler = new Handler(getLooper(), msg -> {
+            long updateTime = System.currentTimeMillis();
+            final GameUpdateMessage updateMessage = mGameEngine.update();
 
-                // Call game engine update
-                final GameUpdateMessage updateMessage = mGameEngine.update();
-
-                // Report results
-                mResponseHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (updateMessage.fps != 0 && updateMessage.fps < TARGET_FPS / 2) {
-                            Log.w("GameActivity", "Low FPS: " + updateMessage.fps);
-                        }
-
-                        // Handle change of "muted" state.
-                        // TODO: "muting" should be entirely up to the in-game logic.
-                        if (isMuted != updateMessage.isMuted) {
-                            if (songPlayer != null) {
-                                float newVolume = updateMessage.isMuted ? 0 : MUSIC_VOLUME;
-                                songPlayer.setVolume(newVolume, newVolume);
-                            }
-                            isMuted = updateMessage.isMuted;
-                        }
-
-                        // Play sounds if not muted
-                        if (soundPlayer != null && !isMuted) {
-                            for (SoundID sound : updateMessage.getSounds()) {
-                                soundPlayer.playSound(sound);
-                            }
-                        }
-
-                        mGameView.queueDrawFrame(updateMessage.getDrawInstructions());
-                    }
-                });
-
-                // Queue next update
-                if (!isThreadPaused) {
-                    // Calculate when the next update should occur in order to
-                    // achieve TARGET_FPS.
-                    long nextUpdate = updateTime + MS_PER_UPDATE;
-                    long currTime = System.currentTimeMillis();
-                    if (currTime < nextUpdate) {
-                        try {
-                            // Sleep until it's time to run the next frame.
-                            Thread.sleep(nextUpdate - currTime);
-                        } catch (InterruptedException e) {
-                            Log.e("GameRunner", "Sleep was interrupted: " + e.getMessage());
-                        }
-                    } else {
-                        Log.w("GameRunner", "Slipped by " + (currTime - nextUpdate) + "ms");
-                    }
-
-                    queueUpdate();
+            // Report results
+            mResponseHandler.post(() -> {
+                if (updateMessage.fps != 0 && updateMessage.fps < TARGET_FPS / 2) {
+                    Log.w("GameActivity", "Low FPS: " + updateMessage.fps);
                 }
 
-                return true;
+                // Handle change of "muted" state.
+                // TODO: "muting" should be entirely up to the in-game logic.
+                if (isMuted != updateMessage.isMuted) {
+                    if (songPlayer != null) {
+                        float newVolume = updateMessage.isMuted ? 0 : MUSIC_VOLUME;
+                        songPlayer.setVolume(newVolume, newVolume);
+                    }
+                    isMuted = updateMessage.isMuted;
+                }
+
+                // Play sounds if not muted
+                if (soundPlayer != null && !isMuted) {
+                    for (SoundID sound : updateMessage.getSounds()) {
+                        soundPlayer.playSound(sound);
+                    }
+                }
+
+                // Send draw instructions to GameView to be drawn.
+                mGameView.queueDrawFrame(updateMessage.getDrawInstructions());
+            });
+
+            // Queue next update
+            if (!isThreadPaused) {
+                // Calculate when the next update should occur in order to
+                // achieve TARGET_FPS.
+                long nextUpdate = updateTime + MS_PER_UPDATE;
+                long currTime = System.currentTimeMillis();
+                if (currTime < nextUpdate) {
+                    try {
+                        // Sleep until it's time to run the next frame.
+                        Thread.sleep(nextUpdate - currTime);
+                    } catch (InterruptedException e) {
+                        Log.e("GameRunner", "Sleep was interrupted: " + e.getMessage());
+                    }
+                } else {
+                    Log.w("GameRunner", "Slipped by " + (currTime - nextUpdate) + "ms");
+                }
+
+                queueUpdate();
             }
+
+            return true;
         });
     }
 
-    /*
-    Tell the Thread to trigger a game update.
+    /**
+     * Triggers a game update on the background updater thread.
      */
     private void queueUpdate() {
         mWorkerHandler.obtainMessage().sendToTarget();
