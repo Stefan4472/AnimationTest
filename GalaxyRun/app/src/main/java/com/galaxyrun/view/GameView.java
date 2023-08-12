@@ -15,7 +15,12 @@ import com.galaxyrun.util.FastQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * Built from starter tutorial https://google-developer-training.github.io/android-developer-advanced-course-practicals/unit-5-advanced-graphics-and-views/lesson-11-canvas/11-2-p-create-a-surfaceview/11-2-p-create-a-surfaceview.html
+ * Draws the game. Uses a background thread to draw asynchronously. Also sends events to a
+ * callback via IGameViewListener.
+ * Call `queueDrawFrame()` to queue the next frame update.
+ * For more information, see
+ * <a href="https://google-developer-training.github.io/android-developer-advanced-course-practicals/unit-5-advanced-graphics-and-views/lesson-11-canvas/11-2-p-create-a-surfaceview/11-2-p-create-a-surfaceview.html">...</a>
+ * TODO: better description of how to use the GameView with start/stop thread, etc.
  */
 public class GameView extends SurfaceView implements Runnable {
 
@@ -23,22 +28,24 @@ public class GameView extends SurfaceView implements Runnable {
      * Event callbacks triggered by GameView.
      */
     public interface IGameViewListener {
-        void onSizeSet(int widthPx, int heightPx);
+        // Called when the size of the view is determined after measurement.
+        void onViewSizeSet();
+        // Called when a MotionEvent is received on the view.
         void handleScreenTouch(MotionEvent motionEvent);
     }
 
-    private final Context context;
+    // Whether the drawing thread is running.
     private boolean isRunning;
+    // Thread used to perform draw() calls asynchronously.
     private Thread drawThread;
-    private SurfaceHolder surfaceHolder;
-    // Queue of game frames to draw
-    private ConcurrentLinkedQueue<FastQueue<DrawInstruction>> drawFramesQueue;
-    // Listener registered to this view
+    private final SurfaceHolder surfaceHolder;
+    // Queue of game frames to draw.
+    private final ConcurrentLinkedQueue<FastQueue<DrawInstruction>> drawFramesQueue;
+    // Listener registered to this view.
     private IGameViewListener gameViewListener;
 
     public GameView(Context context, AttributeSet attributes) {
         super(context, attributes);
-        this.context = context;
         surfaceHolder = getHolder();
         surfaceHolder.setFormat(PixelFormat.RGBA_8888);
         drawFramesQueue = new ConcurrentLinkedQueue<>();
@@ -52,27 +59,21 @@ public class GameView extends SurfaceView implements Runnable {
         drawFramesQueue.add(drawInstructions);
     }
 
-    /*
-    Called every time the size of the view is changed/set.
-     */
     @Override
     protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
         super.onSizeChanged(width, height, oldWidth, oldHeight);
-        Log.d("GameView", String.format("surfaceChanged() called with %d, %d", width, height));
+        Log.d("GameView", String.format("surfaceChanged() called with %d, %d.", width, height));
 
         if (width == 0 || height == 0){
-            Log.d("GameView", "Doing nothing in response to surfaceChanged()");
+            Log.d("GameView", "Doing nothing in response to surfaceChanged().");
             return;
         }
 
-        // Tell GameActivity that we're ready to start
-        gameViewListener.onSizeSet(width, height);
+        gameViewListener.onViewSizeSet();
     }
 
-    /*
-    Runs in a separate thread. All drawing happens here. DrawInstructions
-    are passed in via thread-safe queue.
-     */
+    // Runs in a separate thread. All drawing happens here. DrawInstructions
+    // are passed in via thread-safe queue.
     @Override
     public void run() {
         Canvas canvas;
@@ -94,30 +95,31 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void drawFrame(Canvas canvas, FastQueue<DrawInstruction> drawInstructions) {
-//        Log.d("GameView", "Drawing Frame with " + drawParams.getSize() + " DrawParams");
         for (DrawInstruction drawInst : drawInstructions) {
             drawInst.draw(canvas);
         }
     }
 
-    /*
-    Starts up the drawing thread.
-     */
+    /**
+     * Starts the background drawing thread.
+      */
     public void startThread() {
+        Log.d("GameView", "Starting GameView thread.");
         isRunning = true;
         drawThread = new Thread(this);
         drawThread.start();
     }
 
-    /*
-    Stops the drawing thread.
+    /**
+     * Stops the drawing thread.
      */
     public void stopThread() {
         isRunning = false;
         try {
             drawThread.join();
         } catch (InterruptedException e) {
-
+            Log.e("GameView", String.format("drawThread.join() threw InterruptedException: %s",
+                    e.getMessage()));
         }
     }
 

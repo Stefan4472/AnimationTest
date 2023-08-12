@@ -59,22 +59,28 @@ public class GameRunner extends HandlerThread {
         );
     }
 
-    /*
-    Send the signal to start the game.
+    /**
+     * Starts the game.
+     * TODO: is this even necessary? Logic is partially repeated from onResume().
      */
     public void startGame() {
+        Log.d("GameRunner", "Starting the game.");
+        mGameView.startThread();
+        isThreadPaused = false;
         mGameEngine.inputExternalStartGame();
         songPlayer.start();
         queueUpdate();
     }
 
-    public void pauseThread() {
+    public void onPause() {
         mGameEngine.inputExternalPauseGame();
         songPlayer.pause();
+        mGameView.stopThread();
         isThreadPaused = true;
     }
 
-    public void resumeThread() {
+    public void onResume() {
+        mGameView.startThread();
         isThreadPaused = false;
         queueUpdate();
     }
@@ -84,6 +90,7 @@ public class GameRunner extends HandlerThread {
         songPlayer.release();
         songPlayer = null;
     }
+
     public void inputMotionEvent(MotionEvent e) {
         mGameEngine.inputExternalMotionEvent(e);
     }
@@ -107,12 +114,12 @@ public class GameRunner extends HandlerThread {
                 mResponseHandler.post(new Runnable() {
                     @Override
                     public void run() {
-//                        mCallback.onGameStateUpdated(updateMessage);
-                        if (updateMessage.fps != 0 && updateMessage.fps < 30) {
-                            Log.w("GameActivity", "FPS below 30! FPS = " + updateMessage.fps);
+                        if (updateMessage.fps != 0 && updateMessage.fps < TARGET_FPS / 2) {
+                            Log.w("GameActivity", "Low FPS: " + updateMessage.fps);
                         }
 
                         // Handle change of "muted" state.
+                        // TODO: "muting" should be entirely up to the in-game logic.
                         if (isMuted != updateMessage.isMuted) {
                             if (songPlayer != null) {
                                 float newVolume = updateMessage.isMuted ? 0 : MUSIC_VOLUME;
@@ -127,6 +134,7 @@ public class GameRunner extends HandlerThread {
                                 soundPlayer.playSound(sound);
                             }
                         }
+
                         mGameView.queueDrawFrame(updateMessage.getDrawInstructions());
                     }
                 });

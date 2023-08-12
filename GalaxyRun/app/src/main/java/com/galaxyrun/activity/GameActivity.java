@@ -20,19 +20,16 @@ import androidx.fragment.app.FragmentActivity;
 import galaxyrun.R;
 
 /**
- * Activity containing the game.
- *
- * The Game logic is run in a parallel thread (`GameRunner`).
- * The GameActivity receives `DrawInstructions` for the
- * current game and forwards them to `GameView`, which draws them.
+ * The activity that runs the game. The game logic is run in a parallel thread (`GameRunner`).
+ * This activity simply forwards events and sends signals to the GameRunner.
  */
 public class GameActivity extends FragmentActivity implements
-        GameView.IGameViewListener, // Receive events from GameView
+        GameView.IGameViewListener,
         SensorEventListener
 {
-    // Runs the game in a separate thread
+    // Runs the game in a separate thread.
     private GameRunner gameRunner;
-    // View element that draws the game
+    // View element that draws the game.
     private GameView gameView;
     private SensorManager sensorManager;
 
@@ -52,7 +49,6 @@ public class GameActivity extends FragmentActivity implements
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
         );
         setContentView(R.layout.game_layout);
-        // TODO: we can probably use view.onLayoutChange() and view.OnTouchListener() directly.
         gameView = findViewById(R.id.spaceships);
         gameView.setListener(this);
     }
@@ -60,28 +56,43 @@ public class GameActivity extends FragmentActivity implements
     @Override
     public void onResume() {
         super.onResume();
-        if (gameRunner != null) {
-            gameRunner.resumeThread();
-        }
-        gameView.startThread();
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
             sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
                     SensorManager.SENSOR_DELAY_GAME);
         } else {
             // TODO: how to handle this?
-            Log.d("GameView Class", "No Gyroscope");
+            Log.d("GameActivity", "No Gyroscope");
         }
+        if (gameRunner != null) {
+            gameRunner.onResume();
+        }
+    }
+
+    /**
+     * Initializes and starts the game. Must be called *after* the GameView has been sized,
+     * as we need to know how big the screen is.
+     */
+    private void startGame() {
+        // TODO: set inDebugMode=BuildConfig.DEBUG?
+        gameRunner = new GameRunner(
+                new Handler(),
+                getApplicationContext(),
+                gameView,
+                /*inDebugMode=*/false
+        );
+        gameRunner.start();
+        gameRunner.prepareHandler();
+        gameRunner.startGame();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (gameRunner != null) {
-            gameRunner.pauseThread();
-        }
-        gameView.stopThread();
         sensorManager.unregisterListener(this);
+        if (gameRunner != null) {
+            gameRunner.onPause();
+        }
     }
 
     @Override
@@ -97,17 +108,12 @@ public class GameActivity extends FragmentActivity implements
         }
     }
 
-    /*
-    IGameViewListener--handle dimensions determined.
-     */
     @Override
-    public void onSizeSet(int widthPx, int heightPx) {
-        initialize(widthPx, heightPx);
+    public void onViewSizeSet() {
+        // Start the game once the view has been measured.
+        startGame();
     }
 
-    /*
-    IGameViewListener--handle touch event.
-     */
     @Override
     public void handleScreenTouch(MotionEvent motionEvent) {
         if (gameRunner != null) {
@@ -125,27 +131,5 @@ public class GameActivity extends FragmentActivity implements
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
-    }
-
-    /*
-    Initialize the game. This is called once the GameView has been sized.
-    We have to wait for this because we need to know how big our screen is.
-     */
-    private void initialize(int screenWidthPx, int screenHeightPx) {
-        Log.d("GameActivity", String.format(
-                "initialize() called w/width %d, height %d", screenWidthPx, screenHeightPx
-        ));
-
-        // Create GameRunner background thread
-        gameRunner = new GameRunner(
-                new Handler(),
-                getApplicationContext(),
-                gameView,
-                false
-//                BuildConfig.DEBUG
-        );
-        gameRunner.start();
-        gameRunner.prepareHandler();
-        gameRunner.startGame();
     }
 }
