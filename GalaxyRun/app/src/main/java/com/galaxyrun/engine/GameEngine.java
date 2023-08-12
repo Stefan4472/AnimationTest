@@ -116,6 +116,7 @@ public class GameEngine implements IExternalGameController, IGameStateReceiver {
         stateMachine = new GameStateMachine(gameContext, this);
 
         gameTimer = new GameTimer();
+        // TODO: shouldn't this be in GameRunner?
         fpsCalculator = new FpsCalculator(100);
         score = 0;
 
@@ -247,6 +248,7 @@ public class GameEngine implements IExternalGameController, IGameStateReceiver {
         // Collect DrawInstructions. Draw Background first, then sprites, then UI.
         FastQueue<DrawInstruction> drawQueue = new FastQueue<>();
         background.getDrawInstructions(drawQueue);
+        // TODO: don't draw terminated sprites
         for (Sprite sprite : sprites) {
             sprite.getDrawInstructions(drawQueue);
             if (gameContext.inDebugMode) {

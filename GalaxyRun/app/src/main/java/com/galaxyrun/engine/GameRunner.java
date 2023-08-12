@@ -2,13 +2,19 @@ package com.galaxyrun.engine;
 
 import android.content.Context;
 import android.hardware.SensorEvent;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.galaxyrun.engine.audio.SoundID;
 import com.galaxyrun.engine.external.GameUpdateMessage;
+import com.galaxyrun.engine.external.SoundPlayer;
+import com.galaxyrun.view.GameView;
+
+import galaxyrun.R;
 
 /**
  * Runs the GameEngine in a worker thread.
@@ -16,32 +22,39 @@ import com.galaxyrun.engine.external.GameUpdateMessage;
 public class GameRunner extends HandlerThread {
     private Handler mWorkerHandler;
     private final Handler mResponseHandler;
-    private final Callback mCallback;
     private final GameEngine mGameEngine;
+    private final GameView mGameView;
     private boolean isThreadPaused;
+    // Whether game is currently muted.
+    private boolean isMuted;
+    // Plays game audio
+    private final SoundPlayer soundPlayer;
+    // Plays background song.
+    // TODO: this should really be controlled by commands from GameEngine.
+    //   I am taking a shortcut by directly playing the song from `GameActivity`
+    private MediaPlayer songPlayer;
+    private static final float MUSIC_VOLUME = 0.25f;
 
     private static final double TARGET_FPS = 30.0;
     private static final int MS_PER_UPDATE = (int) (1000.0 / TARGET_FPS);
 
-    public interface Callback {
-        void onGameStateUpdated(GameUpdateMessage message);
-    }
-
     public GameRunner(
             Handler responseHandler,
-            Callback callback,
             Context context,
-            int screenWidthPx,
-            int screenHeightPx,
+            GameView gameView,
             boolean inDebugMode
     ) {
         super(GameRunner.class.getSimpleName());
         mResponseHandler = responseHandler;
-        mCallback = callback;
+        mGameView = gameView;
+        soundPlayer = new SoundPlayer(context);
+        songPlayer = MediaPlayer.create(context, R.raw.game_song);
+        songPlayer.setVolume(MUSIC_VOLUME, MUSIC_VOLUME);
+        songPlayer.setLooping(true);
         mGameEngine = new GameEngine(
                 context.getApplicationContext(),
-                screenWidthPx,
-                screenHeightPx,
+                mGameView.getWidth(),
+                mGameView.getHeight(),
                 inDebugMode
         );
     }
@@ -51,11 +64,13 @@ public class GameRunner extends HandlerThread {
      */
     public void startGame() {
         mGameEngine.inputExternalStartGame();
+        songPlayer.start();
         queueUpdate();
     }
 
     public void pauseThread() {
         mGameEngine.inputExternalPauseGame();
+        songPlayer.pause();
         isThreadPaused = true;
     }
 
@@ -64,6 +79,11 @@ public class GameRunner extends HandlerThread {
         queueUpdate();
     }
 
+    public void finish() {
+        soundPlayer.release();
+        songPlayer.release();
+        songPlayer = null;
+    }
     public void inputMotionEvent(MotionEvent e) {
         mGameEngine.inputExternalMotionEvent(e);
     }
@@ -87,7 +107,27 @@ public class GameRunner extends HandlerThread {
                 mResponseHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mCallback.onGameStateUpdated(updateMessage);
+//                        mCallback.onGameStateUpdated(updateMessage);
+                        if (updateMessage.fps != 0 && updateMessage.fps < 30) {
+                            Log.w("GameActivity", "FPS below 30! FPS = " + updateMessage.fps);
+                        }
+
+                        // Handle change of "muted" state.
+                        if (isMuted != updateMessage.isMuted) {
+                            if (songPlayer != null) {
+                                float newVolume = updateMessage.isMuted ? 0 : MUSIC_VOLUME;
+                                songPlayer.setVolume(newVolume, newVolume);
+                            }
+                            isMuted = updateMessage.isMuted;
+                        }
+
+                        // Play sounds if not muted
+                        if (soundPlayer != null && !isMuted) {
+                            for (SoundID sound : updateMessage.getSounds()) {
+                                soundPlayer.playSound(sound);
+                            }
+                        }
+                        mGameView.queueDrawFrame(updateMessage.getDrawInstructions());
                     }
                 });
 

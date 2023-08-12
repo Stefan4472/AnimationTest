@@ -6,7 +6,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -15,13 +14,9 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.galaxyrun.engine.GameRunner;
-import com.galaxyrun.engine.audio.SoundID;
-import com.galaxyrun.engine.external.GameUpdateMessage;
-import com.galaxyrun.engine.external.SoundPlayer;
 import com.galaxyrun.view.GameView;
 
 import androidx.fragment.app.FragmentActivity;
-//import galaxyrun.BuildConfig;
 import galaxyrun.R;
 
 /**
@@ -32,7 +27,6 @@ import galaxyrun.R;
  * current game and forwards them to `GameView`, which draws them.
  */
 public class GameActivity extends FragmentActivity implements
-        GameRunner.Callback, // Receive game state updates
         GameView.IGameViewListener, // Receive events from GameView
         SensorEventListener
 {
@@ -40,16 +34,7 @@ public class GameActivity extends FragmentActivity implements
     private GameRunner gameRunner;
     // View element that draws the game
     private GameView gameView;
-    // Whether game is currently muted.
-    private boolean isMuted;
-    // Plays game audio
-    private SoundPlayer soundPlayer;
-    // Plays background song.
-    // TODO: this should really be controlled by commands from GameEngine.
-    //   I am taking a shortcut by directly playing the song from `GameActivity`
-    private MediaPlayer songPlayer;
     private SensorManager sensorManager;
-    private static final float MUSIC_VOLUME = 0.25f;
 
     @Override
     public void onCreate(Bundle savedInstanceState) throws IllegalArgumentException {
@@ -67,12 +52,9 @@ public class GameActivity extends FragmentActivity implements
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
         );
         setContentView(R.layout.game_layout);
+        // TODO: we can probably use view.onLayoutChange() and view.OnTouchListener() directly.
         gameView = findViewById(R.id.spaceships);
         gameView.setListener(this);
-        soundPlayer = new SoundPlayer(getApplicationContext());
-        songPlayer = MediaPlayer.create(getApplicationContext(), R.raw.game_song);
-        songPlayer.setVolume(MUSIC_VOLUME, MUSIC_VOLUME);
-        songPlayer.setLooping(true);
     }
 
     @Override
@@ -83,7 +65,6 @@ public class GameActivity extends FragmentActivity implements
         }
         gameView.startThread();
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        songPlayer.start();
         if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
             sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
                     SensorManager.SENSOR_DELAY_GAME);
@@ -100,7 +81,6 @@ public class GameActivity extends FragmentActivity implements
             gameRunner.pauseThread();
         }
         gameView.stopThread();
-        songPlayer.pause();
         sensorManager.unregisterListener(this);
     }
 
@@ -112,9 +92,9 @@ public class GameActivity extends FragmentActivity implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-        soundPlayer.release();
-        songPlayer.release();
-        songPlayer = null;
+        if (gameRunner != null) {
+            gameRunner.finish();
+        }
     }
 
     /*
@@ -159,43 +139,13 @@ public class GameActivity extends FragmentActivity implements
         // Create GameRunner background thread
         gameRunner = new GameRunner(
                 new Handler(),
-                this,
                 getApplicationContext(),
-                screenWidthPx,
-                screenHeightPx,
+                gameView,
                 false
 //                BuildConfig.DEBUG
         );
         gameRunner.start();
         gameRunner.prepareHandler();
         gameRunner.startGame();
-    }
-
-    /*
-    GameRunner.Callback. Called when the next game state is ready.
-     */
-    @Override
-    public void onGameStateUpdated(GameUpdateMessage updateMessage) {
-        if (updateMessage.fps != 0 && updateMessage.fps < 30) {
-            Log.w("GameActivity", "FPS below 30! FPS = " + updateMessage.fps);
-        }
-
-        // Handle change of "muted" state.
-        if (isMuted != updateMessage.isMuted) {
-            if (songPlayer != null) {
-                float newVolume = updateMessage.isMuted ? 0 : MUSIC_VOLUME;
-                songPlayer.setVolume(newVolume, newVolume);
-            }
-            isMuted = updateMessage.isMuted;
-        }
-
-        // Play sounds if not muted
-        if (soundPlayer != null && !isMuted) {
-            for (SoundID sound : updateMessage.getSounds()) {
-                soundPlayer.playSound(sound);
-            }
-        }
-
-        gameView.queueDrawFrame(updateMessage.getDrawInstructions());
     }
 }
